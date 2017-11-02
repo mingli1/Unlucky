@@ -1,7 +1,9 @@
 package com.unlucky.main;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.unlucky.resource.ResourceManager;
+import com.unlucky.screen.GameScreen;
 
 /**
  * "Unlucky" is a RPG/Dungeon Crawler based on RNG
@@ -10,7 +12,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
  *
  * @author Ming Li
  */
-public class Unlucky extends ApplicationAdapter {
+public class Unlucky extends Game {
 
     public static final String TITLE = "Unlucky";
 
@@ -22,8 +24,14 @@ public class Unlucky extends ApplicationAdapter {
     // Rendering utilities
     public SpriteBatch batch;
 
+    // Resources
+    public ResourceManager rm;
+
 	public void create() {
         batch = new SpriteBatch();
+        rm = new ResourceManager();
+
+        this.setScreen(new GameScreen(this, rm));
 	}
 
 	public void render() {
@@ -32,6 +40,7 @@ public class Unlucky extends ApplicationAdapter {
 
 	public void dispose() {
         batch.dispose();
+        super.dispose();
 	}
 
 }
