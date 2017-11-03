@@ -1,7 +1,7 @@
 package com.unlucky.map;
 
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Array;
 import com.unlucky.entity.Entity;
 
 /**
@@ -11,6 +11,9 @@ import com.unlucky.entity.Entity;
  * @author Ming Li
  */
 public class Tile {
+
+    // Image representation of tile
+    public TextureRegion sprite;
 
     /**
      * Types of Tiles
@@ -31,8 +34,9 @@ public class Tile {
     // The Entity a Tile could contain
     public Entity hold;
 
-    public Tile(int id, Vector2 tilePosition) {
+    public Tile(int id, TextureRegion sprite, Vector2 tilePosition) {
         this.id = id;
+        this.sprite = sprite;
         this.tilePosition = tilePosition;
 
         // a Tile originally has no Entity
@@ -51,7 +55,7 @@ public class Tile {
     }
 
     public boolean isBlocked() {
-        return type == 0 ? false : true;
+        return type == 0;
     }
 
 }
