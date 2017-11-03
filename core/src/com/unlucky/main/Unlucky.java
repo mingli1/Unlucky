@@ -19,7 +19,7 @@ public class Unlucky extends Game {
     // Desktop screen dimensions
     public static final int V_WIDTH = 160;
     public static final int V_HEIGHT = V_WIDTH / 12 * 9;
-    public static final int V_SCALE = 4;
+    public static final int V_SCALE = 6;
 
     // Rendering utilities
     public SpriteBatch batch;
