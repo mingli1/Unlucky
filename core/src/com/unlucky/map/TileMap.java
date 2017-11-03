@@ -3,7 +3,6 @@ package com.unlucky.map;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.resource.ResourceManager;
 
@@ -20,8 +19,6 @@ public class TileMap {
     // Map
     public String mapInfo;
     public String[] mapInfoLines;
-    // 1d sprite map to be less expensive
-    public TextureRegion[] spriteMap;
     // array containing map information
     public Tile[] tileMap;
     public int mapWidth;
@@ -45,7 +42,6 @@ public class TileMap {
         mapWidth = Integer.parseInt(mapInfoLines[0]);
         mapHeight = Integer.parseInt(mapInfoLines[1]);
 
-        spriteMap = new TextureRegion[mapWidth * mapHeight];
         tileMap = new Tile[mapWidth * mapHeight];
 
         convert();
@@ -66,14 +62,12 @@ public class TileMap {
 
                 int k = (mapWidth * mapHeight - 1) - ((i - 2) * mapWidth + j);
 
-                Tile t = new Tile(index, new Vector2(x, y));
-                tileMap[k] = t;
-
                 // tiles file has 16 tiles across
                 int r = index / rm.tiles16x16[0].length;
                 int c = index % rm.tiles16x16[0].length;
 
-                spriteMap[k] = rm.tiles16x16[r][c];
+                Tile t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y));
+                tileMap[k] = t;
             }
         }
     }
@@ -84,11 +78,11 @@ public class TileMap {
      * @param batch
      */
     public void render(SpriteBatch batch) {
-        for (int i = 0; i < spriteMap.length; i++) {
+        for (int i = 0; i < tileMap.length; i++) {
             int r = i / mapWidth;
             int c = i % mapWidth;
 
-            batch.draw(spriteMap[i], origin.x + c * tileSize, origin.y + r * tileSize);
+            batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
         }
     }
 
@@ -100,6 +94,19 @@ public class TileMap {
      */
     public void setTile(int tileX, int tileY, Tile tile) {
         tileMap[tileX * mapWidth + tileY] = tile;
+    }
+
+    /**
+     * Replaces a Tile by tile id
+     *
+     * @param tileX
+     * @param tileY
+     * @param id
+     */
+    public void setTile(int tileX, int tileY, int id) {
+        int r = id / rm.tiles16x16[0].length;
+        int c = id % rm.tiles16x16.length;
+        tileMap[tileX * mapWidth + tileY] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY));
     }
 
     /**
