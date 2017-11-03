@@ -96,28 +96,28 @@ public class Entity {
         switch (movement) {
             // down
             case 1:
-                if (position.y - 1 == -1 || tileMap.getTile((int) position.x, (int) position.y - 1).type == Tile.BLOCKED)
+                if (position.y - 1 == -1 || tileMap.getTile((int) position.x, (int) position.y - 1).isBlocked())
                     return false;
                 else
                     target.y -= 1;
                 break;
             // up
             case 2:
-                if (position.y + 1 == tileMap.mapHeight || tileMap.getTile((int) position.x, (int) position.y + 1).type == Tile.BLOCKED)
+                if (position.y + 1 == tileMap.mapHeight || tileMap.getTile((int) position.x, (int) position.y + 1).isBlocked())
                     return false;
                 else
                     target.y += 1;
                 break;
             // right
             case 3:
-                if (position.x + 1 == tileMap.mapWidth || tileMap.getTile((int) position.x + 1, (int) position.y).type == Tile.BLOCKED)
+                if (position.x + 1 == tileMap.mapWidth || tileMap.getTile((int) position.x + 1, (int) position.y).isBlocked())
                     return false;
                 else
                     target.x += 1;
                 break;
             // left
             case 4:
-                if (position.x - 1 == -1 || tileMap.getTile((int) position.x - 1, (int) position.y).type == Tile.BLOCKED)
+                if (position.x - 1 == -1 || tileMap.getTile((int) position.x - 1, (int) position.y).isBlocked())
                     return false;
                 else
                     target.x -= 1;
