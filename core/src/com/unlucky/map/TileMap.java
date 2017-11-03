@@ -59,19 +59,21 @@ public class TileMap {
         for (int i = 2; i < mapHeight + 2; i++) {
             String[] row = mapInfoLines[i].split(",");
             for (int j = 0; j < mapWidth; j++) {
-                int index = Integer.parseInt(row[j]);
+                int index = Integer.parseInt(row[row.length - 1 - j]);
 
                 int y = (i - 2) * mapWidth + j / mapWidth;
                 int x = (i - 2) * mapWidth + j % mapWidth;
 
+                int k = (mapWidth * mapHeight - 1) - ((i - 2) * mapWidth + j);
+
                 Tile t = new Tile(index, new Vector2(x, y));
-                tileMap[(i - 2) * mapWidth + j] = t;
+                tileMap[k] = t;
 
                 // tiles file has 16 tiles across
                 int r = index / rm.tiles16x16[0].length;
                 int c = index % rm.tiles16x16[0].length;
 
-                spriteMap[(i - 2) * mapWidth + j] = rm.tiles16x16[r][c];
+                spriteMap[k] = rm.tiles16x16[r][c];
             }
         }
     }
@@ -86,11 +88,18 @@ public class TileMap {
             int r = i / mapWidth;
             int c = i % mapWidth;
 
-            // because yDown = false, have to reverse the y axis rendering and
-            // account for the extra y offset
-            batch.draw(spriteMap[i], origin.x + c * tileSize,
-                    origin.y + (-r * tileSize) + (mapWidth * mapHeight) - mapHeight);
+            batch.draw(spriteMap[i], origin.x + c * tileSize, origin.y + r * tileSize);
         }
+    }
+
+    /**
+     * Replaces a Tile on a tile map
+     *
+     * @param tileX
+     * @param tileY
+     */
+    public void setTile(int tileX, int tileY, Tile tile) {
+        tileMap[tileX * mapWidth + tileY] = tile;
     }
 
     /**
