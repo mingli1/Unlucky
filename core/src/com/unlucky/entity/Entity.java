@@ -3,7 +3,6 @@ package com.unlucky.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
-import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 
@@ -50,11 +49,17 @@ public class Entity {
     // map
     protected TileMap tileMap;
 
-    public Entity(Vector2 position, TileMap tileMap, ResourceManager rm) {
+    public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
+        this.id = id;
         this.position = position;
         this.tileMap = tileMap;
         this.rm = rm;
 
+        target = new Vector2();
+
+        dir = 0;
+        movement = 0;
+        moving = false;
         shouldDestroy = destroyed = false;
     }
 

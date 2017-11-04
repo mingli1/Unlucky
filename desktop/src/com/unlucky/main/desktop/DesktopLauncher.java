@@ -14,7 +14,7 @@ public class DesktopLauncher {
 
         config.width = Unlucky.V_WIDTH * Unlucky.V_SCALE;
         config.height = Unlucky.V_HEIGHT * Unlucky.V_SCALE;
-        config.resizable = false;
+        config.resizable = true;
         config.vSyncEnabled = false;
         config.title = Unlucky.TITLE;
 
