@@ -110,12 +110,46 @@ public class TileMap {
     }
 
     /**
+     * Converts tile coordinates to map coordinates
+     *
+     * @param tileX
+     * @param tileY
+     * @return
+     */
+    public Vector2 toMapCoords(int tileX, int tileY) {
+        return new Vector2(tileX * tileSize, tileY * tileSize);
+    }
+
+    public Vector2 toMapCoords(Vector2 coords) {
+        return new Vector2(coords.x * tileSize, coords.y * tileSize);
+    }
+
+    /**
+     * Converts map coordinates to tile coordinates
+     *
+     * @param mapX
+     * @param mapY
+     * @return
+     */
+    public Vector2 toTileCoords(int mapX, int mapY) {
+        return new Vector2(mapX / tileSize, mapY / tileSize);
+    }
+
+    public Vector2 toTileCoords(Vector2 coords) {
+        return new Vector2(coords.x / tileSize, coords.y / tileSize);
+    }
+
+    /**
      * Returns a tile from the tile map at (x,y) tile position
      *
      * @return Tile
      */
     public Tile getTile(int tileX, int tileY) {
         return tileMap[tileX * mapWidth + tileY];
+    }
+
+    public Tile getTile(Vector2 coords) {
+        return tileMap[(int) (coords.x * mapWidth + coords.y)];
     }
 
     /**
