@@ -19,28 +19,21 @@ public class Entity {
     // animation
     protected AnimationManager am;
 
+    // position (x,y) in map coordinates (tile * tileSize)
+    protected Vector2 position;
     /**
      * 0 - down
      * 1 - up
      * 2 - right
      * 3 - left
      */
-    protected int dir;
-
-    // position (x,y) in tile coordinates
-    protected Vector2 position;
-    // the target position the Entity is going towards
-    protected Vector2 target;
-    /**
-     * 0 - idle
-     * 1 - down
-     * 2 - up
-     * 3 - right
-     * 4 - left
-     */
-    protected int movement;
-    protected boolean moving;
+    protected boolean[] moving;
     protected float speed;
+    // the Entity's current tile coordinates
+    protected int currentTileX;
+    protected int currentTileY;
+    // The amount of tiles for a direction to move
+    protected int magnitude;
 
     // removing an Entity
     protected boolean shouldDestroy;
@@ -55,148 +48,175 @@ public class Entity {
         this.tileMap = tileMap;
         this.rm = rm;
 
-        target = new Vector2();
+        moving = new boolean[4];
+        for (int i = 0; i < 4; i++) moving[i] = false;
 
-        dir = 0;
-        movement = 0;
-        moving = false;
         shouldDestroy = destroyed = false;
     }
 
     public void update(float dt) {
         if (!destroyed) {
-            move();
+            // movement
+            handleMovement();
+
+            // animation
             am.update(dt);
         }
     }
 
     public void render(SpriteBatch batch, boolean looping) {
         if (!destroyed) {
-            batch.draw(am.getKeyFrame(looping),
-                    position.x * tileMap.tileSize - am.width / 2,
-                    position.y * tileMap.tileSize - am.height / 2);
+            batch.draw(am.getKeyFrame(looping), position.x + 1, position.y);
         }
     }
 
     /**
-     * A key input is processed into one of 4 directions
+     * Moves an entity to a target position with a given magnitude.
+     * Player movement triggered by input
      *
-     * @param movement
+     * @param dir
      */
-    public void setMovement(int movement) {
-        if (moving) return;
-        this.movement = movement;
-        moving = canMove();
+    public void move(int dir, int mag) {
+        currentTileX = (int) (position.x / tileMap.tileSize);
+        currentTileY = (int) (position.y / tileMap.tileSize);
+        magnitude = mag;
+
+        moving[dir] = true;
     }
 
     /**
-     * Determines if an Entity is able to move to a target position. (collision detection)
+     * Checks if movement boolean array is all false
      *
-     * @return moving
+     * @return
      */
     public boolean canMove() {
-        if (moving) return true;
-
-        // If the player's next position is out of bounds or in a blocked tile, moving = 0
-        switch (movement) {
-            // down
-            case 1:
-                if (position.y - 1 == -1 || tileMap.getTile((int) position.x, (int) position.y - 1).isBlocked())
-                    return false;
-                else
-                    target.y -= 1;
-                break;
-            // up
-            case 2:
-                if (position.y + 1 == tileMap.mapHeight || tileMap.getTile((int) position.x, (int) position.y + 1).isBlocked())
-                    return false;
-                else
-                    target.y += 1;
-                break;
-            // right
-            case 3:
-                if (position.x + 1 == tileMap.mapWidth || tileMap.getTile((int) position.x + 1, (int) position.y).isBlocked())
-                    return false;
-                else
-                    target.x += 1;
-                break;
-            // left
-            case 4:
-                if (position.x - 1 == -1 || tileMap.getTile((int) position.x - 1, (int) position.y).isBlocked())
-                    return false;
-                else
-                    target.x -= 1;
-                break;
-        }
-
+        for (boolean i : moving) if (i) return false;
         return true;
     }
 
     /**
-     * Moves an Entity from its current position to its target position
+     * If an entity cannot move the full magnitude in a direction, this calculates
+     * the farthest it can go before it has to stop
+     *
+     * @param dir
+     * @return
      */
-    public void move() {
-        if (position.x == target.x && position.y == target.y) movement = 0;
-
-        // down
-        if (movement == 1 && position.y > target.y) position.y -= speed;
-        else movement = 0;
-        if (movement == 1 && position.y < target.y) position.y = target.y;
-
-        // up
-        if (movement == 2 && position.y < target.y) position.y += speed;
-        else movement = 0;
-        if (movement == 2 && position.y > target.y) position.y = target.y;
-
-        // right
-        if (movement == 3 && position.x < target.x) position.x += speed;
-        else movement = 0;
-        if (movement == 3 && position.x > target.x) position.x = target.x;
-
-        // left
-        if (movement == 4 && position.x > target.x) position.x -= speed;
-        else movement = 0;
-        if (movement == 4 && position.x < target.x) position.x = target.x;
+    public int adjustMagnitude(int dir) {
+        switch (dir) {
+            case 0: // down
+                for (int i = currentTileY; i >= currentTileY - magnitude; i--) {
+                    if (tileMap.getTile(currentTileX, i).isBlocked() || i < 0) {
+                        if (i == currentTileY - 1) return currentTileY;
+                        else return i + 1;
+                    }
+                }
+                return currentTileY - magnitude;
+            case 1: // up
+                for (int i = currentTileY; i <= currentTileY + magnitude; i++) {
+                    if (tileMap.getTile(currentTileX, i).isBlocked() || i == tileMap.mapHeight) {
+                        if (i == currentTileY + 1) return currentTileY;
+                        else return i - 1;
+                    }
+                }
+                return currentTileY + magnitude;
+            case 2: // right
+                for (int i = currentTileX; i <= currentTileX + magnitude; i++) {
+                    if (tileMap.getTile(i, currentTileY).isBlocked() || i >= tileMap.mapWidth - 1) {
+                        if (i == currentTileX + 1) return currentTileX;
+                        else return i - 1;
+                    }
+                }
+                return currentTileX + magnitude;
+            case 3: // left
+                for (int i = currentTileX; i >= currentTileX - magnitude; i--) {
+                    if (tileMap.getTile(i, currentTileY).isBlocked() || i == 0) {
+                        if (i == currentTileX - 1) return currentTileX;
+                        else return i + 1;
+                    }
+                }
+                return currentTileX - magnitude;
+        }
+        return 0;
     }
 
-    public void setDir(int dir) {
-        this.dir = dir;
+    /**
+     * Updates every tick and moves an Entity if not on the tile map grid
+     */
+    public void handleMovement() {
+        // down
+        if (moving[0]) {
+            int targetY = adjustMagnitude(0);
+            if (targetY == currentTileY) {
+                moving[0] = false;
+            } else {
+                position.y -= speed;
+                if (position.y <= targetY * tileMap.tileSize) {
+                    position.y = targetY * tileMap.tileSize;
+                    moving[0] = false;
+                }
+            }
+        }
+        // up
+        else if (moving[1]) {
+            int targetY = adjustMagnitude(1);
+            if (targetY == currentTileY) {
+                moving[1] = false;
+            } else {
+                position.y += speed;
+                if (position.y >= targetY * tileMap.tileSize) {
+                    position.y = targetY * tileMap.tileSize;
+                    moving[1] = false;
+                }
+            }
+        }
+        // right
+        else if (moving[2]) {
+            int targetX = adjustMagnitude(2);
+            if (targetX == currentTileX) {
+                moving[2] = false;
+            } else {
+                position.x += speed;
+                if (position.x >= targetX * tileMap.tileSize) {
+                    position.x = targetX * tileMap.tileSize;
+                    moving[2] = false;
+                }
+            }
+        }
+        // left
+        else if (moving[3]) {
+            int targetX = adjustMagnitude(3);
+            if (targetX == currentTileX) {
+                moving[3] = false;
+            } else {
+                position.x -= speed;
+                if (position.x <= targetX * tileMap.tileSize) {
+                    position.x = targetX * tileMap.tileSize;
+                    moving[3] = false;
+                }
+            }
+        }
     }
 
     public void setPosition(Vector2 position) {
         this.position = position;
     }
 
-    public void setTarget(Vector2 target) {
-        this.target = target;
-    }
-
-    public void setMoving(boolean moving) {
-        this.moving = moving;
-    }
-
     public void setShouldDestroy(boolean shouldDestroy) {
         this.shouldDestroy = shouldDestroy;
     }
 
+    public AnimationManager getAm() { return am; }
+
     public String getId() {
         return id;
-    }
-
-    public int getDir() {
-        return dir;
     }
 
     public Vector2 getPosition() {
         return position;
     }
 
-    public Vector2 getTarget() {
-        return target;
-    }
-
-    public boolean getMoving() {
-        return moving;
+    public boolean isMoving(int dir) {
+        return moving[dir];
     }
 
     public boolean isShouldDestroy() {
