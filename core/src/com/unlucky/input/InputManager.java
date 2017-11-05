@@ -71,7 +71,7 @@ public class InputManager implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         // no multitouch and only uses left mouse button
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
-        cam.unproject(input.set(screenX, screenY, 0));
+        input.set(screenX, screenY, 0);
         dragging = true;
         return true;
     }
@@ -80,7 +80,7 @@ public class InputManager implements InputProcessor {
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         // no multitouch and only uses left mouse button
         if (button != Input.Buttons.LEFT || pointer > 0) return false;
-        cam.unproject(input.set(screenX, screenY, 0));
+        input.set(screenX, screenY, 0);
         dragging = false;
         return true;
     }
@@ -88,14 +88,14 @@ public class InputManager implements InputProcessor {
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         if (!dragging) return false;
-        cam.unproject(input.set(screenX, screenY, 0));
+        input.set(screenX, screenY, 0);
         return true;
     }
 
     @Override
     public boolean mouseMoved(int screenX, int screenY) {
         // Only for desktop
-        cam.unproject(input.set(screenX, screenY, 0));
+        input.set(screenX, screenY, 0);
         return true;
     }
 

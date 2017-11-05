@@ -55,7 +55,7 @@ public class Tile {
     }
 
     public boolean isBlocked() {
-        return type == 0;
+        return type == 1;
     }
 
 }

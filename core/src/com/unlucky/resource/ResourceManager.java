@@ -19,7 +19,7 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
  */
 public class ResourceManager {
 
-    private AssetManager assetManager;
+    public AssetManager assetManager;
 
     // 2D TextureRegion arrays that stores sprites of various sizes for easy animation
     public TextureRegion[][] sprites16x16;

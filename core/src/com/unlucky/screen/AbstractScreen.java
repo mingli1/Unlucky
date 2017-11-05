@@ -1,6 +1,5 @@
 package com.unlucky.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,9 +18,8 @@ public class AbstractScreen implements Screen {
 
     protected final Unlucky game;
     protected final ResourceManager rm;
-    protected InputManager im;
 
-    // camera that focuses on the entire screen
+    // camera that focuses on the player
     protected OrthographicCamera cam;
     // viewport that keeps aspect ratios of the game when resizing
     protected Viewport viewport;
@@ -34,10 +32,6 @@ public class AbstractScreen implements Screen {
 
         cam = new OrthographicCamera(Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
         cam.setToOrtho(false);
-
-        im = new InputManager(cam);
-        Gdx.input.setInputProcessor(im);
-
         // the game will retain it's scaled dimensions regardless of resizing
         viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, cam);
 
