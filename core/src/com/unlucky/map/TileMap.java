@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.resource.ResourceManager;
 
+import java.util.Random;
+
 /**
  * Creates a tilemap from a text file
  *
@@ -23,8 +25,11 @@ public class TileMap {
     public Tile[] tileMap;
     public int mapWidth;
     public int mapHeight;
+    public boolean[] collisionMap;
 
     public Vector2 origin;
+
+    private Random rand;
 
     // res
     private ResourceManager rm;
@@ -33,6 +38,8 @@ public class TileMap {
         this.tileSize = tileSize;
         this.origin = origin;
         this.rm = rm;
+
+        rand = new Random();
 
         // read file into a String
         FileHandle file = Gdx.files.internal(path);
@@ -45,6 +52,11 @@ public class TileMap {
         tileMap = new Tile[mapWidth * mapHeight];
 
         convert();
+
+        collisionMap = new boolean[mapWidth * mapHeight];
+        for (int i = 0; i < collisionMap.length; i++) {
+            collisionMap[i] = tileMap[i].isBlocked();
+        }
     }
 
     /**
@@ -66,7 +78,7 @@ public class TileMap {
                 int r = index / rm.tiles16x16[0].length;
                 int c = index % rm.tiles16x16[0].length;
 
-                Tile t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y));
+                Tile t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y), rand);
                 tileMap[k] = t;
             }
         }
@@ -106,7 +118,7 @@ public class TileMap {
     public void setTile(int tileX, int tileY, int id) {
         int r = id / rm.tiles16x16[0].length;
         int c = id % rm.tiles16x16.length;
-        tileMap[tileX * mapWidth + tileY] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY));
+        tileMap[tileX * mapWidth + tileY] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY), rand);
     }
 
     /**
@@ -145,7 +157,7 @@ public class TileMap {
      * @return Tile
      */
     public Tile getTile(int tileX, int tileY) {
-        return tileMap[tileX * mapWidth + tileY];
+        return tileMap[tileY * mapWidth + tileX];
     }
 
     public Tile getTile(Vector2 coords) {

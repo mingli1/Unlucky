@@ -141,7 +141,7 @@ public class Hud implements Disposable {
         magLabels = new Label[4];
 
         BitmapFont bitmapFont = rm.assetManager.get("arial.ttf", BitmapFont.class);
-        Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 0, 255));
+        Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 255, 255));
 
         for (int i = 0; i < 4; i++) {
             magLabels[i] = new Label(String.valueOf(mags[i]), font);

@@ -80,6 +80,7 @@ public class Entity {
         currentTileX = (int) (position.x / tileMap.tileSize);
         currentTileY = (int) (position.y / tileMap.tileSize);
         magnitude = mag;
+        magnitude += adjustForOffset(dir);
 
         moving[dir] = true;
     }
@@ -105,16 +106,20 @@ public class Entity {
         switch (dir) {
             case 0: // down
                 for (int i = currentTileY; i >= currentTileY - magnitude; i--) {
-                    if (tileMap.getTile(currentTileX, i).isBlocked() || i < 0) {
-                        if (i == currentTileY - 1) return currentTileY;
+                    if (tileMap.getTile(currentTileX, i).isBlocked() || i <= 0) {
+                        if (i == currentTileY - 1) {
+                            return currentTileY;
+                        }
                         else return i + 1;
                     }
                 }
                 return currentTileY - magnitude;
             case 1: // up
                 for (int i = currentTileY; i <= currentTileY + magnitude; i++) {
-                    if (tileMap.getTile(currentTileX, i).isBlocked() || i == tileMap.mapHeight) {
-                        if (i == currentTileY + 1) return currentTileY;
+                    if (tileMap.getTile(currentTileX, i).isBlocked() || i >= tileMap.mapHeight - 1) {
+                        if (i == currentTileY + 1) {
+                            return currentTileY;
+                        }
                         else return i - 1;
                     }
                 }
@@ -122,20 +127,66 @@ public class Entity {
             case 2: // right
                 for (int i = currentTileX; i <= currentTileX + magnitude; i++) {
                     if (tileMap.getTile(i, currentTileY).isBlocked() || i >= tileMap.mapWidth - 1) {
-                        if (i == currentTileX + 1) return currentTileX;
+                        if (i == currentTileX + 1) {
+                            return currentTileX;
+                        }
                         else return i - 1;
                     }
                 }
                 return currentTileX + magnitude;
             case 3: // left
                 for (int i = currentTileX; i >= currentTileX - magnitude; i--) {
-                    if (tileMap.getTile(i, currentTileY).isBlocked() || i == 0) {
-                        if (i == currentTileX - 1) return currentTileX;
+                    if (tileMap.getTile(i, currentTileY).isBlocked() || i <= 0) {
+                        if (i == currentTileX - 1) {
+                            return currentTileX;
+                        }
                         else return i + 1;
                     }
                 }
                 return currentTileX - magnitude;
         }
+        return 0;
+    }
+
+    /**
+     * Determines if there is a slow or boost tile in the path of the Entity
+     */
+    public int adjustForOffset(int dir) {
+        switch (dir) {
+            case 0: // down
+                for (int i = currentTileY; i >= currentTileY - magnitude; i--) {
+                    if (i > 0) {
+                        if (tileMap.getTile(currentTileX, i).isChange())
+                            return tileMap.getTile(currentTileX, i).getMagOffset();
+                    }
+                }
+                return 0;
+            case 1: // up
+                for (int i = currentTileY; i <= currentTileY + magnitude; i++) {
+                    if (i < tileMap.mapHeight - 1) {
+                        if (tileMap.getTile(currentTileX, i).isChange())
+                            return tileMap.getTile(currentTileX, i).getMagOffset();
+                    }
+                }
+                return 0;
+            case 2: // right
+                for (int i = currentTileX; i <= currentTileX + magnitude; i++) {
+                    if (i < tileMap.mapWidth - 1) {
+                        if (tileMap.getTile(i, currentTileY).isChange())
+                            return tileMap.getTile(i, currentTileY).getMagOffset();
+                    }
+                }
+                return 0;
+            case 3: // left
+                for (int i = currentTileX; i >= currentTileX - magnitude; i--) {
+                    if (i > 0) {
+                        if (tileMap.getTile(i, currentTileY).isChange())
+                            return tileMap.getTile(i, currentTileY).getMagOffset();
+                    }
+                }
+                return 0;
+        }
+
         return 0;
     }
 

@@ -24,7 +24,7 @@ public class GameScreen extends AbstractScreen {
         super(game, rm);
 
         test = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
-        player = new Player("player", test.toMapCoords(7, 7), test, rm);
+        player = new Player("player", test.toMapCoords(5, 8), test, rm);
         hud = new Hud(player, game.batch, rm);
     }
 

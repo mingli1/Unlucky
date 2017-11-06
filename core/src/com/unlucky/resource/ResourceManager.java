@@ -39,7 +39,7 @@ public class ResourceManager {
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter font = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         font.fontFileName = "arial.ttf";
-        font.fontParameters.size = 12;
+        font.fontParameters.size = 10;
         font.fontParameters.minFilter = Texture.TextureFilter.Nearest;
         font.fontParameters.magFilter = Texture.TextureFilter.Nearest;
         assetManager.load("arial.ttf", BitmapFont.class, font);
