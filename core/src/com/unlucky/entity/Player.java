@@ -23,6 +23,9 @@ public class Player extends Entity {
 
     public void update(float dt) {
         super.update(dt);
+
+        // Stop animation when player isn't moving
+        if (canMove()) am.stopAnimation();
     }
 
     public void render(SpriteBatch batch) {
