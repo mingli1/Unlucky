@@ -6,6 +6,8 @@ import com.unlucky.animation.AnimationManager;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 
+import java.util.Random;
+
 /**
  * The superclass of all things in the game (player, enemies, items, etc.)
  *
@@ -15,6 +17,7 @@ public class Entity {
 
     protected String id;
     protected ResourceManager rm;
+    protected Random rand;
 
     // animation
     protected AnimationManager am;
@@ -42,11 +45,28 @@ public class Entity {
     // map
     protected TileMap tileMap;
 
+    // RPG aspects
+    protected int hp;
+    protected int maxHp;
+    // 0-100 in % points
+    protected int accuracy;
+    protected int critChance;
+    // damage range
+    protected int minDamage;
+    protected int maxDamage;
+
+    // level information
+    protected int level;
+    protected int exp;
+    protected int maxExp;
+
     public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         this.id = id;
         this.position = position;
         this.tileMap = tileMap;
         this.rm = rm;
+
+        rand = new Random();
 
         moving = new boolean[4];
         for (int i = 0; i < 4; i++) moving[i] = false;
@@ -58,6 +78,14 @@ public class Entity {
         if (!destroyed) {
             // movement
             handleMovement();
+
+            // handle RPG elements
+            if (hp > maxHp) hp = maxHp;
+            if (hp <= 0) {
+                hp = 0;
+                // Entity is dead
+                shouldDestroy = true;
+            }
 
             // animation
             am.update(dt);
