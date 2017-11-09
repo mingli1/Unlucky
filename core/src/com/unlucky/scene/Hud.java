@@ -53,7 +53,8 @@ public class Hud implements Disposable {
         this.rm = rm;
         rand = new Random();
 
-        viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
+        // the Hud needs more pixels to render text
+        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
         Gdx.input.setInputProcessor(stage);
