@@ -84,6 +84,14 @@ public class TileMap {
         }
     }
 
+    public void update(float dt) {
+        for (int i = 0; i < tileMap.length; i++) {
+            if (tileMap[i].containsEntity()) {
+                tileMap[i].getEntity().update(dt);
+            }
+        }
+    }
+
     /**
      * Renders the image representation of the map
      *
@@ -95,6 +103,11 @@ public class TileMap {
             int c = i % mapWidth;
 
             batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+
+            // drawing an entity on a Tile
+            if (tileMap[i].containsEntity()) {
+                tileMap[i].getEntity().render(batch, true);
+            }
         }
     }
 
