@@ -1,5 +1,6 @@
 package com.unlucky.resource;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.assets.loaders.FileHandleResolver;
 import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
@@ -9,6 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
+import com.unlucky.battle.Move;
 
 
 /**
@@ -25,6 +30,13 @@ public class ResourceManager {
     public TextureRegion[][] sprites16x16;
     public TextureRegion[][] tiles16x16;
     public TextureRegion[][] dirpad20x20;
+
+    // Arrays for each type of Move
+    // Contains the entire pool of moves for each type
+    public Array<Move> accurateMoves;
+    public Array<Move> wideMoves;
+    public Array<Move> critMoves;
+    public Array<Move> healMoves;
 
     public ResourceManager() {
         assetManager = new AssetManager();
@@ -44,6 +56,8 @@ public class ResourceManager {
         font.fontParameters.magFilter = Texture.TextureFilter.Nearest;
         assetManager.load("arial.ttf", BitmapFont.class, font);
 
+        loadMoves();
+
         assetManager.finishLoading();
 
         sprites16x16 = TextureRegion.split(
@@ -51,6 +65,37 @@ public class ResourceManager {
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
         dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
+    }
+
+    private void loadMoves() {
+        // parse moves.json
+        JsonReader jsonReader = new JsonReader();
+        JsonValue base = jsonReader.parse(Gdx.files.internal("moves/moves.json"));
+
+        // accurate Moves
+        for (JsonValue move : base.get("accurate")) {
+            Move m = new Move(move.getInt("type"), move.getString("name"),
+                    move.getString("description"), move.getInt("minDamage"), move.getInt("maxDamage"));
+            accurateMoves.add(m);
+        }
+        // wide Moves
+        for (JsonValue move : base.get("wide")) {
+            Move m = new Move(move.getInt("type"), move.getString("name"),
+                    move.getString("description"), move.getInt("minDamage"), move.getInt("maxDamage"));
+            wideMoves.add(m);
+        }
+        // crit Moves
+        for (JsonValue move : base.get("crit")) {
+            Move m = new Move(move.getString("name"), move.getString("description"),
+                    move.getInt("damage"), move.getInt("crit"));
+            critMoves.add(m);
+        }
+        // heal Moves
+        for (JsonValue move : base.get("healing")) {
+            Move m = new Move(move.getInt("type"), move.getString("name"),
+                    move.getString("description"), move.getInt("minHeal"), move.getInt("maxHeal"));
+            healMoves.add(m);
+        }
     }
 
     public void dispose() {
