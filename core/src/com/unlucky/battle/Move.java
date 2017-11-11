@@ -70,7 +70,7 @@ public class Move {
      *
      * @param name
      * @param description
-     * @param damage
+     * @param damage CANNOT BE 0 OR 1
      * @param crit
      */
     public Move(String name, String description, int damage, int crit) {
@@ -84,20 +84,37 @@ public class Move {
 
     /**
      * Somewhat scaling formula for calculating the true damage range based on an Entity's range
+     *
+     * @param damageSeed is the "average" damage of an Entity calculated from its range
      */
-    public void setDamage(int minSeed, int maxSeed) {
-        minDamage = (minDamage * (minSeed / 12)) + minSeed;
-        maxDamage = (maxDamage * (minSeed / 12)) + maxSeed;
+    public void setDamage(int damageSeed) {
+        if (type == 3) return;
+
+        // For accurate damage, the min and max Move damage will deviate little from the mean
+        if (type == 0) {
+            minDamage = damageSeed - (minDamage * (damageSeed / 24));
+            maxDamage = damageSeed - (maxDamage * (damageSeed / 24));
+        }
+        // Wide damage has large deviation from the mean
+        else if (type == 1) {
+            minDamage = damageSeed - (minDamage * (damageSeed / 12));
+            maxDamage = damageSeed - (maxDamage * (damageSeed / 12));
+        }
+        // Crit damage has fixed damage that is less than the mean
+        else if (type == 2) {
+            minDamage = maxDamage = damageSeed - (damageSeed / minDamage);
+        }
     }
 
     /**
-     * Healing is scaled simply by 1/5 of an Entity's maximum hp
+     * Some strange formula for scaling hp
      *
-     * @param hpSeed
+     * @param hpSeed max hp of the Entity
      */
     public void setHeal(int hpSeed) {
-        minHeal += hpSeed / 5;
-        maxHeal += hpSeed / 5;
+        if (type != 3) return;
+        minHeal = (hpSeed / 16) * minHeal;
+        maxHeal = (hpSeed / 16) * maxHeal;
     }
 
 }
