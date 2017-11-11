@@ -14,7 +14,7 @@ public class Util {
     public static final float PLAYER_WALKING_DELAY = 1 / 6f;
 
     // Directional pad button positions
-    public static final int DIR_PAD_SIZE = 20;
-    public static final int DIR_PAD_OFFSET = 5;
+    public static final int DIR_PAD_SIZE = 40;
+    public static final int DIR_PAD_OFFSET = 10;
 
 }

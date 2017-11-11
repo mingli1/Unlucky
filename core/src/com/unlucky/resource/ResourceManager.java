@@ -50,7 +50,7 @@ public class ResourceManager {
                 assetManager.get("sprites/16x16_sprites.png", Texture.class), 16, 16);
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
-        dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 20, 20);
+        dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
     }
 
     public void dispose() {
