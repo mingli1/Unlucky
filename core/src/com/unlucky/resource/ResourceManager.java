@@ -30,13 +30,14 @@ public class ResourceManager {
     public TextureRegion[][] sprites16x16;
     public TextureRegion[][] tiles16x16;
     public TextureRegion[][] dirpad20x20;
+    public TextureRegion[][] movebutton110x40;
 
     // Arrays for each type of Move
     // Contains the entire pool of moves for each type
-    public Array<Move> accurateMoves;
-    public Array<Move> wideMoves;
-    public Array<Move> critMoves;
-    public Array<Move> healMoves;
+    public Array<Move> accurateMoves = new Array<Move>();
+    public Array<Move> wideMoves = new Array<Move>();
+    public Array<Move> critMoves = new Array<Move>();
+    public Array<Move> healMoves = new Array<Move>();
 
     public ResourceManager() {
         assetManager = new AssetManager();
@@ -44,6 +45,7 @@ public class ResourceManager {
         assetManager.load("sprites/16x16_sprites.png", Texture.class);
         assetManager.load("sprites/16x16_tiles.png", Texture.class);
         assetManager.load("ui/dir_pad.png", Texture.class);
+        assetManager.load("ui/move_buttons.png", Texture.class);
 
         FileHandleResolver resolver = new InternalFileHandleResolver();
         assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
@@ -65,6 +67,7 @@ public class ResourceManager {
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
         dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
+        movebutton110x40 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), 110, 40);
     }
 
     private void loadMoves() {

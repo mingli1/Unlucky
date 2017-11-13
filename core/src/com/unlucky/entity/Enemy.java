@@ -20,6 +20,16 @@ public class Enemy extends Entity {
 
     public Enemy(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
+
+        speed = 0;
+    }
+
+    public int getExpDrop() {
+        return expDrop;
+    }
+
+    public int getGoldDrop() {
+        return goldDrop;
     }
 
 }

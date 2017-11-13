@@ -79,6 +79,7 @@ public class Move {
         this.description = description;
 
         minDamage = maxDamage = damage;
+        minHeal = maxHeal = -1;
         this.crit = crit;
     }
 

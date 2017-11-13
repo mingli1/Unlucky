@@ -3,6 +3,7 @@ package com.unlucky.entity;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
+import com.unlucky.battle.Moveset;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 
@@ -21,6 +22,8 @@ public class Entity {
 
     // animation
     protected AnimationManager am;
+    // battle scene animation
+    protected AnimationManager bam;
 
     // position (x,y) in map coordinates (tile * tileSize)
     protected Vector2 position;
@@ -45,12 +48,13 @@ public class Entity {
     // map
     protected TileMap tileMap;
 
-    // RPG aspects
+    /******** RPG ASPECTS *********/
+    protected Moveset moveset;
+
     protected int hp;
     protected int maxHp;
     // 0-100 in % points
     protected int accuracy;
-    protected int critChance;
     // damage range
     protected int minDamage;
     protected int maxDamage;
@@ -70,8 +74,6 @@ public class Entity {
 
         moving = new boolean[4];
         for (int i = 0; i < 4; i++) moving[i] = false;
-
-        shouldDestroy = destroyed = false;
     }
 
     public void update(float dt) {
@@ -94,7 +96,7 @@ public class Entity {
 
     public void render(SpriteBatch batch, boolean looping) {
         if (!destroyed) {
-            batch.draw(am.getKeyFrame(looping), position.x + 1, position.y);
+            batch.draw(am.getKeyFrame(looping), position.x, position.y);
         }
     }
 
@@ -126,6 +128,8 @@ public class Entity {
     /**
      * If an entity cannot move the full magnitude in a direction, this calculates
      * the farthest it can go before it has to stop
+     * If an entity encounters another Entity in its path, the Entity will go on the same
+     * tile as the Entity encountered to trigger an interaction
      *
      * @param dir
      * @return
@@ -140,6 +144,9 @@ public class Entity {
                         }
                         else return i + 1;
                     }
+                    if (tileMap.getTile(currentTileX, i).containsEntity()) {
+                        return i;
+                    }
                 }
                 return currentTileY - magnitude;
             case 1: // up
@@ -149,6 +156,9 @@ public class Entity {
                             return currentTileY;
                         }
                         else return i - 1;
+                    }
+                    if (tileMap.getTile(currentTileX, i).containsEntity()) {
+                        return i;
                     }
                 }
                 return currentTileY + magnitude;
@@ -160,6 +170,9 @@ public class Entity {
                         }
                         else return i - 1;
                     }
+                    if (tileMap.getTile(i, currentTileY).containsEntity()) {
+                        return i;
+                    }
                 }
                 return currentTileX + magnitude;
             case 3: // left
@@ -169,6 +182,9 @@ public class Entity {
                             return currentTileX;
                         }
                         else return i + 1;
+                    }
+                    if (tileMap.getTile(i, currentTileY).containsEntity()) {
+                        return i;
                     }
                 }
                 return currentTileX - magnitude;

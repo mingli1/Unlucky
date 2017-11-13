@@ -68,8 +68,10 @@ public class Tile {
         if (!containsEntity()) hold = e;
     }
 
+    public Entity getEntity() { return hold; }
+
     public boolean containsEntity() {
-        return hold == null;
+        return hold != null;
     }
 
     public boolean isBlocked() {
