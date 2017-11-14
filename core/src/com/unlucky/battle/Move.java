@@ -29,12 +29,12 @@ public class Move {
     public int type;
 
     // Damage range of a Move
-    public int minDamage;
-    public int maxDamage;
+    public float minDamage;
+    public float maxDamage;
 
     // Healing of a Move
-    public int minHeal;
-    public int maxHeal;
+    public float minHeal;
+    public float maxHeal;
 
     // Crit chance in %
     public int crit;
@@ -47,13 +47,13 @@ public class Move {
      * @param min
      * @param max
      */
-    public Move(int type, String name, int min, int max) {
+    public Move(int type, String name, float min, float max) {
         this.type = type;
         this.name = name;
 
         if (type == 0 || type == 1) {
             this.minDamage = min;
-            this.maxDamage = min;
+            this.maxDamage = max;
             minHeal = maxHeal = crit = -1;
         }
         else {
@@ -70,7 +70,7 @@ public class Move {
      * @param damage CANNOT BE 0 OR 1
      * @param crit
      */
-    public Move(String name, int damage, int crit) {
+    public Move(String name, float damage, int crit) {
         type = 2;
         this.name = name;
 
@@ -84,18 +84,18 @@ public class Move {
      *
      * @param damageSeed is the "average" damage of an Entity calculated from its range
      */
-    public void setDamage(int damageSeed) {
+    public void setDamage(float damageSeed) {
         if (type == 3) return;
 
         // For accurate damage, the min and max Move damage will deviate little from the mean
         if (type == 0) {
             minDamage = damageSeed - (minDamage * (damageSeed / 24));
-            maxDamage = damageSeed - (maxDamage * (damageSeed / 24));
+            maxDamage = damageSeed + (maxDamage * (damageSeed / 24));
         }
         // Wide damage has large deviation from the mean
         else if (type == 1) {
-            minDamage = damageSeed - (minDamage * (damageSeed / 12));
-            maxDamage = damageSeed - (maxDamage * (damageSeed / 12));
+            minDamage = damageSeed - (minDamage * (damageSeed / 2));
+            maxDamage = damageSeed + (maxDamage * (damageSeed / 12));
         }
         // Crit damage has fixed damage that is less than the mean
         else if (type == 2) {
