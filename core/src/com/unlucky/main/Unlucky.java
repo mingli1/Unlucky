@@ -17,8 +17,8 @@ public class Unlucky extends Game {
     public static final String TITLE = "Unlucky";
 
     // Desktop screen dimensions
-    public static final int V_WIDTH = 160;
-    public static final int V_HEIGHT = V_WIDTH / 12 * 9;
+    public static final int V_WIDTH = 200;
+    public static final int V_HEIGHT = 120;
     public static final int V_SCALE = 6;
 
     // Rendering utilities
