@@ -23,14 +23,16 @@ public class Moveset {
      * 3 - heal
      */
     public Move[] moveset;
-    public String[] text;
+    public String[] names;
+    public String[] descriptions;
 
     public Moveset(ResourceManager rm) {
         this.rm = rm;
         rand = new Random();
 
         moveset = new Move[4];
-        text = new String[4];
+        names = new String[4];
+        descriptions = new String[4];
     }
 
     /**
@@ -41,19 +43,15 @@ public class Moveset {
         for (int i = 0; i < 4; i++) {
             if (moveset[i].type == 3) moveset[i].setHeal(hp);
             else moveset[i].setDamage(dmg);
+
+            names[i] = moveset[i].name;
             // Concatenates move info into a full description
             if (moveset[i].type < 2) {
-                text[i] = moveset[i].name + "\n" +
-                        moveset[i].description + "\n" +
-                        "Damage: " + moveset[i].minDamage + "-" + moveset[i].maxDamage;
+                descriptions[i] = "Damage: " + moveset[i].minDamage + "-" + moveset[i].maxDamage;
             } else if (moveset[i].type == 2) {
-                text[i] = moveset[i].name + "\n" +
-                        moveset[i].description + "\n" +
-                        "Damage: " + moveset[i].minDamage;
+                descriptions[i] = "Damage: " + moveset[i].minDamage;
             } else {
-                text[i] = moveset[i].name + "\n" +
-                        moveset[i].description + "\n" +
-                        "Heals: " + moveset[i].minHeal+ "-" + moveset[i].maxHeal;
+                descriptions[i] = "Heals: " + moveset[i].minHeal+ "-" + moveset[i].maxHeal;
             }
         }
     }

@@ -54,7 +54,7 @@ public class ResourceManager {
 
         FreetypeFontLoader.FreeTypeFontLoaderParameter font = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
         font.fontFileName = "arial.ttf";
-        font.fontParameters.size = 10;
+        font.fontParameters.size = 9;
         font.fontParameters.minFilter = Texture.TextureFilter.Nearest;
         font.fontParameters.magFilter = Texture.TextureFilter.Nearest;
         assetManager.load("arial.ttf", BitmapFont.class, font);
@@ -68,7 +68,7 @@ public class ResourceManager {
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
         dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
-        movebutton110x40 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), 110, 40);
+        movebutton110x40 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
     }
 
     /**
@@ -96,25 +96,24 @@ public class ResourceManager {
         // accurate Moves
         for (JsonValue move : base.get("accurate")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getString("description"), move.getInt("minDamage"), move.getInt("maxDamage"));
+                    move.getInt("minDamage"), move.getInt("maxDamage"));
             accurateMoves.add(m);
         }
         // wide Moves
         for (JsonValue move : base.get("wide")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getString("description"), move.getInt("minDamage"), move.getInt("maxDamage"));
+                    move.getInt("minDamage"), move.getInt("maxDamage"));
             wideMoves.add(m);
         }
         // crit Moves
         for (JsonValue move : base.get("crit")) {
-            Move m = new Move(move.getString("name"), move.getString("description"),
-                    move.getInt("damage"), move.getInt("crit"));
+            Move m = new Move(move.getString("name"), move.getInt("damage"), move.getInt("crit"));
             critMoves.add(m);
         }
         // heal Moves
         for (JsonValue move : base.get("healing")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getString("description"), move.getInt("minHeal"), move.getInt("maxHeal"));
+                    move.getInt("minHeal"), move.getInt("maxHeal"));
             healMoves.add(m);
         }
     }

@@ -19,7 +19,7 @@ public class Move {
 
     // basic descriptors
     public String name;
-    public String description;
+
     /*
     0 - Accurate
     1 - Wide
@@ -44,14 +44,12 @@ public class Move {
      *
      * @param type
      * @param name
-     * @param description
      * @param min
      * @param max
      */
-    public Move(int type, String name, String description, int min, int max) {
+    public Move(int type, String name, int min, int max) {
         this.type = type;
         this.name = name;
-        this.description = description;
 
         if (type == 0 || type == 1) {
             this.minDamage = min;
@@ -69,14 +67,12 @@ public class Move {
      * Constructor for Crit type
      *
      * @param name
-     * @param description
      * @param damage CANNOT BE 0 OR 1
      * @param crit
      */
-    public Move(String name, String description, int damage, int crit) {
+    public Move(String name, int damage, int crit) {
         type = 2;
         this.name = name;
-        this.description = description;
 
         minDamage = maxDamage = damage;
         minHeal = maxHeal = -1;
