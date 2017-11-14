@@ -10,11 +10,12 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
 import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
-
 
 /**
  * Main resource loading and storage class. Uses an AssetManager to manage textures, sounds,
@@ -68,6 +69,23 @@ public class ResourceManager {
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
         dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
         movebutton110x40 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), 110, 40);
+    }
+
+    /**
+     * Loads the ImageButton styles for buttons with up and down image effects
+     *
+     * @param numButtons
+     * @param sprites
+     * @return a style array for ImageButtons
+     */
+    public ImageButton.ImageButtonStyle[] loadImageButtonStyles(int numButtons, TextureRegion[][] sprites) {
+        ImageButton.ImageButtonStyle[] ret = new ImageButton.ImageButtonStyle[numButtons];
+        for (int i = 0; i < numButtons; i++) {
+            ret[i] = new ImageButton.ImageButtonStyle();
+            ret[i].imageUp = new TextureRegionDrawable(sprites[0][i]);
+            ret[i].imageDown = new TextureRegionDrawable(sprites[1][i]);
+        }
+        return ret;
     }
 
     private void loadMoves() {

@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -92,12 +91,8 @@ public class Hud implements Disposable {
         dirPad = new ImageButton[4];
 
         // when each button is pressed it changes for a more visible effect
-        ImageButton.ImageButtonStyle[] styles = new ImageButton.ImageButtonStyle[4];
-        for (int i = 0; i < 4; i++) {
-            styles[i] = new ImageButton.ImageButtonStyle();
-            styles[i].imageUp = new TextureRegionDrawable(rm.dirpad20x20[0][i]);
-            styles[i].imageDown = new TextureRegionDrawable(rm.dirpad20x20[1][i]);
-        }
+        ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(4, rm.dirpad20x20);
+
         // down
         dirPad[0] = new ImageButton(styles[0]);
         dirPad[0].setPosition(Util.DIR_PAD_SIZE + Util.DIR_PAD_OFFSET, Util.DIR_PAD_OFFSET);
