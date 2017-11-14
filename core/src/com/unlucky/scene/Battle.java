@@ -40,7 +40,8 @@ public class Battle {
     private ImageButton[] moveButtons;
 
     // Labels
-    private Label[] moveLabels;
+    private Label[] moveNameLabels;
+    private Label[] moveDescLabels;
 
     public Battle(Player player, Enemy enemy, SpriteBatch batch, ResourceManager rm) {
         rand = new Random();
@@ -81,23 +82,39 @@ public class Battle {
     }
 
     private void createMoveLabels() {
-        moveLabels = new Label[4];
+        moveNameLabels = new Label[4];
+        moveDescLabels = new Label[4];
 
         BitmapFont bitmapFont = rm.assetManager.get("arial.ttf", BitmapFont.class);
         Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 255, 255));
 
         for (int i = 0; i < 4; i++) {
-            moveLabels[i] = new Label(player.getMoveset().text[i], font);
-            moveLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
-            moveLabels[i].setAlignment(Align.left);
-            moveLabels[i].setTouchable(Touchable.disabled);
-        }
-        moveLabels[0].setPosition(15, Util.MOVE_HEIGHT);
-        moveLabels[1].setPosition(Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT);
-        moveLabels[2].setPosition(15, 0);
-        moveLabels[3].setPosition(Util.MOVE_WIDTH + 15, 0);
+            // move names
+            moveNameLabels[i] = new Label(player.getMoveset().names[i], font);
+            moveNameLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
+            moveNameLabels[i].setAlignment(Align.topLeft);
+            moveNameLabels[i].setFontScale(1.3f);
+            moveNameLabels[i].setTouchable(Touchable.disabled);
 
-        for (int i = 0; i < 4; i++) stage.addActor(moveLabels[i]);
+            moveDescLabels[i] = new Label(player.getMoveset().descriptions[i], font);
+            moveDescLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
+            moveDescLabels[i].setAlignment(Align.left);
+            moveDescLabels[i].setTouchable(Touchable.disabled);
+        }
+        moveNameLabels[0].setPosition(15, Util.MOVE_HEIGHT - 10);
+        moveNameLabels[1].setPosition(Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 10);
+        moveNameLabels[2].setPosition(15, -10);
+        moveNameLabels[3].setPosition(Util.MOVE_WIDTH + 15, -10);
+
+        moveDescLabels[0].setPosition(15, Util.MOVE_HEIGHT - 5);
+        moveDescLabels[1].setPosition(Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 5);
+        moveDescLabels[2].setPosition(15, -5);
+        moveDescLabels[3].setPosition(Util.MOVE_WIDTH + 15, -5);
+
+        for (int i = 0; i < 4; i++) {
+            stage.addActor(moveNameLabels[i]);
+            stage.addActor(moveDescLabels[i]);
+        }
     }
 
 }
