@@ -16,7 +16,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Player;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
@@ -93,39 +92,23 @@ public class Hud implements Disposable {
         dirPad = new ImageButton[4];
 
         // when each button is pressed it changes for a more visible effect
-        TextureRegionDrawable downUp = new TextureRegionDrawable(rm.dirpad20x20[0][0]);
-        TextureRegionDrawable downDown = new TextureRegionDrawable(rm.dirpad20x20[1][0]);
-        TextureRegionDrawable upUp = new TextureRegionDrawable(rm.dirpad20x20[0][1]);
-        TextureRegionDrawable upDown = new TextureRegionDrawable(rm.dirpad20x20[1][1]);
-        TextureRegionDrawable rightUp = new TextureRegionDrawable(rm.dirpad20x20[0][2]);
-        TextureRegionDrawable rightDown = new TextureRegionDrawable(rm.dirpad20x20[1][2]);
-        TextureRegionDrawable leftUp = new TextureRegionDrawable(rm.dirpad20x20[0][3]);
-        TextureRegionDrawable leftDown = new TextureRegionDrawable(rm.dirpad20x20[1][3]);
-
-        ImageButton.ImageButtonStyle downStyle = new ImageButton.ImageButtonStyle();
-        downStyle.imageUp = downUp;
-        downStyle.imageDown = downDown;
-        ImageButton.ImageButtonStyle upStyle = new ImageButton.ImageButtonStyle();
-        upStyle.imageUp = upUp;
-        upStyle.imageDown = upDown;
-        ImageButton.ImageButtonStyle rightStyle = new ImageButton.ImageButtonStyle();
-        rightStyle.imageUp = rightUp;
-        rightStyle.imageDown = rightDown;
-        ImageButton.ImageButtonStyle leftStyle = new ImageButton.ImageButtonStyle();
-        leftStyle.imageUp = leftUp;
-        leftStyle.imageDown = leftDown;
-
+        ImageButton.ImageButtonStyle[] styles = new ImageButton.ImageButtonStyle[4];
+        for (int i = 0; i < 4; i++) {
+            styles[i] = new ImageButton.ImageButtonStyle();
+            styles[i].imageUp = new TextureRegionDrawable(rm.dirpad20x20[0][i]);
+            styles[i].imageDown = new TextureRegionDrawable(rm.dirpad20x20[1][i]);
+        }
         // down
-        dirPad[0] = new ImageButton(downStyle);
+        dirPad[0] = new ImageButton(styles[0]);
         dirPad[0].setPosition(Util.DIR_PAD_SIZE + Util.DIR_PAD_OFFSET, Util.DIR_PAD_OFFSET);
         // up
-        dirPad[1] = new ImageButton(upStyle);
+        dirPad[1] = new ImageButton(styles[1]);
         dirPad[1].setPosition(Util.DIR_PAD_SIZE + Util.DIR_PAD_OFFSET, (Util.DIR_PAD_SIZE * 2) + Util.DIR_PAD_OFFSET);
         // right
-        dirPad[2] = new ImageButton(rightStyle);
+        dirPad[2] = new ImageButton(styles[2]);
         dirPad[2].setPosition((Util.DIR_PAD_SIZE * 2) + Util.DIR_PAD_OFFSET, Util.DIR_PAD_SIZE + Util.DIR_PAD_OFFSET);
         // left
-        dirPad[3] = new ImageButton(leftStyle);
+        dirPad[3] = new ImageButton(styles[3]);
         dirPad[3].setPosition(Util.DIR_PAD_OFFSET, Util.DIR_PAD_SIZE + Util.DIR_PAD_OFFSET);
 
         handleDirPadEvents();
@@ -162,50 +145,24 @@ public class Hud implements Disposable {
      * Handles player movement commands
      */
     private void handleDirPadEvents() {
-        dirPad[0].addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (player.canMove()) {
-                    player.move(0, mags[0]);
-                    player.getAm().setAnimation(AnimationManager.DOWN);
-                    shuffleMagnitudes();
-                    updateMagLabels();
+        for (int i = 0; i < 4; i++) {
+            final int index = i;
+            dirPad[i].addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    movePlayer(index);
                 }
-            }
-        });
-        dirPad[1].addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (player.canMove()) {
-                    player.move(1, mags[1]);
-                    player.getAm().setAnimation(AnimationManager.UP);
-                    shuffleMagnitudes();
-                    updateMagLabels();
-                }
-            }
-        });
-        dirPad[2].addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (player.canMove()) {
-                    player.move(2, mags[2]);
-                    player.getAm().setAnimation(AnimationManager.RIGHT);
-                    shuffleMagnitudes();
-                    updateMagLabels();
-                }
-            }
-        });
-        dirPad[3].addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (player.canMove()) {
-                    player.move(3, mags[3]);
-                    player.getAm().setAnimation(AnimationManager.LEFT);
-                    shuffleMagnitudes();
-                    updateMagLabels();
-                }
-            }
-        });
+            });
+        }
+    }
+
+    private void movePlayer(int dir) {
+        if (player.canMove()) {
+            player.move(dir, mags[dir]);
+            player.getAm().setAnimation(dir);
+            shuffleMagnitudes();
+            updateMagLabels();
+        }
     }
 
     @Override
