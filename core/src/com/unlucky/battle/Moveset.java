@@ -80,7 +80,17 @@ public class Moveset {
         int index;
         for (int i = 0; i < ret.length; i++) {
             index = rand.nextInt(all.size);
-            ret[i] = all.get(index);
+            Move randMove = all.get(index);
+            Move temp = null;
+
+            if (randMove.type < 2)
+                temp = new Move(randMove.type, randMove.name, randMove.minDamage, randMove.maxDamage);
+            else if (randMove.type == 2)
+                temp = new Move(randMove.type, randMove.name, randMove.minDamage, randMove.crit);
+            else if (randMove.type == 3)
+                temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
+
+            ret[i] = temp;
             all.removeIndex(index);
         }
 
