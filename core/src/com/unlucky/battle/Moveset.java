@@ -38,20 +38,27 @@ public class Moveset {
     /**
      * Resets a Moveset with a set of 4 new random Moves
      */
-    public void reset(int dmg, int hp) {
+    public void reset(int min, int max, int hp) {
         moveset = getRandomMoves();
+        int dmg = 0;
+
         for (int i = 0; i < 4; i++) {
+            // reset damage seed for a new value between player's dmg range each iteration
+            dmg = rand.nextInt((max - min) + 1) + min;
             if (moveset[i].type == 3) moveset[i].setHeal(hp);
             else moveset[i].setDamage(dmg);
 
             names[i] = moveset[i].name;
             // Concatenates move info into a full description
             if (moveset[i].type < 2) {
-                descriptions[i] = "Damage: " + moveset[i].minDamage + "-" + moveset[i].maxDamage;
+                descriptions[i] = "Damage: " + Math.round(moveset[i].minDamage)
+                        + "-" + Math.round(moveset[i].maxDamage);
             } else if (moveset[i].type == 2) {
-                descriptions[i] = "Damage: " + moveset[i].minDamage;
+                descriptions[i] = "Damage: " + Math.round(moveset[i].minDamage) + " + "
+                        + moveset[i].crit + "% to crit";
             } else {
-                descriptions[i] = "Heals: " + moveset[i].minHeal+ "-" + moveset[i].maxHeal;
+                descriptions[i] = "Heals: " + Math.round(moveset[i].minHeal)
+                        + "-" + Math.round(moveset[i].maxHeal);
             }
         }
     }
