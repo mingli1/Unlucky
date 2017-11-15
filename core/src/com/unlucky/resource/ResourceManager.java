@@ -2,14 +2,9 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.assets.loaders.FileHandleResolver;
-import com.badlogic.gdx.assets.loaders.resolvers.InternalFileHandleResolver;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGeneratorLoader;
-import com.badlogic.gdx.graphics.g2d.freetype.FreetypeFontLoader;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
@@ -35,10 +30,16 @@ public class ResourceManager {
 
     // Arrays for each type of Move
     // Contains the entire pool of moves for each type
-    public Array<Move> accurateMoves = new Array<Move>();
-    public Array<Move> wideMoves = new Array<Move>();
-    public Array<Move> critMoves = new Array<Move>();
-    public Array<Move> healMoves = new Array<Move>();
+    public final Array<Move> accurateMoves = new Array<Move>();
+    public final Array<Move> wideMoves = new Array<Move>();
+    public final Array<Move> critMoves = new Array<Move>();
+    public final Array<Move> healMoves = new Array<Move>();
+
+    // Fonts
+    public final BitmapFont consolas10 = new BitmapFont(Gdx.files.internal("fonts/consolas.fnt"),
+                                                        Gdx.files.internal("fonts/consolas.png"), false);
+    public final BitmapFont pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"),
+                                                    Gdx.files.internal("fonts/pixel.png"), false);
 
     public ResourceManager() {
         assetManager = new AssetManager();
@@ -47,17 +48,6 @@ public class ResourceManager {
         assetManager.load("sprites/16x16_tiles.png", Texture.class);
         assetManager.load("ui/dir_pad.png", Texture.class);
         assetManager.load("ui/move_buttons.png", Texture.class);
-
-        FileHandleResolver resolver = new InternalFileHandleResolver();
-        assetManager.setLoader(FreeTypeFontGenerator.class, new FreeTypeFontGeneratorLoader(resolver));
-        assetManager.setLoader(BitmapFont.class, ".ttf", new FreetypeFontLoader(resolver));
-
-        FreetypeFontLoader.FreeTypeFontLoaderParameter font = new FreetypeFontLoader.FreeTypeFontLoaderParameter();
-        font.fontFileName = "arial.ttf";
-        font.fontParameters.size = 9;
-        font.fontParameters.minFilter = Texture.TextureFilter.Nearest;
-        font.fontParameters.magFilter = Texture.TextureFilter.Nearest;
-        assetManager.load("arial.ttf", BitmapFont.class, font);
 
         loadMoves();
 
@@ -96,24 +86,24 @@ public class ResourceManager {
         // accurate Moves
         for (JsonValue move : base.get("accurate")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getInt("minDamage"), move.getInt("maxDamage"));
+                    move.getFloat("minDamage"), move.getFloat("maxDamage"));
             accurateMoves.add(m);
         }
         // wide Moves
         for (JsonValue move : base.get("wide")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getInt("minDamage"), move.getInt("maxDamage"));
+                    move.getFloat("minDamage"), move.getFloat("maxDamage"));
             wideMoves.add(m);
         }
         // crit Moves
         for (JsonValue move : base.get("crit")) {
-            Move m = new Move(move.getString("name"), move.getInt("damage"), move.getInt("crit"));
+            Move m = new Move(move.getString("name"), move.getFloat("damage"), move.getInt("crit"));
             critMoves.add(m);
         }
         // heal Moves
         for (JsonValue move : base.get("healing")) {
             Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getInt("minHeal"), move.getInt("maxHeal"));
+                    move.getFloat("minHeal"), move.getFloat("maxHeal"));
             healMoves.add(m);
         }
     }
