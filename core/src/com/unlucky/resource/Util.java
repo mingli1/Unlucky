@@ -9,6 +9,9 @@ import java.util.Random;
  */
 public class Util {
 
+    // rates
+    public static final float TEXT_SPEED = 0.03f;
+
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
 
