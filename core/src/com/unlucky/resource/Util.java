@@ -10,12 +10,12 @@ import java.util.Random;
 public class Util {
 
     // rates
-    public static final float TEXT_SPEED = 0.03f;
+    public static final float TEXT_SPEED = 0.04f;
 
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
 
-    // Animation delays
+    // Animation delay
     public static final float PLAYER_WALKING_DELAY = 1 / 6f;
 
     // Directional pad button positions
@@ -40,7 +40,7 @@ public class Util {
      */
     public static boolean isSuccess(int p, Random rand) {
         int k = rand.nextInt(101);
-        return k <= p;
+        return k < p;
     }
 
     /**
