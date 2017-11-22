@@ -11,7 +11,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 
@@ -47,6 +46,10 @@ public class DialogBox {
     private boolean beginCycle = false;
     private boolean endCycle = false;
 
+    // creates the blinking triangle effect when text is done animating
+    private boolean posSwitch = false;
+    private float posTime = 0;
+
     public DialogBox(Stage stage, ResourceManager rm) {
         this.stage = stage;
         this.rm = rm;
@@ -70,7 +73,7 @@ public class DialogBox {
         textLabel.setTouchable(Touchable.disabled);
         textLabel.setFontScale(1.8f);
         textLabel.setPosition(16, 12);
-        textLabel.setSize(372, 52);
+        textLabel.setSize(350, 52);
         textLabel.setAlignment(Align.topLeft);
         stage.addActor(textLabel);
 
@@ -148,7 +151,22 @@ public class DialogBox {
     }
 
     public void render(float dt, ShapeRenderer shapeRenderer) {
-        // any shapes to render?
+        if (endCycle) {
+            // blinking indicator
+            posTime += dt;
+            if (posTime >= 0.5f) {
+                posTime = 0;
+                posSwitch = !posSwitch;
+            }
+
+            shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+            // create a shape to show when a text animation cycle is done
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(200 / 255.f, 0, 0, 1);
+            if (posSwitch) shapeRenderer.triangle(365, 30, 375, 30, 370, 20);
+            else shapeRenderer.triangle(365, 25, 375, 25, 370, 15);
+            shapeRenderer.end();
+        }
     }
 
 }
