@@ -19,7 +19,7 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class Battle {
+public class BattleUI {
 
     private Random rand;
     private ResourceManager rm;
@@ -35,7 +35,7 @@ public class Battle {
     // graphics
     private ShapeRenderer shapeRenderer;
 
-    public Battle(Player player, Enemy enemy, SpriteBatch batch, ResourceManager rm) {
+    public BattleUI(Player player, Enemy enemy, SpriteBatch batch, ResourceManager rm) {
         rand = new Random();
 
         this.player = player;
@@ -56,7 +56,7 @@ public class Battle {
     }
 
     public void update(float dt) {
-
+        dialogBox.update(dt);
     }
 
     public void render(float dt) {
@@ -67,7 +67,7 @@ public class Battle {
         shapeRenderer.rect(0, 0, Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
         shapeRenderer.end();
 
-        moveUI.render(dt);
+        moveUI.render(dt, shapeRenderer);
 
         stage.act(dt);
         stage.draw();
