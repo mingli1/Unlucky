@@ -84,7 +84,7 @@ public class DialogBox {
         clickLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (dialogIndex + 1 == currentDialog.length) {
+                if (dialogIndex + 1 == currentDialog.length && endCycle) {
                     // the text animation has run through every element of the text array
                     endDialog();
                 }
