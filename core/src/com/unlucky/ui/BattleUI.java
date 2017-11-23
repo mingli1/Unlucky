@@ -1,6 +1,5 @@
 package com.unlucky.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -13,6 +12,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 
 import java.util.Random;
 
@@ -21,43 +21,29 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class BattleUI implements Disposable {
-
-    private Random rand;
-    private ResourceManager rm;
-    private Player player;
-    private Enemy enemy;
+public class BattleUI extends UI implements Disposable {
 
     // Scene2D
     public Stage stage;
     private Viewport viewport;
-    private com.unlucky.scene.MoveUI moveUI;
-    private com.unlucky.ui.DialogBox dialogBox;
+    private MoveUI moveUI;
+    private DialogBox dialogBox;
 
-    // graphics
-    private ShapeRenderer shapeRenderer;
+    private Enemy enemy;
 
-    // FSM
-    private BattleState currentState;
+    public BattleUI(GameScreen gameScreen, Player player, SpriteBatch batch, ResourceManager rm) {
+        super(gameScreen, player, rm);
 
-    public BattleUI(Player player, SpriteBatch batch, ResourceManager rm) {
-        rand = new Random();
-
-        this.player = player;
-        this.rm = rm;
-
-        shapeRenderer = new ShapeRenderer();
+        enemy = null;
 
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, batch);
 
-        moveUI = new com.unlucky.scene.MoveUI(rand, player, stage, rm);
-        dialogBox = new com.unlucky.ui.DialogBox(stage, rm);
+        moveUI = new MoveUI(gameScreen, player, stage, rm);
+        dialogBox = new DialogBox(gameScreen, player, stage, rm);
 
         moveUI.toggleMoveAndOptionUI(false);
         dialogBox.endDialog();
-
-        Gdx.input.setInputProcessor(stage);
     }
 
     public void update(float dt) {
@@ -75,8 +61,8 @@ public class BattleUI implements Disposable {
         stage.act(dt);
         stage.draw();
 
-        moveUI.render(dt, shapeRenderer);
-        dialogBox.render(dt, shapeRenderer);
+        moveUI.render(dt);
+        dialogBox.render(dt);
     }
 
     /**
@@ -89,12 +75,12 @@ public class BattleUI implements Disposable {
         this.enemy = enemy;
 
         String[] intro;
-        boolean saved = Util.isSuccess(1, rand);
+        boolean saved = Util.isSuccess(100, rand);
         if (saved) {
             intro = new String[] {
                     "you encountered " + enemy.getId() + "! " +
                             "maybe there's a chance it doesn't want to fight...",
-                    "the enemy stares at you and decides flee the battle."
+                    "the enemy stares at you and decides to flee the battle."
             };
             dialogBox.startDialog(intro);
         }

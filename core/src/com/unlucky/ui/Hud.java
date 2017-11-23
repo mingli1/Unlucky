@@ -1,6 +1,5 @@
-package com.unlucky.scene;
+package com.unlucky.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,6 +18,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 
 import java.util.Random;
 
@@ -27,11 +27,7 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class Hud implements Disposable {
-
-    private Random rand;
-    private ResourceManager rm;
-    private Player player;
+public class Hud extends UI implements Disposable {
 
     // Scene2D
     public Stage stage;
@@ -46,22 +42,25 @@ public class Hud implements Disposable {
     // labels for magnitudes
     private Label[] magLabels;
 
-    public Hud(Player player, SpriteBatch batch, ResourceManager rm) {
-        this.player = player;
-        this.rm = rm;
-        rand = new Random();
+    public Hud(GameScreen gameScreen, Player player, SpriteBatch batch, ResourceManager rm) {
+        super(gameScreen, player, rm);
 
         // the Hud needs more pixels to render text
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, batch);
-
-        Gdx.input.setInputProcessor(stage);
 
         mags = new int[4];
         shuffleMagnitudes();
 
         createDirPad();
         createMagLabels();
+    }
+
+    public void update(float dt) {}
+
+    public void render(float dt) {
+        stage.act(dt);
+        stage.draw();
     }
 
     /**
@@ -119,7 +118,7 @@ public class Hud implements Disposable {
     private void createMagLabels() {
         magLabels = new Label[4];
 
-        BitmapFont bitmapFont = rm.assetManager.get("arial.ttf", BitmapFont.class);
+        BitmapFont bitmapFont = rm.consolas10;
         Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 255, 255));
 
         for (int i = 0; i < 4; i++) {
@@ -164,4 +163,5 @@ public class Hud implements Disposable {
     public void dispose() {
         stage.dispose();
     }
+
 }

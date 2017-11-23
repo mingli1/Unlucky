@@ -1,4 +1,4 @@
-package com.unlucky.scene;
+package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +12,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 
 import java.util.Random;
 
@@ -20,15 +21,9 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class MoveUI {
+public class MoveUI extends UI {
 
-    private Random rand;
-    private Player player;
     private Stage stage;
-    private ResourceManager rm;
-
-    // shape graphics
-    private ShapeRenderer shapeRenderer;
 
     // Buttons
     private ImageButton[] moveButtons;
@@ -52,17 +47,16 @@ public class MoveUI {
 
     private boolean renderShapes = true;
 
-    public MoveUI(Random rand, Player player, Stage stage, ResourceManager rm) {
-        this.rand = rand;
-        this.player = player;
-        this.stage = stage;
-        this.rm = rm;
+    public MoveUI(GameScreen gameScreen, Player player, Stage stage, ResourceManager rm) {
+        super(gameScreen, player, rm);
 
-        shapeRenderer = new ShapeRenderer();
+        this.stage = stage;
 
         createMoveUI();
         createOptionUI();
     }
+
+    public void update(float dt) {}
 
     public void render(float dt) {
         if (renderShapes) {

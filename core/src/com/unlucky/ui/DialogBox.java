@@ -1,4 +1,4 @@
-package com.unlucky.scene;
+package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,8 +11,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.unlucky.entity.Player;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 
 /**
  * Renders a dialog box that creates text animations given text
@@ -21,10 +23,9 @@ import com.unlucky.resource.Util;
  *
  * @author Ming Li
  */
-public class DialogBox {
+public class DialogBox extends UI {
 
     private Stage stage;
-    private ResourceManager rm;
     private float stateTime = 0;
 
     // the ui for displaying text
@@ -45,14 +46,16 @@ public class DialogBox {
 
     private boolean beginCycle = false;
     private boolean endCycle = false;
+    private boolean dialogFinished = false;
 
     // creates the blinking triangle effect when text is done animating
     private boolean posSwitch = false;
     private float posTime = 0;
 
-    public DialogBox(Stage stage, ResourceManager rm) {
+    public DialogBox(GameScreen gameScreen, Player player, Stage stage, ResourceManager rm) {
+        super(gameScreen, player, rm);
+
         this.stage = stage;
-        this.rm = rm;
 
         // create main UI
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -104,19 +107,25 @@ public class DialogBox {
     public void startDialog(String[] dialog) {
         ui.setVisible(true);
         textLabel.setVisible(true);
+        clickLabel.setVisible(true);
+        clickLabel.setTouchable(Touchable.enabled);
 
         currentDialog = dialog;
         currentText = currentDialog[dialogIndex];
         anim = currentText.split("");
         beginCycle = true;
+        dialogFinished = false;
     }
 
     public void endDialog() {
         reset();
         ui.setVisible(false);
         textLabel.setVisible(false);
+        clickLabel.setVisible(false);
+        clickLabel.setTouchable(Touchable.disabled);
         dialogIndex = 0;
         currentDialog = new String[0];
+        dialogFinished = true;
     }
 
     /**
@@ -128,9 +137,7 @@ public class DialogBox {
         textLabel.setText("");
         resultingText = "";
         animIndex = 0;
-        for (int i = 0; i < anim.length; i++) {
-            anim[i] = "";
-        }
+        anim = new String[0];
         beginCycle = false;
         endCycle = false;
     }
@@ -150,7 +157,7 @@ public class DialogBox {
         }
     }
 
-    public void render(float dt, ShapeRenderer shapeRenderer) {
+    public void render(float dt) {
         if (endCycle) {
             // blinking indicator
             posTime += dt;
@@ -167,6 +174,10 @@ public class DialogBox {
             else shapeRenderer.triangle(365, 25, 375, 25, 370, 15);
             shapeRenderer.end();
         }
+    }
+
+    public boolean isDialogFinished() {
+        return dialogFinished;
     }
 
 }
