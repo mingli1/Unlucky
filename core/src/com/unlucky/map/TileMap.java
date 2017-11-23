@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
 
 import java.util.Random;
@@ -112,13 +113,24 @@ public class TileMap {
     }
 
     /**
+     * Adds an Entity to a specific tile on the map
+     *
+     * @param entity
+     * @param tileX
+     * @param tileY
+     */
+    public void addEntity(Entity entity, int tileX, int tileY) {
+        tileMap[tileY * mapWidth + tileX].addEntity(entity);
+    }
+
+    /**
      * Replaces a Tile on a tile map
      *
      * @param tileX
      * @param tileY
      */
     public void setTile(int tileX, int tileY, Tile tile) {
-        tileMap[tileX * mapWidth + tileY] = tile;
+        tileMap[tileY * mapWidth + tileX] = tile;
     }
 
     /**
@@ -131,7 +143,7 @@ public class TileMap {
     public void setTile(int tileX, int tileY, int id) {
         int r = id / rm.tiles16x16[0].length;
         int c = id % rm.tiles16x16.length;
-        tileMap[tileX * mapWidth + tileY] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY), rand);
+        tileMap[tileY * mapWidth + tileX] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY), rand);
     }
 
     /**
@@ -174,7 +186,7 @@ public class TileMap {
     }
 
     public Tile getTile(Vector2 coords) {
-        return tileMap[(int) (coords.x * mapWidth + coords.y)];
+        return tileMap[(int) (coords.y * mapWidth + coords.x)];
     }
 
     /**
