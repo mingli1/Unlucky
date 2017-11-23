@@ -124,6 +124,58 @@ public class TileMap {
     }
 
     /**
+     * Vector2 version
+     *
+     * @param entity
+     * @param coords
+     */
+    public void addEntity(Entity entity, Vector2 coords) {
+        tileMap[(int) (coords.y * mapWidth + coords.x)].addEntity(entity);
+    }
+
+    /**
+     * Gets an Entity from a specific tile on the map
+     *
+     * @param tileX
+     * @param tileY
+     * @return
+     */
+    public Entity getEntity(int tileX, int tileY) {
+        return tileMap[tileY * mapWidth + tileX].getEntity();
+    }
+
+    /**
+     * Vector2 version
+     *
+     * @param coords
+     * @return
+     */
+    public Entity getEntity(Vector2 coords) {
+        return tileMap[(int) (coords.y * mapWidth + coords.x)].getEntity();
+    }
+
+    /**
+     * Determines if there's an Entity on a specific tile on the map
+     *
+     * @param tileX
+     * @param tileY
+     * @return
+     */
+    public boolean containsEntity(int tileX, int tileY) {
+        return tileMap[tileY * mapWidth + tileX].containsEntity();
+    }
+
+    /**
+     * Vector2 version
+     *
+     * @param coords
+     * @return
+     */
+    public boolean containsEntity(Vector2 coords) {
+        return tileMap[(int) (coords.y * mapWidth + coords.x)].containsEntity();
+    }
+
+    /**
      * Replaces a Tile on a tile map
      *
      * @param tileX
