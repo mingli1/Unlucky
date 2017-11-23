@@ -16,16 +16,14 @@ import com.unlucky.resource.Util;
 public class Player extends Entity {
 
     // Battle
-    private Enemy opponent;
-    private boolean battling = false;
+    protected Enemy opponent;
+    protected boolean battling = false;
 
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
 
-        opponent = null;
-
         // attributes
-        hp = maxHp = 60;
+        hp = maxHp = 100;
         accuracy = 85;
         minDamage = 12;
         maxDamage = 18;
@@ -35,7 +33,7 @@ public class Player extends Entity {
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
         moveset = new Moveset(rm);
         // damage seed is a random number between the damage range
-        moveset.reset(rand.nextInt((maxDamage - minDamage) + 1) + minDamage, maxHp);
+        moveset.reset(minDamage, maxDamage, maxHp);
     }
 
     public void update(float dt) {
@@ -45,8 +43,8 @@ public class Player extends Entity {
         if (canMove()) am.stopAnimation();
 
         // check for Entity interaction
-        if (tileMap.getTile(tileMap.toTileCoords(position)).containsEntity()) {
-            opponent = (Enemy) tileMap.getTile(tileMap.toTileCoords(position)).getEntity();
+        if (tileMap.containsEntity(tileMap.toTileCoords(position)) && canMove()) {
+            opponent = (Enemy) tileMap.getEntity(tileMap.toTileCoords(position));
             battling = true;
         }
     }
