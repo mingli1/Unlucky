@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.entity.Player;
+import com.unlucky.event.BattleEvent;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -46,7 +47,7 @@ public class DialogBox extends UI {
 
     private boolean beginCycle = false;
     private boolean endCycle = false;
-    private boolean dialogFinished = false;
+    private BattleEvent nextEvent = BattleEvent.NONE;
 
     // creates the blinking triangle effect when text is done animating
     private boolean posSwitch = false;
@@ -89,6 +90,7 @@ public class DialogBox extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 if (dialogIndex + 1 == currentDialog.length && endCycle) {
                     // the text animation has run through every element of the text array
+                    handleBattleEvent(nextEvent);
                     endDialog();
                 }
                 // after a cycle of text animation ends, clicking the UI goes to the next cycle
@@ -104,7 +106,14 @@ public class DialogBox extends UI {
         stage.addActor(clickLabel);
     }
 
-    public void startDialog(String[] dialog) {
+    /**
+     * Starts the text animation process given an array of Strings
+     * Also takes in a BattleEvent that is called after the dialog is done
+     *
+     * @param dialog
+     * @param next
+     */
+    public void startDialog(String[] dialog, BattleEvent next) {
         ui.setVisible(true);
         textLabel.setVisible(true);
         clickLabel.setVisible(true);
@@ -113,19 +122,20 @@ public class DialogBox extends UI {
         currentDialog = dialog;
         currentText = currentDialog[dialogIndex];
         anim = currentText.split("");
+
+        nextEvent = next;
         beginCycle = true;
-        dialogFinished = false;
     }
 
     public void endDialog() {
         reset();
+        nextEvent = BattleEvent.NONE;
         ui.setVisible(false);
         textLabel.setVisible(false);
         clickLabel.setVisible(false);
         clickLabel.setTouchable(Touchable.disabled);
         dialogIndex = 0;
         currentDialog = new String[0];
-        dialogFinished = true;
     }
 
     /**
@@ -174,10 +184,6 @@ public class DialogBox extends UI {
             else shapeRenderer.triangle(365, 25, 375, 25, 370, 15);
             shapeRenderer.end();
         }
-    }
-
-    public boolean isDialogFinished() {
-        return dialogFinished;
     }
 
 }
