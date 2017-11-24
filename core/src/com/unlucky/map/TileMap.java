@@ -67,8 +67,14 @@ public class TileMap {
     private void convert() {
         for (int i = 2; i < mapHeight + 2; i++) {
             String[] row = mapInfoLines[i].split(",");
+            // remove all whitespace from text so the map files can be more readable with spaces
+            String[] trimmed = new String[row.length];
+            for (int j = 0; j < row.length; j++) {
+                trimmed[j] = row[j].replaceAll(" ", "");
+            }
+
             for (int j = 0; j < mapWidth; j++) {
-                int index = Integer.parseInt(row[row.length - 1 - j]);
+                int index = Integer.parseInt(trimmed[row.length - 1 - j]);
 
                 int y = (i - 2) * mapWidth + j / mapWidth;
                 int x = (i - 2) * mapWidth + j % mapWidth;
