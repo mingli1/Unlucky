@@ -102,22 +102,10 @@ public class TileMap {
                 // an Entity is placed on a certain tile
                 if (temp.startsWith("e")) {
                     String removeSymbol = temp.substring(1, temp.length());
-                    String[] bivalue = removeSymbol.split("|");
+                    String[] bivalue = removeSymbol.split("\\|");
 
-                    int entityID;
-                    int tileID;
-
-                    // This is to fix a very strange bug where on Android the bivalue
-                    // will be split into 4 elements with the first String being "",
-                    // causing the Integer.parseInt to crash
-                    if (Gdx.app.getType().equals(Application.ApplicationType.Android)) {
-                        entityID = Integer.parseInt(bivalue[1]);
-                        tileID = Integer.parseInt(bivalue[3]);
-                    }
-                    else {
-                        entityID = Integer.parseInt(bivalue[0]);
-                        tileID = Integer.parseInt(bivalue[2]);
-                    }
+                    int entityID = Integer.parseInt(bivalue[0]);
+                    int tileID = Integer.parseInt(bivalue[1]);
 
                     t = new Tile(tileID, rm.tiles16x16[tileID / l][tileID % l], new Vector2(x, y), rand);
                     t.addEntity(Util.getEntity(entityID, toMapCoords(x, y), this, rm));
