@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 
 import java.util.Random;
 
@@ -72,20 +73,37 @@ public class TileMap {
             for (int j = 0; j < row.length; j++) {
                 trimmed[j] = row[j].replaceAll(" ", "");
             }
-
             for (int j = 0; j < mapWidth; j++) {
-                int index = Integer.parseInt(trimmed[row.length - 1 - j]);
-
-                int y = (i - 2) * mapWidth + j / mapWidth;
-                int x = (i - 2) * mapWidth + j % mapWidth;
+                String temp = trimmed[row.length - 1 - j];
 
                 int k = (mapWidth * mapHeight - 1) - ((i - 2) * mapWidth + j);
+                int l = rm.tiles16x16[0].length;
 
-                // tiles file has 16 tiles across
-                int r = index / rm.tiles16x16[0].length;
-                int c = index % rm.tiles16x16[0].length;
+                int y = k / mapWidth;
+                int x = k % mapWidth;
 
-                Tile t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y), rand);
+                Tile t;
+
+                // check for Entity and tile format "e[Entity ID]|[tile id]" meaning
+                // an Entity is placed on a certain tile
+                if (temp.startsWith("e")) {
+                    String removeSymbol = temp.substring(1, temp.length());
+                    String[] bivalue = removeSymbol.split("|");
+                    int entityID = Integer.parseInt(bivalue[0]);
+                    int tileID = Integer.parseInt(bivalue[2]);
+
+                    t = new Tile(tileID, rm.tiles16x16[tileID / l][tileID % l], new Vector2(x, y), rand);
+                    t.addEntity(Util.getEntity(entityID, toMapCoords(x, y), this, rm));
+                }
+                else {
+                    int index = Integer.parseInt(trimmed[row.length - 1 - j]);
+
+                    // tiles file has 16 tiles across
+                    int r = index / rm.tiles16x16[0].length;
+                    int c = index % rm.tiles16x16[0].length;
+
+                    t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y), rand);
+                }
                 tileMap[k] = t;
             }
         }
