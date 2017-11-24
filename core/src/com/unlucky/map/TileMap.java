@@ -11,7 +11,20 @@ import com.unlucky.resource.Util;
 import java.util.Random;
 
 /**
- * Creates a tilemap from a text file
+ * Creates a tilemap from a text file.
+ * A map file has the format:
+ *
+ * mapWidth
+ * mapHeight
+ * t, t, t, t, ... -> mapWidth length
+ * t, ...
+ * t, ...
+ * t, ...
+ * mapHeight length
+ *
+ * t can be one of the following:
+ * - tileID
+ * - e[entityID]|[tileID] (means an Entity is placed on top of a tile)
  *
  * @author Ming Li
  */
@@ -97,12 +110,7 @@ public class TileMap {
                 }
                 else {
                     int index = Integer.parseInt(trimmed[row.length - 1 - j]);
-
-                    // tiles file has 16 tiles across
-                    int r = index / rm.tiles16x16[0].length;
-                    int c = index % rm.tiles16x16[0].length;
-
-                    t = new Tile(index, rm.tiles16x16[r][c], new Vector2(x, y), rand);
+                    t = new Tile(index, rm.tiles16x16[index / l][index % l], new Vector2(x, y), rand);
                 }
                 tileMap[k] = t;
             }
@@ -155,6 +163,25 @@ public class TileMap {
      */
     public void addEntity(Entity entity, Vector2 coords) {
         tileMap[(int) (coords.y * mapWidth + coords.x)].addEntity(entity);
+    }
+
+    /**
+     * Removes an Entity at a specific tile on the map
+     *
+     * @param tileX
+     * @param tileY
+     */
+    public void removeEntity(int tileX, int tileY) {
+        tileMap[tileY * mapWidth + tileX].removeEntity();
+    }
+
+    /**
+     * Vector2 version
+     *
+     * @param coords
+     */
+    public void removeEntity(Vector2 coords) {
+        tileMap[(int) (coords.y * mapWidth + coords.x)].removeEntity();
     }
 
     /**
