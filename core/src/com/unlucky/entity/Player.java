@@ -16,8 +16,8 @@ import com.unlucky.resource.Util;
 public class Player extends Entity {
 
     // Battle
-    protected Enemy opponent;
-    protected boolean battling = false;
+    private Enemy opponent;
+    private boolean battling = false;
 
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
