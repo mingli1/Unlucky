@@ -3,7 +3,6 @@ package com.unlucky.resource;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Entity;
-import com.unlucky.entity.monsters.Slime;
 import com.unlucky.map.TileMap;
 
 import java.util.Random;
@@ -60,6 +59,22 @@ public class Util {
     public static int getRandomValue(int n0, int n1, Random rand) {
         return rand.nextInt((n1 - n0) + 1) + n0;
     }
+
+    /**
+     * Returns a random number in a range produced by a mean and standard deviation
+     *
+     * @param mu avg
+     * @param sigma deviation
+     * @param rand
+     * @return
+     */
+    public static int getDeviatedRandomValue(int mu, int sigma, Random rand) {
+        int n0 = mu - sigma;
+        int n1 = mu + sigma;
+        return rand.nextInt((n1 - n0) + 1) + n0;
+    }
+
+    // Map
 
     /**
      * Returns an instance of an Entity based on numerical Entity id
