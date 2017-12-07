@@ -1,10 +1,9 @@
 package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Player;
+import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
-import com.unlucky.event.EventState;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
@@ -25,6 +24,7 @@ public abstract class UI {
     protected TileMap tileMap;
     protected Player player;
     protected GameScreen gameScreen;
+    protected Battle battle;
 
     // graphics
     protected ShapeRenderer shapeRenderer;
@@ -32,10 +32,11 @@ public abstract class UI {
     // FSM
     protected BattleState currentState;
 
-    public UI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
+    public UI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle, ResourceManager rm) {
         this.gameScreen = gameScreen;
         this.tileMap = tileMap;
         this.player = player;
+        this.battle = battle;
         this.rm = rm;
 
         rand = new Random();
@@ -56,9 +57,7 @@ public abstract class UI {
             case NONE:
                 return;
             case ENEMY_FLEES:
-                tileMap.removeEntity(tileMap.toTileCoords(player.getPosition()));
-                player.finishBattling();
-                gameScreen.setCurrentEvent(EventState.MOVING);
+                battle.end();
                 break;
             case ENEMY_ENGAGES:
                 break;
