@@ -1,5 +1,11 @@
 package com.unlucky.resource;
 
+import com.badlogic.gdx.math.Vector2;
+import com.unlucky.entity.Enemy;
+import com.unlucky.entity.Entity;
+import com.unlucky.entity.monsters.Slime;
+import com.unlucky.map.TileMap;
+
 import java.util.Random;
 
 /**
@@ -10,7 +16,7 @@ import java.util.Random;
 public class Util {
 
     // rates
-    public static final float TEXT_SPEED = 0.04f;
+    public static final float TEXT_SPEED = 0.03f;
 
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
@@ -53,6 +59,22 @@ public class Util {
      */
     public static int getRandomValue(int n0, int n1, Random rand) {
         return rand.nextInt((n1 - n0) + 1) + n0;
+    }
+
+    /**
+     * Returns an instance of an Entity based on numerical Entity id
+     *
+     * @param id
+     * @param position
+     * @param map
+     * @param rm
+     * @return
+     */
+    public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
+        switch (id) {
+            case 2: return new Enemy("slime", position, map, rm, 2, 2, 1 / 3f);
+        }
+        return null;
     }
 
 }
