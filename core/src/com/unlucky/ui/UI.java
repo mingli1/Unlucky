@@ -52,16 +52,6 @@ public abstract class UI {
      *
      * @param event
      */
-    public void handleBattleEvent(BattleEvent event) {
-        switch (event) {
-            case NONE:
-                return;
-            case ENEMY_FLEES:
-                battle.end();
-                break;
-            case ENEMY_ENGAGES:
-                break;
-        }
-    }
+    public abstract void handleBattleEvent(BattleEvent event);
 
 }
