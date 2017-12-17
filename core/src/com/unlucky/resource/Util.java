@@ -44,7 +44,7 @@ public class Util {
      * @return
      */
     public static boolean isSuccess(int p, Random rand) {
-        int k = rand.nextInt(101);
+        int k = rand.nextInt(100);
         return k < p;
     }
 
