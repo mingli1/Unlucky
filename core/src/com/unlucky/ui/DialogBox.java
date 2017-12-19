@@ -12,7 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.entity.Player;
+import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
+import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -24,7 +26,7 @@ import com.unlucky.screen.GameScreen;
  *
  * @author Ming Li
  */
-public class DialogBox extends UI {
+public class DialogBox extends BattleUI {
 
     private Stage stage;
     private float stateTime = 0;
@@ -53,8 +55,9 @@ public class DialogBox extends UI {
     private boolean posSwitch = false;
     private float posTime = 0;
 
-    public DialogBox(GameScreen gameScreen, Player player, Stage stage, ResourceManager rm) {
-        super(gameScreen, player, rm);
+    public DialogBox(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
+                     BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
+        super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
 
@@ -90,8 +93,8 @@ public class DialogBox extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 if (dialogIndex + 1 == currentDialog.length && endCycle) {
                     // the text animation has run through every element of the text array
-                    handleBattleEvent(nextEvent);
                     endDialog();
+                    handleBattleEvent(nextEvent);
                 }
                 // after a cycle of text animation ends, clicking the UI goes to the next cycle
                 else if (endCycle && dialogIndex < currentDialog.length) {
@@ -120,7 +123,7 @@ public class DialogBox extends UI {
         clickLabel.setTouchable(Touchable.enabled);
 
         currentDialog = dialog;
-        currentText = currentDialog[dialogIndex];
+        currentText = currentDialog[0];
         anim = currentText.split("");
 
         nextEvent = next;
@@ -129,7 +132,6 @@ public class DialogBox extends UI {
 
     public void endDialog() {
         reset();
-        nextEvent = BattleEvent.NONE;
         ui.setVisible(false);
         textLabel.setVisible(false);
         clickLabel.setVisible(false);
@@ -183,6 +185,24 @@ public class DialogBox extends UI {
             if (posSwitch) shapeRenderer.triangle(365, 30, 375, 30, 370, 20);
             else shapeRenderer.triangle(365, 25, 375, 25, 370, 15);
             shapeRenderer.end();
+        }
+    }
+
+    public void handleBattleEvent(BattleEvent event) {
+        switch (event) {
+            case NONE:
+                return;
+            case ENEMY_FLEES:
+                battle.end();
+                break;
+            case PLAYER_TURN:
+                uiHandler.moveUI.toggleMoveAndOptionUI(true);
+                uiHandler.currentState = BattleState.MOVE;
+                break;
+            case ENEMY_TURN:
+                String[] dialog = battle.enemyTurn();
+                startDialog(dialog, BattleEvent.PLAYER_TURN);
+                break;
         }
     }
 
