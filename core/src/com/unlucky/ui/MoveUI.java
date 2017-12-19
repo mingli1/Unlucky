@@ -233,6 +233,8 @@ public class MoveUI extends BattleUI {
                     Move move = player.getMoveset().moveset[index];
                     uiHandler.currentState = BattleState.DIALOG;
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                    // reshuffle moveset for next turn
+                    resetMoves();
                     String[] dialog = battle.handleMove(move);
                     uiHandler.dialogBox.startDialog(dialog, BattleEvent.ENEMY_TURN);
                 }
