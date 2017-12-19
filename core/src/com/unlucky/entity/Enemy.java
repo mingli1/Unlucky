@@ -2,8 +2,10 @@ package com.unlucky.entity;
 
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
+import com.unlucky.battle.Moveset;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 
 /**
  * An Entity that the Player can battle if encountered
@@ -25,6 +27,7 @@ public class Enemy extends Entity {
     public Enemy(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
         speed = 0;
+        moveset = new Moveset(rm);
     }
 
     /**
@@ -45,9 +48,8 @@ public class Enemy extends Entity {
         am = new AnimationManager(rm.sprites16x16, numFrames, animIndex, delay);
 
         // determine if boss
-        int k = rand.nextInt(100);
-        isBoss = k < 5 ? true : false;
-        this.id = "[BOSS] " + id;
+        isBoss = Util.isSuccess(5, rand);
+        if (isBoss) this.id = "[BOSS] " + id;
     }
 
     public int getExpDrop() {
