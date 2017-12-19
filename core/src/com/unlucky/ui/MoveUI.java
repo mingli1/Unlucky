@@ -3,13 +3,19 @@ package com.unlucky.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.unlucky.battle.Move;
 import com.unlucky.entity.Player;
+import com.unlucky.event.Battle;
+import com.unlucky.event.BattleEvent;
 import com.unlucky.main.Unlucky;
+import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -21,7 +27,7 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class MoveUI extends UI {
+public class MoveUI extends BattleUI {
 
     private Stage stage;
 
@@ -45,10 +51,9 @@ public class MoveUI extends UI {
             "Next attack has\n+15% DMG"
     };
 
-    private boolean renderShapes = true;
-
-    public MoveUI(GameScreen gameScreen, Player player, Stage stage, ResourceManager rm) {
-        super(gameScreen, player, rm);
+    public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
+                  BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
+        super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
 
@@ -58,22 +63,12 @@ public class MoveUI extends UI {
 
     public void update(float dt) {}
 
-    public void render(float dt) {
-        if (renderShapes) {
-            shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-            // draw line
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(1, 200 / 255.f, 0, 1);
-            shapeRenderer.rectLine(0, Util.MOVE_HEIGHT * 2 + 1, Unlucky.V_WIDTH * 2, Util.MOVE_HEIGHT * 2 + 1, 2);
-            shapeRenderer.end();
-        }
-    }
+    public void render(float dt) {}
 
     /**
      * Hides and disables or shows and enables the move button UI
      */
     public void toggleMoveAndOptionUI(boolean toggle) {
-        renderShapes = toggle;
         for (int i = 0; i < 4; i++) {
             moveButtons[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
             moveButtons[i].setVisible(toggle);
@@ -155,6 +150,8 @@ public class MoveUI extends UI {
             stage.addActor(moveNameLabels[i]);
             stage.addActor(moveDescLabels[i]);
         }
+
+        handleMoveEvents();
     }
 
     /**
@@ -222,5 +219,27 @@ public class MoveUI extends UI {
             stage.addActor(optionDescLabels[i]);
         }
     }
+
+    /**
+     * Handles the attack from a move of the player
+     */
+    private void handleMoveEvents() {
+        for (int i = 0; i < 4; i++) {
+            final int index = i;
+            moveButtons[i].addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    // the move the player clicked
+                    Move move = player.getMoveset().moveset[index];
+                    uiHandler.currentState = BattleState.DIALOG;
+                    uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                    String[] dialog = battle.handleMove(move);
+                    uiHandler.dialogBox.startDialog(dialog, BattleEvent.ENEMY_TURN);
+                }
+            });
+        }
+    }
+
+    public void handleBattleEvent(BattleEvent event) {}
 
 }
