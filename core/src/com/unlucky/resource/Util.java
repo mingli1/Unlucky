@@ -34,6 +34,22 @@ public class Util {
     public static final int STD_MED_WIDTH = 110;
     public static final int STD_MED_HEIGHT = 50;
 
+    // Probabilities, Percentages, and Multipliers
+    public static final int RUN_FROM_BATTLE = 7;
+    public static final int SAVED_FROM_BATTLE = 1;
+    public static final int BOSS_CHANCE = 5;
+    public static final int ENEMY_ACCURACY = 95;
+    public static final int P_DISTRACT = -45;
+    public static final int P_INTIMIDATE = 25;
+
+    public static final int CRIT_MULTIPLIER = 3;
+    public static final float MIN_BOSS_MULTIPLIER = 1.3f;
+    public static final float MAX_BOSS_MULTIPLIER = 1.8f;
+    public static final int MIN_ENEMY_HP_SCALING = 3;
+    public static final int MAX_ENEMY_HP_SCALING = 6;
+    public static final int MIN_ENEMY_DMG_SCALING = 6;
+    public static final int MAX_ENEMY_DMG_SCALING = 10;
+
     // Random
 
     /**
