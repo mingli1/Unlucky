@@ -29,10 +29,11 @@ public class BattleUIHandler extends UI implements Disposable {
     public Viewport viewport;
     public MoveUI moveUI;
     public DialogBox dialogBox;
+    public BattleScene battleScene;
 
     // battle
     private Battle battle;
-    private BattleState currentState;
+    public BattleState currentState;
 
     public BattleUIHandler(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle, SpriteBatch batch, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -46,6 +47,7 @@ public class BattleUIHandler extends UI implements Disposable {
 
         moveUI = new MoveUI(gameScreen, tileMap, player, battle, this, stage, rm);
         dialogBox = new DialogBox(gameScreen, tileMap, player, battle, this, stage, rm);
+        battleScene = new BattleScene(gameScreen, tileMap, player, battle, this, stage, rm);
 
         moveUI.toggleMoveAndOptionUI(false);
         dialogBox.endDialog();
@@ -53,6 +55,7 @@ public class BattleUIHandler extends UI implements Disposable {
 
     public void update(float dt) {
         if (currentState == BattleState.DIALOG) dialogBox.update(dt);
+        battleScene.update(dt);
     }
 
     public void render(float dt) {
@@ -66,21 +69,25 @@ public class BattleUIHandler extends UI implements Disposable {
         stage.act(dt);
         stage.draw();
 
-        moveUI.render(dt);
+        battleScene.render(dt);
+        if (currentState == BattleState.MOVE) moveUI.render(dt);
         if (currentState == BattleState.DIALOG) dialogBox.render(dt);
     }
 
     /**
      * When the player first encounters the enemy and engages in battle
      * There's a 1% chance that the enemy doesn't want to fight
+     * @TODO 50-50 chance for first attack
      *
      * @param enemy
      */
     public void engage(Enemy enemy) {
+        battleScene.toggle(true);
         currentState = BattleState.DIALOG;
 
         String[] intro;
         boolean saved = Util.isSuccess(1, rand);
+
         if (saved) {
             intro = new String[] {
                     "you encountered " + enemy.getId() + "! " +
@@ -95,7 +102,6 @@ public class BattleUIHandler extends UI implements Disposable {
                             "maybe there's a chance it doesn't want to fight...",
                     "the enemy glares at you and decides to engage in battle!"
             };
-            battle.begin(enemy);
             dialogBox.startDialog(intro, BattleEvent.ENEMY_ENGAGES);
         }
     }
