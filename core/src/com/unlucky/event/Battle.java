@@ -1,5 +1,6 @@
 package com.unlucky.event;
 
+import com.unlucky.battle.Move;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.map.TileMap;
@@ -52,15 +53,72 @@ public class Battle {
         // an enemy will take around 3-6 hits to defeat
         // maxHp = rand(3, 6) * seed
         int multiplier = Util.getRandomValue(3, 6, player.getRandom());
-        opponent.setMaxHp(opponent.isBoss() ? (int) bossMultiplier * (seed * multiplier) : seed * multiplier);
+        this.opponent.setMaxHp(opponent.isBoss() ? (int) bossMultiplier * (seed * multiplier) : seed * multiplier);
 
         // the estimated num of hits for an enemy to kill the player, between 8 and 12 scaled for move damage
         int numHitsToKill = Util.getRandomValue(8, 12, player.getRandom());
         int dmgSeed = player.getMaxHp() / numHitsToKill;
         // enemy's damage range is scaled to dmgSeed +- 4-6x dmgSeed
         int sigma = dmgSeed / Util.getRandomValue(4, 6, player.getRandom());
-        opponent.setMinDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed - sigma) : dmgSeed - sigma);
-        opponent.setMaxDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed + sigma) : dmgSeed + sigma);
+        this.opponent.setMinDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed - sigma) : dmgSeed - sigma);
+        this.opponent.setMaxDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed + sigma) : dmgSeed + sigma);
+    }
+
+    /**
+     * Handles and applies the damage/heal of a move to an Entity
+     *
+     * @param move
+     * @return a string array for the dialog ui description
+     */
+    public String[] handleMove(Move move) {
+        String[] dialog = null;
+
+        // accounting for player accuracy
+        if (Util.isSuccess(player.getAccuracy(), player.getRandom())) {
+            // accurate or wide
+            if (move.type < 2) {
+                int damage = Util.getRandomValue(Math.round(move.minDamage), Math.round(move.maxDamage), player.getRandom());
+                opponent.hit(damage);
+                dialog = new String[] {
+                        "You used " + move.name + "!",
+                        "It did " + damage + " damage to " + opponent.getId() + "."
+                };
+            }
+            // crit (3x damage if success)
+            else if (move.type == 2) {
+                int damage = Math.round(move.minDamage);
+                if (Util.isSuccess(move.crit, player.getRandom())) {
+                    damage *= 3;
+                    opponent.hit(damage);
+                    dialog = new String[] {
+                            "You used " + move.name + "!",
+                            "It's a critical strike!",
+                            "It did " + damage + " damage to " + opponent.getId() + "."
+                    };
+                } else {
+                    opponent.hit(damage);
+                    dialog = new String[] {
+                            "You used " + move.name + "!",
+                            "It did " + damage + " damage to " + opponent.getId() + "."
+                    };
+                }
+            }
+            // heal
+            else if (move.type == 3) {
+                int heal = Util.getRandomValue(Math.round(move.minHeal), Math.round(move.maxHeal), player.getRandom());
+                player.heal(heal);
+                dialog = new String[] {
+                        "You used " + move.name + "!",
+                        "You healed for " + heal + " health points."
+                };
+            }
+        }
+        else {
+            // move missed; enemy turn
+            dialog = new String[] {"Oh no, your attack missed!"};
+        }
+
+        return dialog;
     }
 
     /**
