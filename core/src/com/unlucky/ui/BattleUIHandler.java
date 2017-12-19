@@ -77,7 +77,6 @@ public class BattleUIHandler extends UI implements Disposable {
     /**
      * When the player first encounters the enemy and engages in battle
      * There's a 1% chance that the enemy doesn't want to fight
-     * @TODO 50-50 chance for first attack
      *
      * @param enemy
      */
@@ -97,12 +96,23 @@ public class BattleUIHandler extends UI implements Disposable {
             dialogBox.startDialog(intro, BattleEvent.ENEMY_FLEES);
         }
         else {
-            intro = new String[] {
-                    "you encountered " + enemy.getId() + "! " +
-                            "maybe there's a chance it doesn't want to fight...",
-                    "the enemy glares at you and decides to engage in battle!"
-            };
-            dialogBox.startDialog(intro, BattleEvent.ENEMY_ENGAGES);
+            // 50-50 chance for first attack from enemy or player
+            if (Util.isSuccess(50, rand)) {
+                intro = new String[] {
+                        "you encountered " + enemy.getId() + "! " +
+                                "maybe there's a chance it doesn't want to fight...",
+                        "the enemy glares at you and decides to engage in battle!"
+                };
+                dialogBox.startDialog(intro, BattleEvent.PLAYER_TURN);
+            } else {
+                intro = new String[] {
+                        "you encountered " + enemy.getId() + "! " +
+                                "maybe there's a chance it doesn't want to fight...",
+                        "the enemy glares at you and decides to engage in battle!",
+                        enemy.getId() + " attacks first!"
+                };
+                dialogBox.startDialog(intro, BattleEvent.ENEMY_TURN);
+            }
         }
     }
 
