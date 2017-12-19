@@ -10,8 +10,10 @@ public enum BattleEvent {
     // placeholder event for nothing happening
     NONE,
     // the enemy runs at the sight of the player
-    ENEMY_FLEES,
+    END_BATTLE,
     // the enemy engages in battle
-    ENEMY_ENGAGES
+    PLAYER_TURN,
+    // the enemy's turn
+    ENEMY_TURN
 
 }
