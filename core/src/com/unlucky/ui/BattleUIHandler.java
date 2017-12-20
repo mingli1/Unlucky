@@ -81,11 +81,12 @@ public class BattleUIHandler extends UI implements Disposable {
      * @param enemy
      */
     public void engage(Enemy enemy) {
+        moveUI.init();
         battleScene.toggle(true);
         currentState = BattleState.DIALOG;
 
         String[] intro;
-        boolean saved = Util.isSuccess(1, rand);
+        boolean saved = Util.isSuccess(Util.SAVED_FROM_BATTLE, rand);
 
         if (saved) {
             intro = new String[] {
@@ -93,7 +94,7 @@ public class BattleUIHandler extends UI implements Disposable {
                             "maybe there's a chance it doesn't want to fight...",
                     "the enemy stares at you and decides to flee the battle."
             };
-            dialogBox.startDialog(intro, BattleEvent.ENEMY_FLEES);
+            dialogBox.startDialog(intro, BattleEvent.END_BATTLE);
         }
         else {
             // 50-50 chance for first attack from enemy or player

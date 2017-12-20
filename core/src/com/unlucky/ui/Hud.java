@@ -15,7 +15,10 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
+import com.unlucky.event.Battle;
+import com.unlucky.event.BattleEvent;
 import com.unlucky.main.Unlucky;
+import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -42,8 +45,8 @@ public class Hud extends UI implements Disposable {
     // labels for magnitudes
     private Label[] magLabels;
 
-    public Hud(GameScreen gameScreen, Player player, SpriteBatch batch, ResourceManager rm) {
-        super(gameScreen, player, rm);
+    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, SpriteBatch batch, ResourceManager rm) {
+        super(gameScreen, tileMap, player, rm);
 
         // the Hud needs more pixels to render text
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
@@ -61,6 +64,18 @@ public class Hud extends UI implements Disposable {
     public void render(float dt) {
         stage.act(dt);
         stage.draw();
+    }
+
+    /**
+     * Turns the HUD on and off when another event occurs
+     *
+     * @param toggle
+     */
+    public void toggle(boolean toggle) {
+        for (int i = 0; i < 4; i++) {
+            dirPad[i].setDisabled(!toggle);
+            dirPad[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
+        }
     }
 
     /**
@@ -118,12 +133,13 @@ public class Hud extends UI implements Disposable {
     private void createMagLabels() {
         magLabels = new Label[4];
 
-        BitmapFont bitmapFont = rm.consolas10;
-        Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 255, 255));
+        BitmapFont bitmapFont = rm.pixel10;
+        Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(0, 0, 0, 255));
 
         for (int i = 0; i < 4; i++) {
             magLabels[i] = new Label(String.valueOf(mags[i]), font);
             magLabels[i].setSize(Util.DIR_PAD_SIZE, Util.DIR_PAD_SIZE);
+            magLabels[i].setFontScale(2.f);
             magLabels[i].setAlignment(Align.center);
             magLabels[i].setTouchable(Touchable.disabled);
         }

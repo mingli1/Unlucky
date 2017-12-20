@@ -192,7 +192,7 @@ public class DialogBox extends BattleUI {
         switch (event) {
             case NONE:
                 return;
-            case ENEMY_FLEES:
+            case END_BATTLE:
                 battle.end();
                 break;
             case PLAYER_TURN:

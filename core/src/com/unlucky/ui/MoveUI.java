@@ -73,7 +73,7 @@ public class MoveUI extends BattleUI {
      * Resetting variables that are only set once the entire battle
      */
     public void init() {
-        optionIndex = 2;
+        optionIndex = rand.nextInt(3);
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);

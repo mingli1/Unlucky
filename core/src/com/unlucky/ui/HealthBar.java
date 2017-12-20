@@ -28,8 +28,8 @@ public class HealthBar {
 
     // damage or heal health bar animation
     private int decayingHpBarWidth = 0;
-    private Color damageColor = new Color(255, 0, 0, 1);
-    private Color healColor = new Color(70, 190, 255, 1);
+    private Color damageColor = new Color(1, 0, 0, 1);
+    private Color healColor = new Color(70 / 255.f, 190 / 255.f, 1, 1);
     private boolean initialized = false;
 
     public HealthBar(Entity entity, Stage stage, ShapeRenderer shapeRenderer, int max, Vector2 position, Color color) {
@@ -59,6 +59,20 @@ public class HealthBar {
                 initialized = false;
             }
             decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE;
+        }
+        // entity healed
+        else if (entity.getHp() > entity.getPreviousHp()) {
+            if (!initialized) {
+                decayingHpBarWidth = (int) (-maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getHp() - entity.getPreviousHp())));
+                initialized = true;
+            }
+            if (decayingHpBarWidth > 0) {
+                // reset
+                decayingHpBarWidth = 0;
+                entity.setPreviousHp(entity.getHp());
+                initialized = false;
+            }
+            decayingHpBarWidth += Util.HP_BAR_DECAY_RATE;
         }
     }
 
@@ -93,6 +107,11 @@ public class HealthBar {
         // entity damaged
         if (entity.getHp() < entity.getPreviousHp()) {
             shapeRenderer.setColor(damageColor);
+            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, 8);
+        }
+        // entity healed
+        else if (entity.getHp() > entity.getPreviousHp()) {
+            shapeRenderer.setColor(healColor);
             shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, 8);
         }
 

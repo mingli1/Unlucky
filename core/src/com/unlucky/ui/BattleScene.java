@@ -42,15 +42,15 @@ public class BattleScene extends BattleUI {
         Label.LabelStyle ls = new Label.LabelStyle(font, new Color(255, 255, 255, 255));
 
         // create player hud
-        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 8, 145, 40);
-        playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, new Vector2(), new Color(0, 225, 0, 1));
+        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 5, 145, 40);
+        playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
         playerHudLabel = new Label("", ls);
         playerHudLabel.setSize(99, 12);
         playerHudLabel.setTouchable(Touchable.disabled);
 
         // create enemy hud
-        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 8, 145, 40);
-        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, new Vector2(), new Color(225, 0, 0, 1));
+        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 5, 145, 40);
+        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
         enemyHudLabel = new Label("", ls);
         enemyHudLabel.setSize(99, 12);
         enemyHudLabel.setTouchable(Touchable.disabled);
@@ -78,6 +78,8 @@ public class BattleScene extends BattleUI {
     public void update(float dt) {
         playerHud.update(dt);
         enemyHud.update(dt);
+
+        // show health bar animation after an entity uses its move
         playerHpBar.update(dt);
         enemyHpBar.update(dt);
 
