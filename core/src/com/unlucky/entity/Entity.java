@@ -49,10 +49,13 @@ public class Entity {
     protected TileMap tileMap;
 
     /******** RPG ASPECTS *********/
+
     protected Moveset moveset;
 
     protected int hp;
     protected int maxHp;
+    // for animation to keep track of hp difference between attacks
+    protected int previousHp;
     // 0-100 in % points
     protected int accuracy;
     // damage range
@@ -101,6 +104,32 @@ public class Entity {
     }
 
     /**
+     * An entity gets hit by an amount of damage
+     * Checks for entity death
+     *
+     * @param damage
+     */
+    public void hit(int damage) {
+        previousHp = hp;
+        hp -= damage;
+        if (hp <= 0) {
+            hp = 0;
+            shouldDestroy = true;
+        }
+    }
+
+    /**
+     * An entity is healed for an amount
+     *
+     * @param healing
+     */
+    public void heal(int healing) {
+        previousHp = hp;
+        hp += healing;
+        if (hp > maxHp) hp = maxHp;
+    }
+
+    /**
      * Moves an entity to a target position with a given magnitude.
      * Player movement triggered by input
      *
@@ -144,7 +173,7 @@ public class Entity {
                         }
                         else return i + 1;
                     }
-                    if (tileMap.getTile(currentTileX, i).containsEntity()) {
+                    if (tileMap.containsEntity(currentTileX, i)) {
                         return i;
                     }
                 }
@@ -157,7 +186,7 @@ public class Entity {
                         }
                         else return i - 1;
                     }
-                    if (tileMap.getTile(currentTileX, i).containsEntity()) {
+                    if (tileMap.containsEntity(currentTileX, i)) {
                         return i;
                     }
                 }
@@ -170,7 +199,7 @@ public class Entity {
                         }
                         else return i - 1;
                     }
-                    if (tileMap.getTile(i, currentTileY).containsEntity()) {
+                    if (tileMap.containsEntity(i, currentTileY)) {
                         return i;
                     }
                 }
@@ -183,7 +212,7 @@ public class Entity {
                         }
                         else return i + 1;
                     }
-                    if (tileMap.getTile(i, currentTileY).containsEntity()) {
+                    if (tileMap.containsEntity(i, currentTileY)) {
                         return i;
                     }
                 }
@@ -292,6 +321,30 @@ public class Entity {
         }
     }
 
+    public void setAccuracy(int accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public void setExp(int exp) {
+        this.exp = exp;
+    }
+
+    public void setMaxExp(int maxExp) {
+        this.maxExp = maxExp;
+    }
+
+    public int getCurrentTileX() {
+        return currentTileX;
+    }
+
+    public int getCurrentTileY() {
+        return currentTileY;
+    }
+
+    public TileMap getTileMap() {
+        return tileMap;
+    }
+
     public void setPosition(Vector2 position) {
         this.position = position;
     }
@@ -320,6 +373,46 @@ public class Entity {
 
     public boolean isDestroyed() {
         return destroyed;
+    }
+
+    public Moveset getMoveset() { return moveset; }
+
+    public int getHp() {
+        return hp;
+    }
+
+    public int getMaxHp() {
+        return maxHp;
+    }
+
+    public int getPreviousHp() { return previousHp; }
+
+    public int getAccuracy() {
+        return accuracy;
+    }
+
+    public int getMinDamage() {
+        return minDamage;
+    }
+
+    public int getMaxDamage() {
+        return maxDamage;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public int getExp() {
+        return exp;
+    }
+
+    public int getMaxExp() {
+        return maxExp;
+    }
+
+    public Random getRandom() {
+        return rand;
     }
 
 }
