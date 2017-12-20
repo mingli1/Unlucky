@@ -255,7 +255,7 @@ public class MoveUI extends BattleUI {
                     // reshuffle moveset for next turn
                     resetMoves();
                     String[] dialog = battle.handleMove(move, usedBuff);
-                    uiHandler.dialogBox.startDialog(dialog, BattleEvent.ENEMY_TURN);
+                    uiHandler.dialogBox.startDialog(dialog, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
                 }
             });
         }
@@ -281,21 +281,21 @@ public class MoveUI extends BattleUI {
                         uiHandler.dialogBox.startDialog(new String[] {
                                 "You kicked some dirt into the enemy's face.",
                                 "The enemy's next attack has " + Util.P_DISTRACT + "% reduced accuracy!"
-                        }, BattleEvent.PLAYER_TURN);
+                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                         break;
                     // focus
                     case 1:
                         uiHandler.dialogBox.startDialog(new String[] {
                                 "You begin concentrating on your next attack",
                                 "Your next move has 100% accuracy."
-                        }, BattleEvent.PLAYER_TURN);
+                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                         break;
                     // intimidate
                     case 2:
                         uiHandler.dialogBox.startDialog(new String[] {
                                 "You intimidate the enemy causing it to lower its defense.",
                                 "Your next attack has " + Util.P_INTIMIDATE + "% increased damage."
-                        }, BattleEvent.PLAYER_TURN);
+                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                         break;
                 }
                 // disable button
@@ -315,11 +315,11 @@ public class MoveUI extends BattleUI {
                 if (Util.isSuccess(Util.RUN_FROM_BATTLE, rand)) {
                     uiHandler.dialogBox.startDialog(new String[]{
                             "You successfully ran from the battle!"
-                    }, BattleEvent.END_BATTLE);
+                    }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
                 } else {
                     uiHandler.dialogBox.startDialog(new String[]{
                             "You couldn't run from the battle!"
-                    }, BattleEvent.PLAYER_TURN);
+                    }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                 }
                 optionButtons[1].setTouchable(Touchable.disabled);
                 optionDescLabels[1].setText("cannot run again");

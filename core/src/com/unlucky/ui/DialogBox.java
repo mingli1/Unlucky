@@ -198,10 +198,18 @@ public class DialogBox extends BattleUI {
                 battle.end();
                 break;
             case PLAYER_TURN:
+                if (prevEvent == BattleEvent.ENEMY_TURN) {
+                    player.applyDamage();
+                    battle.opponent.applyHeal();
+                }
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
                 uiHandler.currentState = BattleState.MOVE;
                 break;
             case ENEMY_TURN:
+                if (prevEvent == BattleEvent.PLAYER_TURN) {
+                    battle.opponent.applyDamage();
+                    player.applyHeal();
+                }
                 String[] dialog = battle.enemyTurn();
                 startDialog(dialog, BattleEvent.ENEMY_TURN, BattleEvent.PLAYER_TURN);
                 break;

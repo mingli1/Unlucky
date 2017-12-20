@@ -94,7 +94,7 @@ public class BattleUIHandler extends UI implements Disposable {
                             "maybe there's a chance it doesn't want to fight...",
                     "the enemy stares at you and decides to flee the battle."
             };
-            dialogBox.startDialog(intro, BattleEvent.END_BATTLE);
+            dialogBox.startDialog(intro, BattleEvent.NONE, BattleEvent.END_BATTLE);
         }
         else {
             // 50-50 chance for first attack from enemy or player
@@ -104,7 +104,7 @@ public class BattleUIHandler extends UI implements Disposable {
                                 "maybe there's a chance it doesn't want to fight...",
                         "the enemy glares at you and decides to engage in battle!"
                 };
-                dialogBox.startDialog(intro, BattleEvent.PLAYER_TURN);
+                dialogBox.startDialog(intro, BattleEvent.NONE, BattleEvent.PLAYER_TURN);
             } else {
                 intro = new String[] {
                         "you encountered " + enemy.getId() + "! " +
@@ -112,7 +112,7 @@ public class BattleUIHandler extends UI implements Disposable {
                         "the enemy glares at you and decides to engage in battle!",
                         enemy.getId() + " attacks first!"
                 };
-                dialogBox.startDialog(intro, BattleEvent.ENEMY_TURN);
+                dialogBox.startDialog(intro, BattleEvent.NONE, BattleEvent.ENEMY_TURN);
             }
         }
     }
