@@ -46,10 +46,14 @@ public class MoveUI extends BattleUI {
     private Label[] optionDescLabels;
     private String[] buffs = { "Distract", "Focus", "Intimidate" };
     private String[] buffDescs = {
-            "Next enemy attack\nhas -35% ACC",
+            "Next enemy attack\nhas -45% ACC",
             "Next attack has\n100% ACC",
-            "Next attack has\n+15% DMG"
+            "Next attack has\n+25% DMG"
     };
+
+    private int optionIndex;
+    private boolean[] optionButtonTouchable = new boolean[2];
+    private boolean[] usedBuff = new boolean[3];
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                   BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
@@ -66,6 +70,19 @@ public class MoveUI extends BattleUI {
     public void render(float dt) {}
 
     /**
+     * Resetting variables that are only set once the entire battle
+     */
+    public void init() {
+        optionIndex = 2;
+        String buff = buffs[optionIndex];
+        String desc = buffDescs[optionIndex];
+        optionNameLabels[0].setText(buff);
+        optionDescLabels[0].setText(desc);
+        for (int i = 0; i < 2; i++) optionButtonTouchable[i] = true;
+        for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
+    }
+
+    /**
      * Hides and disables or shows and enables the move button UI
      */
     public void toggleMoveAndOptionUI(boolean toggle) {
@@ -76,7 +93,8 @@ public class MoveUI extends BattleUI {
             moveDescLabels[i].setVisible(toggle);
         }
         for (int i = 0; i < 2; i++) {
-            optionButtons[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
+            if (optionButtonTouchable[i])
+                optionButtons[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
             optionButtons[i].setVisible(toggle);
             optionNameLabels[i].setVisible(toggle);
             optionDescLabels[i].setVisible(toggle);
@@ -181,9 +199,8 @@ public class MoveUI extends BattleUI {
         BitmapFont bitmapFont = rm.pixel10;
         Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(255, 255, 255, 255));
 
-        int index = rand.nextInt(3);
-        String randBuff = buffs[index];
-        String desc =  buffDescs[index];
+        String randBuff = buffs[optionIndex];
+        String desc =  buffDescs[optionIndex];
 
         optionNameLabels[0] = new Label(randBuff, font);
         optionNameLabels[0].setAlignment(Align.topLeft);
@@ -218,6 +235,8 @@ public class MoveUI extends BattleUI {
             stage.addActor(optionNameLabels[i]);
             stage.addActor(optionDescLabels[i]);
         }
+
+        handleOptionEvents();
     }
 
     /**
@@ -235,11 +254,78 @@ public class MoveUI extends BattleUI {
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
                     // reshuffle moveset for next turn
                     resetMoves();
-                    String[] dialog = battle.handleMove(move);
+                    String[] dialog = battle.handleMove(move, usedBuff);
                     uiHandler.dialogBox.startDialog(dialog, BattleEvent.ENEMY_TURN);
                 }
             });
         }
+    }
+
+    /**
+     * Handles the two options of the player
+     * Once used, the options are disabled for the rest of the battle
+     */
+    private void handleOptionEvents() {
+        // buff button
+        optionButtons[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                uiHandler.currentState = BattleState.DIALOG;
+                uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                usedBuff[optionIndex] = true;
+
+                // render dialog
+                switch (optionIndex) {
+                    // distract
+                    case 0:
+                        uiHandler.dialogBox.startDialog(new String[] {
+                                "You kicked some dirt into the enemy's face.",
+                                "The enemy's next attack has " + Util.P_DISTRACT + "% reduced accuracy!"
+                        }, BattleEvent.PLAYER_TURN);
+                        break;
+                    // focus
+                    case 1:
+                        uiHandler.dialogBox.startDialog(new String[] {
+                                "You begin concentrating on your next attack",
+                                "Your next move has 100% accuracy."
+                        }, BattleEvent.PLAYER_TURN);
+                        break;
+                    // intimidate
+                    case 2:
+                        uiHandler.dialogBox.startDialog(new String[] {
+                                "You intimidate the enemy causing it to lower its defense.",
+                                "Your next attack has " + Util.P_INTIMIDATE + "% increased damage."
+                        }, BattleEvent.PLAYER_TURN);
+                        break;
+                }
+                // disable button
+                optionButtons[0].setTouchable(Touchable.disabled);
+                optionDescLabels[0].setText("already used");
+                optionButtonTouchable[0] = false;
+            }
+        });
+
+        // run button
+        optionButtons[1].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                uiHandler.currentState = BattleState.DIALOG;
+                uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                // 7% chance to run from the battle
+                if (Util.isSuccess(Util.RUN_FROM_BATTLE, rand)) {
+                    uiHandler.dialogBox.startDialog(new String[]{
+                            "You successfully ran from the battle!"
+                    }, BattleEvent.END_BATTLE);
+                } else {
+                    uiHandler.dialogBox.startDialog(new String[]{
+                            "You couldn't run from the battle!"
+                    }, BattleEvent.PLAYER_TURN);
+                }
+                optionButtons[1].setTouchable(Touchable.disabled);
+                optionDescLabels[1].setText("cannot run again");
+                optionButtonTouchable[1] = false;
+            }
+        });
     }
 
     public void handleBattleEvent(BattleEvent event) {}
