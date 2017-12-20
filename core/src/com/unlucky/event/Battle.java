@@ -27,13 +27,9 @@ public class Battle {
         this.player = player;
     }
 
-    public void update(float dt) {
+    public void update(float dt) {}
 
-    }
-
-    public void render(float dt) {
-
-    }
+    public void render(float dt) {}
 
     /**
      * Sets and scales the enemy's stats according to how strong the player is
@@ -46,17 +42,18 @@ public class Battle {
     public void begin(Enemy opponent) {
         this.opponent = opponent;
 
-        float bossMultiplier = (player.getRandom().nextFloat() * 0.5f) + 1.3f;
+        float bossMultiplier = (player.getRandom().nextFloat() *
+                (Util.MAX_BOSS_MULTIPLIER - Util.MIN_BOSS_MULTIPLIER)) + Util.MIN_BOSS_MULTIPLIER;
 
         // choose damage num from player's damage range
         int seed = Util.getRandomValue(player.getMinDamage(), player.getMaxDamage(), player.getRandom());
         // an enemy will take around 3-6 hits to defeat
         // maxHp = rand(3, 6) * seed
-        int multiplier = Util.getRandomValue(3, 6, player.getRandom());
+        int multiplier = Util.getRandomValue(Util.MIN_ENEMY_HP_SCALING, Util.MAX_ENEMY_HP_SCALING, player.getRandom());
         this.opponent.setMaxHp(opponent.isBoss() ? (int) bossMultiplier * (seed * multiplier) : seed * multiplier);
 
         // the estimated num of hits for an enemy to kill the player, between 8 and 12 scaled for move damage
-        int numHitsToKill = Util.getRandomValue(8, 12, player.getRandom());
+        int numHitsToKill = Util.getRandomValue(Util.MIN_ENEMY_DMG_SCALING, Util.MAX_ENEMY_DMG_SCALING, player.getRandom());
         int dmgSeed = player.getMaxHp() / numHitsToKill;
         // enemy's damage range is scaled to dmgSeed +- 4-6x dmgSeed
         int sigma = dmgSeed / Util.getRandomValue(4, 6, player.getRandom());
@@ -70,14 +67,19 @@ public class Battle {
      * @param move
      * @return a string array for the dialog ui description
      */
-    public String[] handleMove(Move move) {
+    public String[] handleMove(Move move, boolean[] options) {
         String[] dialog = null;
 
-        // accounting for player accuracy
-        if (Util.isSuccess(player.getAccuracy(), player.getRandom())) {
+        // distract/enemy debuff
+        if (options[0]) opponent.setAccuracy(Util.ENEMY_ACCURACY - Util.P_DISTRACT);
+        else opponent.setAccuracy(Util.ENEMY_ACCURACY);
+
+        // accounting for player accuracy or accuracy buff
+        if (Util.isSuccess(player.getAccuracy(), player.getRandom()) || options[1]) {
             // accurate or wide
             if (move.type < 2) {
                 int damage = Util.getRandomValue(Math.round(move.minDamage), Math.round(move.maxDamage), player.getRandom());
+                if (options[2]) damage *= Util.INTIMIDATE_MULT;
                 opponent.hit(damage);
                 dialog = new String[] {
                         "You used " + move.name + "!",
@@ -87,8 +89,9 @@ public class Battle {
             // crit (3x damage if success)
             else if (move.type == 2) {
                 int damage = Math.round(move.minDamage);
+                if (options[2]) damage *= Util.INTIMIDATE_MULT;
                 if (Util.isSuccess(move.crit, player.getRandom())) {
-                    damage *= 3;
+                    damage *= Util.CRIT_MULTIPLIER;
                     opponent.hit(damage);
                     dialog = new String[] {
                             "You used " + move.name + "!",
@@ -115,7 +118,66 @@ public class Battle {
         }
         else {
             // move missed; enemy turn
-            dialog = new String[] {"Oh no, your attack missed!"};
+            dialog = new String[] {"Oh no, your move missed!"};
+        }
+
+        // buffs used up so reset
+        for (int i = 0; i < options.length; i++) options[i] = false;
+
+        return dialog;
+    }
+
+    /**
+     * Enemy picks a random move out of its random moveset
+     *
+     * @return the dialog of the enemy's move and damage
+     */
+    public String[] enemyTurn() {
+        opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp());
+        String[] dialog = null;
+        Move move = opponent.getMoveset().moveset[opponent.getRandom().nextInt(4)];
+
+        if (Util.isSuccess(opponent.getAccuracy(), opponent.getRandom())) {
+            // accurate or wide
+            if (move.type < 2) {
+                int damage = Util.getRandomValue(Math.round(move.minDamage), Math.round(move.maxDamage), opponent.getRandom());
+                player.hit(damage);
+                dialog = new String[] {
+                        opponent.getId() + " used " + move.name + "!",
+                        "It did " + damage + " damage to you."
+                };
+            }
+            // crit (3x damage if success)
+            else if (move.type == 2) {
+                int damage = Math.round(move.minDamage);
+                if (Util.isSuccess(move.crit, opponent.getRandom())) {
+                    damage *= Util.CRIT_MULTIPLIER;
+                    player.hit(damage);
+                    dialog = new String[] {
+                            opponent.getId() + " used " + move.name + "!",
+                            "It's a critical strike!",
+                            "It did " + damage + " damage to you."
+                    };
+                } else {
+                    player.hit(damage);
+                    dialog = new String[] {
+                            opponent.getId() + " used " + move.name + "!",
+                            "It did " + damage + " damage to you."
+                    };
+                }
+            }
+            // heal
+            else if (move.type == 3) {
+                int heal = Util.getRandomValue(Math.round(move.minHeal), Math.round(move.maxHeal), opponent.getRandom());
+                opponent.heal(heal);
+                dialog = new String[] {
+                        opponent.getId() + " used " + move.name + "!",
+                        opponent.getId() + " healed for " + heal + " health points."
+                };
+            }
+        }
+        else {
+            dialog = new String[] { opponent.getId() + "'s move missed!"};
         }
 
         return dialog;
