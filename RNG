@@ -1,0 +1,30 @@
+List of every aspect affected by RNG in the game
+
+1. The directional pad. 
+  - Each direction goes 1-4 tiles at equal probabilities.
+2. Speed changing tiles. 
+  - These tiles can either increase or decrease tile movement by 1 tile at equal probabilities.
+3. Saved from battle. 
+  - 1% chance that when the player engages in battle the enemy flees.
+4. Boss chance. 
+  - 5% probability of a "boss" version of the enemy, which has increased stats explained later on.
+5. First move. 
+  - The player and enemy are equally likely (50-50) to attack first in battle.
+6. Movesets. 
+  - The player and enemy get 4 random moves chosen out of a large pool each turn, with 4 categories of moves to choose from. 
+7. Running from battle. 
+  - There's a 7% chance to run from battle if the player attempts to. Can only attempt to run once per battle.
+8. Accuracy. 
+  - The player and enemy have an accuracy attribute when they use moves. Currently, the player's default accuracy is 85% but
+  that may change with buffs or items. The enemy's default accuracy is 95% but can change with debuffs.
+9. Random battle buffs. 
+  - There are 3 (so far; might add more) battle buffs: Distract-lowers enemy accuracy, Focus-next move never misses,
+  and Intimidate-increases player damage all for one turn only. The player randomly gets 1 of 3 and can use it once per battle.
+10. Damage
+  - Damage of a move is randomly generated from the damage range of the move. Enemy stats, including damage, are scaled randomly
+  in approximation to the player's power level. A "boss" version of an enemy will have around 1.5 +- 0.3 times the stats of a 
+  normal enemy.
+11. Critical strikes.
+  - One category of moves are crit moves, which deal the least flat damage, but have a set chance to critically strike, dealing 
+  (currently) 3x the normal damage, making it the most damaging category of moves if successful. 
+12. Items (to be implemented)
