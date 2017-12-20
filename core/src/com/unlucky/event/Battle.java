@@ -44,21 +44,26 @@ public class Battle {
 
         float bossMultiplier = (player.getRandom().nextFloat() *
                 (Util.MAX_BOSS_MULTIPLIER - Util.MIN_BOSS_MULTIPLIER)) + Util.MIN_BOSS_MULTIPLIER;
+        System.out.println(bossMultiplier);
 
         // choose damage num from player's damage range
         int seed = Util.getRandomValue(player.getMinDamage(), player.getMaxDamage(), player.getRandom());
         // an enemy will take around 3-6 hits to defeat
         // maxHp = rand(3, 6) * seed
         int multiplier = Util.getRandomValue(Util.MIN_ENEMY_HP_SCALING, Util.MAX_ENEMY_HP_SCALING, player.getRandom());
-        this.opponent.setMaxHp(opponent.isBoss() ? (int) bossMultiplier * (seed * multiplier) : seed * multiplier);
+        this.opponent.setMaxHp(opponent.isBoss() ? (int) (bossMultiplier * (seed * multiplier)) : seed * multiplier);
+        System.out.println("max hp with boss: " + (int) (bossMultiplier * (seed * multiplier)));
+        System.out.println("max hp without: " + seed * multiplier);
 
         // the estimated num of hits for an enemy to kill the player, between 8 and 12 scaled for move damage
         int numHitsToKill = Util.getRandomValue(Util.MIN_ENEMY_DMG_SCALING, Util.MAX_ENEMY_DMG_SCALING, player.getRandom());
         int dmgSeed = player.getMaxHp() / numHitsToKill;
         // enemy's damage range is scaled to dmgSeed +- 4-6x dmgSeed
         int sigma = dmgSeed / Util.getRandomValue(4, 6, player.getRandom());
-        this.opponent.setMinDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed - sigma) : dmgSeed - sigma);
-        this.opponent.setMaxDamage(opponent.isBoss() ? (int) bossMultiplier * (dmgSeed + sigma) : dmgSeed + sigma);
+        this.opponent.setMinDamage(opponent.isBoss() ? (int) (bossMultiplier * (dmgSeed - sigma)) : dmgSeed - sigma);
+        this.opponent.setMaxDamage(opponent.isBoss() ? (int) (bossMultiplier * (dmgSeed + sigma)) : dmgSeed + sigma);
+        System.out.println("max dmg with boss: " + (int) (bossMultiplier * (dmgSeed + sigma)));
+        System.out.println("max dmg without: " + (dmgSeed + sigma));
     }
 
     /**
