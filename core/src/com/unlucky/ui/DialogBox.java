@@ -49,6 +49,7 @@ public class DialogBox extends BattleUI {
 
     private boolean beginCycle = false;
     private boolean endCycle = false;
+    private BattleEvent prevEvent = BattleEvent.NONE;
     private BattleEvent nextEvent = BattleEvent.NONE;
 
     // creates the blinking triangle effect when text is done animating
@@ -116,7 +117,7 @@ public class DialogBox extends BattleUI {
      * @param dialog
      * @param next
      */
-    public void startDialog(String[] dialog, BattleEvent next) {
+    public void startDialog(String[] dialog, BattleEvent prev, BattleEvent next) {
         ui.setVisible(true);
         textLabel.setVisible(true);
         clickLabel.setVisible(true);
@@ -126,6 +127,7 @@ public class DialogBox extends BattleUI {
         currentText = currentDialog[0];
         anim = currentText.split("");
 
+        prevEvent = prev;
         nextEvent = next;
         beginCycle = true;
     }
@@ -201,7 +203,7 @@ public class DialogBox extends BattleUI {
                 break;
             case ENEMY_TURN:
                 String[] dialog = battle.enemyTurn();
-                startDialog(dialog, BattleEvent.PLAYER_TURN);
+                startDialog(dialog, BattleEvent.ENEMY_TURN, BattleEvent.PLAYER_TURN);
                 break;
         }
     }
