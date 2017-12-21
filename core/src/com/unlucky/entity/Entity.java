@@ -93,6 +93,8 @@ public class Entity {
     }
 
     public void render(SpriteBatch batch, boolean looping) {
+        // draw shadow
+        batch.draw(rm.shadow11x6, position.x + 3, position.y - 3);
         batch.draw(am.getKeyFrame(looping), position.x, position.y);
     }
 
