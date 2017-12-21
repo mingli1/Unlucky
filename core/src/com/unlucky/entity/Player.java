@@ -23,11 +23,12 @@ public class Player extends Entity {
         super(id, position, tileMap, rm);
 
         // attributes
-        hp = maxHp = 100;
-        accuracy = 85;
-        minDamage = 12;
-        maxDamage = 18;
+        hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
+        accuracy = Util.PLAYER_ACCURACY;
+        minDamage = Util.PLAYER_INIT_MIN_DMG;
+        maxDamage = Util.PLAYER_INIT_MAX_DMG;
 
+        level = 1;
         speed = 1;
 
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -50,9 +51,7 @@ public class Player extends Entity {
     }
 
     public void render(SpriteBatch batch) {
-        if (!destroyed) {
-            batch.draw(am.getKeyFrame(true), position.x + 1, position.y);
-        }
+        batch.draw(am.getKeyFrame(true), position.x + 1, position.y);
     }
 
     public Enemy getOpponent() {

@@ -17,7 +17,7 @@ import com.unlucky.resource.Util;
 public class Enemy extends Entity {
 
     // 5% chance that an enemy will be a "boss" version with increased hp and damage
-    protected boolean isBoss = false;
+    protected boolean isElite = false;
 
     // amount of exp an Enemy will give when defeated
     protected int expDrop;
@@ -28,6 +28,7 @@ public class Enemy extends Entity {
         super(id, position, tileMap, rm);
         speed = 0;
         moveset = new Moveset(rm);
+        accuracy = Util.ENEMY_ACCURACY;
     }
 
     /**
@@ -48,8 +49,8 @@ public class Enemy extends Entity {
         am = new AnimationManager(rm.sprites16x16, numFrames, animIndex, delay);
 
         // determine if boss
-        isBoss = Util.isSuccess(5, rand);
-        if (isBoss) this.id = "[BOSS] " + id;
+        isElite = Util.isSuccess(Util.ELITE_CHANCE, rand);
+        if (isElite) this.id = "[ELITE] " + id;
     }
 
     public int getExpDrop() {
@@ -60,10 +61,10 @@ public class Enemy extends Entity {
         return goldDrop;
     }
 
-    public boolean isBoss() { return isBoss; }
+    public boolean isElite() { return isElite; }
 
     public void setMaxHp(int maxHp) {
-        this.maxHp = this.hp = maxHp;
+        this.maxHp = this.hp = this.previousHp = maxHp;
     }
 
     public void setMinDamage(int minDamage) {
