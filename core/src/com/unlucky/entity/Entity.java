@@ -41,10 +41,6 @@ public class Entity {
     // The amount of tiles for a direction to move
     protected int magnitude;
 
-    // removing an Entity
-    protected boolean shouldDestroy;
-    protected boolean destroyed;
-
     // map
     protected TileMap tileMap;
 
@@ -56,6 +52,9 @@ public class Entity {
     protected int maxHp;
     // for animation to keep track of hp difference between attacks
     protected int previousHp;
+    // for applying the hp change after the dialogue is finished
+    protected int damage = 0;
+    protected int healing = 0;
     // 0-100 in % points
     protected int accuracy;
     // damage range
@@ -80,52 +79,59 @@ public class Entity {
     }
 
     public void update(float dt) {
-        if (!destroyed) {
-            // movement
-            handleMovement();
+        // movement
+        handleMovement();
 
-            // handle RPG elements
-            if (hp > maxHp) hp = maxHp;
-            if (hp <= 0) {
-                hp = 0;
-                // Entity is dead
-                shouldDestroy = true;
-            }
-
-            // animation
-            am.update(dt);
+        // handle RPG elements
+        if (hp > maxHp) hp = maxHp;
+        if (hp <= 0) {
+            hp = 0;
         }
+
+        // animation
+        am.update(dt);
     }
 
     public void render(SpriteBatch batch, boolean looping) {
-        if (!destroyed) {
-            batch.draw(am.getKeyFrame(looping), position.x, position.y);
-        }
+        batch.draw(am.getKeyFrame(looping), position.x, position.y);
     }
 
     /**
-     * An entity gets hit by an amount of damage
-     * Checks for entity death
+     * An entity's hp is decreased by damage taken
      *
      * @param damage
      */
     public void hit(int damage) {
-        previousHp = hp;
-        hp -= damage;
-        if (hp <= 0) {
-            hp = 0;
-            shouldDestroy = true;
-        }
+        this.damage = damage;
     }
 
     /**
-     * An entity is healed for an amount
+     * An entity's hp is increased by healing
      *
      * @param healing
      */
     public void heal(int healing) {
+        this.healing = healing;
+    }
+
+    /**
+     * Returns true if the entity is dead after a change in hp
+     */
+    public boolean applyDamage() {
+        previousHp = hp;
+        hp -= damage;
+        damage = 0;
+        if (hp <= 0) {
+            hp = 0;
+            return true;
+        }
+        return false;
+    }
+
+    public void applyHeal() {
         previousHp = hp;
         hp += healing;
+        healing = 0;
         if (hp > maxHp) hp = maxHp;
     }
 
@@ -349,10 +355,6 @@ public class Entity {
         this.position = position;
     }
 
-    public void setShouldDestroy(boolean shouldDestroy) {
-        this.shouldDestroy = shouldDestroy;
-    }
-
     public AnimationManager getAm() { return am; }
 
     public String getId() {
@@ -367,18 +369,14 @@ public class Entity {
         return moving[dir];
     }
 
-    public boolean isShouldDestroy() {
-        return shouldDestroy;
-    }
-
-    public boolean isDestroyed() {
-        return destroyed;
-    }
-
     public Moveset getMoveset() { return moveset; }
 
     public int getHp() {
         return hp;
+    }
+
+    public void setHp(int hp) {
+        this.hp = hp;
     }
 
     public int getMaxHp() {
@@ -387,17 +385,7 @@ public class Entity {
 
     public int getPreviousHp() { return previousHp; }
 
-    public int getAccuracy() {
-        return accuracy;
-    }
-
-    public int getMinDamage() {
-        return minDamage;
-    }
-
-    public int getMaxDamage() {
-        return maxDamage;
-    }
+    public void setPreviousHp(int previousHp) { this.previousHp = previousHp; }
 
     public int getLevel() {
         return level;
@@ -414,5 +402,11 @@ public class Entity {
     public Random getRandom() {
         return rand;
     }
+
+    public int getMinDamage() { return minDamage; }
+
+    public int getMaxDamage() { return maxDamage; }
+
+    public int getAccuracy() { return accuracy; }
 
 }
