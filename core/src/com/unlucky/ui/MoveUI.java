@@ -78,6 +78,7 @@ public class MoveUI extends BattleUI {
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
         optionDescLabels[0].setText(desc);
+        optionDescLabels[1].setText("7% chance to run\nfrom a battle");
         for (int i = 0; i < 2; i++) optionButtonTouchable[i] = true;
         for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
     }
