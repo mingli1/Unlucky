@@ -198,16 +198,34 @@ public class DialogBox extends BattleUI {
                 battle.end();
                 break;
             case PLAYER_TURN:
-                if (prevEvent == BattleEvent.ENEMY_TURN) {
-                    player.applyDamage();
-                    battle.opponent.applyHeal();
-                }
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
                 uiHandler.currentState = BattleState.MOVE;
+                if (prevEvent == BattleEvent.ENEMY_TURN) {
+                    // player dead
+                    if (player.applyDamage()) {
+                        uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                        uiHandler.currentState = BattleState.DIALOG;
+                        startDialog(new String[] {
+                                "Oh no, you took too much damage and died!",
+                                "Luckily, this game is still in development," +
+                                        " so you can't really die yet."
+                        }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
+                        player.setHp(player.getMaxHp());
+                        return;
+                    }
+                    battle.opponent.applyHeal();
+                }
                 break;
             case ENEMY_TURN:
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
-                    battle.opponent.applyDamage();
+                    // enemy dead
+                    if (battle.opponent.applyDamage()) {
+                        startDialog(new String[] {
+                                "You defeated " + battle.opponent.getId() + "!",
+                                "You gained no experience since that hasn't been implemented."
+                        }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
+                        return;
+                    }
                     player.applyHeal();
                 }
                 String[] dialog = battle.enemyTurn();
