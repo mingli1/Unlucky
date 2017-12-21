@@ -82,6 +82,7 @@ public class BattleUIHandler extends UI implements Disposable {
      */
     public void engage(Enemy enemy) {
         moveUI.init();
+        battleScene.resetPositions();
         battleScene.toggle(true);
         currentState = BattleState.DIALOG;
 
