@@ -2,6 +2,7 @@ package com.unlucky.screen;
 
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -69,6 +70,10 @@ public class AbstractScreen implements Screen {
 
     public OrthographicCamera getCamera() {
         return cam;
+    }
+
+    public SpriteBatch getBatch() {
+        return game.batch;
     }
 
 }
