@@ -32,6 +32,10 @@ public class BattleScene extends BattleUI {
     private HealthBar enemyHpBar;
     private Label enemyHudLabel;
 
+    // Battle scene sprites
+    private MovingImageUI playerSprite;
+    private MovingImageUI enemySprite;
+
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
@@ -55,10 +59,17 @@ public class BattleScene extends BattleUI {
         enemyHudLabel.setSize(99, 12);
         enemyHudLabel.setTouchable(Touchable.disabled);
 
+        // create player sprite
+        playerSprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(-96, 100), new Vector2(70, 100), 3, 96, 96);
+        // create enemy sprite
+        enemySprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(400, 100), new Vector2(240, 100), 3, 96, 96);
+
         stage.addActor(playerHud);
         stage.addActor(playerHudLabel);
         stage.addActor(enemyHud);
         stage.addActor(enemyHudLabel);
+        stage.addActor(playerSprite);
+        stage.addActor(enemySprite);
     }
 
     public void toggle(boolean toggle) {
@@ -68,16 +79,41 @@ public class BattleScene extends BattleUI {
         playerHud.start();
 
         if (toggle) enemyHpBar.setEntity(battle.opponent);
-        ///////////////////////////////////////////////////////// opponent null?
+
         enemyHud.setVisible(toggle);
         enemyHud.setDisabled(!toggle);
         enemyHudLabel.setVisible(toggle);
         enemyHud.start();
+
+        playerSprite.setVisible(toggle);
+        playerSprite.setDisabled(!toggle);
+        enemySprite.setVisible(toggle);
+        enemySprite.setDisabled(!toggle);
+        playerSprite.start();
+        enemySprite.start();
+    }
+
+    /**
+     * Resets all UI back to their starting point so the animations can begin
+     * for a new battle
+     */
+    public void resetPositions() {
+        playerHud.setPosition(playerHud.getOrigin().x, playerHud.getOrigin().y);
+        enemyHud.setPosition(enemyHud.getOrigin().x, enemyHud.getOrigin().y);
+        playerSprite.setPosition(playerSprite.getOrigin().x, playerSprite.getOrigin().y);
+        enemySprite.setPosition(enemySprite.getOrigin().x, enemySprite.getOrigin().y);
     }
 
     public void update(float dt) {
         playerHud.update(dt);
         enemyHud.update(dt);
+
+        player.getBam().update(dt);
+        if (battle.opponent.getBam() != null) battle.opponent.getBam().update(dt);
+        playerSprite.setImage(player.getBam().getKeyFrame(true));
+        enemySprite.setImage(battle.opponent.getBam().getKeyFrame(true));
+        playerSprite.update(dt);
+        enemySprite.update(dt);
 
         // show health bar animation after an entity uses its move
         playerHpBar.update(dt);
