@@ -208,13 +208,25 @@ public class DialogBox extends BattleUI {
                     if (player.applyDamage()) {
                         uiHandler.moveUI.toggleMoveAndOptionUI(false);
                         uiHandler.currentState = BattleState.DIALOG;
-                        startDialog(new String[] {
-                                "Oh no, you took too much damage and died!",
-                                "Luckily, this game is still in development," +
-                                        " so you can't really die yet."
-                        }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
-                        player.setHp(player.getMaxHp());
-                        return;
+                        // 1% chance for revival after dead
+                        if (Util.isSuccess(Util.REVIVAL, player.getRandom())) {
+                            startDialog(new String[] {
+                                    "You took fatal damage and died!",
+                                    "However, it looks like luck was on your side and you revived!"
+                            }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
+                            player.setHp(player.getMaxHp());
+                            player.setDead(false);
+                            return;
+                        }
+                        else {
+                            startDialog(new String[]{
+                                    "Oh no, you took too much damage and died!",
+                                    "Luckily, this game is still in development," +
+                                            " so you can't really die yet."
+                            }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
+                            player.setHp(player.getMaxHp());
+                            return;
+                        }
                     }
                     battle.opponent.applyHeal();
                 }
@@ -223,11 +235,23 @@ public class DialogBox extends BattleUI {
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
                     // enemy dead
                     if (battle.opponent.applyDamage()) {
-                        startDialog(new String[] {
-                                "You defeated " + battle.opponent.getId() + "!",
-                                "You gained no experience since that hasn't been implemented."
-                        }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
-                        return;
+                        // 1% chance for enemy revival
+                        if (Util.isSuccess(Util.REVIVAL, battle.opponent.getRandom())) {
+                            startDialog(new String[] {
+                                    "The enemy took fatal damage and died!",
+                                    "Oh no, it looks like the enemy has been revived!"
+                            }, BattleEvent.ENEMY_TURN, BattleEvent.ENEMY_TURN);
+                            battle.opponent.setHp(battle.opponent.getMaxHp());
+                            battle.opponent.setDead(false);
+                            return;
+                        }
+                        else {
+                            startDialog(new String[]{
+                                    "You defeated " + battle.opponent.getId() + "!",
+                                    "You gained no experience since that hasn't been implemented."
+                            }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
+                            return;
+                        }
                     }
                     player.applyHeal();
                 }
