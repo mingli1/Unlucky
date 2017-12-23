@@ -180,16 +180,19 @@ public class DialogBox extends BattleUI {
                 posSwitch = !posSwitch;
             }
 
-            shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-            // create a shape to show when a text animation cycle is done
-            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-            shapeRenderer.setColor(200 / 255.f, 0, 0, 1);
-            if (posSwitch) shapeRenderer.triangle(365, 30, 375, 30, 370, 20);
-            else shapeRenderer.triangle(365, 25, 375, 25, 370, 15);
-            shapeRenderer.end();
+            gameScreen.getBatch().setProjectionMatrix(stage.getCamera().combined);
+            gameScreen.getBatch().begin();
+            // render red arrow to show when a text animation cycle is complete
+            if (posSwitch) gameScreen.getBatch().draw(rm.redarrow10x9, 365, 20);
+            else gameScreen.getBatch().draw(rm.redarrow10x9, 365, 25);
+            gameScreen.getBatch().end();
         }
     }
 
+    /**
+     * @TODO: Maybe move this somewhere else
+     * @param event
+     */
     public void handleBattleEvent(BattleEvent event) {
         switch (event) {
             case NONE:
