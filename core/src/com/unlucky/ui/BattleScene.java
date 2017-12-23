@@ -108,12 +108,25 @@ public class BattleScene extends BattleUI {
         playerHud.update(dt);
         enemyHud.update(dt);
 
+        // entity sprite animations
         player.getBam().update(dt);
         if (battle.opponent.getBam() != null) battle.opponent.getBam().update(dt);
         playerSprite.setImage(player.getBam().getKeyFrame(true));
         enemySprite.setImage(battle.opponent.getBam().getKeyFrame(true));
         playerSprite.update(dt);
         enemySprite.update(dt);
+
+        // when enemy dies, its sprite falls off the screen
+        if (player.isDead()) {
+            float dy = playerSprite.getY() - 4;
+            playerSprite.setY(dy);
+            if (playerSprite.getY() < -96) playerSprite.setY(-96);
+        }
+        if (battle.opponent.isDead()) {
+            float dy = enemySprite.getY() - 4;
+            enemySprite.setY(dy);
+            if (enemySprite.getY() < -96) enemySprite.setY(-96);
+        }
 
         // show health bar animation after an entity uses its move
         playerHpBar.update(dt);
