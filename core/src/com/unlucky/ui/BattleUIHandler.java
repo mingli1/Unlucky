@@ -45,9 +45,9 @@ public class BattleUIHandler extends UI implements Disposable {
 
         currentState = BattleState.NONE;
 
+        battleScene = new BattleScene(gameScreen, tileMap, player, battle, this, stage, rm);
         moveUI = new MoveUI(gameScreen, tileMap, player, battle, this, stage, rm);
         dialogBox = new DialogBox(gameScreen, tileMap, player, battle, this, stage, rm);
-        battleScene = new BattleScene(gameScreen, tileMap, player, battle, this, stage, rm);
 
         moveUI.toggleMoveAndOptionUI(false);
         dialogBox.endDialog();
@@ -59,13 +59,6 @@ public class BattleUIHandler extends UI implements Disposable {
     }
 
     public void render(float dt) {
-        shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-        // render bg
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(193 / 255.f, 193 / 255.f, 193 / 255.f, 1);
-        shapeRenderer.rect(0, 0, Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
-        shapeRenderer.end();
-
         stage.act(dt);
         stage.draw();
 
@@ -81,6 +74,7 @@ public class BattleUIHandler extends UI implements Disposable {
      * @param enemy
      */
     public void engage(Enemy enemy) {
+        player.setDead(false);
         moveUI.init();
         battleScene.resetPositions();
         battleScene.toggle(true);

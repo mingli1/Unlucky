@@ -6,6 +6,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.unlucky.animation.AnimationManager;
+import com.unlucky.entity.Entity;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
@@ -36,6 +38,10 @@ public class BattleScene extends BattleUI {
     private MovingImageUI playerSprite;
     private MovingImageUI enemySprite;
 
+    // battle animations
+    private AnimationManager[] attackAnims;
+    private AnimationManager healAnim;
+
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
@@ -63,6 +69,13 @@ public class BattleScene extends BattleUI {
         playerSprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(-96, 100), new Vector2(70, 100), 3, 96, 96);
         // create enemy sprite
         enemySprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(400, 100), new Vector2(240, 100), 3, 96, 96);
+
+        // create animations
+        attackAnims = new AnimationManager[3];
+        for (int i = 0; i < 3; i++) {
+            attackAnims[i] = new AnimationManager(rm.battleAttacks64x64, 3, i, 1 / 6f);
+        }
+        healAnim = new AnimationManager(rm.battleHeal96x96, 3, 0, 1 / 5f);
 
         stage.addActor(playerHud);
         stage.addActor(playerHudLabel);
@@ -140,11 +153,61 @@ public class BattleScene extends BattleUI {
         playerHudLabel.setPosition(playerHud.getX() + 40, playerHud.getY() + 20);
         enemyHpBar.setPosition(new Vector2(enemyHud.getX() + 8, enemyHud.getY() + 8));
         enemyHudLabel.setPosition(enemyHud.getX() + 12, enemyHud.getY() + 20);
+
+        if (player.getMoveUsed() != -1) updateBattleAnimations(player, dt);
+        if (battle.opponent.getMoveUsed() != -1) updateBattleAnimations(battle.opponent, dt);
+    }
+
+    /**
+     * Update attack and heal animations after a move is used and its dialogue is finished
+     *
+     * @param entity either player or enemy
+     * @param dt
+     */
+    private void updateBattleAnimations(Entity entity, float dt) {
+        // damaging moves
+        if (entity.getMoveUsed() < 3 && entity.getMoveUsed() >= 0) {
+            if (attackAnims[entity.getMoveUsed()].currentAnimation.isAnimationFinished()) {
+                attackAnims[entity.getMoveUsed()].currentAnimation.stop();
+                entity.setMoveUsed(-1);
+            } else {
+                attackAnims[entity.getMoveUsed()].update(dt);
+            }
+        }
+        // heal
+        else if (entity.getMoveUsed() == 3 && entity.getMoveUsed() >= 0) {
+            if (healAnim.currentAnimation.isAnimationFinished()) {
+                healAnim.currentAnimation.stop();
+                entity.setMoveUsed(-1);
+            } else {
+                healAnim.update(dt);
+            }
+        }
     }
 
     public void render(float dt) {
         playerHpBar.render(dt);
         enemyHpBar.render(dt);
+
+        gameScreen.getBatch().begin();
+        // render attack or heal animations
+        // player side
+        if (player.getMoveUsed() != -1) {
+            if (player.getMoveUsed() < 3) {
+                gameScreen.getBatch().draw(attackAnims[player.getMoveUsed()].getKeyFrame(false), 255, 115);
+            } else if (player.getMoveUsed() == 3) {
+                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 70, 100);
+            }
+        }
+        // enemy side
+        if (battle.opponent.getMoveUsed() != -1) {
+            if (battle.opponent.getMoveUsed() < 3) {
+                gameScreen.getBatch().draw(attackAnims[battle.opponent.getMoveUsed()].getKeyFrame(false), 85, 115);
+            } else if (battle.opponent.getMoveUsed() == 3) {
+                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 240, 100);
+            }
+        }
+        gameScreen.getBatch().end();
     }
 
     public void handleBattleEvent(BattleEvent event) {

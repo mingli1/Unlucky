@@ -28,6 +28,16 @@ public class MovingImageUI extends ImageButton {
         super(style);
     }
 
+    /**
+     * For single non animated images
+     *
+     * @param skin
+     * @param origin
+     * @param target
+     * @param speed
+     * @param w
+     * @param h
+     */
     public MovingImageUI(TextureRegion skin, Vector2 origin, Vector2 target, int speed, int w, int h) {
         this(new ImageButtonStyle());
         this.getStyle().imageUp = new TextureRegionDrawable(skin);
@@ -96,6 +106,26 @@ public class MovingImageUI extends ImageButton {
                 }
             }
         }
+    }
+
+    public Vector2 getOrigin() {
+        return origin;
+    }
+
+    public void setOrigin(Vector2 origin) {
+        this.origin = origin;
+    }
+
+    public Vector2 getTarget() {
+        return target;
+    }
+
+    public void setTarget(Vector2 target) {
+        this.target = target;
+    }
+
+    public void setImage(TextureRegion image) {
+        this.getStyle().imageUp = new TextureRegionDrawable(image);
     }
 
 }
