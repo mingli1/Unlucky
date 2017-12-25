@@ -28,3 +28,5 @@ List of every aspect affected by RNG in the game
   - One category of moves are crit moves, which deal the least flat damage, but have a set chance to critically strike, dealing 
   (currently) 3x the normal damage, making it the most damaging category of moves if successful. 
 12. Items (to be implemented)
+13. Revival.
+  - 1% chance after either the player or enemy takes fatal damage, they are revived with full hp
