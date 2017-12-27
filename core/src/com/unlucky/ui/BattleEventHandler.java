@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
+import com.unlucky.event.EventState;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -24,9 +25,11 @@ import com.unlucky.screen.GameScreen;
  * Text animations are initiated with arrays of Strings where each element represents
  * one cycle of animation and a transition from one element to the next resets the animation.
  *
+ * Handles battle events after text events are finished.
+ *
  * @author Ming Li
  */
-public class DialogBox extends BattleUI {
+public class BattleEventHandler extends BattleUI {
 
     private Stage stage;
     private float stateTime = 0;
@@ -56,8 +59,8 @@ public class DialogBox extends BattleUI {
     private boolean posSwitch = false;
     private float posTime = 0;
 
-    public DialogBox(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
-                     BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
+    public BattleEventHandler(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
+                              BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
@@ -198,7 +201,8 @@ public class DialogBox extends BattleUI {
             case NONE:
                 return;
             case END_BATTLE:
-                battle.end();
+                gameScreen.setCurrentEvent(EventState.TRANSITION);
+                gameScreen.transition.start(EventState.BATTLING, EventState.MOVING);
                 break;
             case PLAYER_TURN:
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
