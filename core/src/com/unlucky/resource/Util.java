@@ -15,7 +15,9 @@ import java.util.Random;
 public class Util {
 
     // rates
-    public static final float TEXT_SPEED = 0.03f;
+    public static final float TEXT_SPEED = 0.02f;
+    public static final int HP_BAR_DECAY_RATE = 1;
+    public static final int TRANSITION_SCREEN_SPEED = 4;
 
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
@@ -37,18 +39,57 @@ public class Util {
     // Probabilities, Percentages, and Multipliers
     public static final int RUN_FROM_BATTLE = 7;
     public static final int SAVED_FROM_BATTLE = 1;
-    public static final int BOSS_CHANCE = 5;
+    public static final int ELITE_CHANCE = 5;
+    public static final int PLAYER_ACCURACY = 85;
     public static final int ENEMY_ACCURACY = 95;
-    public static final int P_DISTRACT = -45;
+    public static final int P_DISTRACT = 45;
     public static final int P_INTIMIDATE = 25;
+    public static final float INTIMIDATE_MULT = 1.25f;
+    public static final int REVIVAL = 1;
 
     public static final int CRIT_MULTIPLIER = 3;
-    public static final float MIN_BOSS_MULTIPLIER = 1.3f;
-    public static final float MAX_BOSS_MULTIPLIER = 1.8f;
+    public static final float MIN_ELITE_MULTIPLIER = 1.3f;
+    public static final float MAX_ELITE_MULTIPLIER = 1.8f;
     public static final int MIN_ENEMY_HP_SCALING = 3;
     public static final int MAX_ENEMY_HP_SCALING = 6;
     public static final int MIN_ENEMY_DMG_SCALING = 6;
     public static final int MAX_ENEMY_DMG_SCALING = 10;
+
+    // Level up scaling
+    public static final int PLAYER_INIT_MAX_HP = 100;
+    public static final int PLAYER_INIT_MIN_DMG = 12;
+    public static final int PLAYER_INIT_MAX_DMG = 18;
+    public static final int PLAYER_MIN_HP_INCREASE = 11;
+    public static final int PLAYER_MAX_HP_INCREASE = 19;
+    public static final int PLAYER_MIN_DMG_INCREASE = 13;
+    public static final int PLAYER_MAX_DMG_INCREASE = 17;
+
+    // Experience
+
+    /**
+     * Current max exp formula is:
+     * EXP = 2 * level * (1.25 ^ (level / 3)) + offset
+     * Slow exponential growth
+     *
+     * @param level the level of the player
+     * @param offset the initial max exp at level 1 acting as an offset to the curve (random)
+     * @return max experience at a given level
+     */
+    public static int calculateMaxExp(int level, int offset) {
+        return (int) (2 * level * (Math.pow(1.25, level / 3)) + offset);
+    }
+
+    /**
+     * The exp given to the player after it's defeated
+     * EXP = (enemyLevel ^ 1.1) + offset
+     *
+     * @param enemyLevel
+     * @param offset
+     * @return
+     */
+    public static int calculateExpEarned(int enemyLevel, int offset) {
+        return (int) (Math.pow(enemyLevel, 1.1)) + offset;
+    }
 
     // Random
 
@@ -103,7 +144,7 @@ public class Util {
      */
     public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
         switch (id) {
-            case 2: return new Enemy("slime", position, map, rm, 2, 2, 1 / 3f);
+            case 2: return new Enemy("slime", position, map, rm, 2, 1, 1 / 3f);
         }
         return null;
     }
