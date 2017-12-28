@@ -1,6 +1,7 @@
 package com.unlucky.main;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
@@ -35,6 +36,7 @@ public class Unlucky extends Game {
 	}
 
 	public void render() {
+        Gdx.graphics.setTitle("Unlucky | " + Gdx.graphics.getFramesPerSecond() + " fps");
         super.render();
 	}
 
