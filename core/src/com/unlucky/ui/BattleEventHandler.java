@@ -193,7 +193,7 @@ public class BattleEventHandler extends BattleUI {
     }
 
     /**
-     * @TODO: Maybe move this somewhere else
+     * @TODO: Clean this up
      * @param event
      */
     public void handleBattleEvent(BattleEvent event) {
@@ -210,6 +210,10 @@ public class BattleEventHandler extends BattleUI {
                 if (prevEvent == BattleEvent.ENEMY_TURN) {
                     // player dead
                     if (player.applyDamage()) {
+                        // reset animation
+                        battle.opponent.setPrevMoveUsed(-1);
+                        battle.opponent.setMoveUsed(-1);
+
                         uiHandler.moveUI.toggleMoveAndOptionUI(false);
                         uiHandler.currentState = BattleState.DIALOG;
                         // 1% chance for revival after dead
@@ -239,6 +243,10 @@ public class BattleEventHandler extends BattleUI {
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
                     // enemy dead
                     if (battle.opponent.applyDamage()) {
+                        // reset animation
+                        player.setPrevMoveUsed(-1);
+                        player.setMoveUsed(-1);
+
                         // 1% chance for enemy revival
                         if (Util.isSuccess(Util.REVIVAL, battle.opponent.getRandom())) {
                             startDialog(new String[] {
@@ -249,18 +257,38 @@ public class BattleEventHandler extends BattleUI {
                             battle.opponent.setDead(false);
                             return;
                         }
+                        // defeated enemy and gained experience
                         else {
-                            startDialog(new String[]{
-                                    "You defeated " + battle.opponent.getId() + "!",
-                                    "You gained no experience since that hasn't been implemented."
-                            }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
-                            return;
+                            int expGained = battle.getBattleExp();
+
+                            // level up occurs
+                            if (player.getExp() + expGained >= player.getMaxExp()) {
+                                int remainder = (player.getExp() + expGained) - player.getMaxExp();
+                                player.levelUp(remainder);
+                                startDialog(new String[] {
+                                        "You defeated " + battle.opponent.getId() + "!",
+                                        "You gained " + expGained + " experience.",
+                                        "You leveled up! You are now level " + player.getLevel() + "!"
+                                }, BattleEvent.ENEMY_TURN, BattleEvent.LEVEL_UP);
+                                return;
+                            }
+                            else {
+                                player.addExp(expGained);
+                                startDialog(new String[] {
+                                        "You defeated " + battle.opponent.getId() + "!",
+                                        "You gained " + expGained + " experience."
+                                }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
+                                return;
+                            }
                         }
                     }
                     player.applyHeal();
                 }
                 String[] dialog = battle.enemyTurn();
                 startDialog(dialog, BattleEvent.ENEMY_TURN, BattleEvent.PLAYER_TURN);
+                break;
+            case LEVEL_UP:
+
                 break;
         }
     }
