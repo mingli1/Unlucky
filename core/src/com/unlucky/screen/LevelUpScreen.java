@@ -57,6 +57,7 @@ public class LevelUpScreen extends UI implements Disposable {
     private int[] statsNum = new int[5];
     private int[] increasedStats = new int[5];
     private float statsTime = 0;
+    private boolean started = false;
 
     public LevelUpScreen(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -164,6 +165,8 @@ public class LevelUpScreen extends UI implements Disposable {
         }
         // update information
         levelDesc.setText("You reached level " + player.getLevel());
+
+        started = true;
     }
 
     private void handleClick() {
@@ -191,7 +194,9 @@ public class LevelUpScreen extends UI implements Disposable {
      * Mainly just setting labels back to visible
      */
     public void reset() {
-        startAnim = sAnimFinished = false;
+        startAnim = false;
+        started = false;
+        sAnimFinished = false;
         statsTime = stateTime = 0;
     }
 
@@ -205,7 +210,7 @@ public class LevelUpScreen extends UI implements Disposable {
         }
 
         // animation
-        if (startAnim) {
+        if (startAnim && started) {
             if (!sAnimFinished) {
                 statsTime += dt;
                 if (statsTime > 0.05f) {
