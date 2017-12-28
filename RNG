@@ -30,3 +30,8 @@ List of every aspect affected by RNG in the game
 12. Items (to be implemented)
 13. Revival.
   - 1% chance after either the player or enemy takes fatal damage, they are revived with full hp
+14. Experience.
+  - EXP growth in the game is based on a set formula plus a random offset from level 1. Enemies also give exp from a set formula 
+  based on level but give a random amount of extra EXP. When the player levels up, there is a random increase of stats in a range.
+15. Battle transitions.
+  - There are 6 (maybe more in the future) different transitions screens possible when entering and leaving battle.
