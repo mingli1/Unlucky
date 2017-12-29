@@ -176,13 +176,23 @@ public class LevelUpScreen extends UI implements Disposable {
                     gameScreen.setCurrentEvent(EventState.TRANSITION);
                     gameScreen.transition.start(EventState.LEVEL_UP, EventState.MOVING);
                     reset();
-                } else {
+                }
+                // start
+                else if (!sAnimFinished && !startAnim) {
                     // start stats animation
                     startAnim = true;
                     for (int i = 0; i < statNames.length; i++) {
                         increases[i].setVisible(false);
                     }
                     player.applyLevelUp();
+                }
+                // finish animation early
+                else if (!sAnimFinished && startAnim) {
+                    for (int i = 0; i < 5; i++) {
+                        statsNum[i] = increasedStats[i];
+                        stats[i].setText(String.valueOf(statsNum[i]));
+                    }
+                    sAnimFinished = true;
                 }
             }
         });
