@@ -27,6 +27,7 @@ public class Player extends Entity {
     private int minDmgIncrease = 0;
     private int maxDmgIncrease = 0;
     private int accuracyIncrease = 0;
+    private int maxExpIncrease = 0;
 
     // gold
     private int gold = 0;
@@ -87,12 +88,18 @@ public class Player extends Entity {
         level++;
 
         hpIncrease += Util.getRandomValue(Util.PLAYER_MIN_HP_INCREASE, Util.PLAYER_MAX_HP_INCREASE, rand);
-        minDmgIncrease += Util.getRandomValue(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE, rand);
-        maxDmgIncrease += Util.getRandomValue(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE, rand);
+        int dmgMean = Util.getRandomValue(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE, rand);
+
+        // deviates from mean by 0 to 3
+        minDmgIncrease += (dmgMean - rand.nextInt(4));
+        maxDmgIncrease += (dmgMean + rand.nextInt(4));
         // accuracy increases by 1% every 10 levels
         accuracyIncrease += level % 10 == 0 ? 1 : 0;
 
+        int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, Util.getRandomValue(3, 5, rand));
+        maxExpIncrease += (maxExp - prevMaxExp);
+
         // another level up
         if (remainder >= maxExp) {
             levelUp(remainder - maxExp);
@@ -116,6 +123,7 @@ public class Player extends Entity {
         minDmgIncrease = 0;
         maxDmgIncrease = 0;
         accuracyIncrease = 0;
+        maxExpIncrease = 0;
     }
 
     public Enemy getOpponent() {
@@ -182,5 +190,7 @@ public class Player extends Entity {
     public void setAccuracyIncrease(int accuracyIncrease) {
         this.accuracyIncrease = accuracyIncrease;
     }
+
+    public int getMaxExpIncrease() { return maxExpIncrease; }
 
 }
