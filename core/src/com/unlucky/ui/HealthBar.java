@@ -22,6 +22,7 @@ public class HealthBar {
     // hp bar rectangles
     private int maxHpBarWidth;
     private int hpBarWidth;
+    private int hpBarHeight;
     private Vector2 position;
     // the pure color of the health bar (top rect)
     private Color color;
@@ -32,11 +33,12 @@ public class HealthBar {
     private Color healColor = new Color(70 / 255.f, 190 / 255.f, 1, 1);
     private boolean initialized = false;
 
-    public HealthBar(Entity entity, Stage stage, ShapeRenderer shapeRenderer, int max, Vector2 position, Color color) {
+    public HealthBar(Entity entity, Stage stage, ShapeRenderer shapeRenderer, int max, int hpBarHeight, Vector2 position, Color color) {
         this.entity = entity;
         this.stage = stage;
         this.shapeRenderer = shapeRenderer;
         this.maxHpBarWidth = max;
+        this.hpBarHeight = hpBarHeight;
         this.position = position;
         this.color = color;
     }
@@ -94,25 +96,25 @@ public class HealthBar {
 
         // create black bg
         shapeRenderer.setColor(0, 0, 0, 1);
-        shapeRenderer.rect(position.x, position.y, maxHpBarWidth, 8);
+        shapeRenderer.rect(position.x, position.y, maxHpBarWidth, hpBarHeight);
         // render actual health bar
         // top rect
         shapeRenderer.setColor(color);
-        shapeRenderer.rect(position.x, position.y + 4, hpBarWidth, 4);
+        shapeRenderer.rect(position.x, position.y + (hpBarHeight / 2), hpBarWidth, hpBarHeight / 2);
         // bottom rect
         shapeRenderer.setColor(color.r > 0 ? 175 / 255.f : 0, color.g > 0 ? 175 / 255.f : 0, color.b > 0 ? 175 / 255.f : 0, 1);
-        shapeRenderer.rect(position.x, position.y, hpBarWidth, 4);
+        shapeRenderer.rect(position.x, position.y, hpBarWidth, hpBarHeight / 2);
 
         // render hp animation
         // entity damaged
         if (entity.getHp() < entity.getPreviousHp()) {
             shapeRenderer.setColor(damageColor);
-            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, 8);
+            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
         }
         // entity healed
         else if (entity.getHp() > entity.getPreviousHp()) {
             shapeRenderer.setColor(healColor);
-            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, 8);
+            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
         }
 
         shapeRenderer.end();
