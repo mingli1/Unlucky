@@ -24,11 +24,4 @@ public abstract class BattleUI extends UI {
         this.uiHandler = uiHandler;
     }
 
-    /**
-     * Triggers the next actions given a BattleEvent
-     *
-     * @param event
-     */
-    public abstract void handleBattleEvent(BattleEvent event);
-
 }

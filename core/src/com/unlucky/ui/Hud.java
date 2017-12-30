@@ -45,12 +45,12 @@ public class Hud extends UI implements Disposable {
     // labels for magnitudes
     private Label[] magLabels;
 
-    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, SpriteBatch batch, ResourceManager rm) {
+    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         // the Hud needs more pixels to render text
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, batch);
+        stage = new Stage(viewport, gameScreen.getBatch());
 
         mags = new int[4];
         shuffleMagnitudes();

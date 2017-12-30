@@ -14,6 +14,8 @@ public enum BattleEvent {
     // the enemy engages in battle
     PLAYER_TURN,
     // the enemy's turn
-    ENEMY_TURN
+    ENEMY_TURN,
+    // player levels up
+    LEVEL_UP
 
 }

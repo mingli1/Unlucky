@@ -47,6 +47,7 @@ public class Player extends Entity {
         exp = 0;
         // offset between 3 and 5
         maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
+        maxExp = 2;
 
         // create tilemap animation
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -98,6 +99,7 @@ public class Player extends Entity {
 
         int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, Util.getRandomValue(3, 5, rand));
+        maxExp = 2;
         maxExpIncrease += (maxExp - prevMaxExp);
 
         // another level up

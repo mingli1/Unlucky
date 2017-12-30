@@ -146,7 +146,11 @@ public class BattleScene extends BattleUI {
         enemyHpBar.update(dt);
 
         playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
-        enemyHudLabel.setText(battle.opponent.getId());
+        // show enemy level
+        if (battle.opponent.isBoss())
+            enemyHudLabel.setText(battle.opponent.getId());
+        else
+            enemyHudLabel.setText("LV." + battle.opponent.getLevel() + " " + battle.opponent.getId());
 
         // set positions relative to hud position
         playerHpBar.setPosition(new Vector2(playerHud.getX() + 40, playerHud.getY() + 8));
@@ -208,10 +212,6 @@ public class BattleScene extends BattleUI {
             }
         }
         gameScreen.getBatch().end();
-    }
-
-    public void handleBattleEvent(BattleEvent event) {
-
     }
 
 }

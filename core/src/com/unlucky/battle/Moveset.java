@@ -134,7 +134,7 @@ public class Moveset {
                 temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
 
             ret[i] = temp;
-            pool.removeIndex(index);
+            //pool.removeIndex(index);
         }
 
         return ret;

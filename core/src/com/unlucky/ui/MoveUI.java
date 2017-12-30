@@ -2,7 +2,6 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -14,13 +13,10 @@ import com.unlucky.battle.Move;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
-
-import java.util.Random;
 
 /**
  * Creates and handle the random move buttons and two other options in the battle phase
@@ -81,6 +77,7 @@ public class MoveUI extends BattleUI {
         optionDescLabels[1].setText("7% chance to run\nfrom a battle");
         for (int i = 0; i < 2; i++) optionButtonTouchable[i] = true;
         for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
+        resetMoves();
     }
 
     /**
@@ -256,7 +253,7 @@ public class MoveUI extends BattleUI {
                     // reshuffle moveset for next turn
                     resetMoves();
                     String[] dialog = battle.handleMove(move, usedBuff);
-                    uiHandler.dialogBox.startDialog(dialog, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
+                    uiHandler.battleEventHandler.startDialog(dialog, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
                 }
             });
         }
@@ -279,21 +276,21 @@ public class MoveUI extends BattleUI {
                 switch (optionIndex) {
                     // distract
                     case 0:
-                        uiHandler.dialogBox.startDialog(new String[] {
+                        uiHandler.battleEventHandler.startDialog(new String[] {
                                 "You kicked some dirt into the enemy's face.",
                                 "The enemy's next attack has " + Util.P_DISTRACT + "% reduced accuracy!"
                         }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                         break;
                     // focus
                     case 1:
-                        uiHandler.dialogBox.startDialog(new String[] {
+                        uiHandler.battleEventHandler.startDialog(new String[] {
                                 "You begin concentrating on your next attack",
                                 "Your next move has 100% accuracy."
                         }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
                         break;
                     // intimidate
                     case 2:
-                        uiHandler.dialogBox.startDialog(new String[] {
+                        uiHandler.battleEventHandler.startDialog(new String[] {
                                 "You intimidate the enemy causing it to lower its defense.",
                                 "Your next attack has " + Util.P_INTIMIDATE + "% increased damage."
                         }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
@@ -314,13 +311,13 @@ public class MoveUI extends BattleUI {
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 // 7% chance to run from the battle
                 if (Util.isSuccess(Util.RUN_FROM_BATTLE, rand)) {
-                    uiHandler.dialogBox.startDialog(new String[]{
+                    uiHandler.battleEventHandler.startDialog(new String[]{
                             "You successfully ran from the battle!"
                     }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
                 } else {
-                    uiHandler.dialogBox.startDialog(new String[]{
+                    uiHandler.battleEventHandler.startDialog(new String[]{
                             "You couldn't run from the battle!"
-                    }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
+                    }, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
                 }
                 optionButtons[1].setTouchable(Touchable.disabled);
                 optionDescLabels[1].setText("cannot run again");
@@ -328,7 +325,5 @@ public class MoveUI extends BattleUI {
             }
         });
     }
-
-    public void handleBattleEvent(BattleEvent event) {}
 
 }

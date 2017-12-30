@@ -6,6 +6,7 @@ import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 
 import java.util.Random;
 
@@ -48,6 +49,8 @@ public class Entity {
 
     protected Moveset moveset;
 
+    protected boolean dead = false;
+
     protected int hp;
     protected int maxHp;
     // for animation to keep track of hp difference between attacks
@@ -61,10 +64,12 @@ public class Entity {
     protected int minDamage;
     protected int maxDamage;
 
-    // level information
+    // level up information
     protected int level;
-    protected int exp;
-    protected int maxExp;
+
+    // move type used default -1
+    protected int prevMoveUsed = -1;
+    protected int moveUsed = -1;
 
     public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         this.id = id;
@@ -121,10 +126,13 @@ public class Entity {
      */
     public boolean applyDamage() {
         previousHp = hp;
+        moveUsed = prevMoveUsed;
+        prevMoveUsed = -1;
         hp -= damage;
         damage = 0;
         if (hp <= 0) {
             hp = 0;
+            dead = true;
             return true;
         }
         return false;
@@ -132,6 +140,8 @@ public class Entity {
 
     public void applyHeal() {
         previousHp = hp;
+        moveUsed = prevMoveUsed;
+        prevMoveUsed = -1;
         hp += healing;
         healing = 0;
         if (hp > maxHp) hp = maxHp;
@@ -333,14 +343,6 @@ public class Entity {
         this.accuracy = accuracy;
     }
 
-    public void setExp(int exp) {
-        this.exp = exp;
-    }
-
-    public void setMaxExp(int maxExp) {
-        this.maxExp = maxExp;
-    }
-
     public int getCurrentTileX() {
         return currentTileX;
     }
@@ -358,6 +360,8 @@ public class Entity {
     }
 
     public AnimationManager getAm() { return am; }
+
+    public AnimationManager getBam() { return bam; }
 
     public String getId() {
         return id;
@@ -389,16 +393,10 @@ public class Entity {
 
     public void setPreviousHp(int previousHp) { this.previousHp = previousHp; }
 
+    public void setLevel(int level) { this.level = level; }
+
     public int getLevel() {
         return level;
-    }
-
-    public int getExp() {
-        return exp;
-    }
-
-    public int getMaxExp() {
-        return maxExp;
     }
 
     public Random getRandom() {
@@ -410,5 +408,21 @@ public class Entity {
     public int getMaxDamage() { return maxDamage; }
 
     public int getAccuracy() { return accuracy; }
+
+    public boolean isDead() { return dead; }
+
+    public void setDead(boolean dead) { this.dead = dead; }
+
+    public int getMoveUsed() { return moveUsed; }
+
+    public void useMove(int move) {
+        this.prevMoveUsed = move;
+    }
+
+    public void setMoveUsed(int moveUsed) {
+        this.moveUsed = moveUsed;
+    }
+
+    public void setPrevMoveUsed(int prevMoveUsed) { this.prevMoveUsed = prevMoveUsed; }
 
 }

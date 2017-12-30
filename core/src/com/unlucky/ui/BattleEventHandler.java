@@ -268,7 +268,7 @@ public class BattleEventHandler extends BattleUI {
                                 startDialog(new String[] {
                                         "You defeated " + battle.opponent.getId() + "!",
                                         "You gained " + expGained + " experience.",
-                                        "You leveled up! You are now level " + player.getLevel() + "!"
+                                        "You leveled up!"
                                 }, BattleEvent.ENEMY_TURN, BattleEvent.LEVEL_UP);
                                 return;
                             }
@@ -288,7 +288,8 @@ public class BattleEventHandler extends BattleUI {
                 startDialog(dialog, BattleEvent.ENEMY_TURN, BattleEvent.PLAYER_TURN);
                 break;
             case LEVEL_UP:
-
+                gameScreen.setCurrentEvent(EventState.LEVEL_UP);
+                gameScreen.levelUp.start();
                 break;
         }
     }

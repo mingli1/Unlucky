@@ -33,6 +33,8 @@ public class GameScreen extends AbstractScreen {
     public Hud hud;
     public BattleUIHandler battleUIHandler;
     public Battle battle;
+    public BattleTransition transition;
+    public LevelUpScreen levelUp;
 
     // battle background
     private Background[] bg;
@@ -45,8 +47,10 @@ public class GameScreen extends AbstractScreen {
         map = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
         player = new Player("player", map.toMapCoords(5, 8), map, rm);
         battle = new Battle(this, map, player);
-        hud = new Hud(this, map, player, game.batch, rm);
-        battleUIHandler = new BattleUIHandler(this, map, player, battle, game.batch, rm);
+        hud = new Hud(this, map, player, rm);
+        battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
+        transition = new BattleTransition(this, battle, battleUIHandler, hud, player);
+        levelUp = new LevelUpScreen(this, map, player, rm);
 
         // create bg
         createBackground(0);
@@ -55,6 +59,7 @@ public class GameScreen extends AbstractScreen {
         InputMultiplexer multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(hud.stage);
         multiplexer.addProcessor(battleUIHandler.stage);
+        multiplexer.addProcessor(levelUp.stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -89,10 +94,8 @@ public class GameScreen extends AbstractScreen {
 
             // engage in battle if found
             if (player.isBattling()) {
-                battle.begin(player.getOpponent());
-                battleUIHandler.engage(player.getOpponent());
-                hud.toggle(false);
-                setCurrentEvent(EventState.BATTLING);
+                setCurrentEvent(EventState.TRANSITION);
+                transition.start(EventState.MOVING, EventState.BATTLING);
             }
         }
 
@@ -103,6 +106,9 @@ public class GameScreen extends AbstractScreen {
             }
             battleUIHandler.update(dt);
         }
+
+        if (currentEvent == EventState.TRANSITION) transition.update(dt);
+        if (currentEvent == EventState.LEVEL_UP) levelUp.update(dt);
     }
 
     public void render(float dt) {
@@ -115,7 +121,7 @@ public class GameScreen extends AbstractScreen {
 
         // bg camera
         game.batch.setProjectionMatrix(battleUIHandler.stage.getCamera().combined);
-        if (currentEvent == EventState.BATTLING) {
+        if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) {
             for (int i = 0; i < bg.length; i++) {
                 bg[i].render(game.batch);
             }
@@ -123,7 +129,7 @@ public class GameScreen extends AbstractScreen {
 
         // map camera
         game.batch.setProjectionMatrix(cam.combined);
-        if (currentEvent == EventState.MOVING) {
+        if (currentEvent == EventState.MOVING || transition.shouldRenderMap()) {
             map.render(game.batch);
             player.render(game.batch);
         }
@@ -131,13 +137,16 @@ public class GameScreen extends AbstractScreen {
         game.batch.end();
 
         if (currentEvent == EventState.MOVING) hud.render(dt);
-        if (currentEvent == EventState.BATTLING) battleUIHandler.render(dt);
+        if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) battleUIHandler.render(dt);
+        if (currentEvent == EventState.LEVEL_UP || transition.shouldRenderLevelUp()) levelUp.render(dt);
+        if (currentEvent == EventState.TRANSITION) transition.render(dt);
     }
 
     public void dispose() {
         super.dispose();
         hud.dispose();
         battleUIHandler.dispose();
+        levelUp.dispose();
     }
 
     /**

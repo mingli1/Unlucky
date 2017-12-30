@@ -17,7 +17,7 @@ public class Util {
     // rates
     public static final float TEXT_SPEED = 0.02f;
     public static final int HP_BAR_DECAY_RATE = 1;
-    public static final int TRANSITION_SCREEN_SPEED = 4;
+    public static final int TRANSITION_SCREEN_SPEED = 5;
 
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
@@ -50,13 +50,13 @@ public class Util {
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
     public static final float MAX_ELITE_MULTIPLIER = 1.8f;
-    public static final int MIN_ENEMY_HP_SCALING = 3;
-    public static final int MAX_ENEMY_HP_SCALING = 6;
-    public static final int MIN_ENEMY_DMG_SCALING = 6;
-    public static final int MAX_ENEMY_DMG_SCALING = 10;
+    public static final int MIN_ENEMY_HP_SCALING = 2;
+    public static final int MAX_ENEMY_HP_SCALING = 4;
+    public static final int MIN_ENEMY_DMG_SCALING = 8;
+    public static final int MAX_ENEMY_DMG_SCALING = 12;
 
     // Level up scaling
-    public static final int PLAYER_INIT_MAX_HP = 100;
+    public static final int PLAYER_INIT_MAX_HP = 85;
     public static final int PLAYER_INIT_MIN_DMG = 12;
     public static final int PLAYER_INIT_MAX_DMG = 18;
     public static final int PLAYER_MIN_HP_INCREASE = 11;
@@ -145,6 +145,7 @@ public class Util {
     public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
         switch (id) {
             case 2: return new Enemy("slime", position, map, rm, 2, 1, 1 / 3f);
+            case 3: return new Enemy("king slime", 0, position, map, rm, 2, 2, 1 / 3f);
         }
         return null;
     }

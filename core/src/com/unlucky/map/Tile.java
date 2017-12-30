@@ -68,6 +68,10 @@ public class Tile {
         if (!containsEntity()) hold = e;
     }
 
+    public void removeEntity() {
+        if (hold != null) hold = null;
+    }
+
     public Entity getEntity() { return hold; }
 
     public boolean containsEntity() {

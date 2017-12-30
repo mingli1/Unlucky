@@ -1,6 +1,5 @@
 package com.unlucky.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
@@ -29,6 +28,7 @@ public class BattleTransition {
     // determine which one to render when entering and exiting battle
     private boolean renderMap = false;
     private boolean renderBattle = false;
+    private boolean renderLevelUp = false;
 
     // render black rectangles
     private ShapeRenderer shapeRenderer;
@@ -83,7 +83,8 @@ public class BattleTransition {
 
         // set rendering
         if (prev == EventState.MOVING && next == EventState.BATTLING) renderMap = true;
-        else renderBattle = true;
+        else if (prev == EventState.BATTLING && next == EventState.MOVING) renderBattle = true;
+        else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) renderLevelUp = true;
 
         transitionIndex = rand.nextInt(NUM_TRANSITIONS);
 
@@ -102,7 +103,7 @@ public class BattleTransition {
      */
     public void end() {
         shouldStart = false;
-        renderMap = renderBattle = false;
+        renderMap = renderBattle = renderLevelUp = false;
 
         // transition into battle
         if (prev == EventState.MOVING && next == EventState.BATTLING) {
@@ -113,6 +114,10 @@ public class BattleTransition {
         }
         // transition out of battle
         else if (prev == EventState.BATTLING && next == EventState.MOVING) {
+            battle.end();
+        }
+        // transition out of level up screen
+        else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) {
             battle.end();
         }
     }
@@ -208,5 +213,7 @@ public class BattleTransition {
     public boolean shouldRenderMap() { return renderMap; }
 
     public boolean shouldRenderBattle() { return renderBattle; }
+
+    public boolean shouldRenderLevelUp() { return renderLevelUp; }
 
 }

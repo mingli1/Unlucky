@@ -54,6 +54,10 @@ public class CustomAnimation extends Animation {
         }
     }
 
+    public void reset() {
+        if (stateTime != 0) stateTime = 0;
+    }
+
     public TextureRegion getKeyFrame(boolean looping) {
         return getKeyFrame(stateTime, looping);
     }
