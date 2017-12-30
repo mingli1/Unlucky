@@ -2,6 +2,7 @@ package com.unlucky.battle;
 
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 
 import java.util.Random;
 
@@ -40,21 +41,21 @@ public class Moveset {
      */
     public void reset(int min, int max, int hp) {
         moveset = getRandomMoves();
-        int dmg = 0;
+        int dmg;
 
         for (int i = 0; i < 4; i++) {
             // reset damage seed for a new value between player's dmg range each iteration
-            dmg = rand.nextInt((max - min) + 1) + min;
+            dmg = Util.getRandomValue(min, max, rand);
             if (moveset[i].type == 3) moveset[i].setHeal(hp);
             else moveset[i].setDamage(dmg);
 
             names[i] = moveset[i].name;
             // Concatenates move info into a full description
             if (moveset[i].type < 2) {
-                descriptions[i] = "Damage: " + Math.round(moveset[i].minDamage)
+                descriptions[i] = "dmg: " + Math.round(moveset[i].minDamage)
                         + "-" + Math.round(moveset[i].maxDamage);
             } else if (moveset[i].type == 2) {
-                descriptions[i] = "Damage: " + Math.round(moveset[i].minDamage) + " + "
+                descriptions[i] = "dmg: " + Math.round(moveset[i].minDamage) + " + "
                         + moveset[i].crit + "% to crit";
             } else {
                 descriptions[i] = "Heals: " + Math.round(moveset[i].minHeal)
@@ -64,7 +65,20 @@ public class Moveset {
     }
 
     /**
-     * Returns a Move array  with 4 unique moves chosen from all possible Moves
+     * Resets moveset for bosses
+     */
+    public void reset(int min, int max, int hp, int bossIndex) {
+        moveset = getBossMoves(bossIndex);
+        int dmg;
+        for (int i = 0; i < 4; i++) {
+            dmg = Util.getRandomValue(min, max, rand);
+            if (moveset[i].type == 3) moveset[i].setHeal(hp);
+            else moveset[i].setDamage(dmg);
+        }
+    }
+
+    /**
+     * Returns a Move array with 4 unique moves chosen from all possible Moves
      *
      * @return
      */
@@ -86,12 +100,41 @@ public class Moveset {
             if (randMove.type < 2)
                 temp = new Move(randMove.type, randMove.name, randMove.minDamage, randMove.maxDamage);
             else if (randMove.type == 2)
-                temp = new Move(randMove.type, randMove.name, randMove.minDamage, randMove.crit);
+                temp = new Move(randMove.name, randMove.minDamage, randMove.crit);
             else if (randMove.type == 3)
                 temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
 
             ret[i] = temp;
             all.removeIndex(index);
+        }
+
+        return ret;
+    }
+
+    /**
+     * Returns a Move array with 4 unique moves from a boss's movepool
+     *
+     * @param bossIndex
+     * @return
+     */
+    private Move[] getBossMoves(int bossIndex) {
+        Array<Move> pool = rm.bossMoves.get(bossIndex);
+        Move[] ret = new Move[4];
+        int index;
+        for (int i = 0; i < ret.length; i++) {
+            index = rand.nextInt(pool.size);
+            Move randMove = pool.get(index);
+            Move temp = null;
+
+            if (randMove.type < 2)
+                temp = new Move(randMove.type, randMove.name, randMove.minDamage, randMove.maxDamage);
+            else if (randMove.type == 2)
+                temp = new Move(randMove.name, randMove.minDamage, randMove.crit);
+            else if (randMove.type == 3)
+                temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
+
+            ret[i] = temp;
+            pool.removeIndex(index);
         }
 
         return ret;
