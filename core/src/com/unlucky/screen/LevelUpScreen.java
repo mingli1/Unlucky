@@ -70,6 +70,7 @@ public class LevelUpScreen extends UI implements Disposable {
         ui = new ImageButton(style);
         ui.setSize(400, 240);
         ui.setPosition(0, 0);
+        ui.setTouchable(Touchable.disabled);
         stage.addActor(ui);
 
         handleClick();
@@ -163,6 +164,7 @@ public class LevelUpScreen extends UI implements Disposable {
         for (int i = 0; i < statNames.length; i++) {
             increases[i].setVisible(true);
         }
+        ui.setTouchable(Touchable.enabled);
         // update information
         levelDesc.setText("You reached level " + player.getLevel());
     }
@@ -205,6 +207,7 @@ public class LevelUpScreen extends UI implements Disposable {
         startAnim = false;
         sAnimFinished = false;
         statsTime = stateTime = 0;
+        ui.setTouchable(Touchable.disabled);
     }
 
     public void update(float dt) {
