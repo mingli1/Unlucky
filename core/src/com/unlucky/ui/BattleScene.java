@@ -42,6 +42,12 @@ public class BattleScene extends BattleUI {
     private AnimationManager[] attackAnims;
     private AnimationManager healAnim;
 
+    // blinking hit animation
+    private boolean showHitAnim = false;
+    private float hitAnimDurationTimer = 0;
+    private float hitAnimAlternateTimer = 0;
+    private int lastHit = -1;
+
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
@@ -53,14 +59,14 @@ public class BattleScene extends BattleUI {
 
         // create player hud
         playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 5, 145, 40);
-        playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
+        playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, 8, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
         playerHudLabel = new Label("", ls);
         playerHudLabel.setSize(99, 12);
         playerHudLabel.setTouchable(Touchable.disabled);
 
         // create enemy hud
         enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 5, 145, 40);
-        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
+        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, 8, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
         enemyHudLabel = new Label("", ls);
         enemyHudLabel.setSize(99, 12);
         enemyHudLabel.setTouchable(Touchable.disabled);
@@ -124,8 +130,30 @@ public class BattleScene extends BattleUI {
         // entity sprite animations
         player.getBam().update(dt);
         if (battle.opponent.getBam() != null) battle.opponent.getBam().update(dt);
-        playerSprite.setImage(player.getBam().getKeyFrame(true));
-        enemySprite.setImage(battle.opponent.getBam().getKeyFrame(true));
+
+        // hit animation
+        if (showHitAnim) {
+            hitAnimDurationTimer += dt;
+            if (hitAnimDurationTimer < 0.7f) {
+                hitAnimAlternateTimer += dt;
+                if (hitAnimAlternateTimer > 0.1f) {
+                    if (lastHit == 1) playerSprite.setVisible(!playerSprite.isVisible());
+                    else enemySprite.setVisible(!enemySprite.isVisible());
+                    hitAnimAlternateTimer = 0;
+                }
+            } else {
+                hitAnimDurationTimer = 0;
+                showHitAnim = false;
+            }
+
+        }
+        else {
+            playerSprite.setVisible(true);
+            enemySprite.setVisible(true);
+            playerSprite.setImage(player.getBam().getKeyFrame(true));
+            enemySprite.setImage(battle.opponent.getBam().getKeyFrame(true));
+        }
+
         playerSprite.update(dt);
         enemySprite.update(dt);
 
@@ -174,6 +202,10 @@ public class BattleScene extends BattleUI {
             if (attackAnims[entity.getMoveUsed()].currentAnimation.isAnimationFinished()) {
                 attackAnims[entity.getMoveUsed()].currentAnimation.stop();
                 entity.setMoveUsed(-1);
+                // start hit animation
+                showHitAnim = true;
+                if (entity == player) lastHit = 0;
+                else lastHit = 1;
             } else {
                 attackAnims[entity.getMoveUsed()].update(dt);
             }
