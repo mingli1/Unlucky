@@ -3,7 +3,6 @@ package com.unlucky.ui;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -15,15 +14,12 @@ import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
-import com.unlucky.event.Battle;
-import com.unlucky.event.BattleEvent;
+import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
-
-import java.util.Random;
 
 /**
  * Handles button input and everything not in the game camera
@@ -45,6 +41,9 @@ public class Hud extends UI implements Disposable {
     // labels for magnitudes
     private Label[] magLabels;
 
+    // option buttons: inventory and settings
+    private ImageButton[] optionButtons;
+
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
@@ -57,6 +56,7 @@ public class Hud extends UI implements Disposable {
 
         createDirPad();
         createMagLabels();
+        createOptionButtons();
     }
 
     public void update(float dt) {}
@@ -75,6 +75,10 @@ public class Hud extends UI implements Disposable {
         for (int i = 0; i < 4; i++) {
             dirPad[i].setDisabled(!toggle);
             dirPad[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
+        }
+        for (int i = 0; i < 2; i++) {
+            optionButtons[i].setDisabled(!toggle);
+            optionButtons[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
         }
     }
 
@@ -152,6 +156,20 @@ public class Hud extends UI implements Disposable {
     }
 
     /**
+     * Creates the two option buttons: inventory and settings
+     */
+    private void createOptionButtons() {
+        optionButtons = new ImageButton[2];
+
+        ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(2, rm.optionbutton32x32);
+        for (int i = 0; i < 2; i++) {
+            optionButtons[i] = new ImageButton(styles[i]);
+            optionButtons[i].setPosition(310 + (i * 50), 200);
+            stage.addActor(optionButtons[i]);
+        }
+    }
+
+    /**
      * Handles player movement commands
      */
     private void handleDirPadEvents() {
@@ -164,6 +182,20 @@ public class Hud extends UI implements Disposable {
                 }
             });
         }
+    }
+
+    /**
+     * Handles two option button commands
+     */
+    private void handleOptionEvents() {
+        // inventory
+        optionButtons[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                gameScreen.setCurrentEvent(EventState.INVENTORY);
+                gameScreen.inventory.start();
+            }
+        });
     }
 
     private void movePlayer(int dir) {
