@@ -2,14 +2,12 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
@@ -35,8 +33,7 @@ public class BattleEventHandler extends BattleUI {
     private float stateTime = 0;
 
     // the ui for displaying text
-    // It's an ImageButton so it can be hidden and hold images
-    private ImageButton ui;
+    private Image ui;
     // Label for text animation
     private Label textLabel;
     // invisible Label for clicking the window
@@ -66,9 +63,7 @@ public class BattleEventHandler extends BattleUI {
         this.stage = stage;
 
         // create main UI
-        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-        style.imageUp = new TextureRegionDrawable(rm.dialogBox400x80);
-        ui = new ImageButton(style);
+        ui = new Image(rm.dialogBox400x80);
         ui.setSize(400, 80);
         ui.setPosition(0, 0);
         ui.setTouchable(Touchable.disabled);
