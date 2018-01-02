@@ -3,7 +3,7 @@ package com.unlucky.ui;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 /**
@@ -12,7 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
  *
  * @author Ming Li
  */
-public class MovingImageUI extends ImageButton {
+public class MovingImageUI extends Image {
 
     // start
     private Vector2 origin;
@@ -24,7 +24,7 @@ public class MovingImageUI extends ImageButton {
     private boolean horizontal;
     private boolean shouldStart = false;
 
-    public MovingImageUI(ImageButtonStyle style) {
+    public MovingImageUI(TextureRegion style) {
         super(style);
     }
 
@@ -39,8 +39,7 @@ public class MovingImageUI extends ImageButton {
      * @param h
      */
     public MovingImageUI(TextureRegion skin, Vector2 origin, Vector2 target, int speed, int w, int h) {
-        this(new ImageButtonStyle());
-        this.getStyle().imageUp = new TextureRegionDrawable(skin);
+        this(skin);
         this.origin = origin;
         this.target = target;
         this.speed = speed;
@@ -124,10 +123,10 @@ public class MovingImageUI extends ImageButton {
         this.target = target;
     }
 
-    public void setImage(TextureRegion image) {
-        this.getStyle().imageUp = new TextureRegionDrawable(image);
-    }
-
     public boolean isShouldStart() { return shouldStart; }
+
+    public void setImage(TextureRegion image) {
+        this.setDrawable(new TextureRegionDrawable(image));
+    }
 
 }
