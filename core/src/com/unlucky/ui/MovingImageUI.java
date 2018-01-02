@@ -65,7 +65,7 @@ public class MovingImageUI extends ImageButton {
             if (horizontal) {
                 // moving right
                 if (origin.x < target.x) {
-                    if (getX() < target.x) {
+                    if (getX() < target.x && getX() + speed < target.x) {
                         float next = getX() + speed;
                         setPosition(next, getY());
                     } else {
@@ -75,7 +75,7 @@ public class MovingImageUI extends ImageButton {
                 }
                 // moving left
                 else {
-                    if (getX() > target.x) {
+                    if (getX() > target.x && getX() - speed > target.x) {
                         float next = getX() - speed;
                         setPosition(next, getY());
                     } else {
@@ -85,7 +85,7 @@ public class MovingImageUI extends ImageButton {
                 }
             } else {
                 // moving up
-                if (origin.y < target.y) {
+                if (origin.y < target.y && getY() + speed < target.y) {
                     if (getY() < target.y) {
                         float next = getY() + speed;
                         setPosition(getX(), next);
@@ -96,7 +96,7 @@ public class MovingImageUI extends ImageButton {
                 }
                 // moving down
                 else {
-                    if (getY() > target.y) {
+                    if (getY() > target.y && getY() - speed > target.y) {
                         float next = getY() - speed;
                         setPosition(getX(), next);
                     } else {
@@ -127,5 +127,7 @@ public class MovingImageUI extends ImageButton {
     public void setImage(TextureRegion image) {
         this.getStyle().imageUp = new TextureRegionDrawable(image);
     }
+
+    public boolean isShouldStart() { return shouldStart; }
 
 }
