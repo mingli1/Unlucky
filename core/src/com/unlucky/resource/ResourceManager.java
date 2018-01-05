@@ -61,7 +61,7 @@ public class ResourceManager {
     // contains the movepools of each boss referenced by bossIndex
     public final Array<Array<Move>> bossMoves = new Array<Array<Move>>();
 
-    // contains all the items separated by type
+    // contains all the items separated by rarity
     public final Array<Array<Item>> items = new Array<Array<Item>>();
 
     // Fonts
@@ -195,40 +195,32 @@ public class ResourceManager {
         // parse items.json
         JsonValue itemPool = jsonReader.parse(Gdx.files.internal("items/items.json"));
 
-        // potions
-        Array<Item> potions = new Array<Item>();
-        for (JsonValue potion : itemPool.get("potion")) {
-            potions.add(new Item(this, potion.getString("name"), potion.getString("desc"),
-                    potion.getInt("rarity"), potion.getInt("imgIndex"), potion.getInt("hp"), potion.getInt("sell")));
+        // load by rarity
+        for (int i = 0; i < 4; i++) {
+            loadItems(itemPool, i, "rare" + i);
         }
-        items.add(potions);
-
-        // misc
-        Array<Item> misc = new Array<Item>();
-        for (JsonValue m : itemPool.get("misc")) {
-            misc.add(new Item(this, m.getString("name"), m.getString("desc"), m.getInt("rarity"),
-                    m.getInt("imgIndex"), m.getInt("sell")));
-        }
-        items.add(misc);
-
-        loadEquips(itemPool, 2, "helmet");
-        loadEquips(itemPool, 3, "armor");
-        loadEquips(itemPool, 4, "weapon");
-        loadEquips(itemPool, 5, "gloves");
-        loadEquips(itemPool, 6, "shoes");
-        loadEquips(itemPool, 7, "necklace");
-        loadEquips(itemPool, 8, "shield");
-        loadEquips(itemPool, 9, "ring");
     }
 
-    private void loadEquips(JsonValue itemPool, int type, String equip) {
-        Array<Item> equips = new Array<Item>();
-        for (JsonValue e : itemPool.get(equip)) {
-            equips.add(new Item(this, e.getString("name"), e.getString("desc"), type,
-                    e.getInt("rarity"), e.getInt("imgIndex"), e.getInt("mhp"),
-                    e.getInt("dmg"), e.getInt("acc"), e.getInt("sell")));
+    private void loadItems(JsonValue itemPool, int rarity, String r) {
+        Array<Item> rare = new Array<Item>();
+        for (JsonValue i : itemPool.get(r)) {
+            switch (i.getInt("type")) {
+                case 0:
+                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                            rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("sell")));
+                    break;
+                case 1:
+                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                            rarity, i.getInt("imgIndex"), i.getInt("sell")));
+                    break;
+                default:
+                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                            i.getInt("type"), rarity, i.getInt("imgIndex"), i.getInt("mhp"),
+                            i.getInt("dmg"), i.getInt("acc"), i.getInt("sell")));
+                    break;
+            }
         }
-        items.add(equips);
+        items.add(rare);
     }
 
     public void dispose() {
