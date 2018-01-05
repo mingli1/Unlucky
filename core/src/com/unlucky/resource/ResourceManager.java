@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
+import com.unlucky.inventory.Item;
 
 /**
  * Main resource loading and storage class. Uses an AssetManager to manage textures, sounds,
@@ -21,10 +22,13 @@ import com.unlucky.battle.Move;
 public class ResourceManager {
 
     public AssetManager assetManager;
+    // json
+    private JsonReader jsonReader;
 
     // 2D TextureRegion arrays that stores sprites of various sizes for easy animation
     public TextureRegion[][] sprites16x16;
     public TextureRegion[][] tiles16x16;
+    public TextureRegion[][] items20x20;
     public TextureRegion[][] battleSprites96x96;
     public TextureRegion[][] battleBackgrounds400x240;
     public TextureRegion[][] battleAttacks64x64;
@@ -35,10 +39,13 @@ public class ResourceManager {
     public TextureRegion[][] dirpad20x20;
     public TextureRegion[][] movebutton145x50;
     public TextureRegion[][] stdmedbutton110x50;
+    public TextureRegion[][] optionbutton32x32;
+    public TextureRegion[][] exitbutton18x18;
     public TextureRegion dialogBox400x80;
     public TextureRegion playerhpbar145x40;
     public TextureRegion enemyhpbar145x40;
     public TextureRegion levelupscreen400x240;
+    public TextureRegion inventoryui372x212;
 
     // misc
     public TextureRegion shadow11x6;
@@ -54,15 +61,20 @@ public class ResourceManager {
     // contains the movepools of each boss referenced by bossIndex
     public final Array<Array<Move>> bossMoves = new Array<Array<Move>>();
 
+    // contains all the items separated by type
+    public final Array<Array<Item>> items = new Array<Array<Item>>();
+
     // Fonts
     public final BitmapFont pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"),
                                                     Gdx.files.internal("fonts/pixel.png"), false);
 
     public ResourceManager() {
         assetManager = new AssetManager();
+        jsonReader = new JsonReader();
 
         assetManager.load("sprites/16x16_sprites.png", Texture.class);
         assetManager.load("sprites/16x16_tiles.png", Texture.class);
+        assetManager.load("sprites/20x20_items.png", Texture.class);
         assetManager.load("sprites/96x96_battle_sprites.png", Texture.class);
         assetManager.load("sprites/11x6_shadow.png", Texture.class);
         assetManager.load("sprites/10x9_redarrow.png", Texture.class);
@@ -78,8 +90,9 @@ public class ResourceManager {
         assetManager.load("ui/dialog_box.png", Texture.class);
         assetManager.load("ui/player_hp_bar.png", Texture.class);
         assetManager.load("ui/enemy_hp_bar.png", Texture.class);
-
-        loadMoves();
+        assetManager.load("ui/option_buttons.png", Texture.class);
+        assetManager.load("ui/inv_ui.png", Texture.class);
+        assetManager.load("ui/exit_button.png", Texture.class);
 
         assetManager.finishLoading();
 
@@ -87,6 +100,8 @@ public class ResourceManager {
                 assetManager.get("sprites/16x16_sprites.png", Texture.class), 16, 16);
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
+        items20x20 = TextureRegion.split(
+                assetManager.get("sprites/20x20_items.png", Texture.class), 20, 20);
         battleSprites96x96 = TextureRegion.split(
                 assetManager.get("sprites/96x96_battle_sprites.png", Texture.class), 96, 96);
         battleBackgrounds400x240 = TextureRegion.split(
@@ -105,6 +120,12 @@ public class ResourceManager {
         dialogBox400x80 = new TextureRegion(assetManager.get("ui/dialog_box.png", Texture.class));
         playerhpbar145x40 = new TextureRegion(assetManager.get("ui/player_hp_bar.png", Texture.class));
         enemyhpbar145x40 = new TextureRegion(assetManager.get("ui/enemy_hp_bar.png", Texture.class));
+        optionbutton32x32 = TextureRegion.split(assetManager.get("ui/option_buttons.png", Texture.class), 32, 32);
+        inventoryui372x212 = new TextureRegion(assetManager.get("ui/inv_ui.png", Texture.class));
+        exitbutton18x18 = TextureRegion.split(assetManager.get("ui/exit_button.png", Texture.class), 18, 18);
+
+        loadMoves();
+        loadItems();
     }
 
     /**
@@ -126,7 +147,6 @@ public class ResourceManager {
 
     private void loadMoves() {
         // parse moves.json
-        JsonReader jsonReader = new JsonReader();
         JsonValue base = jsonReader.parse(Gdx.files.internal("moves/moves.json"));
         JsonValue boss = jsonReader.parse(Gdx.files.internal("moves/boss_moves.json"));
 
@@ -169,6 +189,46 @@ public class ResourceManager {
                         move.getFloat("minHeal"), move.getFloat("maxHeal")));
         }
         bossMoves.add(slimeMoves);
+    }
+
+    private void loadItems() {
+        // parse items.json
+        JsonValue itemPool = jsonReader.parse(Gdx.files.internal("items/items.json"));
+
+        // potions
+        Array<Item> potions = new Array<Item>();
+        for (JsonValue potion : itemPool.get("potion")) {
+            potions.add(new Item(this, potion.getString("name"), potion.getString("desc"),
+                    potion.getInt("rarity"), potion.getInt("imgIndex"), potion.getInt("hp"), potion.getInt("sell")));
+        }
+        items.add(potions);
+
+        // misc
+        Array<Item> misc = new Array<Item>();
+        for (JsonValue m : itemPool.get("misc")) {
+            misc.add(new Item(this, m.getString("name"), m.getString("desc"), m.getInt("rarity"),
+                    m.getInt("imgIndex"), m.getInt("sell")));
+        }
+        items.add(misc);
+
+        loadEquips(itemPool, 2, "helmet");
+        loadEquips(itemPool, 3, "armor");
+        loadEquips(itemPool, 4, "weapon");
+        loadEquips(itemPool, 5, "gloves");
+        loadEquips(itemPool, 6, "shoes");
+        loadEquips(itemPool, 7, "necklace");
+        loadEquips(itemPool, 8, "shield");
+        loadEquips(itemPool, 9, "ring");
+    }
+
+    private void loadEquips(JsonValue itemPool, int type, String equip) {
+        Array<Item> equips = new Array<Item>();
+        for (JsonValue e : itemPool.get(equip)) {
+            equips.add(new Item(this, e.getString("name"), e.getString("desc"), type,
+                    e.getInt("rarity"), e.getInt("imgIndex"), e.getInt("mhp"),
+                    e.getInt("dmg"), e.getInt("acc"), e.getInt("sell")));
+        }
+        items.add(equips);
     }
 
     public void dispose() {
