@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
 import com.unlucky.inventory.Item;
 
+import java.util.Random;
+
 /**
  * Main resource loading and storage class. Uses an AssetManager to manage textures, sounds,
  * musics, etc. Contains convenience methods to load and get resources from the asset manager.
@@ -221,6 +223,24 @@ public class ResourceManager {
             }
         }
         items.add(rare);
+    }
+
+    /**
+     * Returns a copy of a random item from the item pool given rarity
+     * This was made so that duplicate Item actors could be created
+     *
+     * @param rarity
+     * @param rand
+     * @return
+     */
+    public Item getItem(int rarity, Random rand) {
+        Item item = items.get(rarity).get(rand.nextInt(items.get(rarity).size));
+        if (item.type == 0)
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
+        else if (item.type == 1)
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
+        else
+            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
     }
 
     public void dispose() {
