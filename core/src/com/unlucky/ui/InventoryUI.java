@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,6 +20,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
@@ -58,8 +60,11 @@ public class InventoryUI extends UI implements Disposable {
     private int hpBarWidth = 0;
     private int expBarWidth = 0;
 
+    // constants
     private static final int SLOT_WIDTH = 32;
     private static final int SLOT_HEIGHT = 32;
+    private static final Rectangle EQUIPS_AREA = new Rectangle(23, 23, 138, 114);
+    private static final Rectangle INVENTORY_AREA = new Rectangle(181, 29, 192, 128);
 
     // event handling
     private boolean dragging = false;
@@ -131,10 +136,12 @@ public class InventoryUI extends UI implements Disposable {
         stage.addActor(exp);
 
         addInventory();
+        addEquips();
+        handleInventoryEvents();
     }
 
     /**
-     * Sets positions of inventory items and handles their events
+     * Adds inventory items to the stage
      */
     private void addInventory() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
@@ -143,7 +150,36 @@ public class InventoryUI extends UI implements Disposable {
                 stage.addActor(item.actor);
             }
         }
-        handleInventoryEvents();
+    }
+
+    /**
+     * Adds equips to the stage
+     */
+    private void addEquips() {
+        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+            Item item = player.equips.getEquipAt(i);
+            if (item != null) {
+                stage.addActor(item.actor);
+            }
+        }
+    }
+
+    /**
+     * Resets the item actors
+     */
+    private void removeInventoryActors() {
+        for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+            Item item = player.inventory.getItem(i);
+            if (item != null) {
+                item.actor.remove();
+            }
+        }
+        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+            Item item = player.equips.getEquipAt(i);
+            if (item != null) {
+                item.actor.remove();
+            }
+        }
     }
 
     /**
@@ -170,13 +206,60 @@ public class InventoryUI extends UI implements Disposable {
                     @Override
                     public void dragStop(InputEvent event, float x, float y, int pointer) {
                         dragging = false;
+
+                        // origin positions
                         int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                        if (getHoveredIndex(ax, ay) == -1) player.inventory.addItemAtIndex(item, item.index);
+                        if (item.equipped) {
+                            player.equips.removeEquip(item.type - 2);
+                            if (INVENTORY_AREA.contains(ax, ay)) {
+                                int hi = getHoveredIndex(ax, ay);
+                                if (hi == -1)
+                                    player.equips.addEquip(item);
+                                else {
+                                    if (!player.inventory.addItemAtIndex(item, hi)) {
+                                        player.equips.addEquip(item);
+                                    } else {
+                                        item.equipped = false;
+                                    }
+                                }
+                            }
+                            else {
+                                player.equips.addEquip(item);
+                            }
+                        }
                         else {
-                            if (!player.inventory.addItemAtIndex(item, getHoveredIndex(ax, ay)))
-                                player.inventory.addItemAtIndex(item, item.index);
+                            // dropping into equips slots
+                            if (EQUIPS_AREA.contains(ax, ay)) {
+                                if (item.type > 1) {
+                                    item.equipped = true;
+                                    if (!player.equips.addEquip(item)) {
+                                        // replace the equip with the item of same type
+                                        Item swap = player.equips.removeEquip(item.type - 2);
+                                        swap.equipped = false;
+                                        player.inventory.addItemAtIndex(swap, item.index);
+                                        player.equips.addEquip(item);
+                                    }
+                                } else {
+                                    player.inventory.addItemAtIndex(item, item.index);
+                                }
+                            }
+                            // dropping into inventory slots
+                            else {
+                                int hi = getHoveredIndex(ax, ay);
+
+                                if (hi == -1)
+                                    player.inventory.addItemAtIndex(item, item.index);
+                                else {
+                                    // if dropped into an occupied slot, swap item positions
+                                    if (!player.inventory.addItemAtIndex(item, hi)) {
+                                        Item swap = player.inventory.takeItem(hi);
+                                        player.inventory.addItemAtIndex(swap, item.index);
+                                        player.inventory.addItemAtIndex(item, hi);
+                                    }
+                                }
+                            }
                         }
                     }
 
@@ -219,6 +302,9 @@ public class InventoryUI extends UI implements Disposable {
 
         exitButton.setDisabled(false);
         exitButton.setTouchable(Touchable.enabled);
+
+        addInventory();
+        addEquips();
     }
 
     /**
@@ -241,6 +327,7 @@ public class InventoryUI extends UI implements Disposable {
      * Switches back to the next state
      */
     public void next() {
+        removeInventoryActors();
         gameScreen.setCurrentEvent(EventState.MOVING);
         gameScreen.hud.toggle(true);
         ended = false;
@@ -274,12 +361,21 @@ public class InventoryUI extends UI implements Disposable {
         exp.setPosition(ui.getX() + 16, ui.getY() + 166);
 
         if (!dragging) {
+            // update inventory positions
             for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
                 Item item = player.inventory.getItem(i);
                 int x = i % Inventory.NUM_COLS;
                 int y = i / Inventory.NUM_COLS;
                 if (item != null) {
                     item.actor.setPosition(ui.getX() + 172 + (x * 32), ui.getY() + (116 - (y * 32)));
+                }
+            }
+            // update equips positions
+            for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+                float x = player.equips.positions[i].x;
+                float y = player.equips.positions[i].y;
+                if (player.equips.getEquipAt(i) != null) {
+                    player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
                 }
             }
         }
