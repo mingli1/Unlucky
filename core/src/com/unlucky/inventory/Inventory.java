@@ -9,11 +9,15 @@ package com.unlucky.inventory;
 public class Inventory {
 
     // inventory dimensions
-    private static final int NUM_SLOTS = 24;
-    private static final int NUM_COLS = 6;
-    private static final int NUM_ROWS = 4;
+    public static final int NUM_SLOTS = 24;
+    public static final int NUM_COLS = 6;
+    public static final int NUM_ROWS = 4;
 
-    public Item[] items = new Item[NUM_SLOTS];
+    public Item[] items;
+
+    public Inventory() {
+        items = new Item[NUM_SLOTS];
+    }
 
     /**
      * Returns the index of the first empty slot in the inventory
@@ -30,6 +34,7 @@ public class Inventory {
 
     /**
      * Returns the Item in the inventory at a given index
+     * but does not remove the item from the inventory
      *
      * @param index
      * @return
@@ -59,6 +64,7 @@ public class Inventory {
         int i = getFirstFreeSlotIndex();
         if (i != -1) {
             items[i] = item;
+            item.index = i;
             return true;
         }
         return false;
@@ -75,6 +81,7 @@ public class Inventory {
     public boolean addItemAtIndex(Item item, int index) {
         if (isFreeSlot(index)) {
             items[index] = item;
+            item.index = index;
             return true;
         }
         return false;
@@ -87,6 +94,22 @@ public class Inventory {
      */
     public void removeItem(int index) {
         if (items[index] != null) items[index] = null;
+    }
+
+    /**
+     * Removes an Item from the inventory and returns the Item
+     *
+     * @param index
+     * @return
+     */
+    public Item takeItem(int index) {
+        Item ret = null;
+        if (items[index] != null) {
+            ret = items[index];
+            items[index] = null;
+            return ret;
+        }
+        return null;
     }
 
 }

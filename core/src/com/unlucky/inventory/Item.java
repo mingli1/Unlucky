@@ -1,6 +1,7 @@
 package com.unlucky.inventory;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.unlucky.resource.ResourceManager;
 
 /**
  * An Item is held by an inventory slot and can be one of:
@@ -48,8 +49,12 @@ public class Item {
     public int acc = 0;
     public int sell = 0;
 
+    // an item's index in the inventory
+    public int index;
+
     // rendering
     public Image actor;
+    public int imgIndex;
 
     /**
      * For potions
@@ -62,14 +67,15 @@ public class Item {
      * @param hp
      * @param sell
      */
-    public Item(String name, String desc, int rarity, int imgIndex, int hp, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int hp, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
+        this.imgIndex = imgIndex;
         this.hp = hp;
         this.sell = sell;
         type = 0;
-        // actor =
+        actor = new Image(rm.items20x20[0][imgIndex]);
     }
 
     /**
@@ -82,13 +88,14 @@ public class Item {
      * @param imgIndex
      * @param sell
      */
-    public Item(String name, String desc, int rarity, int imgIndex, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
+        this.imgIndex = imgIndex;
         this.sell = sell;
         type = 1;
-        // actor =
+        actor = new Image(rm.items20x20[1][imgIndex]);
     }
 
     /**
@@ -105,16 +112,17 @@ public class Item {
      * @param acc
      * @param sell
      */
-    public Item(String name, String desc, int type, int rarity, int imgIndex, int mhp, int dmg, int acc, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int type, int rarity, int imgIndex, int mhp, int dmg, int acc, int sell) {
         this.name = name;
         this.desc = desc;
         this.type = type;
         this.rarity = rarity;
+        this.imgIndex = imgIndex;
         this.mhp = mhp;
         this.dmg = dmg;
         this.acc = acc;
         this.sell = sell;
-        // actor =
+        actor = new Image(rm.items20x20[type][imgIndex]);
     }
 
 
