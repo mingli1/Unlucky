@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -59,6 +61,8 @@ public class InventoryUI extends UI implements Disposable {
     private int maxBarWidth = 124;
     private int hpBarWidth = 0;
     private int expBarWidth = 0;
+    // selected slot
+    private Image selectedSlot;
 
     // constants
     private static final int SLOT_WIDTH = 32;
@@ -68,6 +72,8 @@ public class InventoryUI extends UI implements Disposable {
 
     // event handling
     private boolean dragging = false;
+    // to differentiate between dragging and clicking
+    private int prevX, prevY;
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -138,6 +144,10 @@ public class InventoryUI extends UI implements Disposable {
         addInventory();
         addEquips();
         handleInventoryEvents();
+
+        selectedSlot = new Image(rm.selectedslot28x28);
+        selectedSlot.setVisible(false);
+        stage.addActor(selectedSlot);
     }
 
     /**
@@ -184,6 +194,10 @@ public class InventoryUI extends UI implements Disposable {
 
     /**
      * Handles drag and drop events for items
+     *
+     * Dragging allows changing of item positions and equipping
+     * Clicking once on an item brings up its tooltip that displays its stats
+     *
      */
     private void handleInventoryEvents() {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
@@ -194,7 +208,13 @@ public class InventoryUI extends UI implements Disposable {
                     @Override
                     public void dragStart(InputEvent event, float x, float y, int pointer) {
                         dragging = true;
+
+                        // original positions
+                        prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                        prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
                         item.actor.toFront();
+                        selectedSlot.setVisible(false);
                         player.inventory.removeItem(item.index);
                     }
 
@@ -207,6 +227,7 @@ public class InventoryUI extends UI implements Disposable {
                     public void dragStop(InputEvent event, float x, float y, int pointer) {
                         dragging = false;
 
+                        selectedSlot.setVisible(false);
                         // origin positions
                         int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
@@ -218,10 +239,13 @@ public class InventoryUI extends UI implements Disposable {
                                 if (hi == -1)
                                     player.equips.addEquip(item);
                                 else {
-                                    if (!player.inventory.addItemAtIndex(item, hi)) {
-                                        player.equips.addEquip(item);
-                                    } else {
+                                    if (player.inventory.isFreeSlot(hi)) {
+                                        player.inventory.addItemAtIndex(item, hi);
                                         item.equipped = false;
+                                        player.unequip(item);
+                                    }
+                                    else {
+                                        player.equips.addEquip(item);
                                     }
                                 }
                             }
@@ -234,12 +258,15 @@ public class InventoryUI extends UI implements Disposable {
                             if (EQUIPS_AREA.contains(ax, ay)) {
                                 if (item.type > 1) {
                                     item.equipped = true;
+                                    player.equip(item);
                                     if (!player.equips.addEquip(item)) {
                                         // replace the equip with the item of same type
                                         Item swap = player.equips.removeEquip(item.type - 2);
                                         swap.equipped = false;
-                                        player.inventory.addItemAtIndex(swap, item.index);
+                                        player.unequip(swap);
                                         player.equips.addEquip(item);
+                                        player.inventory.removeItem(item.index);
+                                        player.inventory.addItemAtIndex(swap, item.index);
                                     }
                                 } else {
                                     player.inventory.addItemAtIndex(item, item.index);
@@ -264,7 +291,51 @@ public class InventoryUI extends UI implements Disposable {
                     }
 
                 });
+
+                item.actor.addListener(new InputListener() {
+
+                    @Override
+                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                        // original positions
+                        prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                        prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
+                        return true;
+                    }
+
+                    @Override
+                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                        // new positions
+                        int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                        int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                        // a true click and not a drag
+                        if (prevX == ax && prevY == ay) {
+                            showSelectedSlot(item);
+                        }
+                    }
+
+                });
             }
+        }
+    }
+
+    /**
+     * Shows the golden highlight around the slot clicked
+     *
+     * @param item
+     */
+    private void showSelectedSlot(Item item) {
+        if (item.equipped) {
+            selectedSlot.setPosition(14 + (player.equips.positions[item.type - 2].x - 4),
+                    14 + (player.equips.positions[item.type - 2].y - 4));
+            selectedSlot.setVisible(true);
+        }
+        else {
+            int i = item.index;
+            int x = i % Inventory.NUM_COLS;
+            int y = i / Inventory.NUM_COLS;
+            selectedSlot.setPosition(182 + (x * 32), 126 - (y * 32));
+            selectedSlot.setVisible(true);
         }
     }
 
@@ -312,6 +383,7 @@ public class InventoryUI extends UI implements Disposable {
      * Activated by the exit button
      */
     public void end() {
+        selectedSlot.setVisible(false);
         exitButton.setDisabled(true);
         exitButton.setTouchable(Touchable.disabled);
 
