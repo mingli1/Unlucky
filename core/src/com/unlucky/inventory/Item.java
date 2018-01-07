@@ -2,6 +2,9 @@ package com.unlucky.inventory;
 
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
+
+import java.util.Random;
 
 /**
  * An Item is held by an inventory slot and can be one of:
@@ -51,6 +54,8 @@ public class Item {
 
     // an item's index in the inventory
     public int index;
+    // whether or not this item is equipped
+    public boolean equipped = false;
 
     // rendering
     public Image actor;
@@ -125,5 +130,24 @@ public class Item {
         actor = new Image(rm.items20x20[type][imgIndex]);
     }
 
+    /**
+     * Adjusts the stats/attributes of an Item based on player level
+     * Only called once per item's existence
+     *
+     * @param level
+     * @param rand
+     */
+    public void adjust(int level, Random rand) {
+        // max hp will be scaled by 3-5 parts of original item stat added on each level
+        int mhpSeed = mhp / Util.getRandomValue(3, 5, rand);
+        for (int i = 0; i < level - 1; i++) {
+            mhp += mhpSeed;
+        }
+
+        // damage is scaled linearly to level
+        if (level != 1) dmg *= (level - 1);
+
+        // @TODO scale sell value and adjust dmg
+    }
 
 }
