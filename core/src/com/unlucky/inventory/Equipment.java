@@ -1,5 +1,7 @@
 package com.unlucky.inventory;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * The collection of equips that the player has equipped
  *
@@ -21,9 +23,21 @@ public class Equipment {
     public static final int NUM_SLOTS = 8;
 
     public Item[] equips;
+    // stores the positions of equip slots relative to inventory
+    public Vector2[] positions;
 
     public Equipment() {
         equips = new Item[NUM_SLOTS];
+        positions = new Vector2[NUM_SLOTS];
+
+        positions[0] = new Vector2(84, 84);
+        positions[1] = new Vector2(84, 52);
+        positions[2] = new Vector2(52, 52);
+        positions[3] = new Vector2(116, 52);
+        positions[4] = new Vector2(84, 20);
+        positions[5] = new Vector2(20, 84);
+        positions[6] = new Vector2(20, 52);
+        positions[7] = new Vector2(20, 20);
     }
 
     /**
