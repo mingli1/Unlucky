@@ -63,6 +63,8 @@ public class InventoryUI extends UI implements Disposable {
     private int expBarWidth = 0;
     // selected slot
     private Image selectedSlot;
+    // item tooltip
+    private ItemTooltip tooltip;
 
     // constants
     private static final int SLOT_WIDTH = 32;
@@ -148,6 +150,10 @@ public class InventoryUI extends UI implements Disposable {
         selectedSlot = new Image(rm.selectedslot28x28);
         selectedSlot.setVisible(false);
         stage.addActor(selectedSlot);
+
+        tooltip = new ItemTooltip(rm.skin);
+        tooltip.setPosition(180, 30);
+        stage.addActor(tooltip);
     }
 
     /**
@@ -208,6 +214,7 @@ public class InventoryUI extends UI implements Disposable {
                     @Override
                     public void dragStart(InputEvent event, float x, float y, int pointer) {
                         dragging = true;
+                        tooltip.hide();
 
                         // original positions
                         prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
@@ -310,7 +317,15 @@ public class InventoryUI extends UI implements Disposable {
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
                         // a true click and not a drag
                         if (prevX == ax && prevY == ay) {
-                            showSelectedSlot(item);
+                            if (selectedSlot.isVisible()) {
+                                showSelectedSlot(item, false);
+                                tooltip.hide();
+                            }
+                            else {
+                                showSelectedSlot(item, true);
+                                tooltip.toFront();
+                                tooltip.show(item, item.actor.getX(), item.actor.getY() - tooltip.getHeight());
+                            }
                         }
                     }
 
@@ -324,18 +339,18 @@ public class InventoryUI extends UI implements Disposable {
      *
      * @param item
      */
-    private void showSelectedSlot(Item item) {
+    private void showSelectedSlot(Item item, boolean toggle) {
         if (item.equipped) {
             selectedSlot.setPosition(14 + (player.equips.positions[item.type - 2].x - 4),
                     14 + (player.equips.positions[item.type - 2].y - 4));
-            selectedSlot.setVisible(true);
+            selectedSlot.setVisible(toggle);
         }
         else {
             int i = item.index;
             int x = i % Inventory.NUM_COLS;
             int y = i / Inventory.NUM_COLS;
             selectedSlot.setPosition(182 + (x * 32), 126 - (y * 32));
-            selectedSlot.setVisible(true);
+            selectedSlot.setVisible(toggle);
         }
     }
 
@@ -363,6 +378,18 @@ public class InventoryUI extends UI implements Disposable {
     }
 
     /**
+     * Returns a Vector2 containing the x y coordinates of the slot at a
+     * given index.
+     *
+     * @TODO
+     * @param index
+     * @return
+     */
+    private Vector2 getIndexCoords(int index) {
+        return null;
+    }
+
+    /**
      * Initializes the inventoryUI screen
      */
     public void start() {
@@ -384,6 +411,7 @@ public class InventoryUI extends UI implements Disposable {
      */
     public void end() {
         selectedSlot.setVisible(false);
+        tooltip.setVisible(false);
         exitButton.setDisabled(true);
         exitButton.setTouchable(Touchable.disabled);
 
