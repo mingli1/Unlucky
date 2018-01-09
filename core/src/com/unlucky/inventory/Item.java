@@ -150,4 +150,27 @@ public class Item {
         // @TODO scale sell value and adjust dmg
     }
 
+    /**
+     * Returns the full description with all stats and descriptions
+     * concatenated into a single string
+     *
+     * @return
+     */
+    public String getFullDesc() {
+        String ret = "";
+        if (type == 0) {
+            ret = desc + "\nHEALS FOR " + hp + " HP";
+        } else if (type == 1) {
+            ret = desc;
+        } else {
+            ret = desc + "\n";
+            if (mhp != 0) ret += "+" + mhp + " HP\n";
+            if (dmg != 0) ret += "+" + dmg + " DAMAGE\n";
+            if (acc != 0) ret += "+" + acc + "% ACCURACY";
+        }
+        // remove newline from end of string if there is one
+        ret = ret.trim();
+        return ret;
+    }
+
 }
