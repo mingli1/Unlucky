@@ -46,6 +46,8 @@ public class Util {
     public static final int P_INTIMIDATE = 25;
     public static final float INTIMIDATE_MULT = 1.25f;
     public static final int REVIVAL = 1;
+    public static final int ENCHANT = 50;
+    public static final int DESTROY_ITEM_IF_FAIL = 40;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;

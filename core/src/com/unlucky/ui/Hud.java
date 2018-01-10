@@ -41,7 +41,7 @@ public class Hud extends UI implements Disposable {
     // labels for magnitudes
     private Label[] magLabels;
 
-    // option buttons: inventory and settings
+    // option buttons: inventoryUI and settings
     private ImageButton[] optionButtons;
 
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
@@ -156,7 +156,7 @@ public class Hud extends UI implements Disposable {
     }
 
     /**
-     * Creates the two option buttons: inventory and settings
+     * Creates the two option buttons: inventoryUI and settings
      */
     private void createOptionButtons() {
         optionButtons = new ImageButton[2];
@@ -167,6 +167,7 @@ public class Hud extends UI implements Disposable {
             optionButtons[i].setPosition(310 + (i * 50), 200);
             stage.addActor(optionButtons[i]);
         }
+        handleOptionEvents();
     }
 
     /**
@@ -188,12 +189,13 @@ public class Hud extends UI implements Disposable {
      * Handles two option button commands
      */
     private void handleOptionEvents() {
-        // inventory
+        // inventoryUI
         optionButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                toggle(false);
                 gameScreen.setCurrentEvent(EventState.INVENTORY);
-                gameScreen.inventory.start();
+                gameScreen.inventoryUI.start();
             }
         });
     }

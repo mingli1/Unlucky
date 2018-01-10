@@ -1,6 +1,7 @@
 package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -37,6 +38,7 @@ public class ItemTooltip extends Window {
         left();
         add(desc);
         pack();
+        this.setTouchable(Touchable.disabled);
         this.setVisible(false);
         this.setMovable(false);
         this.setOrigin(Align.bottomLeft);

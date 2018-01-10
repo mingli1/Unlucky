@@ -10,5 +10,5 @@ public enum EventState {
     BATTLING,
     TRANSITION,
     LEVEL_UP,
-    PICKING_UP
+    INVENTORY
 }

@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.JsonReader;
@@ -43,11 +45,17 @@ public class ResourceManager {
     public TextureRegion[][] stdmedbutton110x50;
     public TextureRegion[][] optionbutton32x32;
     public TextureRegion[][] exitbutton18x18;
+    public TextureRegion[][] invbuttons92x28;
     public TextureRegion dialogBox400x80;
     public TextureRegion playerhpbar145x40;
     public TextureRegion enemyhpbar145x40;
     public TextureRegion levelupscreen400x240;
     public TextureRegion inventoryui372x212;
+    public TextureRegion selectedslot28x28;
+
+    // Skin
+    public Skin skin;
+    public Skin dialogSkin;
 
     // misc
     public TextureRegion shadow11x6;
@@ -95,8 +103,20 @@ public class ResourceManager {
         assetManager.load("ui/option_buttons.png", Texture.class);
         assetManager.load("ui/inv_ui.png", Texture.class);
         assetManager.load("ui/exit_button.png", Texture.class);
+        assetManager.load("ui/selected_slot.png", Texture.class);
+        assetManager.load("ui/inv_buttons.png", Texture.class);
+        assetManager.load("skins/ui.atlas", TextureAtlas.class);
+        assetManager.load("skins/dialog.atlas", TextureAtlas.class);
 
         assetManager.finishLoading();
+
+        skin = new Skin(assetManager.get("skins/ui.atlas", TextureAtlas.class));
+        skin.add("default-font", pixel10);
+        skin.load(Gdx.files.internal("skins/ui.json"));
+
+        dialogSkin = new Skin(assetManager.get("skins/dialog.atlas", TextureAtlas.class));
+        dialogSkin.add("default-font", pixel10);
+        dialogSkin.load(Gdx.files.internal("skins/dialog.json"));
 
         sprites16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_sprites.png", Texture.class), 16, 16);
@@ -125,6 +145,8 @@ public class ResourceManager {
         optionbutton32x32 = TextureRegion.split(assetManager.get("ui/option_buttons.png", Texture.class), 32, 32);
         inventoryui372x212 = new TextureRegion(assetManager.get("ui/inv_ui.png", Texture.class));
         exitbutton18x18 = TextureRegion.split(assetManager.get("ui/exit_button.png", Texture.class), 18, 18);
+        selectedslot28x28 = new TextureRegion(assetManager.get("ui/selected_slot.png", Texture.class));
+        invbuttons92x28 = TextureRegion.split(assetManager.get("ui/inv_buttons.png", Texture.class), 92, 28);
 
         loadMoves();
         loadItems();
@@ -235,6 +257,23 @@ public class ResourceManager {
      */
     public Item getItem(int rarity, Random rand) {
         Item item = items.get(rarity).get(rand.nextInt(items.get(rarity).size));
+        if (item.type == 0)
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
+        else if (item.type == 1)
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
+        else
+            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
+    }
+
+    /**
+     * Returns a copy of an indexed Item from the item pool
+     *
+     * @param rarity
+     * @param index
+     * @return
+     */
+    public Item getItem(int rarity, int index) {
+        Item item = items.get(rarity).get(index);
         if (item.type == 0)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
         else if (item.type == 1)

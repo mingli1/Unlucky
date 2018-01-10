@@ -4,6 +4,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
+import com.unlucky.inventory.Equipment;
+import com.unlucky.inventory.Inventory;
+import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -32,8 +35,55 @@ public class Player extends Entity {
     // gold
     private int gold = 0;
 
+    // inventory and equips
+    public Inventory inventory;
+    public Equipment equips;
+
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
+
+        inventory = new Inventory();
+        equips = new Equipment();
+
+        /**
+        // TEST INVENTORY
+        for (int i = 0; i < 18; i++) {
+            // test rarity
+            int k = rand.nextInt(100);
+            // common
+            if (k < 60) inventory.addItem(rm.getItem(0, rand));
+            // rare
+            else if (k < 85) inventory.addItem(rm.getItem(1, rand));
+            // epic
+            else if (k < 95) inventory.addItem(rm.getItem(2, rand));
+            // legendary
+            else if (k < 100) inventory.addItem(rm.getItem(3, rand));
+        }
+         **/
+        inventory.addItem(rm.getItem(0, 0));
+        inventory.addItem(rm.getItem(0, 1));
+        inventory.addItem(rm.getItem(0, 2));
+        inventory.addItem(rm.getItem(0, 4));
+        inventory.addItem(rm.getItem(0, 5));
+        inventory.addItem(rm.getItem(0, 6));
+        inventory.addItem(rm.getItem(3, 2));
+        inventory.addItem(rm.getItem(0, 10));
+        inventory.addItem(rm.getItem(0, 11));
+        inventory.addItem(rm.getItem(0, 12));
+        inventory.addItem(rm.getItem(0, 14));
+        inventory.addItem(rm.getItem(0, 15));
+        inventory.addItem(rm.getItem(0, 16));
+        inventory.addItem(rm.getItem(0, 17));
+        inventory.addItem(rm.getItem(0, 18));
+        inventory.addItem(rm.getItem(0, 19));
+        inventory.addItem(rm.getItem(1, 0));
+        inventory.addItem(rm.getItem(1, 2));
+        inventory.addItem(rm.getItem(2, 2));
+        inventory.addItem(rm.getItem(2, 0));
+        inventory.addItem(rm.getItem(2, 1));
+        inventory.addItem(rm.getItem(3, 0));
+        inventory.addItem(rm.getItem(3, 1));
+        inventory.addItem(rm.getItem(3, 3));
 
         // attributes
         hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
@@ -47,7 +97,7 @@ public class Player extends Entity {
         exp = 0;
         // offset between 3 and 5
         maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
-        maxExp = 2;
+        //maxExp = 2;
 
         // create tilemap animation
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -99,7 +149,7 @@ public class Player extends Entity {
 
         int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, Util.getRandomValue(3, 5, rand));
-        maxExp = 2;
+        //maxExp = 2;
         maxExpIncrease += (maxExp - prevMaxExp);
 
         // another level up
@@ -128,6 +178,32 @@ public class Player extends Entity {
         maxExpIncrease = 0;
     }
 
+    /**
+     * Applies the stats of an equipable item
+     *
+     * @param item
+     */
+    public void equip(Item item) {
+        maxHp += item.mhp;
+        minDamage += item.dmg;
+        maxDamage += item.dmg;
+        accuracy += item.acc;
+        if (hp > maxHp) hp = maxHp;
+    }
+
+    /**
+     * Removes the stats of an equipable item
+     *
+     * @param item
+     */
+    public void unequip(Item item) {
+        maxHp -= item.mhp;
+        minDamage -= item.dmg;
+        maxDamage -= item.dmg;
+        accuracy -= item.acc;
+        if (hp > maxHp) hp = maxHp;
+    }
+
     public Enemy getOpponent() {
         return opponent;
     }
@@ -135,6 +211,11 @@ public class Player extends Entity {
     public void finishBattling() {
         battling = false;
         opponent = null;
+    }
+
+    public void potion(int heal) {
+        hp += heal;
+        if (hp > maxHp) hp = maxHp;
     }
 
     public boolean isBattling() {
@@ -194,5 +275,9 @@ public class Player extends Entity {
     }
 
     public int getMaxExpIncrease() { return maxExpIncrease; }
+
+    public void addGold(int g) { this.gold += g; }
+
+    public int getGold() { return gold; }
 
 }

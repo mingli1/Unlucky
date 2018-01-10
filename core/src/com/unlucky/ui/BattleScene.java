@@ -93,21 +93,17 @@ public class BattleScene extends BattleUI {
 
     public void toggle(boolean toggle) {
         playerHud.setVisible(toggle);
-        playerHud.setDisabled(!toggle);
         playerHudLabel.setVisible(toggle);
         playerHud.start();
 
         if (toggle) enemyHpBar.setEntity(battle.opponent);
 
         enemyHud.setVisible(toggle);
-        enemyHud.setDisabled(!toggle);
         enemyHudLabel.setVisible(toggle);
         enemyHud.start();
 
         playerSprite.setVisible(toggle);
-        playerSprite.setDisabled(!toggle);
         enemySprite.setVisible(toggle);
-        enemySprite.setDisabled(!toggle);
         playerSprite.start();
         enemySprite.start();
     }
