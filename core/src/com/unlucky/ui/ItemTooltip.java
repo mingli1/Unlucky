@@ -32,14 +32,14 @@ public class ItemTooltip extends Window {
         common = new Label.LabelStyle(skin.getFont("default-font"), new Color(1, 1, 1, 1));
         rare = new Label.LabelStyle(skin.getFont("default-font"), new Color(0, 200 / 255.f, 0, 1));
         epic = new Label.LabelStyle(skin.getFont("default-font"), new Color(0, 180 / 255.f, 1, 1));
-        legendary = new Label.LabelStyle(skin.getFont("default-font"), new Color(127 / 255.f, 0, 1, 1));
+        legendary = new Label.LabelStyle(skin.getFont("default-font"), new Color(164 / 255.f, 80 / 255.f, 1, 1));
 
         left();
         add(desc);
         pack();
         this.setVisible(false);
         this.setMovable(false);
-        this.setOrigin(Align.topLeft);
+        this.setOrigin(Align.bottomLeft);
     }
 
     /**
@@ -56,6 +56,10 @@ public class ItemTooltip extends Window {
     public void show(Item item, float x, float y) {
         this.setPosition(x, y);
         this.setVisible(true);
+        updateText(item);
+    }
+
+    public void updateText(Item item) {
         switch (item.rarity) {
             case 0:
                 this.getTitleLabel().setStyle(common);
@@ -70,7 +74,7 @@ public class ItemTooltip extends Window {
                 this.getTitleLabel().setStyle(legendary);
                 break;
         }
-        this.getTitleLabel().setText(item.name);
+        this.getTitleLabel().setText(item.labelName);
         desc.setText(item.getFullDesc());
         pack();
     }
