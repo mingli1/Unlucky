@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -29,6 +30,7 @@ import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
 
 /**
@@ -58,6 +60,7 @@ public class InventoryUI extends UI implements Disposable {
     private Label damage;
     private Label accuracy;
     private Label exp;
+    private Label gold;
     // health bar (no need for dynamic one)
     private int maxBarWidth = 124;
     private int hpBarWidth = 0;
@@ -85,6 +88,7 @@ public class InventoryUI extends UI implements Disposable {
     private int prevX, prevY;
     private boolean itemSelected = false;
     private Item currentItem;
+    private boolean showTooltipAfterEnchant = false;
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -153,10 +157,14 @@ public class InventoryUI extends UI implements Disposable {
         exp.setAlignment(Align.left);
         stage.addActor(exp);
 
+        gold = new Label("", yellow);
+        gold.setSize(124, 8);
+        gold.setTouchable(Touchable.disabled);
+        gold.setAlignment(Align.left);
+        stage.addActor(gold);
+
         addInventory();
         addEquips();
-        handleInventoryEvents();
-        handleStageEvents();
 
         selectedSlot = new Image(rm.selectedslot28x28);
         selectedSlot.setVisible(false);
@@ -172,6 +180,10 @@ public class InventoryUI extends UI implements Disposable {
         disabled = new ImageButton.ImageButtonStyle();
         disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
         createInventoryButtons(stdWhite);
+
+        handleInventoryEvents();
+        handleStageEvents();
+        handleInvButtonEvents();
     }
 
     /**
@@ -392,10 +404,138 @@ public class InventoryUI extends UI implements Disposable {
         });
     }
 
+    /**
+     * Handles enchanting and selling
+     */
+    private void handleInvButtonEvents() {
+        // enchanting
+        invButtons[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                tooltip.setVisible(false);
+                // only equips can be enchanted
+                if (currentItem != null && currentItem.type > 1) {
+                    new Dialog("Enchant", rm.dialogSkin) {
+                        {
+                            Label l = new Label("Are you sure you want\nto enchant this item?", rm.dialogSkin);
+                            l.setAlignment(Align.center);
+                            text(l);
+                            button("Yes", "yes");
+                            button("No", "no");
+                        }
+
+                        @Override
+                        protected void result(Object object) {
+                            if (object.equals("yes")) {
+                                enchant();
+                            }
+                        }
+
+                    }.show(stage).getTitleLabel().setAlignment(Align.center);
+                }
+            }
+        });
+
+        // sell
+        invButtons[1].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentItem != null) {
+                    new Dialog("Sell", rm.dialogSkin) {
+                        {
+                            Label l = new Label("Are you sure you want\nto sell this item?", rm.dialogSkin);
+                            l.setAlignment(Align.center);
+                            text(l);
+                            button("Yes", "yes");
+                            button("No", "no");
+                        }
+
+                        @Override
+                        protected void result(Object object) {
+                            if (object.equals("yes")) {
+                                player.addGold(currentItem.sell);
+                                player.inventory.items[currentItem.index].actor.remove();
+                                player.inventory.removeItem(currentItem.index);
+                                unselectItem();
+                            }
+                        }
+
+                    }.show(stage).getTitleLabel().setAlignment(Align.center);
+                }
+            }
+        });
+    }
+
+    /**
+     * Handles enchanting events
+     */
+    private void enchant() {
+        // 50% success
+        if (Util.isSuccess(Util.ENCHANT, player.getRandom())) {
+            currentItem.enchant(player.getRandom());
+            // update item tooltip
+            tooltip.updateText(currentItem);
+            new Dialog("Success!", rm.dialogSkin) {
+                {
+                    Label l = new Label("Enchanting succeeded.\nThe item has been upgraded.", rm.dialogSkin);
+                    l.setAlignment(Align.center);
+                    text(l);
+                    button("OK", "next");
+                }
+
+                @Override
+                protected void result(Object object) {
+                    if (object.equals("next")) showTooltipAfterEnchant = true;
+                }
+
+            }.show(stage).getTitleLabel().setAlignment(Align.center);
+        }
+        // enchant failed
+        else {
+            // 40% chance to destroy item
+            if (Util.isSuccess(Util.DESTROY_ITEM_IF_FAIL, player.getRandom())) {
+                new Dialog("Fail!", rm.dialogSkin) {
+                    {
+                        Label l = new Label("Enchanting failed.\nThe item has been destroyed.", rm.dialogSkin);
+                        l.setAlignment(Align.center);
+                        text(l);
+                        button("OK", "next");
+                    }
+
+                    @Override
+                    protected void result(Object object) {
+                        player.inventory.items[currentItem.index].actor.remove();
+                        player.inventory.removeItem(currentItem.index);
+                        unselectItem();
+                    }
+
+                }.show(stage).getTitleLabel().setAlignment(Align.center);
+            } else {
+                new Dialog("Fail!", rm.dialogSkin) {
+                    {
+                        Label l = new Label("Enchanting failed.\nThe item is intact.", rm.dialogSkin);
+                        l.setAlignment(Align.center);
+                        text(l);
+                        button("OK", "next");
+                    }
+
+                    @Override
+                    protected void result(Object object) {
+                        if (object.equals("next")) {
+                            showTooltipAfterEnchant = true;
+                        }
+                    }
+
+                }.show(stage).getTitleLabel().setAlignment(Align.center);
+            }
+        }
+    }
+
     private void unselectItem() {
         itemSelected = false;
         currentItem = null;
         selectedSlot.setVisible(false);
+        invButtonLabels[1].setText("SELL");
         tooltip.hide();
     }
 
@@ -526,6 +666,7 @@ public class InventoryUI extends UI implements Disposable {
         damage.setText("DAMAGE: " + player.getMinDamage() + "-" + player.getMaxDamage());
         accuracy.setText("ACCURACY: " + player.getAccuracy() + "%");
         exp.setText("EXP: " + player.getExp() + "/" + player.getMaxExp());
+        gold.setText("GOLD: " + player.getGold());
 
         // update all positions
         exitButton.setPosition(ui.getX() + 363, ui.getY() + 202);
@@ -536,6 +677,7 @@ public class InventoryUI extends UI implements Disposable {
         damage.setPosition(ui.getX() + 16, ui.getY() + 148);
         accuracy.setPosition(ui.getX() + 16, ui.getY() + 136);
         exp.setPosition(ui.getX() + 16, ui.getY() + 166);
+        gold.setPosition(ui.getX() + 280, ui.getY() + 192);
 
         for (int i = 0; i < 2; i++) {
             invButtons[i].setPosition(ui.getX() + 168 + (i * 96), ui.getY() + 148);
@@ -562,26 +704,28 @@ public class InventoryUI extends UI implements Disposable {
             }
         }
 
-        /**
-        // hide tooltip when screen is touched
-        if (itemSelected && Gdx.input.isTouched()) {
-            itemSelected = false;
-            showSelectedSlot(currentItem, false);
-            tooltip.hide();
-        }
-         */
-
         // enable inventory buttons when item is selected
-        if (itemSelected) {
+        if (itemSelected && !currentItem.equipped) {
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setTouchable(Touchable.enabled);
+                if (currentItem.type < 2) {
+                    invButtons[0].setTouchable(Touchable.disabled);
+                    invButtons[0].setStyle(disabled);
+                }
                 invButtons[i].setStyle(enabled);
+                // add sell value of item to button
+                invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
             }
         } else {
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setTouchable(Touchable.disabled);
                 invButtons[i].setStyle(disabled);
             }
+        }
+
+        if (showTooltipAfterEnchant) {
+            tooltip.setVisible(true);
+            showTooltipAfterEnchant = false;
         }
     }
 
