@@ -1,5 +1,6 @@
 package com.unlucky.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -65,6 +66,12 @@ public class InventoryUI extends UI implements Disposable {
     private Image selectedSlot;
     // item tooltip
     private ItemTooltip tooltip;
+    // inventory buttons that can be applied to each item
+    // 0 - enchant, 1 - sell
+    private ImageButton[] invButtons;
+    private ImageButton.ImageButtonStyle enabled;
+    private ImageButton.ImageButtonStyle disabled;
+    private Label[] invButtonLabels;
 
     // constants
     private static final int SLOT_WIDTH = 32;
@@ -76,6 +83,8 @@ public class InventoryUI extends UI implements Disposable {
     private boolean dragging = false;
     // to differentiate between dragging and clicking
     private int prevX, prevY;
+    private boolean itemSelected = false;
+    private Item currentItem;
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -84,6 +93,7 @@ public class InventoryUI extends UI implements Disposable {
         stage = new Stage(viewport, gameScreen.getBatch());
 
         ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(400, 14), new Vector2(14, 14), 8, 372, 212);
+        ui.setTouchable(Touchable.enabled);
         stage.addActor(ui);
 
         // create exit button
@@ -146,6 +156,7 @@ public class InventoryUI extends UI implements Disposable {
         addInventory();
         addEquips();
         handleInventoryEvents();
+        handleStageEvents();
 
         selectedSlot = new Image(rm.selectedslot28x28);
         selectedSlot.setVisible(false);
@@ -154,6 +165,13 @@ public class InventoryUI extends UI implements Disposable {
         tooltip = new ItemTooltip(rm.skin);
         tooltip.setPosition(180, 30);
         stage.addActor(tooltip);
+
+        enabled = new ImageButton.ImageButtonStyle();
+        enabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[0][0]);
+        enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
+        disabled = new ImageButton.ImageButtonStyle();
+        disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
+        createInventoryButtons(stdWhite);
     }
 
     /**
@@ -195,6 +213,27 @@ public class InventoryUI extends UI implements Disposable {
             if (item != null) {
                 item.actor.remove();
             }
+        }
+    }
+
+    /**
+     * Creates the enchant and sell buttons
+     * Originally disabled and grayed out until an item is selected
+     */
+    private void createInventoryButtons(Label.LabelStyle textStyle) {
+        invButtons = new ImageButton[2];
+        invButtonLabels = new Label[2];
+
+        String[] texts = { "ENCHANT", "SELL" };
+        for (int i = 0; i < 2; i++) {
+            invButtons[i] = new ImageButton(disabled);
+            invButtons[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i] = new Label(texts[i], textStyle);
+            invButtonLabels[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i].setSize(92, 28);
+            invButtonLabels[i].setAlignment(Align.center);
+            stage.addActor(invButtons[i]);
+            stage.addActor(invButtonLabels[i]);
         }
     }
 
@@ -317,14 +356,17 @@ public class InventoryUI extends UI implements Disposable {
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
                         // a true click and not a drag
                         if (prevX == ax && prevY == ay) {
+                            // item selected
                             if (selectedSlot.isVisible()) {
-                                showSelectedSlot(item, false);
-                                tooltip.hide();
+                                unselectItem();
                             }
                             else {
-                                showSelectedSlot(item, true);
+                                itemSelected = true;
+                                currentItem = item;
+                                showSelectedSlot(item);
                                 tooltip.toFront();
-                                tooltip.show(item, item.actor.getX(), item.actor.getY() - tooltip.getHeight());
+                                Vector2 tpos = getTooltipCoords(item);
+                                tooltip.show(item, tpos.x + 16, tpos.y - tooltip.getHeight());
                             }
                         }
                     }
@@ -335,22 +377,45 @@ public class InventoryUI extends UI implements Disposable {
     }
 
     /**
+     * If the ui is touched while an item is selected, it removes the tooltip
+     * and unselects the item
+     */
+    private void handleStageEvents() {
+        ui.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (itemSelected) {
+                    unselectItem();
+                }
+                return true;
+            }
+        });
+    }
+
+    private void unselectItem() {
+        itemSelected = false;
+        currentItem = null;
+        selectedSlot.setVisible(false);
+        tooltip.hide();
+    }
+
+    /**
      * Shows the golden highlight around the slot clicked
      *
      * @param item
      */
-    private void showSelectedSlot(Item item, boolean toggle) {
+    private void showSelectedSlot(Item item) {
         if (item.equipped) {
             selectedSlot.setPosition(14 + (player.equips.positions[item.type - 2].x - 4),
                     14 + (player.equips.positions[item.type - 2].y - 4));
-            selectedSlot.setVisible(toggle);
+            selectedSlot.setVisible(true);
         }
         else {
             int i = item.index;
             int x = i % Inventory.NUM_COLS;
             int y = i / Inventory.NUM_COLS;
             selectedSlot.setPosition(182 + (x * 32), 126 - (y * 32));
-            selectedSlot.setVisible(toggle);
+            selectedSlot.setVisible(true);
         }
     }
 
@@ -379,14 +444,24 @@ public class InventoryUI extends UI implements Disposable {
 
     /**
      * Returns a Vector2 containing the x y coordinates of the slot at a
-     * given index.
+     * given index of an item in the inventory or equips.
      *
-     * @TODO
-     * @param index
+     * @param item
      * @return
      */
-    private Vector2 getIndexCoords(int index) {
-        return null;
+    private Vector2 getTooltipCoords(Item item) {
+        Vector2 ret = new Vector2();
+        if (item.equipped) {
+            ret.set(14 + (player.equips.positions[item.type - 2].x - 4),
+                    14 + (player.equips.positions[item.type - 2].y - 4));
+        }
+        else {
+            int i = item.index;
+            int x = i % Inventory.NUM_COLS;
+            int y = i / Inventory.NUM_COLS;
+            ret.set(182 + (x * 32), 126 - (y * 32));
+        }
+        return ret;
     }
 
     /**
@@ -410,6 +485,8 @@ public class InventoryUI extends UI implements Disposable {
      * Activated by the exit button
      */
     public void end() {
+        itemSelected = false;
+        currentItem = null;
         selectedSlot.setVisible(false);
         tooltip.setVisible(false);
         exitButton.setDisabled(true);
@@ -452,13 +529,18 @@ public class InventoryUI extends UI implements Disposable {
 
         // update all positions
         exitButton.setPosition(ui.getX() + 363, ui.getY() + 202);
-        headers[0].setPosition(ui.getX() + 16, ui.getY() + 194);
-        headers[1].setPosition(ui.getX() + 16, ui.getY() + 112);
-        headers[2].setPosition(ui.getX() + 168, ui.getY() + 194);
+        headers[0].setPosition(ui.getX() + 16, ui.getY() + 192);
+        headers[1].setPosition(ui.getX() + 16, ui.getY() + 110);
+        headers[2].setPosition(ui.getX() + 168, ui.getY() + 192);
         hp.setPosition(ui.getX() + 16, ui.getY() + 182);
         damage.setPosition(ui.getX() + 16, ui.getY() + 148);
         accuracy.setPosition(ui.getX() + 16, ui.getY() + 136);
         exp.setPosition(ui.getX() + 16, ui.getY() + 166);
+
+        for (int i = 0; i < 2; i++) {
+            invButtons[i].setPosition(ui.getX() + 168 + (i * 96), ui.getY() + 148);
+            invButtonLabels[i].setPosition(ui.getX() + 168 + (i * 96), ui.getY() + 148);
+        }
 
         if (!dragging) {
             // update inventory positions
@@ -477,6 +559,28 @@ public class InventoryUI extends UI implements Disposable {
                 if (player.equips.getEquipAt(i) != null) {
                     player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
                 }
+            }
+        }
+
+        /**
+        // hide tooltip when screen is touched
+        if (itemSelected && Gdx.input.isTouched()) {
+            itemSelected = false;
+            showSelectedSlot(currentItem, false);
+            tooltip.hide();
+        }
+         */
+
+        // enable inventory buttons when item is selected
+        if (itemSelected) {
+            for (int i = 0; i < 2; i++) {
+                invButtons[i].setTouchable(Touchable.enabled);
+                invButtons[i].setStyle(enabled);
+            }
+        } else {
+            for (int i = 0; i < 2; i++) {
+                invButtons[i].setTouchable(Touchable.disabled);
+                invButtons[i].setStyle(disabled);
             }
         }
     }
