@@ -18,6 +18,8 @@ public class Item {
 
     // id
     public String name;
+    // name displayed on tooltip
+    public String labelName;
     // for rendering onto tooltip
     public String desc;
     // type of item
@@ -56,6 +58,8 @@ public class Item {
     public int index;
     // whether or not this item is equipped
     public boolean equipped = false;
+    // the number of successful enchants on the item
+    public int enchants = 0;
 
     // rendering
     public Image actor;
@@ -81,6 +85,7 @@ public class Item {
         this.sell = sell;
         type = 0;
         actor = new Image(rm.items20x20[0][imgIndex]);
+        labelName = name;
     }
 
     /**
@@ -101,6 +106,7 @@ public class Item {
         this.sell = sell;
         type = 1;
         actor = new Image(rm.items20x20[1][imgIndex]);
+        labelName = name;
     }
 
     /**
@@ -128,6 +134,7 @@ public class Item {
         this.acc = acc;
         this.sell = sell;
         actor = new Image(rm.items20x20[type][imgIndex]);
+        labelName = name;
     }
 
     /**
@@ -171,6 +178,34 @@ public class Item {
         // remove newline from end of string if there is one
         ret = ret.trim();
         return ret;
+    }
+
+    /**
+     * Enchanting an item (equip) causes its stats (except accuracy)
+     * to be multiplied by 1.2-1.5 (random)
+     * There is a 50% chance that the enchant succeeds
+     * If it fails, there is a 40% chance that the item gets destroyed
+     * "+(num success)" is added to the item's name
+     * An item can be enchanted as many times as possible
+     *
+     * This method deals with enchant success
+     *
+     * @param rand
+     */
+    public void enchant(Random rand) {
+        float multiplier = (rand.nextFloat() * (1.5f - 1.2f)) + 1.2f;
+
+        mhp = (int) (mhp * multiplier);
+        dmg = (int) (dmg * multiplier);
+        sell = (int) (sell * multiplier);
+
+        enchants++;
+        // every 5 enchants an item goes up 1 rarity
+        if (enchants % 5 == 0) rarity++;
+        if (rarity > 3) rarity = 3;
+        // enchant number indicator
+        labelName = "+" + enchants + " " + name;
+
     }
 
 }
