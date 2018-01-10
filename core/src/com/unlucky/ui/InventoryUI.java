@@ -1,6 +1,5 @@
 package com.unlucky.ui;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -266,6 +265,7 @@ public class InventoryUI extends UI implements Disposable {
                     public void dragStart(InputEvent event, float x, float y, int pointer) {
                         dragging = true;
                         tooltip.hide();
+                        unselectItem();
 
                         // original positions
                         prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
@@ -273,7 +273,8 @@ public class InventoryUI extends UI implements Disposable {
 
                         item.actor.toFront();
                         selectedSlot.setVisible(false);
-                        player.inventory.removeItem(item.index);
+                        if (!item.equipped) player.inventory.removeItem(item.index);
+                        else player.equips.removeEquip(item.type - 2);
                     }
 
                     @Override
@@ -291,7 +292,6 @@ public class InventoryUI extends UI implements Disposable {
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
                         if (item.equipped) {
-                            player.equips.removeEquip(item.type - 2);
                             if (INVENTORY_AREA.contains(ax, ay)) {
                                 int hi = getHoveredIndex(ax, ay);
                                 if (hi == -1)
@@ -323,7 +323,7 @@ public class InventoryUI extends UI implements Disposable {
                                         swap.equipped = false;
                                         player.unequip(swap);
                                         player.equips.addEquip(item);
-                                        player.inventory.removeItem(item.index);
+                                        //player.inventory.removeItem(item.index);
                                         player.inventory.addItemAtIndex(swap, item.index);
                                     }
                                 } else {
@@ -384,6 +384,53 @@ public class InventoryUI extends UI implements Disposable {
                     }
 
                 });
+
+                // handle double clicks for item usage and equip
+                item.actor.addListener(new ClickListener() {
+
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        if (getTapCount() == 2) {
+                            tooltip.setVisible(false);
+                            // consuming potions
+                            if (item.type == 0) {
+                                itemSelected = true;
+                                currentItem = item;
+                                consume();
+                            }
+                            // equip items with double click
+                            else if (item.type > 1) {
+                                unselectItem();
+                                selectedSlot.setVisible(false);
+                                if (!item.equipped) {
+                                    item.equipped = true;
+                                    player.equip(item);
+                                    player.inventory.removeItem(item.index);
+                                    if (!player.equips.addEquip(item)) {
+                                        // replace the equip with the item of same type
+                                        Item swap = player.equips.removeEquip(item.type - 2);
+                                        swap.equipped = false;
+                                        player.unequip(swap);
+                                        player.equips.addEquip(item);
+                                        player.inventory.addItemAtIndex(swap, item.index);
+                                    }
+                                }
+                                // double clicking an equipped item unequips it and places it
+                                // in the first open slot if it exists
+                                else {
+                                    player.equips.removeEquip(item.type - 2);
+                                    if (!player.inventory.addItem(item)) {
+                                        player.equips.addEquip(item);
+                                    } else {
+                                        item.equipped = false;
+                                        player.unequip(item);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                });
             }
         }
     }
@@ -420,6 +467,8 @@ public class InventoryUI extends UI implements Disposable {
                             Label l = new Label("Are you sure you want\nto enchant this item?", rm.dialogSkin);
                             l.setAlignment(Align.center);
                             text(l);
+                            getButtonTable().defaults().width(80);
+                            getButtonTable().defaults().height(30);
                             button("Yes", "yes");
                             button("No", "no");
                         }
@@ -446,6 +495,8 @@ public class InventoryUI extends UI implements Disposable {
                             Label l = new Label("Are you sure you want\nto sell this item?", rm.dialogSkin);
                             l.setAlignment(Align.center);
                             text(l);
+                            getButtonTable().defaults().width(80);
+                            getButtonTable().defaults().height(30);
                             button("Yes", "yes");
                             button("No", "no");
                         }
@@ -480,6 +531,8 @@ public class InventoryUI extends UI implements Disposable {
                     Label l = new Label("Enchanting succeeded.\nThe item has been upgraded.", rm.dialogSkin);
                     l.setAlignment(Align.center);
                     text(l);
+                    getButtonTable().defaults().width(80);
+                    getButtonTable().defaults().height(30);
                     button("OK", "next");
                 }
 
@@ -499,6 +552,8 @@ public class InventoryUI extends UI implements Disposable {
                         Label l = new Label("Enchanting failed.\nThe item has been destroyed.", rm.dialogSkin);
                         l.setAlignment(Align.center);
                         text(l);
+                        getButtonTable().defaults().width(80);
+                        getButtonTable().defaults().height(30);
                         button("OK", "next");
                     }
 
@@ -516,6 +571,8 @@ public class InventoryUI extends UI implements Disposable {
                         Label l = new Label("Enchanting failed.\nThe item is intact.", rm.dialogSkin);
                         l.setAlignment(Align.center);
                         text(l);
+                        getButtonTable().defaults().width(80);
+                        getButtonTable().defaults().height(30);
                         button("OK", "next");
                     }
 
@@ -529,6 +586,34 @@ public class InventoryUI extends UI implements Disposable {
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
             }
         }
+    }
+
+    /**
+     * Handles consuming potions
+     */
+    private void consume() {
+        new Dialog("Consume", rm.dialogSkin) {
+            {
+                Label l = new Label("Heal for " + currentItem.hp + " HP\nusing this potion?", rm.dialogSkin);
+                l.setAlignment(Align.center);
+                text(l);
+                getButtonTable().defaults().width(80);
+                getButtonTable().defaults().height(30);
+                button("Yes", "yes");
+                button("No", "no");
+            }
+
+            @Override
+            protected void result(Object object) {
+                if (object.equals("yes")) {
+                    player.potion(currentItem.hp);
+                    player.inventory.items[currentItem.index].actor.remove();
+                    player.inventory.removeItem(currentItem.index);
+                    unselectItem();
+                }
+            }
+
+        }.show(stage).getTitleLabel().setAlignment(Align.center);
     }
 
     private void unselectItem() {
@@ -720,6 +805,7 @@ public class InventoryUI extends UI implements Disposable {
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setTouchable(Touchable.disabled);
                 invButtons[i].setStyle(disabled);
+                invButtonLabels[1].setText("SELL");
             }
         }
 
