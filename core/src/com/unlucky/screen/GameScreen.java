@@ -2,6 +2,7 @@ package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -13,11 +14,9 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.resource.Util;
 import com.unlucky.ui.BattleUIHandler;
 import com.unlucky.ui.Hud;
-
-import java.util.Random;
+import com.unlucky.ui.InventoryUI;
 
 /**
  * Handles all gameplay.
@@ -35,6 +34,7 @@ public class GameScreen extends AbstractScreen {
     public Battle battle;
     public BattleTransition transition;
     public LevelUpScreen levelUp;
+    public InventoryUI inventoryUI;
 
     // battle background
     private Background[] bg;
@@ -51,6 +51,7 @@ public class GameScreen extends AbstractScreen {
         battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
         transition = new BattleTransition(this, battle, battleUIHandler, hud, player);
         levelUp = new LevelUpScreen(this, map, player, rm);
+        inventoryUI = new InventoryUI(this, map, player, rm);
 
         // create bg
         createBackground(0);
@@ -60,6 +61,7 @@ public class GameScreen extends AbstractScreen {
         multiplexer.addProcessor(hud.stage);
         multiplexer.addProcessor(battleUIHandler.stage);
         multiplexer.addProcessor(levelUp.stage);
+        multiplexer.addProcessor(inventoryUI.stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -109,6 +111,7 @@ public class GameScreen extends AbstractScreen {
 
         if (currentEvent == EventState.TRANSITION) transition.update(dt);
         if (currentEvent == EventState.LEVEL_UP) levelUp.update(dt);
+        if (currentEvent == EventState.INVENTORY) inventoryUI.update(dt);
     }
 
     public void render(float dt) {
@@ -118,6 +121,9 @@ public class GameScreen extends AbstractScreen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         game.batch.begin();
+
+        // fix fading
+        game.batch.setColor(Color.WHITE);
 
         // bg camera
         game.batch.setProjectionMatrix(battleUIHandler.stage.getCamera().combined);
@@ -129,7 +135,7 @@ public class GameScreen extends AbstractScreen {
 
         // map camera
         game.batch.setProjectionMatrix(cam.combined);
-        if (currentEvent == EventState.MOVING || transition.shouldRenderMap()) {
+        if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY || transition.shouldRenderMap()) {
             map.render(game.batch);
             player.render(game.batch);
         }
@@ -139,6 +145,7 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.MOVING) hud.render(dt);
         if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) battleUIHandler.render(dt);
         if (currentEvent == EventState.LEVEL_UP || transition.shouldRenderLevelUp()) levelUp.render(dt);
+        if (currentEvent == EventState.INVENTORY) inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
     }
 
