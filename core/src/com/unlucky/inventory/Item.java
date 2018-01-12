@@ -182,7 +182,7 @@ public class Item {
 
     /**
      * Enchanting an item (equip) causes its stats (except accuracy)
-     * to be multiplied by 1.2-1.5 (random)
+     * to be multiplied by random values depending on the item's rarity
      * There is a 50% chance that the enchant succeeds
      * If it fails, there is a 40% chance that the item gets destroyed
      * "+(num success)" is added to the item's name
@@ -193,7 +193,26 @@ public class Item {
      * @param rand
      */
     public void enchant(Random rand) {
-        float multiplier = (rand.nextFloat() * (1.5f - 1.2f)) + 1.2f;
+        float multiplier = 1.f;
+
+        switch (rarity) {
+            // common
+            case 0:
+                multiplier = (rand.nextFloat() * (Util.COMMON_ENCHANT_MAX - Util.COMMON_ENCHANT_MIN)) + Util.COMMON_ENCHANT_MIN;
+                break;
+            // rare
+            case 1:
+                multiplier = (rand.nextFloat() * (Util.RARE_ENCHANT_MAX - Util.RARE_ENCHANT_MIN)) + Util.RARE_ENCHANT_MIN;
+                break;
+            // epic
+            case 2:
+                multiplier = (rand.nextFloat() * (Util.EPIC_ENCHANT_MAX - Util.EPIC_ENCHANT_MIN)) + Util.EPIC_ENCHANT_MIN;
+                break;
+            // legendary
+            case 3:
+                multiplier = (rand.nextFloat() * (Util.LEGENDARY_ENCHANT_MAX - Util.LEGENDARY_ENCHANT_MIN)) + Util.LEGENDARY_ENCHANT_MIN;
+                break;
+        }
 
         mhp = (int) (mhp * multiplier);
         dmg = (int) (dmg * multiplier);
