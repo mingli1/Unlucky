@@ -6,8 +6,8 @@ List of every aspect affected by RNG in the game
   - These tiles can either increase or decrease tile movement by 1 tile at equal probabilities.
 3. Saved from battle. 
   - 1% chance that when the player engages in battle the enemy flees.
-4. Boss chance. 
-  - 5% probability of a "boss" version of the enemy, which has increased stats explained later on.
+4. Elite chance. 
+  - 5% probability of an "elite" version of the enemy, which has increased stats explained later on.
 5. First move. 
   - The player and enemy are equally likely (50-50) to attack first in battle.
 6. Movesets. 
@@ -22,16 +22,30 @@ List of every aspect affected by RNG in the game
   and Intimidate-increases player damage all for one turn only. The player randomly gets 1 of 3 and can use it once per battle.
 10. Damage
   - Damage of a move is randomly generated from the damage range of the move. Enemy stats, including damage, are scaled randomly
-  in approximation to the player's power level. A "boss" version of an enemy will have around 1.5 +- 0.3 times the stats of a 
+  in approximation to the player's power level. An "elite" version of an enemy will have around 1.5 +- 0.3 times the stats of a 
   normal enemy.
 11. Critical strikes.
   - One category of moves are crit moves, which deal the least flat damage, but have a set chance to critically strike, dealing 
   (currently) 3x the normal damage, making it the most damaging category of moves if successful. 
-12. Items (to be implemented)
-13. Revival.
+12. Items.
+  - Tiers of rarity: common, rare, epic, legendary
+    - 60% chance for common, 25% chance for rare, 10% for epic, 5% for legendary
+  - Regular enemies have a 40% chance to drop an item from the item pool (made up of 10 categories of items)
+  - "Elite" enemies have a 60% chance to drop an item with rarity guaranteed greater than 0 (60% rare, 30% epic, 10% legendary)
+  - Bosses have a 80% chance to drop an item with rarity guaranteed greater than 1 (70% epic, 30% legendary)
+13. Enchanting items.
+  - There is a 40% that an enchant will be a success and the equip has its stats (except accuracy) upgraded.
+  - If the enchanting fails, there is a 60% chance that the item will be completely destroyed and removed from the inventory.
+  - If not destroyed, the item retains its enchanted stats and is able to be enchanted again.
+  - The amount of additional stats that enchanting gives depends on an item's rarity: the higher the rarity the greater 
+  - the additional stats between each enchant.
+  - An enchant randomly multiplies an item's stats between 1.0 and 1.6 depending on rarity.
+14. Revival.
   - 1% chance after either the player or enemy takes fatal damage, they are revived with full hp
-14. Experience.
+15. Experience.
   - EXP growth in the game is based on a set formula plus a random offset from level 1. Enemies also give exp from a set formula 
   based on level but give a random amount of extra EXP. When the player levels up, there is a random increase of stats in a range.
-15. Battle transitions.
+16. Battle transitions.
   - There are 6 (maybe more in the future) different transitions screens possible when entering and leaving battle.
+17. Bosses.
+  - Bosses have their own special random moveset in the theme of their characters.
