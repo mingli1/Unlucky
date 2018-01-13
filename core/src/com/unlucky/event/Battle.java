@@ -3,7 +3,9 @@ package com.unlucky.event;
 import com.unlucky.battle.Move;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Player;
+import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;
+import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
 
@@ -26,10 +28,6 @@ public class Battle {
         this.tileMap = tileMap;
         this.player = player;
     }
-
-    public void update(float dt) {}
-
-    public void render(float dt) {}
 
     /**
      * Sets and scales the enemy's stats according to its level
@@ -57,6 +55,7 @@ public class Battle {
         // maxHp = rand(3, 6) * seed
         int multiplier = Util.getRandomValue(Util.MIN_ENEMY_HP_SCALING, Util.MAX_ENEMY_HP_SCALING, player.getRandom());
         this.opponent.setMaxHp(opponent.isElite() ? (int) (eliteMultiplier * (seed * multiplier)) : seed * multiplier);
+        this.opponent.setMaxHp(20);
 
         // the estimated num of hits for an enemy to kill the player, between 8 and 12 scaled for move damage
         int numHitsToKill = Util.getRandomValue(Util.MIN_ENEMY_DMG_SCALING, Util.MAX_ENEMY_DMG_SCALING, player.getRandom());
@@ -71,6 +70,7 @@ public class Battle {
             opponent.setMaxHp(opponent.getMaxHp() * 3);
             opponent.setMinDamage(opponent.getMinDamage() * 3);
             opponent.setMaxDamage(opponent.getMaxDamage() * 3);
+            opponent.setMaxHp(40);
         }
     }
 
@@ -217,6 +217,85 @@ public class Battle {
             return (3 * Util.calculateExpEarned(opponent.getLevel(), opponent.getRandom().nextInt(3) + 1));
         else
             return Util.calculateExpEarned(opponent.getLevel(), opponent.getRandom().nextInt(3) + 1);
+    }
+
+    /**
+     * Gold earned scales off enemy level and player level
+     * The player will receive less gold the greater the level difference and vice versa
+     * (player.level - enemy.level)
+     *
+     * @return
+     */
+    public int getGoldGained() {
+        int gold = 0;
+        int diff = player.getLevel() - opponent.getLevel();
+
+        for (int i = 0; i < opponent.getLevel(); i++) {
+            gold += opponent.getRandom().nextInt(3) + 1;
+        }
+        gold -= (opponent.getLevel() * diff);
+        if (gold <= 0) gold = 1;
+
+        return gold;
+    }
+
+    /**
+     * Handles the probabilities of item dropping from enemies and
+     * returns the Item that they drop
+     * Returns null if the enemy doesn't drop an item
+     *
+     * @param rm
+     * @return
+     */
+    public Item getItemObtained(ResourceManager rm) {
+        if (opponent.isElite()) {
+            if (Util.isSuccess(Util.ELITE_ITEM_DROP, player.getRandom())) {
+                // elite will drop rare, epic, and legendary items at 60/30/10 chances
+                int k = player.getRandom().nextInt(100);
+                // rare
+                if (k < 60) return rm.getItem(1, player.getRandom());
+                else if (k < 90) return rm.getItem(2, player.getRandom());
+                else if (k < 100) return rm.getItem(3, player.getRandom());
+            }
+        }
+        else if (opponent.isBoss()) {
+            if (Util.isSuccess(Util.BOSS_ITEM_DROP, player.getRandom())) {
+                // boss will only drop epic and legendary items at 70/30 chances
+                int k = player.getRandom().nextInt(100);
+                // epic
+                if (k < 70) return rm.getItem(2, player.getRandom());
+                    // legendary
+                else return rm.getItem(3, player.getRandom());
+            }
+        }
+        else {
+            if (Util.isSuccess(Util.NORMAL_ITEM_DROP, player.getRandom())) {
+                return rm.getRandomItem(player.getRandom());
+            }
+        }
+        return null;
+    }
+
+    public String getItemDialog(Item item) {
+        String ret = "";
+
+        // enemy didn't drop an item
+        if (item == null) {
+            ret = "The enemy didn't drop an item.";
+        }
+        else {
+            // if the player's inventory is full then he cannot obtain the item
+            if (player.inventory.isFull()) {
+                ret = "The enemy couldn't drop an item since your inventory was full.";
+            }
+            else {
+                ret = "The enemy dropped a " + item.getDialogName() + "! " +
+                        "The item was added to your inventory.";
+                player.inventory.addItem(item);
+            }
+        }
+
+        return ret;
     }
 
     /**

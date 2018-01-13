@@ -180,7 +180,7 @@ public class InventoryUI extends UI implements Disposable {
         disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
         createInventoryButtons(stdWhite);
 
-        handleInventoryEvents();
+        //handleInventoryEvents();
         handleStageEvents();
         handleInvButtonEvents();
     }
@@ -259,6 +259,7 @@ public class InventoryUI extends UI implements Disposable {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             final Item item = player.inventory.getItem(i);
             if (item != null) {
+                item.actor.clearListeners();
                 item.actor.addListener(new DragListener() {
 
                     @Override
@@ -703,6 +704,8 @@ public class InventoryUI extends UI implements Disposable {
 
         addInventory();
         addEquips();
+
+        handleInventoryEvents();
     }
 
     /**
@@ -730,6 +733,7 @@ public class InventoryUI extends UI implements Disposable {
      */
     public void next() {
         removeInventoryActors();
+
         gameScreen.setCurrentEvent(EventState.MOVING);
         gameScreen.hud.toggle(true);
         ended = false;

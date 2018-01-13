@@ -282,6 +282,26 @@ public class ResourceManager {
             return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
     }
 
+    /**
+     * Returns a random Item from the item pool with weighted rarity
+     *
+     * @param rand
+     * @return
+     */
+    public Item getRandomItem(Random rand) {
+        int k = rand.nextInt(100);
+        // common
+        if (k < Util.COMMON_ITEM_RNG_INDEX) return getItem(0, rand);
+        // rare
+        else if (k < Util.RARE_ITEM_RNG_INDEX) return getItem(1, rand);
+        // epic
+        else if (k < Util.EPIC_ITEM_RNG_INDEX) return getItem(2, rand);
+        // legendary
+        else if (k < Util.LEGENDARY_ITEM_RNG_INDEX) return getItem(3, rand);
+
+        return null;
+    }
+
     public void dispose() {
         assetManager.dispose();
     }

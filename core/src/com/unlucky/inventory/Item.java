@@ -224,7 +224,30 @@ public class Item {
         if (rarity > 3) rarity = 3;
         // enchant number indicator
         labelName = "+" + enchants + " " + name;
+    }
 
+    /**
+     * Returns the item's name as [RARITY] [name] for dialog box
+     *
+     * @return
+     */
+    public String getDialogName() {
+        String ret = "";
+        switch (rarity) {
+            case 0:
+                ret = "[COMMON] " + name;
+                break;
+            case 1:
+                ret = "[RARE] " + name;
+                break;
+            case 2:
+                ret = "[EPIC] " + name;
+                break;
+            case 3:
+                ret = "[LEGENDARY] " + name;
+                break;
+        }
+        return ret;
     }
 
 }

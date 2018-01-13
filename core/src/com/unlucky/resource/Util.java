@@ -46,8 +46,8 @@ public class Util {
     public static final int P_INTIMIDATE = 25;
     public static final float INTIMIDATE_MULT = 1.25f;
     public static final int REVIVAL = 1;
-    public static final int ENCHANT = 50;
-    public static final int DESTROY_ITEM_IF_FAIL = 40;
+    public static final int ENCHANT = 40;
+    public static final int DESTROY_ITEM_IF_FAIL = 60;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
@@ -56,6 +56,23 @@ public class Util {
     public static final int MAX_ENEMY_HP_SCALING = 4;
     public static final int MIN_ENEMY_DMG_SCALING = 8;
     public static final int MAX_ENEMY_DMG_SCALING = 12;
+
+    public static final int NORMAL_ITEM_DROP = 40;
+    public static final int ELITE_ITEM_DROP = 60;
+    public static final int BOSS_ITEM_DROP = 80;
+    public static final int COMMON_ITEM_RNG_INDEX = 60;
+    public static final int RARE_ITEM_RNG_INDEX = 90;
+    public static final int EPIC_ITEM_RNG_INDEX = 99;
+    public static final int LEGENDARY_ITEM_RNG_INDEX = 100;
+
+    public static final float COMMON_ENCHANT_MIN = 1.f;
+    public static final float COMMON_ENCHANT_MAX = 1.2f;
+    public static final float RARE_ENCHANT_MIN = 1.1f;
+    public static final float RARE_ENCHANT_MAX = 1.3f;
+    public static final float EPIC_ENCHANT_MIN = 1.2f;
+    public static final float EPIC_ENCHANT_MAX = 1.4f;
+    public static final float LEGENDARY_ENCHANT_MIN = 1.3f;
+    public static final float LEGENDARY_ENCHANT_MAX = 1.6f;
 
     // Level up scaling
     public static final int PLAYER_INIT_MAX_HP = 85;

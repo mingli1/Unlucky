@@ -13,6 +13,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -252,9 +253,14 @@ public class BattleEventHandler extends BattleUI {
                             battle.opponent.setDead(false);
                             return;
                         }
-                        // defeated enemy and gained experience
+                        // defeated enemy and gained experience and gold
+                        // maybe the player gets an item
                         else {
                             int expGained = battle.getBattleExp();
+                            int goldGained = battle.getGoldGained();
+                            Item itemGained = battle.getItemObtained(rm);
+
+                            player.addGold(goldGained);
 
                             // level up occurs
                             if (player.getExp() + expGained >= player.getMaxExp()) {
@@ -262,6 +268,8 @@ public class BattleEventHandler extends BattleUI {
                                 player.levelUp(remainder);
                                 startDialog(new String[] {
                                         "You defeated " + battle.opponent.getId() + "!",
+                                        "You obtained " + goldGained + " gold.",
+                                        battle.getItemDialog(itemGained),
                                         "You gained " + expGained + " experience.",
                                         "You leveled up!"
                                 }, BattleEvent.ENEMY_TURN, BattleEvent.LEVEL_UP);
@@ -271,6 +279,8 @@ public class BattleEventHandler extends BattleUI {
                                 player.addExp(expGained);
                                 startDialog(new String[] {
                                         "You defeated " + battle.opponent.getId() + "!",
+                                        "You obtained " + goldGained + " gold.",
+                                        battle.getItemDialog(itemGained),
                                         "You gained " + expGained + " experience."
                                 }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
                                 return;

@@ -112,4 +112,16 @@ public class Inventory {
         return null;
     }
 
+    /**
+     * Returns whether or not the inventory is full
+     *
+     * @return
+     */
+    public boolean isFull() {
+        for (int i = 0; i < NUM_SLOTS; i++) {
+            if (items[i] == null) return false;
+        }
+        return true;
+    }
+
 }

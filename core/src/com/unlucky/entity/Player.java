@@ -45,21 +45,6 @@ public class Player extends Entity {
         inventory = new Inventory();
         equips = new Equipment();
 
-        /**
-        // TEST INVENTORY
-        for (int i = 0; i < 18; i++) {
-            // test rarity
-            int k = rand.nextInt(100);
-            // common
-            if (k < 60) inventory.addItem(rm.getItem(0, rand));
-            // rare
-            else if (k < 85) inventory.addItem(rm.getItem(1, rand));
-            // epic
-            else if (k < 95) inventory.addItem(rm.getItem(2, rand));
-            // legendary
-            else if (k < 100) inventory.addItem(rm.getItem(3, rand));
-        }
-         **/
         inventory.addItem(rm.getItem(0, 0));
         inventory.addItem(rm.getItem(0, 1));
         inventory.addItem(rm.getItem(0, 2));
@@ -75,8 +60,6 @@ public class Player extends Entity {
         inventory.addItem(rm.getItem(0, 16));
         inventory.addItem(rm.getItem(0, 17));
         inventory.addItem(rm.getItem(0, 18));
-        inventory.addItem(rm.getItem(0, 19));
-        inventory.addItem(rm.getItem(1, 0));
         inventory.addItem(rm.getItem(1, 2));
         inventory.addItem(rm.getItem(2, 2));
         inventory.addItem(rm.getItem(2, 0));
