@@ -48,6 +48,20 @@ public class BattleScene extends BattleUI {
     private float hitAnimAlternateTimer = 0;
     private int lastHit = -1;
 
+    // name colors based on enemy level
+    /**
+     * 3 or more levels lower than player = gray
+     * 1 or 2 levels lower than player = green
+     * same level as player = white
+     * 1 or 2 levels higher than player = orange
+     * 3 or more levels higher than player = red
+     */
+    private Label.LabelStyle weakest;
+    private Label.LabelStyle weaker;
+    private Label.LabelStyle same;
+    private Label.LabelStyle stronger;
+    private Label.LabelStyle strongest;
+
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
@@ -56,6 +70,12 @@ public class BattleScene extends BattleUI {
 
         BitmapFont font = rm.pixel10;
         Label.LabelStyle ls = new Label.LabelStyle(font, new Color(255, 255, 255, 255));
+
+        weakest = new Label.LabelStyle(font, new Color(200 / 255.f, 200 / 255.f, 200 / 255.f, 1));
+        weaker = new Label.LabelStyle(font, new Color(0, 225 / 255.f, 0, 1));
+        same = new Label.LabelStyle(font, new Color(1, 1, 1, 1));
+        stronger = new Label.LabelStyle(font, new Color(1, 175 / 255.f, 0, 1));
+        strongest = new Label.LabelStyle(font, new Color(225 / 255.f, 0, 0, 1));
 
         // create player hud
         playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 5, 145, 40);
@@ -171,10 +191,21 @@ public class BattleScene extends BattleUI {
 
         playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
         // show enemy level
-        if (battle.opponent.isBoss())
+        if (battle.opponent.isBoss()) {
+            // boss's name is always red
+            enemyHudLabel.setStyle(strongest);
             enemyHudLabel.setText(battle.opponent.getId());
-        else
+        }
+        else {
+            int diff = battle.opponent.getLevel() - player.getLevel();
+            if (diff <= -3) enemyHudLabel.setStyle(weakest);
+            else if (diff == -1 || diff == -2) enemyHudLabel.setStyle(weaker);
+            else if (diff == 0) enemyHudLabel.setStyle(same);
+            else if (diff == 1 || diff == 2) enemyHudLabel.setStyle(stronger);
+            else if (diff >= 3) enemyHudLabel.setStyle(strongest);
+
             enemyHudLabel.setText("LV." + battle.opponent.getLevel() + " " + battle.opponent.getId());
+        }
 
         // set positions relative to hud position
         playerHpBar.setPosition(new Vector2(playerHud.getX() + 40, playerHud.getY() + 8));
