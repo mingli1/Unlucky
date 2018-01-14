@@ -138,23 +138,22 @@ public class Item {
     }
 
     /**
-     * Adjusts the stats/attributes of an Item based on player level
+     * Adjusts the stats/attributes of an Item based on enemy level
      * Only called once per item's existence
      *
      * @param level
      * @param rand
      */
     public void adjust(int level, Random rand) {
-        // max hp will be scaled by 3-5 parts of original item stat added on each level
-        int mhpSeed = mhp / Util.getRandomValue(3, 5, rand);
+        // max hp will be scaled by 5-7 parts of original item stat added on each level
+        // dmg is scaled 4-6 parts of original per level
+        int mhpSeed = mhp / Util.getRandomValue(5, 7, rand);
+        int dmgSeed = dmg / Util.getRandomValue(4, 6, rand);
         for (int i = 0; i < level - 1; i++) {
             mhp += mhpSeed;
+            dmg += dmgSeed;
         }
-
-        // damage is scaled linearly to level
-        if (level != 1) dmg *= (level - 1);
-
-        // @TODO scale sell value and adjust dmg
+        // @TODO scale sell value
     }
 
     /**
