@@ -31,7 +31,8 @@ public class Battle {
 
     /**
      * Sets and scales the enemy's stats according to its level
-     * If the enemy is an elite, then its stats are between 1.3-1.8x higher
+     * If the enemy is an elite, then its stats are between 1.3-1.6x higher
+     * If boss, then stats are 2.4-3.0x higher
      * @TODO Scale enemies based on level of map
      * @TODO exp and gold calculations
      * @TODO CHANGE ALL THESE CALCULATIONS TO SCALE OFF ENEMY LEVEL
@@ -43,35 +44,51 @@ public class Battle {
 
         // TEMPORARY: set opponent level at around player's level
 
-        // set to at or above player's level by 3
-        opponent.setLevel(Util.getRandomValue(player.getLevel(), player.getLevel() + 3, opponent.getRandom()));
+        // set to below or above player's level by 3
+        //opponent.setLevel(Util.getRandomValue(player.getLevel(), player.getLevel() + 3, opponent.getRandom()));
+        opponent.setLevel(Util.getDeviatedRandomValue(player.getLevel(), 3, opponent.getRandom()));
+        if (opponent.getLevel() <= 0) opponent.setLevel(1);
 
         float eliteMultiplier = (player.getRandom().nextFloat() *
                 (Util.MAX_ELITE_MULTIPLIER - Util.MIN_ELITE_MULTIPLIER)) + Util.MIN_ELITE_MULTIPLIER;
 
-        // choose damage num from player's damage range
-        int seed = Util.getRandomValue(player.getMinDamage(), player.getMaxDamage(), player.getRandom());
-        // an enemy will take around 3-6 hits to defeat
-        // maxHp = rand(3, 6) * seed
-        int multiplier = Util.getRandomValue(Util.MIN_ENEMY_HP_SCALING, Util.MAX_ENEMY_HP_SCALING, player.getRandom());
-        this.opponent.setMaxHp(opponent.isElite() ? (int) (eliteMultiplier * (seed * multiplier)) : seed * multiplier);
-        this.opponent.setMaxHp(20);
+        float bossMultiplier = (player.getRandom().nextFloat() *
+                (Util.MAX_BOSS_MULTIPLIER - Util.MIN_BOSS_MULTIPLIER)) + Util.MIN_BOSS_MULTIPLIER;
 
-        // the estimated num of hits for an enemy to kill the player, between 8 and 12 scaled for move damage
-        int numHitsToKill = Util.getRandomValue(Util.MIN_ENEMY_DMG_SCALING, Util.MAX_ENEMY_DMG_SCALING, player.getRandom());
-        int dmgSeed = player.getMaxHp() / numHitsToKill;
-        // enemy's damage range is scaled to dmgSeed +- 4-6x dmgSeed
-        int sigma = dmgSeed / Util.getRandomValue(4, 6, player.getRandom());
-        this.opponent.setMinDamage(opponent.isElite() ? (int) (eliteMultiplier * (dmgSeed - sigma)) : dmgSeed - sigma);
-        this.opponent.setMaxDamage(opponent.isElite() ? (int) (eliteMultiplier * (dmgSeed + sigma)) : dmgSeed + sigma);
+        int mhp = Util.getRandomValue(Util.ENEMY_INIT_MIN_MHP, Util.ENEMY_INIT_MAX_MHP, opponent.getRandom());
+        int minDmg = Util.getRandomValue(Util.ENEMY_INIT_MIN_MINDMG, Util.ENEMY_INIT_MAX_MINDMG, opponent.getRandom());
+        int maxDmg = Util.getRandomValue(Util.ENEMY_INIT_MIN_MAXDMG, Util.ENEMY_INIT_MAX_MAXDMG, opponent.getRandom());
 
-        // TEMPORARY BOSS SCALING
-        if (opponent.isBoss()) {
-            opponent.setMaxHp(opponent.getMaxHp() * 3);
-            opponent.setMinDamage(opponent.getMinDamage() * 3);
-            opponent.setMaxDamage(opponent.getMaxDamage() * 3);
-            opponent.setMaxHp(40);
+        for (int i = 0; i < opponent.getLevel() - 1; i++) {
+            mhp += Util.getRandomValue(Util.ENEMY_MIN_HP_INCREASE, Util.ENEMY_MAX_HP_INCREASE, opponent.getRandom());
+
+            int dmgMean = Util.getRandomValue(Util.ENEMY_MIN_DMG_INCREASE, Util.ENEMY_MAX_DMG_INCREASE, opponent.getRandom());
+            int minDmgIncrease = (dmgMean - opponent.getRandom().nextInt(3));
+            int maxDmgIncrease = (dmgMean + opponent.getRandom().nextInt(3));
+
+            minDmg += minDmgIncrease;
+            maxDmg += maxDmgIncrease;
         }
+
+        if (opponent.isElite()) {
+            opponent.setMaxHp((int) (eliteMultiplier * mhp));
+            opponent.setMinDamage((int) (eliteMultiplier * minDmg));
+            opponent.setMaxDamage((int) (eliteMultiplier * maxDmg));
+        }
+        else if (opponent.isBoss()) {
+            opponent.setMaxHp((int) (bossMultiplier * mhp));
+            opponent.setMinDamage((int) (bossMultiplier * minDmg));
+            opponent.setMaxDamage((int) (bossMultiplier * maxDmg));
+        }
+        else {
+            opponent.setMaxHp(mhp);
+            opponent.setMinDamage(minDmg);
+            opponent.setMaxDamage(maxDmg);
+        }
+
+        System.out.println("level: " + opponent.getLevel());
+        System.out.println("mhp: " + opponent.getMaxHp());
+        System.out.println("dmg: " + opponent.getMinDamage() + "-" + opponent.getMaxDamage());
     }
 
     /**
@@ -291,6 +308,8 @@ public class Battle {
             else {
                 ret = "The enemy dropped a " + item.getDialogName() + "! " +
                         "The item was added to your inventory.";
+                // scale item stats to match enemy level
+                item.adjust(opponent.getLevel(), opponent.getRandom());
                 player.inventory.addItem(item);
             }
         }
