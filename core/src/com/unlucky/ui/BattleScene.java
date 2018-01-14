@@ -116,7 +116,22 @@ public class BattleScene extends BattleUI {
         playerHudLabel.setVisible(toggle);
         playerHud.start();
 
-        if (toggle) enemyHpBar.setEntity(battle.opponent);
+        if (toggle) {
+            enemyHpBar.setEntity(battle.opponent);
+
+            if (battle.opponent.isBoss()) {
+                // boss's name is always red
+                enemyHudLabel.setStyle(strongest);
+            }
+            else {
+                int diff = battle.opponent.getLevel() - player.getLevel();
+                if (diff <= -3) enemyHudLabel.setStyle(weakest);
+                else if (diff == -1 || diff == -2) enemyHudLabel.setStyle(weaker);
+                else if (diff == 0) enemyHudLabel.setStyle(same);
+                else if (diff == 1 || diff == 2) enemyHudLabel.setStyle(stronger);
+                else if (diff >= 3) enemyHudLabel.setStyle(strongest);
+            }
+        }
 
         enemyHud.setVisible(toggle);
         enemyHudLabel.setVisible(toggle);
@@ -192,18 +207,9 @@ public class BattleScene extends BattleUI {
         playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
         // show enemy level
         if (battle.opponent.isBoss()) {
-            // boss's name is always red
-            enemyHudLabel.setStyle(strongest);
             enemyHudLabel.setText(battle.opponent.getId());
         }
         else {
-            int diff = battle.opponent.getLevel() - player.getLevel();
-            if (diff <= -3) enemyHudLabel.setStyle(weakest);
-            else if (diff == -1 || diff == -2) enemyHudLabel.setStyle(weaker);
-            else if (diff == 0) enemyHudLabel.setStyle(same);
-            else if (diff == 1 || diff == 2) enemyHudLabel.setStyle(stronger);
-            else if (diff >= 3) enemyHudLabel.setStyle(strongest);
-
             enemyHudLabel.setText("LV." + battle.opponent.getLevel() + " " + battle.opponent.getId());
         }
 
