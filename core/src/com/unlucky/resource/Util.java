@@ -40,8 +40,9 @@ public class Util {
     public static final int RUN_FROM_BATTLE = 7;
     public static final int SAVED_FROM_BATTLE = 1;
     public static final int ELITE_CHANCE = 5;
-    public static final int PLAYER_ACCURACY = 85;
-    public static final int ENEMY_ACCURACY = 95;
+    public static final int PLAYER_ACCURACY = 80;
+    public static final int ENEMY_MIN_ACCURACY = 75;
+    public static final int ENEMY_MAX_ACCURACY = 95;
     public static final int P_DISTRACT = 45;
     public static final int P_INTIMIDATE = 25;
     public static final float INTIMIDATE_MULT = 1.25f;
@@ -51,11 +52,9 @@ public class Util {
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
-    public static final float MAX_ELITE_MULTIPLIER = 1.8f;
-    public static final int MIN_ENEMY_HP_SCALING = 2;
-    public static final int MAX_ENEMY_HP_SCALING = 4;
-    public static final int MIN_ENEMY_DMG_SCALING = 8;
-    public static final int MAX_ENEMY_DMG_SCALING = 12;
+    public static final float MAX_ELITE_MULTIPLIER = 1.6f;
+    public static final float MIN_BOSS_MULTIPLIER = 2.4f;
+    public static final float MAX_BOSS_MULTIPLIER = 3.0f;
 
     public static final int NORMAL_ITEM_DROP = 40;
     public static final int ELITE_ITEM_DROP = 60;
@@ -75,13 +74,25 @@ public class Util {
     public static final float LEGENDARY_ENCHANT_MAX = 1.6f;
 
     // Level up scaling
-    public static final int PLAYER_INIT_MAX_HP = 85;
-    public static final int PLAYER_INIT_MIN_DMG = 12;
-    public static final int PLAYER_INIT_MAX_DMG = 18;
-    public static final int PLAYER_MIN_HP_INCREASE = 11;
-    public static final int PLAYER_MAX_HP_INCREASE = 19;
-    public static final int PLAYER_MIN_DMG_INCREASE = 13;
-    public static final int PLAYER_MAX_DMG_INCREASE = 17;
+    public static final int PLAYER_INIT_MAX_HP = 65;
+    public static final int PLAYER_INIT_MIN_DMG = 10;
+    public static final int PLAYER_INIT_MAX_DMG = 16;
+    public static final int PLAYER_MIN_HP_INCREASE = 7;
+    public static final int PLAYER_MAX_HP_INCREASE = 15;
+    public static final int PLAYER_MIN_DMG_INCREASE = 2;
+    public static final int PLAYER_MAX_DMG_INCREASE = 7;
+
+    public static final int ENEMY_INIT_MIN_MHP = 24;
+    public static final int ENEMY_INIT_MAX_MHP = 32;
+    public static final int ENEMY_INIT_MIN_MINDMG = 3;
+    public static final int ENEMY_INIT_MAX_MINDMG = 5;
+    public static final int ENEMY_INIT_MIN_MAXDMG = 6;
+    public static final int ENEMY_INIT_MAX_MAXDMG = 9;
+
+    public static final int ENEMY_MIN_HP_INCREASE = 4;
+    public static final int ENEMY_MAX_HP_INCREASE = 10;
+    public static final int ENEMY_MIN_DMG_INCREASE = 2;
+    public static final int ENEMY_MAX_DMG_INCREASE = 5;
 
     // Experience
 
