@@ -70,6 +70,9 @@ public class Battle {
             maxDmg += maxDmgIncrease;
         }
 
+        // random acc
+        opponent.setAccuracy(Util.getRandomValue(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY, opponent.getRandom()));
+
         if (opponent.isElite()) {
             opponent.setMaxHp((int) (eliteMultiplier * mhp));
             opponent.setMinDamage((int) (eliteMultiplier * minDmg));
@@ -89,6 +92,7 @@ public class Battle {
         System.out.println("level: " + opponent.getLevel());
         System.out.println("mhp: " + opponent.getMaxHp());
         System.out.println("dmg: " + opponent.getMinDamage() + "-" + opponent.getMaxDamage());
+        System.out.println("acc: " + opponent.getAccuracy());
     }
 
     /**
@@ -101,8 +105,8 @@ public class Battle {
         String[] dialog = null;
 
         // distract/enemy debuff
-        if (options[0]) opponent.setAccuracy(Util.ENEMY_ACCURACY - Util.P_DISTRACT);
-        else opponent.setAccuracy(Util.ENEMY_ACCURACY);
+        if (options[0]) opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
+        else opponent.setAccuracy(Util.getRandomValue(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY, opponent.getRandom()));
 
         // accounting for player accuracy or accuracy buff
         if (Util.isSuccess(player.getAccuracy(), player.getRandom()) || options[1]) {
