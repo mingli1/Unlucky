@@ -6,7 +6,6 @@ import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.resource.Util;
 
 import java.util.Random;
 
@@ -170,6 +169,29 @@ public class Entity {
     public boolean canMove() {
         for (boolean i : moving) if (i) return false;
         return true;
+    }
+
+    /**
+     * This method is to fix a problem where the player can reset their
+     * movement magnitudes continuously on a blocked tile
+     *
+     * @param dir
+     * @return
+     */
+    public boolean nextTileBlocked(int dir) {
+        currentTileX = (int) (position.x / tileMap.tileSize);
+        currentTileY = (int) (position.y / tileMap.tileSize);
+        switch (dir) {
+            case 0: // down
+                return tileMap.getTile(currentTileX, currentTileY - 1).isBlocked();
+            case 1: // up
+                return tileMap.getTile(currentTileX, currentTileY + 1).isBlocked();
+            case 2: // right
+                return tileMap.getTile(currentTileX + 1, currentTileY).isBlocked();
+            case 3: // left
+                return tileMap.getTile(currentTileX - 1, currentTileY).isBlocked();
+        }
+        return false;
     }
 
     /**
