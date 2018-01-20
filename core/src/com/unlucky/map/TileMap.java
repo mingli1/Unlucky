@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -33,6 +34,7 @@ import java.util.Random;
  * t can be one of the following:
  * - tileID
  * - e[entityID]|[tileID] (means an Entity is placed on top of a tile)
+ * - a[animIndex]|[numFrames]|[framesPerSecond] (an animated tile)
  *
  * s is the tileID of a NON-BLOCKED tile
  * if s is 0 then there is no tile
@@ -124,6 +126,19 @@ public class TileMap {
                     t = new Tile(tileID, rm.tiles16x16[tileID / l][tileID % l], new Vector2(x, y), rand);
                     t.addEntity(Util.getEntity(entityID, toMapCoords(x, y), this, rm));
                 }
+                // check for animated tile format
+                else if (temp.startsWith("a")) {
+                    String removeSymbol = temp.substring(1, temp.length());
+                    String[] trivalue = removeSymbol.split("\\|");
+
+                    int animIndex = Integer.parseInt(trivalue[0]);
+                    int numFrames = Integer.parseInt(trivalue[1]);
+                    int fps = Integer.parseInt(trivalue[2]);
+
+                    AnimationManager anim = new AnimationManager(rm.atiles16x16, numFrames, animIndex, (float) 1 / fps);
+
+                    t = new Tile(animIndex + 96, anim, new Vector2(x, y), rand);
+                }
                 else {
                     int index = Integer.parseInt(trimmed[row.length - 1 - j]) - 1;
                     t = new Tile(index, rm.tiles16x16[index / l][index % l], new Vector2(x, y), rand);
@@ -167,6 +182,9 @@ public class TileMap {
             if (tileMap[i].containsEntity()) {
                 tileMap[i].getEntity().update(dt);
             }
+            if (tileMap[i].animated) {
+                tileMap[i].anim.update(dt);
+            }
         }
     }
 
@@ -180,7 +198,10 @@ public class TileMap {
             int r = i / mapWidth;
             int c = i % mapWidth;
 
-            batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+            if (tileMap[i].animated)
+                batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
+            else
+                batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
 
             // drawing an entity on a Tile
             if (tileMap[i].containsEntity()) {
