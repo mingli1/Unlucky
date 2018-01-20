@@ -2,7 +2,9 @@ package com.unlucky.map;
 
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Entity;
+import com.unlucky.resource.Util;
 
 import java.util.Random;
 
@@ -18,6 +20,8 @@ public class Tile {
 
     // Image representation of tile
     public TextureRegion sprite;
+    // animation of a tile
+    public AnimationManager anim;
 
     /**
      * Types of Tiles
@@ -33,6 +37,8 @@ public class Tile {
     public int id;
     // Tile type is determined by id
     public int type;
+    // tiles can be animated
+    public boolean animated;
 
     // coords
     public Vector2 tilePosition;
@@ -43,6 +49,14 @@ public class Tile {
     // Tile properties
     public int magOffset;
 
+    /**
+     * A regular non-animated tile
+     *
+     * @param id
+     * @param sprite
+     * @param tilePosition
+     * @param rand
+     */
     public Tile(int id, TextureRegion sprite, Vector2 tilePosition, Random rand) {
         this.id = id;
         this.sprite = sprite;
@@ -52,8 +66,39 @@ public class Tile {
         // a Tile originally has no Entity
         hold = null;
 
-        if (id == 9) type = BLOCKED;
-        else if (id == 5) type = CHANGE;
+        animated = false;
+
+        if (Util.isBlockedTile(id)) type = BLOCKED;
+        //else if (id == 80) type = CHANGE;
+        else type = NORMAL;
+
+        // magOffset can either be -1 or 1
+        if (isChange()) {
+            int r = rand.nextInt(2);
+            if (r == 0) magOffset = 1;
+            if (r == 1) magOffset = -1;
+        }
+    }
+
+    /**
+     * An animated tile
+     *
+     * @param id is animIndex + 96 since all animated tile ids will begin at 96
+     * @param anim
+     * @param tilePosition
+     * @param rand
+     */
+    public Tile(int id, AnimationManager anim, Vector2 tilePosition, Random rand) {
+        this.id = id;
+        this.anim = anim;
+        this.tilePosition = tilePosition;
+        this.rand = rand;
+
+        hold = null;
+
+        animated = true;
+
+        if (Util.isBlockedTile(id)) type = BLOCKED;
         else type = NORMAL;
 
         // magOffset can either be -1 or 1
