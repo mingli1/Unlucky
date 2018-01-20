@@ -1,9 +1,9 @@
 package com.unlucky.map;
 
-import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
@@ -22,10 +22,20 @@ import java.util.Random;
  * t, ...
  * t, ...
  * mapHeight length
+ * topLayer (0 - no top layer, 1 - top layer)
+ * (if top layer)
+ * s, s, s, s, ... -> mapWidth length
+ * s, ...
+ * s, ...
+ * s, ...
+ * mapHeight length
  *
  * t can be one of the following:
  * - tileID
  * - e[entityID]|[tileID] (means an Entity is placed on top of a tile)
+ *
+ * s is the tileID of a NON-BLOCKED tile
+ * if s is 0 then there is no tile
  *
  * @author Ming Li
  */
@@ -39,6 +49,8 @@ public class TileMap {
     public String[] mapInfoLines;
     // array containing map information
     public Tile[] tileMap;
+    public TextureRegion[] topLayer;
+    public boolean hasTopLayer;
     public int mapWidth;
     public int mapHeight;
     public boolean[] collisionMap;
@@ -66,8 +78,10 @@ public class TileMap {
         mapHeight = Integer.parseInt(mapInfoLines[1]);
 
         tileMap = new Tile[mapWidth * mapHeight];
+        topLayer = new TextureRegion[mapWidth * mapHeight];
 
-        convert();
+        createTileMap();
+        createTopLayer();
 
         collisionMap = new boolean[mapWidth * mapHeight];
         for (int i = 0; i < collisionMap.length; i++) {
@@ -76,10 +90,10 @@ public class TileMap {
     }
 
     /**
-     * Converts lines 2->n of the mapInfo to a 1d array of TextureRegions
+     * Converts lines 2->n of the mapInfo to a 1d array of Tiles
      * representing a tile for each element
      */
-    private void convert() {
+    private void createTileMap() {
         for (int i = 2; i < mapHeight + 2; i++) {
             String[] row = mapInfoLines[i].split(",");
             // remove all whitespace from text so the map files can be more readable with spaces
@@ -105,16 +119,45 @@ public class TileMap {
                     String[] bivalue = removeSymbol.split("\\|");
 
                     int entityID = Integer.parseInt(bivalue[0]);
-                    int tileID = Integer.parseInt(bivalue[1]);
+                    int tileID = Integer.parseInt(bivalue[1]) - 1;
 
                     t = new Tile(tileID, rm.tiles16x16[tileID / l][tileID % l], new Vector2(x, y), rand);
                     t.addEntity(Util.getEntity(entityID, toMapCoords(x, y), this, rm));
                 }
                 else {
-                    int index = Integer.parseInt(trimmed[row.length - 1 - j]);
+                    int index = Integer.parseInt(trimmed[row.length - 1 - j]) - 1;
                     t = new Tile(index, rm.tiles16x16[index / l][index % l], new Vector2(x, y), rand);
                 }
                 tileMap[k] = t;
+            }
+        }
+    }
+
+    /**
+     * Creates the top layer of the map if there is one,
+     * converting lines n+2 -> n+2+height into a 1d array of TextureRegions
+     */
+    private void createTopLayer() {
+        // get boolean hasTopLayer
+        int h = Integer.parseInt(mapInfoLines[mapHeight + 2]);
+        hasTopLayer = h == 1 ? true : false;
+        if (!hasTopLayer) return;
+
+        for (int i = mapHeight + 3; i < 2 * mapHeight + 3; i++) {
+            String[] row = mapInfoLines[i].split(",");
+            String[] trimmed = new String[row.length];
+            for (int j = 0; j < trimmed.length; j++) {
+                trimmed[j] = row[j].replaceAll(" ", "");
+            }
+            for (int j = 0; j < mapWidth; j++) {
+                int k = (mapWidth * mapHeight - 1) - ((i - mapHeight - 3) * mapWidth + j);
+                int l = rm.tiles16x16[0].length;
+
+                // index of -1 is null
+                int index = Integer.parseInt(trimmed[row.length - 1 - j]) - 1;
+
+                if (index == -1) topLayer[k] = null;
+                else topLayer[k] = rm.tiles16x16[index / l][index % l];
             }
         }
     }
@@ -143,6 +186,20 @@ public class TileMap {
             if (tileMap[i].containsEntity()) {
                 tileMap[i].getEntity().render(batch, true);
             }
+        }
+    }
+
+    /**
+     * Renders the top layer on top of the map
+     *
+     * @param batch
+     */
+    public void renderTopLayer(SpriteBatch batch) {
+        for (int i = 0; i < topLayer.length; i++) {
+            int r = i / mapWidth;
+            int c = i % mapWidth;
+
+            if (topLayer[i] != null) batch.draw(topLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
         }
     }
 
