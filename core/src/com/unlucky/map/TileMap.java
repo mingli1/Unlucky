@@ -241,6 +241,10 @@ public class TileMap {
             int c = i % mapWidth;
 
             if (bottomLayer[i] != null) batch.draw(bottomLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
+            // render animated tiles below the player
+            if (tileMap[i].animated) {
+                batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
+            }
         }
     }
 
@@ -254,12 +258,8 @@ public class TileMap {
             int r = i / mapWidth;
             int c = i % mapWidth;
 
-            if (tileMap[i].animated) {
-                batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
-            }
-            else {
-                if (tileMap[i].sprite != null)
-                    batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+            if (!tileMap[i].animated && tileMap[i].sprite != null) {
+                batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
             }
 
             // drawing an entity on a Tile
