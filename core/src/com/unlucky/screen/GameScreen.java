@@ -14,6 +14,7 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 import com.unlucky.ui.BattleUIHandler;
 import com.unlucky.ui.Hud;
 import com.unlucky.ui.InventoryUI;
@@ -136,8 +137,10 @@ public class GameScreen extends AbstractScreen {
         // map camera
         game.batch.setProjectionMatrix(cam.combined);
         if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY || transition.shouldRenderMap()) {
-            map.render(game.batch);
+            map.renderBottomLayer(game.batch);
             player.render(game.batch);
+            map.render(game.batch);
+            map.renderTopLayer(game.batch);
         }
 
         game.batch.end();
