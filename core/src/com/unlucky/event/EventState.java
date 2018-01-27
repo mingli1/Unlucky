@@ -6,9 +6,11 @@ package com.unlucky.event;
  * @author Ming Li
  */
 public enum EventState {
+    NONE,
     MOVING,
     BATTLING,
     TRANSITION,
     LEVEL_UP,
-    INVENTORY
+    INVENTORY,
+    TILE_EVENT
 }

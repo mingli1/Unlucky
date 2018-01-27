@@ -69,8 +69,6 @@ public class TileMap {
 
     public Vector2 origin;
 
-    private Random rand;
-
     // res
     private ResourceManager rm;
 
@@ -78,8 +76,6 @@ public class TileMap {
         this.tileSize = tileSize;
         this.origin = origin;
         this.rm = rm;
-
-        rand = new Random();
 
         // read file into a String
         FileHandle file = Gdx.files.internal(path);
@@ -159,7 +155,7 @@ public class TileMap {
 
                     TextureRegion none = null;
                     // an entity is placed onto a tile with id -1 meaning empty tile with no texture
-                    t = new Tile(-1, none, new Vector2(x, y), rand);
+                    t = new Tile(-1, none, new Vector2(x, y));
                     t.addEntity(Util.getEntity(entityID, toMapCoords(x, y), this, rm));
                 }
                 // check for animated tile format
@@ -173,16 +169,16 @@ public class TileMap {
 
                     AnimationManager anim = new AnimationManager(rm.atiles16x16, numFrames, animIndex, (float) 1 / fps);
 
-                    t = new Tile(animIndex + 96, anim, new Vector2(x, y), rand);
+                    t = new Tile(animIndex + 96, anim, new Vector2(x, y));
                 }
                 else {
                     int index = Integer.parseInt(trimmed[row.length - 1 - j]) - 1;
                     if (index == -1) {
                         TextureRegion none = null;
-                        t = new Tile(-1, none, new Vector2(x, y), rand);
+                        t = new Tile(-1, none, new Vector2(x, y));
                     }
                     else {
-                        t = new Tile(index, rm.tiles16x16[index / l][index % l], new Vector2(x, y), rand);
+                        t = new Tile(index, rm.tiles16x16[index / l][index % l], new Vector2(x, y));
                     }
                 }
                 tileMap[k] = t;
@@ -376,6 +372,16 @@ public class TileMap {
     }
 
     /**
+     * Replaces a Tile on the map
+     *
+     * @param tilePosition
+     * @param tile
+     */
+    public void setTile(Vector2 tilePosition, Tile tile) {
+        tileMap[(int) (tilePosition.y * mapWidth + tilePosition.x)] = tile;
+    }
+
+    /**
      * Replaces a Tile by tile id
      *
      * @param tileX
@@ -385,7 +391,7 @@ public class TileMap {
     public void setTile(int tileX, int tileY, int id) {
         int r = id / rm.tiles16x16[0].length;
         int c = id % rm.tiles16x16.length;
-        tileMap[tileY * mapWidth + tileX] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY), rand);
+        tileMap[tileY * mapWidth + tileX] = new Tile(id, rm.tiles16x16[r][c], new Vector2(tileX, tileY));
     }
 
     /**

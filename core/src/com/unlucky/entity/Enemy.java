@@ -29,7 +29,7 @@ public class Enemy extends Entity {
         super(id, position, tileMap, rm);
         speed = 0;
         moveset = new Moveset(rm);
-        accuracy = Util.ENEMY_ACCURACY;
+        //accuracy = Util.ENEMY_ACCURACY;
     }
 
     /**

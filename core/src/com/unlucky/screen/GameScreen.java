@@ -35,6 +35,7 @@ public class GameScreen extends AbstractScreen {
     public Battle battle;
     public BattleTransition transition;
     public LevelUpScreen levelUp;
+    public DialogScreen dialog;
     public InventoryUI inventoryUI;
 
     // battle background
@@ -52,6 +53,7 @@ public class GameScreen extends AbstractScreen {
         battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
         transition = new BattleTransition(this, battle, battleUIHandler, hud, player);
         levelUp = new LevelUpScreen(this, map, player, rm);
+        dialog = new DialogScreen(this, map, player, rm);
         inventoryUI = new InventoryUI(this, map, player, rm);
 
         // create bg
@@ -62,6 +64,7 @@ public class GameScreen extends AbstractScreen {
         multiplexer.addProcessor(hud.stage);
         multiplexer.addProcessor(battleUIHandler.stage);
         multiplexer.addProcessor(levelUp.stage);
+        multiplexer.addProcessor(dialog.stage);
         multiplexer.addProcessor(inventoryUI.stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
@@ -100,6 +103,13 @@ public class GameScreen extends AbstractScreen {
                 setCurrentEvent(EventState.TRANSITION);
                 transition.start(EventState.MOVING, EventState.BATTLING);
             }
+            // player stepped on interaction tile
+            if (player.isTileInteraction()) {
+                hud.toggle(false);
+                setCurrentEvent(EventState.TILE_EVENT);
+                // @TODO: change level scaling to map level
+                dialog.startDialog(player.getQuestionMarkDialog(dialog, player.getLevel()), EventState.MOVING, EventState.MOVING);
+            }
         }
 
         if (currentEvent == EventState.BATTLING) {
@@ -112,6 +122,7 @@ public class GameScreen extends AbstractScreen {
 
         if (currentEvent == EventState.TRANSITION) transition.update(dt);
         if (currentEvent == EventState.LEVEL_UP) levelUp.update(dt);
+        if (currentEvent == EventState.TILE_EVENT) dialog.update(dt);
         if (currentEvent == EventState.INVENTORY) inventoryUI.update(dt);
     }
 
@@ -136,7 +147,9 @@ public class GameScreen extends AbstractScreen {
 
         // map camera
         game.batch.setProjectionMatrix(cam.combined);
-        if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY || transition.shouldRenderMap()) {
+        if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
+                transition.shouldRenderMap() || currentEvent == EventState.TILE_EVENT)
+        {
             map.renderBottomLayer(game.batch);
             player.render(game.batch);
             map.render(game.batch);
@@ -148,6 +161,7 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.MOVING) hud.render(dt);
         if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) battleUIHandler.render(dt);
         if (currentEvent == EventState.LEVEL_UP || transition.shouldRenderLevelUp()) levelUp.render(dt);
+        if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
         if (currentEvent == EventState.INVENTORY) inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
     }
@@ -156,7 +170,9 @@ public class GameScreen extends AbstractScreen {
         super.dispose();
         hud.dispose();
         battleUIHandler.dispose();
+        dialog.dispose();
         levelUp.dispose();
+        inventoryUI.dispose();
     }
 
     /**

@@ -294,6 +294,7 @@ public class Battle {
                 return rm.getRandomItem(player.getRandom());
             }
         }
+        //return rm.getRandomItemFromPool(opponent.getRandom());
         return null;
     }
 

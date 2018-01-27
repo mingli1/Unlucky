@@ -32,6 +32,7 @@ public class ResourceManager {
     // 2D TextureRegion arrays that stores sprites of various sizes for easy animation
     public TextureRegion[][] sprites16x16;
     public TextureRegion[][] tiles16x16;
+    public TextureRegion[][] atiles16x16;
     public TextureRegion[][] items20x20;
     public TextureRegion[][] battleSprites96x96;
     public TextureRegion[][] battleBackgrounds400x240;
@@ -84,6 +85,7 @@ public class ResourceManager {
 
         assetManager.load("sprites/16x16_sprites.png", Texture.class);
         assetManager.load("sprites/16x16_tiles.png", Texture.class);
+        assetManager.load("sprites/16x16_atiles.png", Texture.class);
         assetManager.load("sprites/20x20_items.png", Texture.class);
         assetManager.load("sprites/96x96_battle_sprites.png", Texture.class);
         assetManager.load("sprites/11x6_shadow.png", Texture.class);
@@ -122,6 +124,8 @@ public class ResourceManager {
                 assetManager.get("sprites/16x16_sprites.png", Texture.class), 16, 16);
         tiles16x16 = TextureRegion.split(
                 assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
+        atiles16x16 = TextureRegion.split(
+                assetManager.get("sprites/16x16_atiles.png", Texture.class), 16, 16);
         items20x20 = TextureRegion.split(
                 assetManager.get("sprites/20x20_items.png", Texture.class), 20, 20);
         battleSprites96x96 = TextureRegion.split(
@@ -213,6 +217,17 @@ public class ResourceManager {
                         move.getFloat("minHeal"), move.getFloat("maxHeal")));
         }
         bossMoves.add(slimeMoves);
+
+        Array<Move> lpMoves = new Array<Move>();
+        for (JsonValue move : boss.get("loganpaul")) {
+            if (move.getInt("type") == 0)
+                lpMoves.add(new Move(0, move.getString("name"),
+                        move.getFloat("minDamage"), move.getFloat("maxDamage")));
+            else
+                lpMoves.add(new Move(3, move.getString("name"),
+                        move.getFloat("minHeal"), move.getFloat("maxHeal")));
+        }
+        bossMoves.add(lpMoves);
     }
 
     private void loadItems() {
@@ -300,6 +315,16 @@ public class ResourceManager {
         else if (k < Util.LEGENDARY_ITEM_RNG_INDEX) return getItem(3, rand);
 
         return null;
+    }
+
+    /**
+     * Returns a random Item from the item pool regardless of rarity
+     *
+     * @param rand
+     * @return
+     */
+    public Item getRandomItemFromPool(Random rand) {
+        return getItem(rand.nextInt(4), rand);
     }
 
     public void dispose() {

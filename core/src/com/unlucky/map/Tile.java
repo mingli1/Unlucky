@@ -16,8 +16,6 @@ import java.util.Random;
  */
 public class Tile {
 
-    private Random rand;
-
     // Image representation of tile
     public TextureRegion sprite;
     // animation of a tile
@@ -27,11 +25,24 @@ public class Tile {
      * Types of Tiles
      * - normal: Player can pass through
      * - blocked: Player cannot go through
-     * - change: Player loses or gains movement magnitude after stepping on it
+     * - change: Player goes forwards or backwards from the tile in the direction they entered
+     * - in and out: Player goes 1 tile in a random direction not the direction they entered the tile on
+     * - stop: Player's movement is stopped when this tile is stepped on
+     * - down, up, right, left: Player's direction is changed to 1 tile in the direction
+     * of the tile stepped on
+     * - question mark: Player can obtain gold, healing, or items from stepping on it. Once
+     * stepped on, it disappears
      */
     public static final byte NORMAL = 0;
     public static final byte BLOCKED = 1;
     public static final byte CHANGE = 2;
+    public static final byte IN_AND_OUT = 3;
+    public static final byte STOP = 4;
+    public static final byte DOWN = 5;
+    public static final byte UP = 6;
+    public static final byte RIGHT = 7;
+    public static final byte LEFT = 8;
+    public static final byte QUESTION_MARK = 9;
 
     // Each tile has a unique identifier
     public int id;
@@ -46,22 +57,17 @@ public class Tile {
     // The Entity a Tile could contain
     public Entity hold;
 
-    // Tile properties
-    public int magOffset;
-
     /**
      * A regular non-animated tile
      *
      * @param id
      * @param sprite
      * @param tilePosition
-     * @param rand
      */
-    public Tile(int id, TextureRegion sprite, Vector2 tilePosition, Random rand) {
+    public Tile(int id, TextureRegion sprite, Vector2 tilePosition) {
         this.id = id;
         this.sprite = sprite;
         this.tilePosition = tilePosition;
-        this.rand = rand;
 
         // a Tile originally has no Entity
         hold = null;
@@ -69,15 +75,7 @@ public class Tile {
         animated = false;
 
         if (Util.isBlockedTile(id)) type = BLOCKED;
-        //else if (id == 80) type = CHANGE;
         else type = NORMAL;
-
-        // magOffset can either be -1 or 1
-        if (isChange()) {
-            int r = rand.nextInt(2);
-            if (r == 0) magOffset = 1;
-            if (r == 1) magOffset = -1;
-        }
     }
 
     /**
@@ -86,27 +84,26 @@ public class Tile {
      * @param id is animIndex + 96 since all animated tile ids will begin at 96
      * @param anim
      * @param tilePosition
-     * @param rand
      */
-    public Tile(int id, AnimationManager anim, Vector2 tilePosition, Random rand) {
+    public Tile(int id, AnimationManager anim, Vector2 tilePosition) {
         this.id = id;
         this.anim = anim;
         this.tilePosition = tilePosition;
-        this.rand = rand;
 
         hold = null;
 
         animated = true;
 
         if (Util.isBlockedTile(id)) type = BLOCKED;
+        else if (id == 99) type = CHANGE;
+        else if (id == 100) type = IN_AND_OUT;
+        else if (id == 101) type = STOP;
+        else if (id == 102) type = DOWN;
+        else if (id == 103) type = UP;
+        else if (id == 104) type = RIGHT;
+        else if (id == 105) type = LEFT;
+        else if (id == 106) type = QUESTION_MARK;
         else type = NORMAL;
-
-        // magOffset can either be -1 or 1
-        if (isChange()) {
-            int r = rand.nextInt(2);
-            if (r == 0) magOffset = 1;
-            if (r == 1) magOffset = -1;
-        }
     }
 
     public void addEntity(Entity e) {
@@ -129,6 +126,22 @@ public class Tile {
 
     public boolean isChange() { return type == CHANGE; }
 
-    public int getMagOffset() { return magOffset; }
+    public boolean isInAndOut() { return type == IN_AND_OUT; }
+
+    public boolean isStop() { return type == STOP; }
+
+    public boolean isDown() { return type == DOWN; }
+
+    public boolean isUp() { return type == UP; }
+
+    public boolean isRight() { return type == RIGHT; }
+
+    public boolean isLeft() { return type == LEFT; }
+
+    public boolean isQuestionMark() { return type == QUESTION_MARK; }
+
+    public boolean isSpecial() {
+        return type != NORMAL && type != BLOCKED;
+    }
 
 }

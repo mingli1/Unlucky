@@ -15,7 +15,7 @@ import com.unlucky.screen.GameScreen;
  */
 public class Unlucky extends Game {
 
-    public static final String TITLE = "Unlucky";
+    public static final String TITLE = "Unlucky Version 0.5.9";
 
     // Desktop screen dimensions
     public static final int V_WIDTH = 200;
@@ -36,7 +36,7 @@ public class Unlucky extends Game {
 	}
 
 	public void render() {
-        Gdx.graphics.setTitle("Unlucky | " + Gdx.graphics.getFramesPerSecond() + " fps");
+        Gdx.graphics.setTitle(TITLE + " | " + Gdx.graphics.getFramesPerSecond() + " fps");
         super.render();
 	}
 
