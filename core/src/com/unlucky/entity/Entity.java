@@ -270,7 +270,7 @@ public class Entity {
         int cy = (int) (position.y / tileMap.tileSize);
         Tile currentTile = tileMap.getTile(cx, cy);
 
-        if (canMove()) {
+        if (canMove() && !nextTileBlocked(prevDir)) {
             // Player goes forwards or backwards from the tile in the direction they entered
             if (currentTile.isChange()) {
                 int k = rand.nextInt(2);
