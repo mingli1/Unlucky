@@ -201,7 +201,7 @@ public class Hud extends UI implements Disposable {
     }
 
     private void movePlayer(int dir) {
-        if (player.canMove()) {
+        if (player.canMove() && !player.nextTileBlocked(dir)) {
             player.move(dir, mags[dir]);
             player.getAm().setAnimation(dir);
             shuffleMagnitudes();

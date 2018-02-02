@@ -47,8 +47,8 @@ public class Util {
     public static final int P_INTIMIDATE = 25;
     public static final float INTIMIDATE_MULT = 1.25f;
     public static final int REVIVAL = 1;
-    public static final int ENCHANT = 40;
-    public static final int DESTROY_ITEM_IF_FAIL = 60;
+    public static final int ENCHANT = 50;
+    public static final int DESTROY_ITEM_IF_FAIL = 50;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
@@ -75,22 +75,22 @@ public class Util {
 
     // Level up scaling
     public static final int PLAYER_INIT_MAX_HP = 65;
-    public static final int PLAYER_INIT_MIN_DMG = 10;
-    public static final int PLAYER_INIT_MAX_DMG = 16;
+    public static final int PLAYER_INIT_MIN_DMG = 12;
+    public static final int PLAYER_INIT_MAX_DMG = 18;
     public static final int PLAYER_MIN_HP_INCREASE = 7;
     public static final int PLAYER_MAX_HP_INCREASE = 15;
-    public static final int PLAYER_MIN_DMG_INCREASE = 2;
-    public static final int PLAYER_MAX_DMG_INCREASE = 7;
+    public static final int PLAYER_MIN_DMG_INCREASE = 3;
+    public static final int PLAYER_MAX_DMG_INCREASE = 5;
 
     public static final int ENEMY_INIT_MIN_MHP = 24;
-    public static final int ENEMY_INIT_MAX_MHP = 32;
+    public static final int ENEMY_INIT_MAX_MHP = 36;
     public static final int ENEMY_INIT_MIN_MINDMG = 3;
     public static final int ENEMY_INIT_MAX_MINDMG = 5;
     public static final int ENEMY_INIT_MIN_MAXDMG = 6;
     public static final int ENEMY_INIT_MAX_MAXDMG = 9;
 
-    public static final int ENEMY_MIN_HP_INCREASE = 4;
-    public static final int ENEMY_MAX_HP_INCREASE = 10;
+    public static final int ENEMY_MIN_HP_INCREASE = 5;
+    public static final int ENEMY_MAX_HP_INCREASE = 13;
     public static final int ENEMY_MIN_DMG_INCREASE = 2;
     public static final int ENEMY_MAX_DMG_INCREASE = 5;
 
@@ -163,6 +163,19 @@ public class Util {
 
     // Map
 
+    // all blocked tile ids
+    public static final int[] BLOCKED_TILE_IDS = {
+        5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31,
+        38, 41, 48, 49, 50, 51, 64, 65, 66, 67, 96
+    };
+
+    public static boolean isBlockedTile(int id) {
+        for (int i = 0; i < BLOCKED_TILE_IDS.length; i++) {
+            if (id == BLOCKED_TILE_IDS[i]) return true;
+        }
+        return false;
+    }
+
     /**
      * Returns an instance of an Entity based on numerical Entity id
      *
@@ -176,6 +189,7 @@ public class Util {
         switch (id) {
             case 2: return new Enemy("slime", position, map, rm, 2, 1, 1 / 3f);
             case 3: return new Enemy("king slime", 0, position, map, rm, 2, 2, 1 / 3f);
+            case 4: return new Enemy("logan paul", 1, position, map, rm, 2, 3, 1 / 3f);
         }
         return null;
     }

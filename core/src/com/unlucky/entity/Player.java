@@ -10,6 +10,7 @@ import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.DialogScreen;
 
 /**
  * The protagonist of the game.
@@ -45,6 +46,7 @@ public class Player extends Entity {
         inventory = new Inventory();
         equips = new Equipment();
 
+        /**
         inventory.addItem(rm.getItem(0, 0));
         inventory.addItem(rm.getItem(0, 1));
         inventory.addItem(rm.getItem(0, 2));
@@ -67,6 +69,7 @@ public class Player extends Entity {
         inventory.addItem(rm.getItem(3, 0));
         inventory.addItem(rm.getItem(3, 1));
         inventory.addItem(rm.getItem(3, 3));
+         **/
 
         // attributes
         hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
@@ -80,7 +83,6 @@ public class Player extends Entity {
         exp = 0;
         // offset between 3 and 5
         maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
-        //maxExp = 2;
 
         // create tilemap animation
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -124,15 +126,14 @@ public class Player extends Entity {
         hpIncrease += Util.getRandomValue(Util.PLAYER_MIN_HP_INCREASE, Util.PLAYER_MAX_HP_INCREASE, rand);
         int dmgMean = Util.getRandomValue(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE, rand);
 
-        // deviates from mean by 0 to 3
-        minDmgIncrease += (dmgMean - rand.nextInt(4));
-        maxDmgIncrease += (dmgMean + rand.nextInt(4));
+        // deviates from mean by 0 to 2
+        minDmgIncrease += (dmgMean - rand.nextInt(2));
+        maxDmgIncrease += (dmgMean + rand.nextInt(2));
         // accuracy increases by 1% every 10 levels
         accuracyIncrease += level % 10 == 0 ? 1 : 0;
 
         int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, Util.getRandomValue(3, 5, rand));
-        //maxExp = 2;
         maxExpIncrease += (maxExp - prevMaxExp);
 
         // another level up
@@ -196,9 +197,78 @@ public class Player extends Entity {
         opponent = null;
     }
 
+    public void finishTileInteraction() {
+        tileInteraction = false;
+    }
+
     public void potion(int heal) {
         hp += heal;
         if (hp > maxHp) hp = maxHp;
+    }
+
+    /**
+     * Green question mark tiles can drop 70% of the time
+     * if does drop:
+     * - gold (50% of the time) (based on map level)
+     * - heals for 20% of max hp (45% of the time)
+     * - items (5% of the time)
+     *
+     * @return
+     */
+    public String[] getQuestionMarkDialog(DialogScreen dialog, int mapLevel) {
+        String[] ret = null;
+
+        if (Util.isSuccess(70, rand)) {
+            int k = rand.nextInt(100);
+            // gold
+            if (k < 50) {
+                // gold per level scaled off map's average level
+                int gold = 0;
+                for (int i = 0; i < mapLevel; i++) {
+                    gold += Util.getRandomValue(7, 13, rand);
+                }
+                this.gold += gold;
+                ret = new String[] {
+                        "The random tile gave something!",
+                        "You obtained " + gold + " gold!"
+                };
+            }
+            // heal
+            else if (k < 95) {
+                int heal = (int) (0.2 * maxHp);
+                this.hp += heal;
+                if (hp > maxHp) hp = maxHp;
+                ret = new String[] {
+                        "The random tile gave something!",
+                        "It healed you for " + heal + " hp!"
+                };
+            }
+            // item
+            else if (k < 100) {
+                Item item = rm.getRandomItem(rand);
+                if (inventory.isFull()) {
+                    ret = new String[] {
+                            "The random tile gave something!",
+                            "It dropped a " + item.getDialogName() + "!",
+                            "Oh no, too bad your inventory was full."
+                    };
+                }
+                else {
+                    ret = new String[]{
+                            "The random tile gave something!",
+                            "It dropped a " + item.getDialogName() + "!",
+                            "The item was added to your inventory."
+                    };
+                }
+            }
+        }
+        else {
+            ret = new String[] {
+                "The random tile did not give anything."
+            };
+        }
+
+        return ret;
     }
 
     public boolean isBattling() {
