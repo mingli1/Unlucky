@@ -2,6 +2,7 @@ package com.unlucky.map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
@@ -229,19 +230,22 @@ public class TileMap {
      *
      * @param batch
      */
-    public void renderBottomLayer(SpriteBatch batch) {
+    public void renderBottomLayer(SpriteBatch batch, OrthographicCamera cam) {
         for (int i = 0; i < bottomLayer.length; i++) {
-            int r = i / mapWidth;
-            int c = i % mapWidth;
+            if (tileInsideCamera(tileMap[i], cam)) {
+                int r = i / mapWidth;
+                int c = i % mapWidth;
 
-            if (bottomLayer[i] != null) batch.draw(bottomLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
-            // render animated tiles below the player
-            if (tileMap[i].animated) {
-                batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
-            }
-            // drawing an entity on a Tile
-            if (tileMap[i].containsEntity()) {
-                tileMap[i].getEntity().render(batch, true);
+                if (bottomLayer[i] != null)
+                    batch.draw(bottomLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
+                // render animated tiles below the player
+                if (tileMap[i].animated) {
+                    batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
+                }
+                // drawing an entity on a Tile
+                if (tileMap[i].containsEntity()) {
+                    tileMap[i].getEntity().render(batch, true);
+                }
             }
         }
     }
@@ -251,13 +255,15 @@ public class TileMap {
      *
      * @param batch
      */
-    public void render(SpriteBatch batch) {
+    public void render(SpriteBatch batch, OrthographicCamera cam) {
         for (int i = 0; i < tileMap.length; i++) {
-            int r = i / mapWidth;
-            int c = i % mapWidth;
+            if (tileInsideCamera(tileMap[i], cam)) {
+                int r = i / mapWidth;
+                int c = i % mapWidth;
 
-            if (!tileMap[i].animated && tileMap[i].sprite != null) {
-                batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+                if (!tileMap[i].animated && tileMap[i].sprite != null) {
+                    batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+                }
             }
         }
     }
@@ -267,13 +273,35 @@ public class TileMap {
      *
      * @param batch
      */
-    public void renderTopLayer(SpriteBatch batch) {
+    public void renderTopLayer(SpriteBatch batch, OrthographicCamera cam) {
         for (int i = 0; i < topLayer.length; i++) {
-            int r = i / mapWidth;
-            int c = i % mapWidth;
+            if (tileInsideCamera(tileMap[i], cam)) {
+                int r = i / mapWidth;
+                int c = i % mapWidth;
 
-            if (topLayer[i] != null) batch.draw(topLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
+                if (topLayer[i] != null)
+                    batch.draw(topLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
+            }
         }
+    }
+
+    /**
+     * Determines if a certain tile is within the camera rendering distance.
+     *
+     * 6 tile from player x
+     * 4 tile from player y
+     *
+     * @param t
+     * @param cam map camera
+     * @return
+     */
+    public boolean tileInsideCamera(Tile t, OrthographicCamera cam) {
+        int x = (int) t.tilePosition.x * tileSize;
+        int y = (int) t.tilePosition.y * tileSize;
+        int xOffset = tileSize * 7;
+        int yOffset = tileSize * 5;
+        return x >= cam.position.x - xOffset - tileSize && x <= cam.position.x + xOffset &&
+                y >= cam.position.y - yOffset && y <= cam.position.y + yOffset;
     }
 
     /**
