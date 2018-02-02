@@ -140,8 +140,22 @@ public class Tile {
 
     public boolean isQuestionMark() { return type == QUESTION_MARK; }
 
+    /**
+     * A special tile is any tile not normal or blocked
+     *
+     * @return
+     */
     public boolean isSpecial() {
         return type != NORMAL && type != BLOCKED;
+    }
+
+    /**
+     * A moving tile is any tile where the player cannot stay on
+     *
+     * @return
+     */
+    public boolean isMoving() {
+        return type == 2 || type == 3 || (type > 4 && type < 9);
     }
 
 }

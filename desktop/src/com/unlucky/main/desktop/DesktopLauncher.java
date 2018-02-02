@@ -15,8 +15,8 @@ public class DesktopLauncher {
         config.height = Unlucky.V_HEIGHT * Unlucky.V_SCALE;
         config.resizable = false;
         config.vSyncEnabled = false;
-        config.backgroundFPS = 60;
-        config.foregroundFPS = 60;
+        config.backgroundFPS = 10;
+        config.foregroundFPS = 30;
         new LwjglApplication(new Unlucky(), config);
     }
 

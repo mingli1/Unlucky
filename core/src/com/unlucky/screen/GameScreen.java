@@ -14,7 +14,6 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.resource.Util;
 import com.unlucky.ui.BattleUIHandler;
 import com.unlucky.ui.Hud;
 import com.unlucky.ui.InventoryUI;
@@ -47,7 +46,7 @@ public class GameScreen extends AbstractScreen {
         currentEvent = EventState.MOVING;
 
         map = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
-        player = new Player("player", map.toMapCoords(5, 8), map, rm);
+        player = new Player("player", map.toMapCoords(11, 30), map, rm);
         battle = new Battle(this, map, player);
         hud = new Hud(this, map, player, rm);
         battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
@@ -137,19 +136,19 @@ public class GameScreen extends AbstractScreen {
         // fix fading
         game.batch.setColor(Color.WHITE);
 
-        // bg camera
-        game.batch.setProjectionMatrix(battleUIHandler.stage.getCamera().combined);
         if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) {
+            // bg camera
+            game.batch.setProjectionMatrix(battleUIHandler.stage.getCamera().combined);
             for (int i = 0; i < bg.length; i++) {
                 bg[i].render(game.batch);
             }
         }
 
-        // map camera
-        game.batch.setProjectionMatrix(cam.combined);
         if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
                 transition.shouldRenderMap() || currentEvent == EventState.TILE_EVENT)
         {
+            // map camera
+            game.batch.setProjectionMatrix(cam.combined);
             map.renderBottomLayer(game.batch);
             player.render(game.batch);
             map.render(game.batch);

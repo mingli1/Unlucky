@@ -47,28 +47,28 @@ public class Player extends Entity {
         equips = new Equipment();
 
         /**
-        inventory.addItem(rm.getItem(0, 0));
-        inventory.addItem(rm.getItem(0, 1));
-        inventory.addItem(rm.getItem(0, 2));
-        inventory.addItem(rm.getItem(0, 4));
-        inventory.addItem(rm.getItem(0, 5));
-        inventory.addItem(rm.getItem(0, 6));
-        inventory.addItem(rm.getItem(3, 2));
-        inventory.addItem(rm.getItem(0, 10));
-        inventory.addItem(rm.getItem(0, 11));
-        inventory.addItem(rm.getItem(0, 12));
-        inventory.addItem(rm.getItem(0, 14));
-        inventory.addItem(rm.getItem(0, 15));
-        inventory.addItem(rm.getItem(0, 16));
-        inventory.addItem(rm.getItem(0, 17));
-        inventory.addItem(rm.getItem(0, 18));
-        inventory.addItem(rm.getItem(1, 2));
-        inventory.addItem(rm.getItem(2, 2));
-        inventory.addItem(rm.getItem(2, 0));
-        inventory.addItem(rm.getItem(2, 1));
-        inventory.addItem(rm.getItem(3, 0));
-        inventory.addItem(rm.getItem(3, 1));
-        inventory.addItem(rm.getItem(3, 3));
+         inventory.addItem(rm.getItem(0, 0));
+         inventory.addItem(rm.getItem(0, 1));
+         inventory.addItem(rm.getItem(0, 2));
+         inventory.addItem(rm.getItem(0, 4));
+         inventory.addItem(rm.getItem(0, 5));
+         inventory.addItem(rm.getItem(0, 6));
+         inventory.addItem(rm.getItem(3, 2));
+         inventory.addItem(rm.getItem(0, 10));
+         inventory.addItem(rm.getItem(0, 11));
+         inventory.addItem(rm.getItem(0, 12));
+         inventory.addItem(rm.getItem(0, 14));
+         inventory.addItem(rm.getItem(0, 15));
+         inventory.addItem(rm.getItem(0, 16));
+         inventory.addItem(rm.getItem(0, 17));
+         inventory.addItem(rm.getItem(0, 18));
+         inventory.addItem(rm.getItem(1, 2));
+         inventory.addItem(rm.getItem(2, 2));
+         inventory.addItem(rm.getItem(2, 0));
+         inventory.addItem(rm.getItem(2, 1));
+         inventory.addItem(rm.getItem(3, 0));
+         inventory.addItem(rm.getItem(3, 1));
+         inventory.addItem(rm.getItem(3, 3));
          **/
 
         // attributes
@@ -78,7 +78,7 @@ public class Player extends Entity {
         maxDamage = Util.PLAYER_INIT_MAX_DMG;
 
         level = 1;
-        speed = 1;
+        speed = 50.f;
 
         exp = 0;
         // offset between 3 and 5
@@ -259,12 +259,14 @@ public class Player extends Entity {
                             "It dropped a " + item.getDialogName() + "!",
                             "The item was added to your inventory."
                     };
+                    item.adjust(mapLevel, rand);
+                    inventory.addItem(item);
                 }
             }
         }
         else {
             ret = new String[] {
-                "The random tile did not give anything."
+                    "The random tile did not give anything."
             };
         }
 

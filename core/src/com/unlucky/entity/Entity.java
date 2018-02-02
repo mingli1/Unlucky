@@ -4,13 +4,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
+import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 
 import java.util.Random;
 
 /**
- * The superclass of all things in the game (player, enemies, items, etc.)
+ * Handles entity attributes and movement on the tile map
  *
  * @author Ming Li
  */
@@ -40,6 +41,8 @@ public class Entity {
     protected int currentTileY;
     // The amount of tiles for a direction to move
     protected int magnitude;
+    protected int prevDir = -1;
+    protected boolean tileInteraction = false;
 
     // map
     protected TileMap tileMap;
@@ -84,7 +87,9 @@ public class Entity {
 
     public void update(float dt) {
         // movement
-        handleMovement();
+        handleMovement(dt);
+        // special tile handling
+        handleSpecialTiles();
 
         // handle RPG elements
         if (hp > maxHp) hp = maxHp;
@@ -156,7 +161,7 @@ public class Entity {
         currentTileX = (int) (position.x / tileMap.tileSize);
         currentTileY = (int) (position.y / tileMap.tileSize);
         magnitude = mag;
-        magnitude += adjustForOffset(dir);
+        prevDir = dir;
 
         moving[dir] = true;
     }
@@ -206,55 +211,51 @@ public class Entity {
     public int adjustMagnitude(int dir) {
         switch (dir) {
             case 0: // down
-                for (int i = currentTileY; i >= currentTileY - magnitude; i--) {
-                    if (tileMap.getTile(currentTileX, i).isBlocked() || i <= 0) {
+                for (int i = currentTileY - 1; i >= currentTileY - magnitude; i--) {
+                    Tile t = tileMap.getTile(currentTileX, i);
+                    if (t.isBlocked() || i <= 0) {
                         if (i == currentTileY - 1) {
                             return currentTileY;
                         }
                         else return i + 1;
                     }
-                    if (tileMap.containsEntity(currentTileX, i)) {
-                        return i;
-                    }
+                    if (tileMap.containsEntity(currentTileX, i) || t.isSpecial()) return i;
                 }
                 return currentTileY - magnitude;
             case 1: // up
-                for (int i = currentTileY; i <= currentTileY + magnitude; i++) {
-                    if (tileMap.getTile(currentTileX, i).isBlocked() || i >= tileMap.mapHeight - 1) {
+                for (int i = currentTileY + 1; i <= currentTileY + magnitude; i++) {
+                    Tile t = tileMap.getTile(currentTileX, i);
+                    if (t.isBlocked() || i >= tileMap.mapHeight - 1) {
                         if (i == currentTileY + 1) {
                             return currentTileY;
                         }
                         else return i - 1;
                     }
-                    if (tileMap.containsEntity(currentTileX, i)) {
-                        return i;
-                    }
+                    if (tileMap.containsEntity(currentTileX, i) || t.isSpecial()) return i;
                 }
                 return currentTileY + magnitude;
             case 2: // right
-                for (int i = currentTileX; i <= currentTileX + magnitude; i++) {
-                    if (tileMap.getTile(i, currentTileY).isBlocked() || i >= tileMap.mapWidth - 1) {
+                for (int i = currentTileX + 1; i <= currentTileX + magnitude; i++) {
+                    Tile t = tileMap.getTile(i, currentTileY);
+                    if (t.isBlocked() || i >= tileMap.mapWidth - 1) {
                         if (i == currentTileX + 1) {
                             return currentTileX;
                         }
                         else return i - 1;
                     }
-                    if (tileMap.containsEntity(i, currentTileY)) {
-                        return i;
-                    }
+                    if (tileMap.containsEntity(i, currentTileY) || t.isSpecial()) return i;
                 }
                 return currentTileX + magnitude;
             case 3: // left
-                for (int i = currentTileX; i >= currentTileX - magnitude; i--) {
-                    if (tileMap.getTile(i, currentTileY).isBlocked() || i <= 0) {
+                for (int i = currentTileX - 1; i >= currentTileX - magnitude; i--) {
+                    Tile t = tileMap.getTile(i, currentTileY);
+                    if (t.isBlocked() || i <= 0) {
                         if (i == currentTileX - 1) {
                             return currentTileX;
                         }
                         else return i + 1;
                     }
-                    if (tileMap.containsEntity(i, currentTileY)) {
-                        return i;
-                    }
+                    if (tileMap.containsEntity(i, currentTileY) || t.isSpecial()) return i;
                 }
                 return currentTileX - magnitude;
         }
@@ -262,59 +263,100 @@ public class Entity {
     }
 
     /**
-     * Determines if there is a slow or boost tile in the path of the Entity
+     * Handles the player's next movements when standing on a special tile
      */
-    public int adjustForOffset(int dir) {
-        switch (dir) {
-            case 0: // down
-                for (int i = currentTileY; i >= currentTileY - magnitude; i--) {
-                    if (i > 0) {
-                        if (tileMap.getTile(currentTileX, i).isChange())
-                            return tileMap.getTile(currentTileX, i).getMagOffset();
-                    }
-                }
-                return 0;
-            case 1: // up
-                for (int i = currentTileY; i <= currentTileY + magnitude; i++) {
-                    if (i < tileMap.mapHeight - 1) {
-                        if (tileMap.getTile(currentTileX, i).isChange())
-                            return tileMap.getTile(currentTileX, i).getMagOffset();
-                    }
-                }
-                return 0;
-            case 2: // right
-                for (int i = currentTileX; i <= currentTileX + magnitude; i++) {
-                    if (i < tileMap.mapWidth - 1) {
-                        if (tileMap.getTile(i, currentTileY).isChange())
-                            return tileMap.getTile(i, currentTileY).getMagOffset();
-                    }
-                }
-                return 0;
-            case 3: // left
-                for (int i = currentTileX; i >= currentTileX - magnitude; i--) {
-                    if (i > 0) {
-                        if (tileMap.getTile(i, currentTileY).isChange())
-                            return tileMap.getTile(i, currentTileY).getMagOffset();
-                    }
-                }
-                return 0;
-        }
+    public void handleSpecialTiles() {
+        int cx = (int) (position.x / tileMap.tileSize);
+        int cy = (int) (position.y / tileMap.tileSize);
+        Tile currentTile = tileMap.getTile(cx, cy);
 
-        return 0;
+        if (canMove() && !nextTileBlocked(prevDir)) {
+            // Player goes forwards or backwards from the tile in the direction they entered
+            if (currentTile.isChange()) {
+                int k = rand.nextInt(2);
+                switch (prevDir) {
+                    case 0: // down
+                        if (k == 0) changeDirection(1);
+                        else changeDirection(0);
+                        break;
+                    case 1: // up
+                        if (k == 0) changeDirection(0);
+                        else changeDirection(1);
+                        break;
+                    case 2: // right
+                        if (k == 0) changeDirection(3);
+                        else changeDirection(2);
+                        break;
+                    case 3: // left
+                        if (k == 0) changeDirection(2);
+                        else changeDirection(3);
+                        break;
+                }
+            }
+            // Player goes 1 tile in a random direction not the direction they entered the tile on
+            else if (currentTile.isInAndOut()) {
+                // output direction (all other directions other than input direction)
+                int odir = rand.nextInt(3);
+                switch (prevDir) {
+                    case 0: // down
+                        if (odir == 0) changeDirection(3);
+                        else if (odir == 1) changeDirection(2);
+                        else changeDirection(0);
+                        break;
+                    case 1: // up
+                        if (odir == 0) changeDirection(3);
+                        else if (odir == 1) changeDirection(2);
+                        else changeDirection(1);
+                        break;
+                    case 2: // right
+                        if (odir == 0) changeDirection(0);
+                        else if (odir == 1) changeDirection(1);
+                        else changeDirection(2);
+                        break;
+                    case 3: // left
+                        if (odir == 0) changeDirection(0);
+                        else if (odir == 1) changeDirection(1);
+                        else changeDirection(3);
+                        break;
+                }
+            }
+            else if (currentTile.isDown()) {
+                changeDirection(0);
+            }
+            else if (currentTile.isUp()) {
+                changeDirection(1);
+            }
+            else if (currentTile.isRight()) {
+                changeDirection(2);
+            }
+            else if (currentTile.isLeft()) {
+                changeDirection(3);
+            }
+            // trigger dialog event
+            else if (currentTile.isQuestionMark()) {
+                tileInteraction = true;
+            }
+        }
+    }
+
+    public void changeDirection(int dir) {
+        move(dir, 1);
+        am.setAnimation(dir);
     }
 
     /**
      * Updates every tick and moves an Entity if not on the tile map grid
      */
-    public void handleMovement() {
+    public void handleMovement(float dt) {
         // down
         if (moving[0]) {
             int targetY = adjustMagnitude(0);
             if (targetY == currentTileY) {
                 moving[0] = false;
             } else {
-                position.y -= speed;
-                if (position.y <= targetY * tileMap.tileSize) {
+                position.y -= speed * dt;
+                if (position.y <= targetY * tileMap.tileSize &&
+                        position.y - speed * dt <= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
                     moving[0] = false;
                 }
@@ -326,8 +368,9 @@ public class Entity {
             if (targetY == currentTileY) {
                 moving[1] = false;
             } else {
-                position.y += speed;
-                if (position.y >= targetY * tileMap.tileSize) {
+                position.y += speed * dt;
+                if (position.y >= targetY * tileMap.tileSize &&
+                        position.y + speed * dt >= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
                     moving[1] = false;
                 }
@@ -339,8 +382,9 @@ public class Entity {
             if (targetX == currentTileX) {
                 moving[2] = false;
             } else {
-                position.x += speed;
-                if (position.x >= targetX * tileMap.tileSize) {
+                position.x += speed * dt;
+                if (position.x >= targetX * tileMap.tileSize &&
+                        position.x + speed * dt >= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
                     moving[2] = false;
                 }
@@ -352,12 +396,19 @@ public class Entity {
             if (targetX == currentTileX) {
                 moving[3] = false;
             } else {
-                position.x -= speed;
-                if (position.x <= targetX * tileMap.tileSize) {
+                position.x -= speed * dt;
+                if (position.x <= targetX * tileMap.tileSize &&
+                        position.x - speed * dt <= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
                     moving[3] = false;
                 }
             }
+        }
+    }
+
+    public void stop() {
+        for (int i = 0; i < moving.length; i++) {
+            moving[i] = false;
         }
     }
 
@@ -446,5 +497,7 @@ public class Entity {
     }
 
     public void setPrevMoveUsed(int prevMoveUsed) { this.prevMoveUsed = prevMoveUsed; }
+
+    public boolean isTileInteraction() { return tileInteraction; }
 
 }

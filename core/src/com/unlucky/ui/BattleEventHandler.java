@@ -188,6 +188,10 @@ public class BattleEventHandler extends BattleUI {
         }
     }
 
+    /**
+     * @TODO: Clean this up
+     * @param event
+     */
     public void handleBattleEvent(BattleEvent event) {
         switch (event) {
             case NONE:

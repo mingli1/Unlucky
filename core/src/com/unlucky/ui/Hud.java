@@ -1,5 +1,6 @@
 package com.unlucky.ui;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -64,6 +65,8 @@ public class Hud extends UI implements Disposable {
     public void render(float dt) {
         stage.act(dt);
         stage.draw();
+
+        magLabels[0].setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
     }
 
     /**

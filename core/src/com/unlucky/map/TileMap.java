@@ -10,8 +10,6 @@ import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 
-import java.util.Random;
-
 /**
  * Creates a tilemap from a text file.
  * A map file has the format:
@@ -241,6 +239,10 @@ public class TileMap {
             if (tileMap[i].animated) {
                 batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
             }
+            // drawing an entity on a Tile
+            if (tileMap[i].containsEntity()) {
+                tileMap[i].getEntity().render(batch, true);
+            }
         }
     }
 
@@ -256,11 +258,6 @@ public class TileMap {
 
             if (!tileMap[i].animated && tileMap[i].sprite != null) {
                 batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
-            }
-
-            // drawing an entity on a Tile
-            if (tileMap[i].containsEntity()) {
-                tileMap[i].getEntity().render(batch, true);
             }
         }
     }
