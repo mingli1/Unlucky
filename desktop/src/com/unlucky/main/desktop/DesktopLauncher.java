@@ -16,7 +16,7 @@ public class DesktopLauncher {
         config.resizable = false;
         config.vSyncEnabled = false;
         config.backgroundFPS = 10;
-        config.foregroundFPS = 30;
+        config.foregroundFPS = 60;
         new LwjglApplication(new Unlucky(), config);
     }
 
