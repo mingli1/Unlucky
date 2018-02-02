@@ -16,7 +16,7 @@ import java.util.Random;
  *
  * @author Ming Li
  */
-public class BattleTransition {
+public class TransitionScreen {
 
     private GameScreen gameScreen;
     private Battle battle;
@@ -57,7 +57,7 @@ public class BattleTransition {
     private int x0, x1;
     private int y0, y1;
 
-    public BattleTransition(GameScreen gameScreen, Battle battle, BattleUIHandler uiHandler, Hud hud, Player player) {
+    public TransitionScreen(GameScreen gameScreen, Battle battle, BattleUIHandler uiHandler, Hud hud, Player player) {
         this.gameScreen = gameScreen;
         this.battle = battle;
         this.uiHandler = uiHandler;

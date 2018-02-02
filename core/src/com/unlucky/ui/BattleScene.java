@@ -78,23 +78,23 @@ public class BattleScene extends BattleUI {
         strongest = new Label.LabelStyle(font, new Color(225 / 255.f, 0, 0, 1));
 
         // create player hud
-        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 5, 145, 40);
+        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 200.f, 145, 40);
         playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, 8, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
         playerHudLabel = new Label("", ls);
         playerHudLabel.setSize(99, 12);
         playerHudLabel.setTouchable(Touchable.disabled);
 
         // create enemy hud
-        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 5, 145, 40);
+        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 200.f, 145, 40);
         enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, 8, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
         enemyHudLabel = new Label("", ls);
         enemyHudLabel.setSize(99, 12);
         enemyHudLabel.setTouchable(Touchable.disabled);
 
         // create player sprite
-        playerSprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(-96, 100), new Vector2(70, 100), 3, 96, 96);
+        playerSprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(-96, 100), new Vector2(70, 100), 150.f, 96, 96);
         // create enemy sprite
-        enemySprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(400, 100), new Vector2(240, 100), 3, 96, 96);
+        enemySprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(400, 100), new Vector2(240, 100), 150.f, 96, 96);
 
         // create animations
         attackAnims = new AnimationManager[3];

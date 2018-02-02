@@ -32,7 +32,7 @@ public class GameScreen extends AbstractScreen {
     public Hud hud;
     public BattleUIHandler battleUIHandler;
     public Battle battle;
-    public BattleTransition transition;
+    public TransitionScreen transition;
     public LevelUpScreen levelUp;
     public DialogScreen dialog;
     public InventoryUI inventoryUI;
@@ -50,7 +50,7 @@ public class GameScreen extends AbstractScreen {
         battle = new Battle(this, map, player);
         hud = new Hud(this, map, player, rm);
         battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
-        transition = new BattleTransition(this, battle, battleUIHandler, hud, player);
+        transition = new TransitionScreen(this, battle, battleUIHandler, hud, player);
         levelUp = new LevelUpScreen(this, map, player, rm);
         dialog = new DialogScreen(this, map, player, rm);
         inventoryUI = new InventoryUI(this, map, player, rm);
@@ -149,10 +149,10 @@ public class GameScreen extends AbstractScreen {
         {
             // map camera
             game.batch.setProjectionMatrix(cam.combined);
-            map.renderBottomLayer(game.batch);
+            map.renderBottomLayer(game.batch, cam);
             player.render(game.batch);
-            map.render(game.batch);
-            map.renderTopLayer(game.batch);
+            map.render(game.batch, cam);
+            map.renderTopLayer(game.batch, cam);
         }
 
         game.batch.end();

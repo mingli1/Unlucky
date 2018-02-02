@@ -95,7 +95,7 @@ public class InventoryUI extends UI implements Disposable {
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, gameScreen.getBatch());
 
-        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(400, 14), new Vector2(14, 14), 8, 372, 212);
+        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(400, 14), new Vector2(14, 14), 450.f, 372, 212);
         ui.setTouchable(Touchable.enabled);
         stage.addActor(ui);
 

@@ -20,7 +20,7 @@ public class MovingImageUI extends Image {
     private Vector2 target;
 
     // speed in pixels/tick
-    private int speed = 0;
+    private float speed = 0;
     private boolean horizontal;
     private boolean shouldStart = false;
 
@@ -38,7 +38,7 @@ public class MovingImageUI extends Image {
      * @param w
      * @param h
      */
-    public MovingImageUI(TextureRegion skin, Vector2 origin, Vector2 target, int speed, int w, int h) {
+    public MovingImageUI(TextureRegion skin, Vector2 origin, Vector2 target, float speed, int w, int h) {
         this(skin);
         this.origin = origin;
         this.target = target;
@@ -64,8 +64,8 @@ public class MovingImageUI extends Image {
             if (horizontal) {
                 // moving right
                 if (origin.x < target.x) {
-                    if (getX() < target.x && getX() + speed < target.x) {
-                        float next = getX() + speed;
+                    if (getX() < target.x && getX() + speed * dt < target.x) {
+                        float next = getX() + speed * dt;
                         setPosition(next, getY());
                     } else {
                         setPosition(target.x, target.y);
@@ -74,8 +74,8 @@ public class MovingImageUI extends Image {
                 }
                 // moving left
                 else {
-                    if (getX() > target.x && getX() - speed > target.x) {
-                        float next = getX() - speed;
+                    if (getX() > target.x && getX() - speed * dt > target.x) {
+                        float next = getX() - speed * dt;
                         setPosition(next, getY());
                     } else {
                         setPosition(target.x, target.y);
@@ -84,9 +84,9 @@ public class MovingImageUI extends Image {
                 }
             } else {
                 // moving up
-                if (origin.y < target.y && getY() + speed < target.y) {
+                if (origin.y < target.y && getY() + speed * dt < target.y) {
                     if (getY() < target.y) {
-                        float next = getY() + speed;
+                        float next = getY() + speed * dt;
                         setPosition(getX(), next);
                     } else {
                         setPosition(target.x, target.y);
@@ -95,8 +95,8 @@ public class MovingImageUI extends Image {
                 }
                 // moving down
                 else {
-                    if (getY() > target.y && getY() - speed > target.y) {
-                        float next = getY() - speed;
+                    if (getY() > target.y && getY() - speed * dt > target.y) {
+                        float next = getY() - speed * dt;
                         setPosition(getX(), next);
                     } else {
                         setPosition(target.x, target.y);
