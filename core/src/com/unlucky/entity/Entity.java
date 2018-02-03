@@ -42,7 +42,10 @@ public class Entity {
     // The amount of tiles for a direction to move
     protected int magnitude;
     protected int prevDir = -1;
+    // tile causing a dialog event
     protected boolean tileInteraction = false;
+    // teleportation tiles
+    protected boolean teleporting = false;
 
     // map
     protected TileMap tileMap;
@@ -270,7 +273,7 @@ public class Entity {
         int cy = (int) (position.y / tileMap.tileSize);
         Tile currentTile = tileMap.getTile(cx, cy);
 
-        if (canMove() && !nextTileBlocked(prevDir)) {
+        if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
             if (currentTile.isChange()) {
                 int k = rand.nextInt(2);
@@ -336,16 +339,26 @@ public class Entity {
             else if (currentTile.isQuestionMark()) {
                 tileInteraction = true;
             }
+            // trigger teleport event
+            else if (currentTile.isTeleport()) {
+                teleporting = true;
+            }
+            // ice sliding
+            else if (currentTile.isIce()) {
+                if (!nextTileBlocked(prevDir)) changeDirection(prevDir);
+            }
         }
     }
 
     public void changeDirection(int dir) {
         move(dir, 1);
+        prevDir = dir;
         am.setAnimation(dir);
     }
 
     /**
      * Updates every tick and moves an Entity if not on the tile map grid
+     * @TODO fix jittery movement on delta time
      */
     public void handleMovement(float dt) {
         // down
@@ -354,7 +367,7 @@ public class Entity {
             if (targetY == currentTileY) {
                 moving[0] = false;
             } else {
-                position.y -= speed * dt;
+                position.y -= 1;
                 if (position.y <= targetY * tileMap.tileSize &&
                         position.y - speed * dt <= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
@@ -368,7 +381,7 @@ public class Entity {
             if (targetY == currentTileY) {
                 moving[1] = false;
             } else {
-                position.y += speed * dt;
+                position.y += 1;
                 if (position.y >= targetY * tileMap.tileSize &&
                         position.y + speed * dt >= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
@@ -382,7 +395,7 @@ public class Entity {
             if (targetX == currentTileX) {
                 moving[2] = false;
             } else {
-                position.x += speed * dt;
+                position.x += 1;
                 if (position.x >= targetX * tileMap.tileSize &&
                         position.x + speed * dt >= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
@@ -396,7 +409,7 @@ public class Entity {
             if (targetX == currentTileX) {
                 moving[3] = false;
             } else {
-                position.x -= speed * dt;
+                position.x -= 1;
                 if (position.x <= targetX * tileMap.tileSize &&
                         position.x - speed * dt <= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
@@ -499,5 +512,7 @@ public class Entity {
     public void setPrevMoveUsed(int prevMoveUsed) { this.prevMoveUsed = prevMoveUsed; }
 
     public boolean isTileInteraction() { return tileInteraction; }
+
+    public boolean isTeleporting() { return teleporting; }
 
 }

@@ -65,8 +65,6 @@ public class Hud extends UI implements Disposable {
     public void render(float dt) {
         stage.act(dt);
         stage.draw();
-
-        magLabels[0].setText(String.valueOf(Gdx.graphics.getFramesPerSecond()));
     }
 
     /**

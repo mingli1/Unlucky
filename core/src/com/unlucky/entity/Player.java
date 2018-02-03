@@ -2,11 +2,13 @@ package com.unlucky.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
+import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -201,6 +203,14 @@ public class Player extends Entity {
         tileInteraction = false;
     }
 
+    /**
+     * After teleportation is done the player is moved out of the tile in a random direction
+     */
+    public void finishTeleporting() {
+        teleporting = false;
+        changeDirection(rand.nextInt(4));
+    }
+
     public void potion(int heal) {
         hp += heal;
         if (hp > maxHp) hp = maxHp;
@@ -271,6 +281,16 @@ public class Player extends Entity {
         }
 
         return ret;
+    }
+
+    /**
+     * Sets the player's position to another teleportation tile anywhere on the map
+     */
+    public void teleport() {
+        Tile currentTile = tileMap.getTile(tileMap.toTileCoords(position));
+        Array<Tile> candidates = tileMap.getTeleportationTiles(currentTile);
+        Tile choose = candidates.get(rand.nextInt(candidates.size));
+        position.set(tileMap.toMapCoords(choose.tilePosition));
     }
 
     public boolean isBattling() {

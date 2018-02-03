@@ -32,6 +32,8 @@ public class Tile {
      * of the tile stepped on
      * - question mark: Player can obtain gold, healing, or items from stepping on it. Once
      * stepped on, it disappears
+     * - ice: Player slides on the ice, moving until it reaches the end of the ice or a blocked tile
+     * - teleport:
      */
     public static final byte NORMAL = 0;
     public static final byte BLOCKED = 1;
@@ -43,6 +45,8 @@ public class Tile {
     public static final byte RIGHT = 7;
     public static final byte LEFT = 8;
     public static final byte QUESTION_MARK = 9;
+    public static final byte ICE = 10;
+    public static final byte TELEPORT = 11;
 
     // Each tile has a unique identifier
     public int id;
@@ -75,6 +79,7 @@ public class Tile {
         animated = false;
 
         if (Util.isBlockedTile(id)) type = BLOCKED;
+        else if (id == 52 || id == 53) type = ICE;
         else type = NORMAL;
     }
 
@@ -103,6 +108,7 @@ public class Tile {
         else if (id == 104) type = RIGHT;
         else if (id == 105) type = LEFT;
         else if (id == 106) type = QUESTION_MARK;
+        else if (id == 107) type = TELEPORT;
         else type = NORMAL;
     }
 
@@ -140,6 +146,10 @@ public class Tile {
 
     public boolean isQuestionMark() { return type == QUESTION_MARK; }
 
+    public boolean isIce() { return type == ICE; }
+
+    public boolean isTeleport() { return type == TELEPORT; }
+
     /**
      * A special tile is any tile not normal or blocked
      *
@@ -155,7 +165,7 @@ public class Tile {
      * @return
      */
     public boolean isMoving() {
-        return type == 2 || type == 3 || (type > 4 && type < 9);
+        return type == 2 || type == 3 || (type > 4 && type < 9) || type == ICE;
     }
 
 }

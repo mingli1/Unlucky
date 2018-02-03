@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Entity;
 import com.unlucky.resource.ResourceManager;
@@ -242,6 +243,10 @@ public class TileMap {
                 if (tileMap[i].animated) {
                     batch.draw(tileMap[i].anim.getKeyFrame(true), origin.x + c * tileSize, origin.y + r * tileSize);
                 }
+                // rendering non animated special tiles
+                if (!tileMap[i].animated && tileMap[i].isSpecial() && tileMap[i].sprite != null) {
+                    batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
+                }
                 // drawing an entity on a Tile
                 if (tileMap[i].containsEntity()) {
                     tileMap[i].getEntity().render(batch, true);
@@ -261,7 +266,7 @@ public class TileMap {
                 int r = i / mapWidth;
                 int c = i % mapWidth;
 
-                if (!tileMap[i].animated && tileMap[i].sprite != null) {
+                if (!tileMap[i].animated && !tileMap[i].isSpecial() && tileMap[i].sprite != null) {
                     batch.draw(tileMap[i].sprite, origin.x + c * tileSize, origin.y + r * tileSize);
                 }
             }
@@ -486,6 +491,23 @@ public class TileMap {
             if (tileMap[i].id == id) return true;
         }
         return false;
+    }
+
+    /**
+     * Returns a list of teleportation tiles on the map not including
+     * the one the player is currently standing on
+     *
+     * @param currentTile
+     * @return
+     */
+    public Array<Tile> getTeleportationTiles(Tile currentTile) {
+        Array<Tile> ret = new Array<Tile>();
+        for (int i = 0; i < tileMap.length; i++) {
+            if (tileMap[i].isTeleport() && !tileMap[i].equals(currentTile)) {
+                ret.add(tileMap[i]);
+            }
+        }
+        return ret;
     }
 
 }

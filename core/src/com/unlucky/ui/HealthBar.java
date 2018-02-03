@@ -20,15 +20,15 @@ public class HealthBar {
     private Entity entity;
 
     // hp bar rectangles
-    private int maxHpBarWidth;
-    private int hpBarWidth;
-    private int hpBarHeight;
+    private float maxHpBarWidth;
+    private float hpBarWidth;
+    private float hpBarHeight;
     private Vector2 position;
     // the pure color of the health bar (top rect)
     private Color color;
 
     // damage or heal health bar animation
-    private int decayingHpBarWidth = 0;
+    private float decayingHpBarWidth = 0;
     private Color damageColor = new Color(1, 0, 0, 1);
     private Color healColor = new Color(70 / 255.f, 190 / 255.f, 1, 1);
     private boolean initialized = false;
@@ -45,13 +45,13 @@ public class HealthBar {
 
     public void update(float dt) {
         // calculate health bar width based on player's current hp
-        hpBarWidth = (int) (maxHpBarWidth / ((float) entity.getMaxHp() / entity.getHp()));
+        hpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / entity.getHp()));
 
         // entity damaged
         if (entity.getHp() < entity.getPreviousHp()) {
             if (!initialized) {
                 // the width of the decaying hp bar is the difference between the previous and current hp
-                decayingHpBarWidth = (int) (maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getPreviousHp() - entity.getHp())));
+                decayingHpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getPreviousHp() - entity.getHp())));
                 initialized = true;
             }
             if (decayingHpBarWidth < 0) {
@@ -60,12 +60,12 @@ public class HealthBar {
                 entity.setPreviousHp(entity.getHp());
                 initialized = false;
             }
-            decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE;
+            decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE * dt;
         }
         // entity healed
         else if (entity.getHp() > entity.getPreviousHp()) {
             if (!initialized) {
-                decayingHpBarWidth = (int) (-maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getHp() - entity.getPreviousHp())));
+                decayingHpBarWidth = (-maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getHp() - entity.getPreviousHp())));
                 initialized = true;
             }
             if (decayingHpBarWidth > 0) {
@@ -74,7 +74,7 @@ public class HealthBar {
                 entity.setPreviousHp(entity.getHp());
                 initialized = false;
             }
-            decayingHpBarWidth += Util.HP_BAR_DECAY_RATE;
+            decayingHpBarWidth += Util.HP_BAR_DECAY_RATE * dt;
         }
     }
 

@@ -99,6 +99,7 @@ public class GameScreen extends AbstractScreen {
 
             // engage in battle if found
             if (player.isBattling()) {
+                hud.toggle(false);
                 setCurrentEvent(EventState.TRANSITION);
                 transition.start(EventState.MOVING, EventState.BATTLING);
             }
@@ -108,6 +109,12 @@ public class GameScreen extends AbstractScreen {
                 setCurrentEvent(EventState.TILE_EVENT);
                 // @TODO: change level scaling to map level
                 dialog.startDialog(player.getQuestionMarkDialog(dialog, player.getLevel()), EventState.MOVING, EventState.MOVING);
+            }
+            // player stepped on teleport tile
+            if (player.isTeleporting()) {
+                hud.toggle(false);
+                setCurrentEvent(EventState.TRANSITION);
+                transition.start(EventState.MOVING, EventState.MOVING);
             }
         }
 

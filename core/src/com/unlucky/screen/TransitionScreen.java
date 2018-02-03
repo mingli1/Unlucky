@@ -52,10 +52,10 @@ public class TransitionScreen {
 
     // Variables for animation
     // sliding
-    private int x, y;
+    private float x, y;
     // spliting
-    private int x0, x1;
-    private int y0, y1;
+    private float x0, x1;
+    private float y0, y1;
 
     public TransitionScreen(GameScreen gameScreen, Battle battle, BattleUIHandler uiHandler, Hud hud, Player player) {
         this.gameScreen = gameScreen;
@@ -83,10 +83,14 @@ public class TransitionScreen {
 
         // set rendering
         if (prev == EventState.MOVING && next == EventState.BATTLING) renderMap = true;
+        else if (prev == EventState.MOVING && next == EventState.MOVING) renderMap = true;
         else if (prev == EventState.BATTLING && next == EventState.MOVING) renderBattle = true;
         else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) renderLevelUp = true;
 
-        transitionIndex = rand.nextInt(NUM_TRANSITIONS);
+        if (prev == EventState.MOVING && next == EventState.MOVING)
+            transitionIndex = Util.getRandomValue(2, 3, rand);
+        else
+            transitionIndex = rand.nextInt(NUM_TRANSITIONS);
 
         switch (transitionIndex) {
             case 0: x = 0; break;
@@ -112,6 +116,12 @@ public class TransitionScreen {
             hud.toggle(false);
             gameScreen.setCurrentEvent(EventState.BATTLING);
         }
+        else if (prev == EventState.MOVING && next == EventState.MOVING) {
+            gameScreen.setCurrentEvent(EventState.MOVING);
+            hud.toggle(true);
+            player.teleport();
+            player.finishTeleporting();
+        }
         // transition out of battle
         else if (prev == EventState.BATTLING && next == EventState.MOVING) {
             battle.end();
@@ -127,36 +137,36 @@ public class TransitionScreen {
             switch (transitionIndex) {
                 // horizontal slide l2r
                 case 0:
-                    x += Util.TRANSITION_SCREEN_SPEED;
+                    x += Util.TRANSITION_SCREEN_SPEED * dt;
                     if (x >= Unlucky.V_WIDTH * 2) end();
                     break;
                 // vertical slide t2b
                 case 1:
-                    y -= Util.TRANSITION_SCREEN_SPEED;
+                    y -= Util.TRANSITION_SCREEN_SPEED * dt;
                     if (y <= 0) end();
                     break;
                 // horizontal strips
                 case 2:
-                    x0 += Util.TRANSITION_SCREEN_SPEED;
-                    x1 -= Util.TRANSITION_SCREEN_SPEED;
+                    x0 += Util.TRANSITION_SCREEN_SPEED * dt;
+                    x1 -= Util.TRANSITION_SCREEN_SPEED * dt;
                     if (x0 >= Unlucky.V_WIDTH * 2 && x1 <= 0) end();
                     break;
                 // vertical strips
                 case 3:
-                    y0 += Util.TRANSITION_SCREEN_SPEED;
-                    y1 -= Util.TRANSITION_SCREEN_SPEED;
+                    y0 += Util.TRANSITION_SCREEN_SPEED * dt;
+                    y1 -= Util.TRANSITION_SCREEN_SPEED * dt;
                     if (y0 >= Unlucky.V_HEIGHT * 2 && y1 <= 0) end();
                     break;
                 // horizontal split
                 case 4:
-                    x0 += Util.TRANSITION_SCREEN_SPEED;
-                    x1 -= Util.TRANSITION_SCREEN_SPEED;
+                    x0 += Util.TRANSITION_SCREEN_SPEED * dt;
+                    x1 -= Util.TRANSITION_SCREEN_SPEED * dt;
                     if (x0 >= Unlucky.V_WIDTH && x1 <= Unlucky.V_WIDTH) end();
                     break;
                 // vertical split
                 case 5:
-                    y0 += Util.TRANSITION_SCREEN_SPEED;
-                    y1 -= Util.TRANSITION_SCREEN_SPEED;
+                    y0 += Util.TRANSITION_SCREEN_SPEED * dt;
+                    y1 -= Util.TRANSITION_SCREEN_SPEED * dt;
                     if (y0 >= Unlucky.V_HEIGHT && y1 <= Unlucky.V_HEIGHT) end();
                     break;
             }

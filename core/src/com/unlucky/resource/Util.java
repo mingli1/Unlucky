@@ -16,8 +16,8 @@ public class Util {
 
     // rates
     public static final float TEXT_SPEED = 0.02f;
-    public static final int HP_BAR_DECAY_RATE = 1;
-    public static final int TRANSITION_SCREEN_SPEED = 5;
+    public static final float HP_BAR_DECAY_RATE = 50.f;
+    public static final float TRANSITION_SCREEN_SPEED = 300.f;
 
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
@@ -166,7 +166,7 @@ public class Util {
     // all blocked tile ids
     public static final int[] BLOCKED_TILE_IDS = {
         5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31,
-        38, 41, 48, 49, 50, 51, 64, 65, 66, 67, 96
+        38, 41, 42, 48, 49, 50, 51, 54, 55, 56, 57, 64, 65, 66, 67, 96
     };
 
     public static boolean isBlockedTile(int id) {
