@@ -49,6 +49,7 @@ public class Util {
     public static final int REVIVAL = 1;
     public static final int ENCHANT = 50;
     public static final int DESTROY_ITEM_IF_FAIL = 50;
+    public static final int TILE_INTERATION = 70;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
@@ -166,7 +167,7 @@ public class Util {
     // all blocked tile ids
     public static final int[] BLOCKED_TILE_IDS = {
         5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 21, 22, 23, 25, 26, 27, 28, 29, 30, 31,
-        38, 41, 42, 48, 49, 50, 51, 54, 55, 56, 57, 64, 65, 66, 67, 96
+        38, 41, 42, 48, 49, 50, 51, 54, 55, 56, 57, 64, 65, 66, 67, 96, 109
     };
 
     public static boolean isBlockedTile(int id) {

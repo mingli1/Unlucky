@@ -33,7 +33,8 @@ public class Tile {
      * - question mark: Player can obtain gold, healing, or items from stepping on it. Once
      * stepped on, it disappears
      * - ice: Player slides on the ice, moving until it reaches the end of the ice or a blocked tile
-     * - teleport:
+     * - teleport: Player teleports to another random teleportation tile on the map
+     * - exclamation mark: Player gets damaged or loses a random amount of gold
      */
     public static final byte NORMAL = 0;
     public static final byte BLOCKED = 1;
@@ -47,6 +48,7 @@ public class Tile {
     public static final byte QUESTION_MARK = 9;
     public static final byte ICE = 10;
     public static final byte TELEPORT = 11;
+    public static final byte EXCLAMATION_MARK = 12;
 
     // Each tile has a unique identifier
     public int id;
@@ -109,6 +111,7 @@ public class Tile {
         else if (id == 105) type = LEFT;
         else if (id == 106) type = QUESTION_MARK;
         else if (id == 107) type = TELEPORT;
+        else if (id == 108) type = EXCLAMATION_MARK;
         else type = NORMAL;
     }
 
@@ -149,6 +152,8 @@ public class Tile {
     public boolean isIce() { return type == ICE; }
 
     public boolean isTeleport() { return type == TELEPORT; }
+
+    public boolean isExclamationMark() { return type == EXCLAMATION_MARK; }
 
     /**
      * A special tile is any tile not normal or blocked

@@ -108,7 +108,10 @@ public class GameScreen extends AbstractScreen {
                 hud.toggle(false);
                 setCurrentEvent(EventState.TILE_EVENT);
                 // @TODO: change level scaling to map level
-                dialog.startDialog(player.getQuestionMarkDialog(dialog, player.getLevel()), EventState.MOVING, EventState.MOVING);
+                if (player.getCurrentTile().isQuestionMark())
+                    dialog.startDialog(player.getQuestionMarkDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
+                else if (player.getCurrentTile().isExclamationMark())
+                    dialog.startDialog(player.getExclamDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
             }
             // player stepped on teleport tile
             if (player.isTeleporting()) {

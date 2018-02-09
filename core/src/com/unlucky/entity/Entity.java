@@ -336,7 +336,7 @@ public class Entity {
                 changeDirection(3);
             }
             // trigger dialog event
-            else if (currentTile.isQuestionMark()) {
+            else if (currentTile.isQuestionMark() || currentTile.isExclamationMark()) {
                 tileInteraction = true;
             }
             // trigger teleport event
@@ -514,5 +514,13 @@ public class Entity {
     public boolean isTileInteraction() { return tileInteraction; }
 
     public boolean isTeleporting() { return teleporting; }
+
+    /**
+     * Returns the tile the Entity is currently standing on
+     * @return
+     */
+    public Tile getCurrentTile() {
+        return tileMap.getTile(tileMap.toTileCoords(position));
+    }
 
 }

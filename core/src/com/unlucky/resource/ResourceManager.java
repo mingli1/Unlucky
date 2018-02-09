@@ -40,6 +40,8 @@ public class ResourceManager {
     public TextureRegion[][] battleHeal96x96;
     public TextureRegion[][] levelUp96x96;
 
+    public TextureRegion lightmap;
+
     // UI
     public TextureRegion[][] dirpad20x20;
     public TextureRegion[][] movebutton145x50;
@@ -95,6 +97,7 @@ public class ResourceManager {
         assetManager.load("sprites/96x96_battle_heal.png", Texture.class);
         assetManager.load("bg/level_up.png", Texture.class);
         assetManager.load("sprites/96x96_level_up.png", Texture.class);
+        assetManager.load("maps/testlightmap.png", Texture.class);
 
         assetManager.load("ui/dir_pad.png", Texture.class);
         assetManager.load("ui/move_buttons.png", Texture.class);
@@ -138,6 +141,7 @@ public class ResourceManager {
         battleHeal96x96 = TextureRegion.split(assetManager.get("sprites/96x96_battle_heal.png", Texture.class), 96, 96);
         levelUp96x96 = TextureRegion.split(assetManager.get("sprites/96x96_level_up.png", Texture.class), 96, 96);
         levelupscreen400x240 = new TextureRegion(assetManager.get("bg/level_up.png", Texture.class));
+        lightmap = new TextureRegion(assetManager.get("maps/testlightmap.png", Texture.class));
 
         dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
         movebutton145x50 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), Util.MOVE_WIDTH, Util.MOVE_HEIGHT);

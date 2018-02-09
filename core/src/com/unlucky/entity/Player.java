@@ -12,7 +12,6 @@ import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
-import com.unlucky.screen.DialogScreen;
 
 /**
  * The protagonist of the game.
@@ -225,10 +224,10 @@ public class Player extends Entity {
      *
      * @return
      */
-    public String[] getQuestionMarkDialog(DialogScreen dialog, int mapLevel) {
+    public String[] getQuestionMarkDialog(int mapLevel) {
         String[] ret = null;
 
-        if (Util.isSuccess(70, rand)) {
+        if (Util.isSuccess(Util.TILE_INTERATION, rand)) {
             int k = rand.nextInt(100);
             // gold
             if (k < 50) {
@@ -277,6 +276,58 @@ public class Player extends Entity {
         else {
             ret = new String[] {
                     "The random tile did not give anything."
+            };
+        }
+
+        return ret;
+    }
+
+    /**
+     * The purple exclamation mark tile is a destructive tile
+     * that has a 60% chance to do damage to the player and
+     * 40% chance to steal gold.
+     *
+     * @param mapLevel
+     * @return
+     */
+    public String[] getExclamDialog(int mapLevel) {
+        String[] ret = null;
+
+        if (Util.isSuccess(Util.TILE_INTERATION, rand)) {
+            if (Util.isSuccess(60, rand)) {
+                int dmg = 3 * mapLevel;
+                hp -= dmg;
+                if (hp <= 0) {
+                    ret = new String[]{"" +
+                            "The random tile cursed you!",
+                            "It damaged you for " + dmg + " damage!",
+                            "Shit you actually died omegalul."
+                    };
+                    hp = maxHp;
+                }
+                else {
+                    ret = new String[]{
+                            "The random tile cursed you!",
+                            "It damaged you for " + dmg + " damage!"
+                    };
+                }
+            }
+            else {
+                int steal = 0;
+                for (int i = 0; i < mapLevel; i++) {
+                    steal += Util.getRandomValue(4, 9, rand);
+                }
+                gold -= steal;
+                if (gold < 0) gold = 0;
+                ret = new String[] {
+                        "The random tile cursed you!",
+                        "It caused you to lose " + steal + " gold!"
+                };
+            }
+        }
+        else {
+            ret = new String[] {
+                "The random tile did not affect you."
             };
         }
 
