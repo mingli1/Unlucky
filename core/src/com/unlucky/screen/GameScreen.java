@@ -157,9 +157,15 @@ public class GameScreen extends AbstractScreen {
             // map camera
             game.batch.setProjectionMatrix(cam.combined);
             map.renderBottomLayer(game.batch, cam);
+
             player.render(game.batch);
+
             map.render(game.batch, cam);
             map.renderTopLayer(game.batch, cam);
+
+            game.batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            game.batch.draw(rm.lightmap, 0, 0);
+            game.batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
 
         game.batch.end();
