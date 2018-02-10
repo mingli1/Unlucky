@@ -40,6 +40,10 @@ public class GameMap {
     private GameScreen gameScreen;
     private ResourceManager rm;
 
+    public boolean renderLightmap;
+    private float lightningTime = 0;
+    private float durationTime = 0;
+
     public GameMap(int worldIndex, int mapIndex, GameScreen gameScreen, Player player, ResourceManager rm) {
         this.worldIndex = worldIndex;
         this.mapIndex = mapIndex;
@@ -53,11 +57,12 @@ public class GameMap {
         player.setMap(tileMap);
 
         lightmap = rm.lightmap;
+        renderLightmap = lightmap != null;
         // @TODO set weather and lightmap based on map composite id
 
         particleFactory = new ParticleFactory(gameScreen.getCamera(), player.getRandom(), rm);
 
-        setWeather(WeatherType.RAIN);
+        setWeather(WeatherType.THUNDERSTORM);
     }
 
     /**
@@ -70,6 +75,10 @@ public class GameMap {
         if (weather == WeatherType.RAIN) {
             particleFactory.set(Particle.RAINDROP, 40,
                     new Vector2(Util.RAINDROP_X, -100));
+        }
+        else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
+            particleFactory.set(Particle.RAINDROP, 95,
+                    new Vector2(Util.RAINDROP_X, -120));
         }
     }
 
@@ -102,9 +111,11 @@ public class GameMap {
 
         // update particles
         if (weather != WeatherType.NORMAL) particleFactory.update(dt);
+
+        if (weather == WeatherType.THUNDERSTORM) lightningTime += dt;
     }
 
-    public void render(SpriteBatch batch, OrthographicCamera cam) {
+    public void render(float dt, SpriteBatch batch, OrthographicCamera cam) {
         tileMap.renderBottomLayer(batch, cam);
 
         player.render(batch);
@@ -114,10 +125,26 @@ public class GameMap {
 
         // render particles
         if (weather != WeatherType.NORMAL) particleFactory.render(batch);
+
+        if (weather == WeatherType.THUNDERSTORM) {
+            // render flash of white lightning
+            if (lightningTime >= 7) {
+                durationTime += dt;
+                if (durationTime < 0.2f) {
+                    renderLightmap = false;
+                    batch.draw(rm.lightning, cam.position.x - cam.viewportWidth / 2, cam.position.y - cam.viewportHeight / 2);
+                }
+                if (durationTime > 0.2f) {
+                    lightningTime = 0;
+                    durationTime = 0;
+                    renderLightmap = true;
+                }
+            }
+        }
     }
 
     public boolean hasLightMap() {
-        return lightmap != null;
+        return renderLightmap;
     }
 
 }
