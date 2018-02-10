@@ -1,9 +1,11 @@
 package com.unlucky.ui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
@@ -212,6 +215,83 @@ public class Hud extends UI implements Disposable {
                 gameScreen.inventoryUI.start();
             }
         });
+
+        // @TODO CHANGE
+        // command prompt for now
+        optionButtons[1].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.input.getTextInput(new Input.TextInputListener() {
+                    @Override
+                    public void input(String text) {
+                        handleCommands(text);
+                    }
+
+                    @Override
+                    public void canceled() {
+
+                    }
+                }, "Debug Command Prompt", "", "");
+            }
+        });
+    }
+
+    /**
+     * Commands:
+     * /heal
+     * /tp [tileX] [tileY] (teleports the player to a tile coordinate)
+     * /sethp [hp] (sets hp of player)
+     * /setmaxhp [maxHp] (sets max hp of player)
+     * /randitem (adds a random item from the item pool weighted by rarity)
+     * /item [rarity] (adds a random item of a given rarity 0-3)
+     *
+     * @param command
+     */
+    private void handleCommands(String command) {
+        String cmd = command.trim();
+        if (eq(cmd, "/heal")) player.setHp(player.getMaxHp());
+        if (cmd.startsWith("/tp")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 3) {
+                int x = Integer.parseInt(input[1]);
+                int y = Integer.parseInt(input[2]);
+                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
+                    player.setPosition(tileMap.toMapCoords(new Vector2(x, y)));
+                }
+            }
+        }
+        if (cmd.startsWith("/sethp")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                player.setHp(Integer.parseInt(input[1]));
+            }
+        }
+        if (cmd.startsWith("/setmaxhp")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                player.setMaxHp(Integer.parseInt(input[1]));
+            }
+        }
+        if (eq(cmd, "/randitem")) {
+            Item i = rm.getRandomItem(rand);
+            i.adjust(player.getLevel(), rand);
+            player.inventory.addItem(i);
+        }
+        if (cmd.startsWith("/item")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int rarity = Integer.parseInt(input[1]);
+                if (rarity >= 0 && rarity < 4) {
+                    Item i = rm.getItem(rarity, rand);
+                    i.adjust(player.getLevel(), rand);
+                    player.inventory.addItem(i);
+                }
+            }
+        }
+    }
+
+    private boolean eq(String s1, String s2) {
+        return s1.equalsIgnoreCase(s2);
     }
 
     private void movePlayer(int dir) {
