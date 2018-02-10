@@ -201,8 +201,8 @@ public class DialogScreen extends UI implements Disposable {
             case MOVING:
                 player.finishTileInteraction();
                 TextureRegion none = null;
-                gameScreen.map.setTile(gameScreen.map.toTileCoords(player.getPosition()),
-                        new Tile(-1, none, gameScreen.map.toTileCoords(player.getPosition())));
+                gameScreen.gameMap.tileMap.setTile(gameScreen.gameMap.tileMap.toTileCoords(player.getPosition()),
+                        new Tile(-1, none, gameScreen.gameMap.tileMap.toTileCoords(player.getPosition())));
                 gameScreen.setCurrentEvent(EventState.MOVING);
                 gameScreen.hud.toggle(true);
                 break;

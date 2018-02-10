@@ -3,6 +3,7 @@ package com.unlucky.main;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.unlucky.entity.Player;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
 
@@ -28,9 +29,13 @@ public class Unlucky extends Game {
     // Resources
     public ResourceManager rm;
 
+    // universal player
+    public Player player;
+
 	public void create() {
         batch = new SpriteBatch();
         rm = new ResourceManager();
+        player = new Player("player", rm);
 
         this.setScreen(new GameScreen(this, rm));
 	}

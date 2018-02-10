@@ -42,7 +42,9 @@ public class ResourceManager {
     public TextureRegion[][] battleAttacks64x64;
     public TextureRegion[][] battleHeal96x96;
     public TextureRegion[][] levelUp96x96;
-
+    public TextureRegion[][] raindrop16x16;
+    public TextureRegion snowflake;
+    public TextureRegion lightning;
     public TextureRegion lightmap;
 
     // UI
@@ -117,6 +119,9 @@ public class ResourceManager {
         battleHeal96x96 = atlas.findRegion("96x96_battle_heal").split(96, 96);
         levelUp96x96 = atlas.findRegion("96x96_level_up").split(96, 96);
         levelupscreen400x240 = atlas.findRegion("level_up");
+        raindrop16x16 = atlas.findRegion("raindrop").split(16, 16);
+        snowflake = atlas.findRegion("snowflake");
+        lightning = atlas.findRegion("lightning");
         lightmap = atlas.findRegion("testlightmap");
 
         // ui

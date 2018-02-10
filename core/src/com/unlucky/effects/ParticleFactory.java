@@ -105,6 +105,16 @@ public class ParticleFactory {
                         velocity, 8, 1 / 8f, lifespan, rm);
                 particles.add(raindrop);
                 break;
+            case Particle.SNOWFLAKE:
+                float ls = rand.nextFloat() + 0.6f;
+                Vector2 sv = new Vector2(this.velocity.x,
+                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED, rand));
+                Particle snowflake = new Particle(Particle.SNOWFLAKE,
+                        new Vector2(cam.position.x + Util.getRandomValue(-viewWidth / 2, viewWidth / 2, rand),
+                                cam.position.y + Util.getRandomValue(-viewHeight / 2, viewHeight / 2, rand)),
+                        sv, ls, rm);
+                particles.add(snowflake);
+                break;
         }
     }
 

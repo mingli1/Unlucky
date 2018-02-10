@@ -7,11 +7,10 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
-import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
-import com.unlucky.map.TileMap;
+import com.unlucky.map.GameMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.ui.BattleUIHandler;
@@ -27,8 +26,7 @@ public class GameScreen extends AbstractScreen {
 
     public EventState currentEvent;
 
-    public TileMap map;
-    public Player player;
+    public GameMap gameMap;
     public Hud hud;
     public BattleUIHandler battleUIHandler;
     public Battle battle;
@@ -45,15 +43,14 @@ public class GameScreen extends AbstractScreen {
 
         currentEvent = EventState.MOVING;
 
-        map = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
-        player = new Player("player", map.toMapCoords(11, 30), map, rm);
-        battle = new Battle(this, map, player);
-        hud = new Hud(this, map, player, rm);
-        battleUIHandler = new BattleUIHandler(this, map, player, battle, rm);
-        transition = new TransitionScreen(this, battle, battleUIHandler, hud, player);
-        levelUp = new LevelUpScreen(this, map, player, rm);
-        dialog = new DialogScreen(this, map, player, rm);
-        inventoryUI = new InventoryUI(this, map, player, rm);
+        gameMap = new GameMap(0, 0, this, game.player, rm);
+        battle = new Battle(this, gameMap.tileMap, gameMap.player);
+        hud = new Hud(this, gameMap.tileMap, gameMap.player, rm);
+        battleUIHandler = new BattleUIHandler(this, gameMap.tileMap, gameMap.player, battle, rm);
+        transition = new TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
+        levelUp = new LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
+        dialog = new DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
+        inventoryUI = new InventoryUI(this, gameMap.tileMap, gameMap.player, rm);
 
         // create bg
         createBackground(0);
@@ -90,35 +87,11 @@ public class GameScreen extends AbstractScreen {
     public void update(float dt) {
         if (currentEvent == EventState.MOVING) {
             // camera directs on the player
-            cam.position.x = player.getPosition().x + 8;
-            cam.position.y = player.getPosition().y + 4;
+            cam.position.x = gameMap.player.getPosition().x + 8;
+            cam.position.y = gameMap.player.getPosition().y + 4;
             cam.update();
 
-            player.update(dt);
-            map.update(dt);
-
-            // engage in battle if found
-            if (player.isBattling()) {
-                hud.toggle(false);
-                setCurrentEvent(EventState.TRANSITION);
-                transition.start(EventState.MOVING, EventState.BATTLING);
-            }
-            // player stepped on interaction tile
-            if (player.isTileInteraction()) {
-                hud.toggle(false);
-                setCurrentEvent(EventState.TILE_EVENT);
-                // @TODO: change level scaling to map level
-                if (player.getCurrentTile().isQuestionMark())
-                    dialog.startDialog(player.getQuestionMarkDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
-                else if (player.getCurrentTile().isExclamationMark())
-                    dialog.startDialog(player.getExclamDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
-            }
-            // player stepped on teleport tile
-            if (player.isTeleporting()) {
-                hud.toggle(false);
-                setCurrentEvent(EventState.TRANSITION);
-                transition.start(EventState.MOVING, EventState.MOVING);
-            }
+            gameMap.update(dt);
         }
 
         if (currentEvent == EventState.BATTLING) {
@@ -159,16 +132,15 @@ public class GameScreen extends AbstractScreen {
         {
             // map camera
             game.batch.setProjectionMatrix(cam.combined);
-            map.renderBottomLayer(game.batch, cam);
 
-            player.render(game.batch);
+            // render map and player
+            gameMap.render(dt, game.batch, cam);
 
-            map.render(game.batch, cam);
-            map.renderTopLayer(game.batch, cam);
-
-            game.batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            game.batch.draw(rm.lightmap, 0, 0);
-            game.batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            if (gameMap.hasLightMap()) {
+                game.batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+                game.batch.draw(rm.lightmap, 0, 0);
+                game.batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            }
         }
 
         game.batch.end();

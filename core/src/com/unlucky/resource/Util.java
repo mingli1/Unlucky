@@ -19,6 +19,11 @@ public class Util {
     public static final float HP_BAR_DECAY_RATE = 50.f;
     public static final float TRANSITION_SCREEN_SPEED = 300.f;
 
+    public static final int RAINDROP_X = 50;
+    public static final int RAINDROP_Y_DEVIATED = 20;
+    public static final int SNOWFLAKE_X = 30;
+    public static final int SNOWFLAKE_Y_DEVIATED = 30;
+
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
 

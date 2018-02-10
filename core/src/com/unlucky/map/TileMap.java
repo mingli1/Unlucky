@@ -18,6 +18,8 @@ import com.unlucky.resource.Util;
  *
  * mapWidth
  * mapHeight
+ * playerSpawn.x
+ * playerSpawn.y
  * s, s, s, s, ... -> mapWidth length
  * s, ...
  * s, ...
@@ -68,6 +70,7 @@ public class TileMap {
     public boolean[] collisionMap;
 
     public Vector2 origin;
+    public Vector2 playerSpawn;
 
     // res
     private ResourceManager rm;
@@ -77,6 +80,8 @@ public class TileMap {
         this.origin = origin;
         this.rm = rm;
 
+        playerSpawn = new Vector2();
+
         // read file into a String
         FileHandle file = Gdx.files.internal(path);
         mapInfo = file.readString();
@@ -84,6 +89,8 @@ public class TileMap {
         mapInfoLines = mapInfo.split("\\r?\\n");
         mapWidth = Integer.parseInt(mapInfoLines[0]);
         mapHeight = Integer.parseInt(mapInfoLines[1]);
+
+        playerSpawn.set(Integer.parseInt(mapInfoLines[2]), Integer.parseInt(mapInfoLines[3]));
 
         bottomLayer = new TextureRegion[mapWidth * mapHeight];
         tileMap = new Tile[mapWidth * mapHeight];
@@ -100,18 +107,18 @@ public class TileMap {
     }
 
     /**
-     * Converts lines 2->n of the mapInfo into a 1d array of TextureRegions
+     * Converts lines 4->n of the mapInfo into a 1d array of TextureRegions
      * representing a non collidable bottom layer
      */
     private void createBottomLayer() {
-        for (int i = 2; i < mapHeight + 2; i++) {
+        for (int i = 4; i < mapHeight + 4; i++) {
             String[] row = mapInfoLines[i].split(",");
             String[] trimmed = new String[row.length];
             for (int j = 0; j < row.length; j++) {
                 trimmed[j] = row[j].replaceAll(" ", "");
             }
             for (int j = 0; j < mapWidth; j++) {
-                int k = (mapWidth * mapHeight - 1) - ((i - 2) * mapWidth + j);
+                int k = (mapWidth * mapHeight - 1) - ((i - 4) * mapWidth + j);
                 int l = rm.tiles16x16[0].length;
 
                 // index of -1 is null
@@ -125,11 +132,11 @@ public class TileMap {
     }
 
     /**
-     * Converts lines mapHeight + 3->n of the mapInfo to a 1d array of Tiles
+     * Converts lines mapHeight + 5->n of the mapInfo to a 1d array of Tiles
      * representing a tile for each element
      */
     private void createTileMap() {
-        for (int i = mapHeight + 2; i < 2 * mapHeight + 2; i++) {
+        for (int i = mapHeight + 4; i < 2 * mapHeight + 4; i++) {
             String[] row = mapInfoLines[i].split(",");
             // remove all whitespace from text so the map files can be more readable with spaces
             String[] trimmed = new String[row.length];
@@ -139,7 +146,7 @@ public class TileMap {
             for (int j = 0; j < mapWidth; j++) {
                 String temp = trimmed[row.length - 1 - j];
 
-                int k = (mapWidth * mapHeight - 1) - ((i - mapHeight - 2) * mapWidth + j);
+                int k = (mapWidth * mapHeight - 1) - ((i - mapHeight - 4) * mapWidth + j);
                 int l = rm.tiles16x16[0].length;
 
                 int y = k / mapWidth;
@@ -188,22 +195,22 @@ public class TileMap {
 
     /**
      * Creates the top layer of the map if there is one,
-     * converting lines 2 * mapHeight + 3 -> n into a 1d array of TextureRegions
+     * converting lines 2 * mapHeight + 5 -> n into a 1d array of TextureRegions
      */
     private void createTopLayer() {
         // get boolean hasTopLayer
-        int h = Integer.parseInt(mapInfoLines[2 * mapHeight + 2]);
+        int h = Integer.parseInt(mapInfoLines[2 * mapHeight + 4]);
         hasTopLayer = h == 1 ? true : false;
         if (!hasTopLayer) return;
 
-        for (int i = 2 * mapHeight + 3; i < 3 * mapHeight + 3; i++) {
+        for (int i = 2 * mapHeight + 5; i < 3 * mapHeight + 5; i++) {
             String[] row = mapInfoLines[i].split(",");
             String[] trimmed = new String[row.length];
             for (int j = 0; j < trimmed.length; j++) {
                 trimmed[j] = row[j].replaceAll(" ", "");
             }
             for (int j = 0; j < mapWidth; j++) {
-                int k = (mapWidth * mapHeight - 1) - ((i - (2 * mapHeight + 3)) * mapWidth + j);
+                int k = (mapWidth * mapHeight - 1) - ((i - (2 * mapHeight + 5)) * mapWidth + j);
                 int l = rm.tiles16x16[0].length;
 
                 // index of -1 is null

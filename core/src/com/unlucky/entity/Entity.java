@@ -76,16 +76,20 @@ public class Entity {
     protected int prevMoveUsed = -1;
     protected int moveUsed = -1;
 
-    public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
+    public Entity(String id, ResourceManager rm) {
         this.id = id;
-        this.position = position;
-        this.tileMap = tileMap;
         this.rm = rm;
 
+        position = new Vector2();
         rand = new Random();
-
         moving = new boolean[4];
         for (int i = 0; i < 4; i++) moving[i] = false;
+    }
+
+    public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
+        this(id, rm);
+        this.position = position;
+        this.tileMap = tileMap;
     }
 
     public void update(float dt) {
@@ -425,6 +429,11 @@ public class Entity {
         }
     }
 
+    public void setMap(TileMap map) {
+        this.tileMap = map;
+        this.position.set(map.toMapCoords(map.playerSpawn));
+    }
+
     public void setAccuracy(int accuracy) {
         this.accuracy = accuracy;
     }
@@ -469,6 +478,10 @@ public class Entity {
 
     public void setHp(int hp) {
         this.hp = hp;
+    }
+
+    public void setMaxHp(int maxHp) {
+        this.maxHp = maxHp;
     }
 
     public int getMaxHp() {

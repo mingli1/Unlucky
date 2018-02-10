@@ -62,7 +62,7 @@ public class GameMap {
 
         particleFactory = new ParticleFactory(gameScreen.getCamera(), player.getRandom(), rm);
 
-        setWeather(WeatherType.THUNDERSTORM);
+        setWeather(WeatherType.BLIZZARD);
     }
 
     /**
@@ -79,6 +79,14 @@ public class GameMap {
         else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
             particleFactory.set(Particle.RAINDROP, 95,
                     new Vector2(Util.RAINDROP_X, -120));
+        }
+        else if (weather == WeatherType.SNOW) {
+            particleFactory.set(Particle.SNOWFLAKE, 100,
+                    new Vector2(Util.SNOWFLAKE_X, -60));
+        }
+        else if (weather == WeatherType.BLIZZARD) {
+            particleFactory.set(Particle.SNOWFLAKE, 300,
+                    new Vector2(Util.SNOWFLAKE_X + 50, -80));
         }
     }
 

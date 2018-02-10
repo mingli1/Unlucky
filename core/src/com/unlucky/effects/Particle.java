@@ -52,6 +52,7 @@ public class Particle {
 
         animated = false;
         //sprite = rm.particles[type];
+        sprite = rm.snowflake;
     }
 
     /**

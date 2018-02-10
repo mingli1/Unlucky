@@ -21,6 +21,7 @@ import com.unlucky.event.EventState;
 import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
+import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -237,13 +238,15 @@ public class Hud extends UI implements Disposable {
     }
 
     /**
-     * Commands:
+     * Simple commands:
      * /heal
      * /tp [tileX] [tileY] (teleports the player to a tile coordinate)
      * /sethp [hp] (sets hp of player)
      * /setmaxhp [maxHp] (sets max hp of player)
      * /randitem (adds a random item from the item pool weighted by rarity)
      * /item [rarity] (adds a random item of a given rarity 0-3)
+     * /setweather [weatherId] (0 - none, 1 - rain, 2 - heavy rain, 3 - thunderstorm, 4 - snow, 5 - blizzard)
+     * /addentity [entityID] [tileX] [tileY] (adds an entity to a a tile position)
      *
      * @param command
      */
@@ -285,6 +288,31 @@ public class Hud extends UI implements Disposable {
                     Item i = rm.getItem(rarity, rand);
                     i.adjust(player.getLevel(), rand);
                     player.inventory.addItem(i);
+                }
+            }
+        }
+        if (cmd.startsWith("/setweather")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int wid = Integer.parseInt(input[1]);
+                if (wid >= 0 && wid < 6) {
+                    if (wid == 0) gameScreen.gameMap.setWeather(WeatherType.NORMAL);
+                    if (wid == 1) gameScreen.gameMap.setWeather(WeatherType.RAIN);
+                    if (wid == 2) gameScreen.gameMap.setWeather(WeatherType.HEAVY_RAIN);
+                    if (wid == 3) gameScreen.gameMap.setWeather(WeatherType.THUNDERSTORM);
+                    if (wid == 4) gameScreen.gameMap.setWeather(WeatherType.SNOW);
+                    if (wid == 5) gameScreen.gameMap.setWeather(WeatherType.BLIZZARD);
+                }
+            }
+        }
+        if (cmd.startsWith("/addentity")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 4) {
+                int entityId = Integer.parseInt(input[1]);
+                int x = Integer.parseInt(input[2]);
+                int y = Integer.parseInt(input[3]);
+                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
+                    tileMap.addEntity(Util.getEntity(entityId, tileMap.toMapCoords(x, y), tileMap, rm), x, y);
                 }
             }
         }

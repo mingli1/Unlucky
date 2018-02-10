@@ -41,36 +41,40 @@ public class Player extends Entity {
     public Inventory inventory;
     public Equipment equips;
 
+    public Player(String id, ResourceManager rm) {
+        super(id, rm);
+
+        inventory = new Inventory();
+        equips = new Equipment();
+
+        // attributes
+        hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
+        accuracy = Util.PLAYER_ACCURACY;
+        minDamage = Util.PLAYER_INIT_MIN_DMG;
+        maxDamage = Util.PLAYER_INIT_MAX_DMG;
+
+        level = 1;
+        speed = 50.f;
+
+        exp = 0;
+        // offset between 3 and 5
+        maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
+
+        // create tilemap animation
+        am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
+        // create battle scene animation
+        bam = new AnimationManager(rm.battleSprites96x96, 2, Util.PLAYER_WALKING, 2 / 5f);
+
+        moveset = new Moveset(rm);
+        // damage seed is a random number between the damage range
+        moveset.reset(minDamage, maxDamage, maxHp);
+    }
+
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
 
         inventory = new Inventory();
         equips = new Equipment();
-
-        /**
-         inventory.addItem(rm.getItem(0, 0));
-         inventory.addItem(rm.getItem(0, 1));
-         inventory.addItem(rm.getItem(0, 2));
-         inventory.addItem(rm.getItem(0, 4));
-         inventory.addItem(rm.getItem(0, 5));
-         inventory.addItem(rm.getItem(0, 6));
-         inventory.addItem(rm.getItem(3, 2));
-         inventory.addItem(rm.getItem(0, 10));
-         inventory.addItem(rm.getItem(0, 11));
-         inventory.addItem(rm.getItem(0, 12));
-         inventory.addItem(rm.getItem(0, 14));
-         inventory.addItem(rm.getItem(0, 15));
-         inventory.addItem(rm.getItem(0, 16));
-         inventory.addItem(rm.getItem(0, 17));
-         inventory.addItem(rm.getItem(0, 18));
-         inventory.addItem(rm.getItem(1, 2));
-         inventory.addItem(rm.getItem(2, 2));
-         inventory.addItem(rm.getItem(2, 0));
-         inventory.addItem(rm.getItem(2, 1));
-         inventory.addItem(rm.getItem(3, 0));
-         inventory.addItem(rm.getItem(3, 1));
-         inventory.addItem(rm.getItem(3, 3));
-         **/
 
         // attributes
         hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
