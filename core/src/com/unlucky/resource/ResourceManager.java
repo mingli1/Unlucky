@@ -29,6 +29,9 @@ public class ResourceManager {
     // json
     private JsonReader jsonReader;
 
+    // Texture Atlas that contains every sprite
+    public TextureAtlas atlas;
+
     // 2D TextureRegion arrays that stores sprites of various sizes for easy animation
     public TextureRegion[][] sprites16x16;
     public TextureRegion[][] tiles16x16;
@@ -85,35 +88,13 @@ public class ResourceManager {
         assetManager = new AssetManager();
         jsonReader = new JsonReader();
 
-        assetManager.load("sprites/16x16_sprites.png", Texture.class);
-        assetManager.load("sprites/16x16_tiles.png", Texture.class);
-        assetManager.load("sprites/16x16_atiles.png", Texture.class);
-        assetManager.load("sprites/20x20_items.png", Texture.class);
-        assetManager.load("sprites/96x96_battle_sprites.png", Texture.class);
-        assetManager.load("sprites/11x6_shadow.png", Texture.class);
-        assetManager.load("sprites/10x9_redarrow.png", Texture.class);
-        assetManager.load("bg/battle_bgs.png", Texture.class);
-        assetManager.load("sprites/64x64_battle_attacks.png", Texture.class);
-        assetManager.load("sprites/96x96_battle_heal.png", Texture.class);
-        assetManager.load("bg/level_up.png", Texture.class);
-        assetManager.load("sprites/96x96_level_up.png", Texture.class);
-        assetManager.load("maps/testlightmap.png", Texture.class);
-
-        assetManager.load("ui/dir_pad.png", Texture.class);
-        assetManager.load("ui/move_buttons.png", Texture.class);
-        assetManager.load("ui/standard_med_button.png", Texture.class);
-        assetManager.load("ui/dialog_box.png", Texture.class);
-        assetManager.load("ui/player_hp_bar.png", Texture.class);
-        assetManager.load("ui/enemy_hp_bar.png", Texture.class);
-        assetManager.load("ui/option_buttons.png", Texture.class);
-        assetManager.load("ui/inv_ui.png", Texture.class);
-        assetManager.load("ui/exit_button.png", Texture.class);
-        assetManager.load("ui/selected_slot.png", Texture.class);
-        assetManager.load("ui/inv_buttons.png", Texture.class);
+        assetManager.load("textures.atlas", TextureAtlas.class);
         assetManager.load("skins/ui.atlas", TextureAtlas.class);
         assetManager.load("skins/dialog.atlas", TextureAtlas.class);
 
         assetManager.finishLoading();
+
+        atlas = assetManager.get("textures.atlas", TextureAtlas.class);
 
         skin = new Skin(assetManager.get("skins/ui.atlas", TextureAtlas.class));
         skin.add("default-font", pixel10);
@@ -123,38 +104,33 @@ public class ResourceManager {
         dialogSkin.add("default-font", pixel10);
         dialogSkin.load(Gdx.files.internal("skins/dialog.json"));
 
-        sprites16x16 = TextureRegion.split(
-                assetManager.get("sprites/16x16_sprites.png", Texture.class), 16, 16);
-        tiles16x16 = TextureRegion.split(
-                assetManager.get("sprites/16x16_tiles.png", Texture.class), 16, 16);
-        atiles16x16 = TextureRegion.split(
-                assetManager.get("sprites/16x16_atiles.png", Texture.class), 16, 16);
-        items20x20 = TextureRegion.split(
-                assetManager.get("sprites/20x20_items.png", Texture.class), 20, 20);
-        battleSprites96x96 = TextureRegion.split(
-                assetManager.get("sprites/96x96_battle_sprites.png", Texture.class), 96, 96);
-        battleBackgrounds400x240 = TextureRegion.split(
-                assetManager.get("bg/battle_bgs.png", Texture.class), 400, 240);
-        shadow11x6 = new TextureRegion(assetManager.get("sprites/11x6_shadow.png", Texture.class));
-        redarrow10x9 = new TextureRegion(assetManager.get("sprites/10x9_redarrow.png", Texture.class));
-        battleAttacks64x64 = TextureRegion.split(assetManager.get("sprites/64x64_battle_attacks.png", Texture.class), 64, 64);
-        battleHeal96x96 = TextureRegion.split(assetManager.get("sprites/96x96_battle_heal.png", Texture.class), 96, 96);
-        levelUp96x96 = TextureRegion.split(assetManager.get("sprites/96x96_level_up.png", Texture.class), 96, 96);
-        levelupscreen400x240 = new TextureRegion(assetManager.get("bg/level_up.png", Texture.class));
-        lightmap = new TextureRegion(assetManager.get("maps/testlightmap.png", Texture.class));
+        // sprites
+        sprites16x16 = atlas.findRegion("16x16_sprites").split(16, 16);
+        tiles16x16 = atlas.findRegion("16x16_tiles").split(16, 16);
+        atiles16x16 = atlas.findRegion("16x16_atiles").split(16, 16);
+        items20x20 = atlas.findRegion("20x20_items").split(20, 20);
+        battleSprites96x96 = atlas.findRegion("96x96_battle_sprites").split(96, 96);
+        battleBackgrounds400x240 = atlas.findRegion("battle_bgs").split(400, 240);
+        shadow11x6 = atlas.findRegion("11x6_shadow");
+        redarrow10x9 = atlas.findRegion("10x9_redarrow");
+        battleAttacks64x64 = atlas.findRegion("64x64_battle_attacks").split(64, 64);
+        battleHeal96x96 = atlas.findRegion("96x96_battle_heal").split(96, 96);
+        levelUp96x96 = atlas.findRegion("96x96_level_up").split(96, 96);
+        levelupscreen400x240 = atlas.findRegion("level_up");
+        lightmap = atlas.findRegion("testlightmap");
 
-        dirpad20x20 = TextureRegion.split(assetManager.get("ui/dir_pad.png", Texture.class), 40, 40);
-        movebutton145x50 = TextureRegion.split(assetManager.get("ui/move_buttons.png", Texture.class), Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
-        stdmedbutton110x50 = TextureRegion.split(assetManager.get("ui/standard_med_button.png", Texture.class),
-                Util.STD_MED_WIDTH, Util.STD_MED_HEIGHT);
-        dialogBox400x80 = new TextureRegion(assetManager.get("ui/dialog_box.png", Texture.class));
-        playerhpbar145x40 = new TextureRegion(assetManager.get("ui/player_hp_bar.png", Texture.class));
-        enemyhpbar145x40 = new TextureRegion(assetManager.get("ui/enemy_hp_bar.png", Texture.class));
-        optionbutton32x32 = TextureRegion.split(assetManager.get("ui/option_buttons.png", Texture.class), 32, 32);
-        inventoryui372x212 = new TextureRegion(assetManager.get("ui/inv_ui.png", Texture.class));
-        exitbutton18x18 = TextureRegion.split(assetManager.get("ui/exit_button.png", Texture.class), 18, 18);
-        selectedslot28x28 = new TextureRegion(assetManager.get("ui/selected_slot.png", Texture.class));
-        invbuttons92x28 = TextureRegion.split(assetManager.get("ui/inv_buttons.png", Texture.class), 92, 28);
+        // ui
+        dirpad20x20 = atlas.findRegion("dir_pad").split(40, 40);
+        movebutton145x50 = atlas.findRegion("move_buttons").split(145, 50);
+        stdmedbutton110x50 = atlas.findRegion("standard_med_button").split(110, 50);
+        dialogBox400x80 = atlas.findRegion("dialog_box");
+        playerhpbar145x40 = atlas.findRegion("player_hp_bar");
+        enemyhpbar145x40 = atlas.findRegion("enemy_hp_bar");
+        optionbutton32x32 = atlas.findRegion("option_buttons").split(32, 32);
+        inventoryui372x212 = atlas.findRegion("inv_ui");
+        exitbutton18x18 = atlas.findRegion("exit_button").split(18, 18);
+        selectedslot28x28 = atlas.findRegion("selected_slot");
+        invbuttons92x28 = atlas.findRegion("inv_buttons").split(92, 28);
 
         loadMoves();
         loadItems();
