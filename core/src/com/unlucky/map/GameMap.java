@@ -4,9 +4,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.unlucky.effects.Particle;
+import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
 
 /**
@@ -33,6 +36,7 @@ public class GameMap {
 
     public TileMap tileMap;
     public Player player;
+    private ParticleFactory particleFactory;
     private GameScreen gameScreen;
     private ResourceManager rm;
 
@@ -48,9 +52,25 @@ public class GameMap {
         tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
         player.setMap(tileMap);
 
-        weather = WeatherType.RAIN;
         lightmap = rm.lightmap;
         // @TODO set weather and lightmap based on map composite id
+
+        particleFactory = new ParticleFactory(gameScreen.getCamera(), player.getRandom(), rm);
+
+        setWeather(WeatherType.RAIN);
+    }
+
+    /**
+     * Changes the weather and sets the particle factory according to the weather
+     *
+     * @param weather
+     */
+    public void setWeather(WeatherType weather) {
+        this.weather = weather;
+        if (weather == WeatherType.RAIN) {
+            particleFactory.set(Particle.RAINDROP, 40,
+                    new Vector2(Util.RAINDROP_X, -100));
+        }
     }
 
     public void update(float dt) {
@@ -79,6 +99,9 @@ public class GameMap {
             gameScreen.setCurrentEvent(EventState.TRANSITION);
             gameScreen.transition.start(EventState.MOVING, EventState.MOVING);
         }
+
+        // update particles
+        if (weather != WeatherType.NORMAL) particleFactory.update(dt);
     }
 
     public void render(SpriteBatch batch, OrthographicCamera cam) {
@@ -88,6 +111,9 @@ public class GameMap {
 
         tileMap.render(batch, cam);
         tileMap.renderTopLayer(batch, cam);
+
+        // render particles
+        if (weather != WeatherType.NORMAL) particleFactory.render(batch);
     }
 
     public boolean hasLightMap() {
