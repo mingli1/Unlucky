@@ -6,8 +6,6 @@ import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
 
-import java.util.Random;
-
 /**
  * Superclass for all UI
  * Contains useful variables and references
@@ -16,7 +14,6 @@ import java.util.Random;
  */
 public abstract class UI {
 
-    protected Random rand;
     protected ResourceManager rm;
     protected TileMap tileMap;
     protected Player player;
@@ -31,7 +28,6 @@ public abstract class UI {
         this.player = player;
         this.rm = rm;
 
-        rand = new Random();
         shapeRenderer = new ShapeRenderer();
     }
 

@@ -16,7 +16,6 @@ import com.unlucky.inventory.Item;
  */
 public class ItemTooltip extends Window {
 
-    private Skin skin;
     private Label desc;
 
     // label styles for different color names based on item rarity
@@ -27,7 +26,6 @@ public class ItemTooltip extends Window {
 
     public ItemTooltip(Skin skin) {
         super("", skin);
-        this.skin = skin;
         desc = new Label("", skin);
 
         common = new Label.LabelStyle(skin.getFont("default-font"), new Color(1, 1, 1, 1));

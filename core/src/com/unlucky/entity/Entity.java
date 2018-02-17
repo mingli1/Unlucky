@@ -1,14 +1,13 @@
 package com.unlucky.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
-
-import java.util.Random;
 
 /**
  * Handles entity attributes and movement on the tile map
@@ -19,7 +18,6 @@ public class Entity {
 
     protected String id;
     protected ResourceManager rm;
-    protected Random rand;
 
     // animation
     protected AnimationManager am;
@@ -81,7 +79,6 @@ public class Entity {
         this.rm = rm;
 
         position = new Vector2();
-        rand = new Random();
         moving = new boolean[4];
         for (int i = 0; i < 4; i++) moving[i] = false;
     }
@@ -280,22 +277,22 @@ public class Entity {
         if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
             if (currentTile.isChange()) {
-                int k = rand.nextInt(2);
+                boolean k = MathUtils.randomBoolean();
                 switch (prevDir) {
                     case 0: // down
-                        if (k == 0) changeDirection(1);
+                        if (k) changeDirection(1);
                         else changeDirection(0);
                         break;
                     case 1: // up
-                        if (k == 0) changeDirection(0);
+                        if (k) changeDirection(0);
                         else changeDirection(1);
                         break;
                     case 2: // right
-                        if (k == 0) changeDirection(3);
+                        if (k) changeDirection(3);
                         else changeDirection(2);
                         break;
                     case 3: // left
-                        if (k == 0) changeDirection(2);
+                        if (k) changeDirection(2);
                         else changeDirection(3);
                         break;
                 }
@@ -303,7 +300,7 @@ public class Entity {
             // Player goes 1 tile in a random direction not the direction they entered the tile on
             else if (currentTile.isInAndOut()) {
                 // output direction (all other directions other than input direction)
-                int odir = rand.nextInt(3);
+                int odir = MathUtils.random(2);
                 switch (prevDir) {
                     case 0: // down
                         if (odir == 0) changeDirection(3);
@@ -496,10 +493,6 @@ public class Entity {
 
     public int getLevel() {
         return level;
-    }
-
-    public Random getRandom() {
-        return rand;
     }
 
     public int getMinDamage() { return minDamage; }

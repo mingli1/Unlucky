@@ -1,6 +1,7 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.MathUtils;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
@@ -8,8 +9,6 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.resource.Util;
 import com.unlucky.ui.BattleUIHandler;
 import com.unlucky.ui.Hud;
-
-import java.util.Random;
 
 /**
  * Renders a random transition screen between two EventStates
@@ -23,7 +22,6 @@ public class TransitionScreen {
     private BattleUIHandler uiHandler;
     private Hud hud;
     private Player player;
-    private Random rand;
 
     // determine which one to render when entering and exiting battle
     private boolean renderMap = false;
@@ -64,10 +62,9 @@ public class TransitionScreen {
         this.hud = hud;
         this.player = player;
 
-        rand = new Random();
         shapeRenderer = new ShapeRenderer();
 
-        transitionIndex = rand.nextInt(NUM_TRANSITIONS);
+        transitionIndex = MathUtils.random(NUM_TRANSITIONS - 1);
     }
 
     /**
@@ -88,9 +85,9 @@ public class TransitionScreen {
         else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) renderLevelUp = true;
 
         if (prev == EventState.MOVING && next == EventState.MOVING)
-            transitionIndex = Util.getRandomValue(2, 3, rand);
+            transitionIndex = MathUtils.random(2, 3);
         else
-            transitionIndex = rand.nextInt(NUM_TRANSITIONS);
+            transitionIndex = MathUtils.random(NUM_TRANSITIONS - 1);
 
         switch (transitionIndex) {
             case 0: x = 0; break;

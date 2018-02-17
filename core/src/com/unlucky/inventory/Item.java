@@ -1,10 +1,9 @@
 package com.unlucky.inventory;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
-
-import java.util.Random;
 
 /**
  * An Item is held by an inventory slot and can be one of:
@@ -142,13 +141,12 @@ public class Item {
      * Only called once per item's existence
      *
      * @param level
-     * @param rand
      */
-    public void adjust(int level, Random rand) {
+    public void adjust(int level) {
         // max hp will be scaled by 5-7 parts of original item stat added on each level
         // dmg is scaled 4-6 parts of original per level
-        int mhpSeed = mhp / Util.getRandomValue(5, 7, rand);
-        int dmgSeed = dmg / Util.getRandomValue(4, 6, rand);
+        int mhpSeed = mhp / MathUtils.random(5, 7);
+        int dmgSeed = dmg / MathUtils.random(4, 6);
         for (int i = 0; i < level - 1; i++) {
             mhp += mhpSeed;
             dmg += dmgSeed;
@@ -189,27 +187,26 @@ public class Item {
      *
      * This method deals with enchant success
      *
-     * @param rand
      */
-    public void enchant(Random rand) {
+    public void enchant() {
         float multiplier = 1.f;
 
         switch (rarity) {
             // common
             case 0:
-                multiplier = (rand.nextFloat() * (Util.COMMON_ENCHANT_MAX - Util.COMMON_ENCHANT_MIN)) + Util.COMMON_ENCHANT_MIN;
+                multiplier = MathUtils.random(Util.COMMON_ENCHANT_MIN, Util.COMMON_ENCHANT_MAX);
                 break;
             // rare
             case 1:
-                multiplier = (rand.nextFloat() * (Util.RARE_ENCHANT_MAX - Util.RARE_ENCHANT_MIN)) + Util.RARE_ENCHANT_MIN;
+                multiplier = MathUtils.random(Util.RARE_ENCHANT_MIN, Util.RARE_ENCHANT_MAX);
                 break;
             // epic
             case 2:
-                multiplier = (rand.nextFloat() * (Util.EPIC_ENCHANT_MAX - Util.EPIC_ENCHANT_MIN)) + Util.EPIC_ENCHANT_MIN;
+                multiplier = MathUtils.random(Util.EPIC_ENCHANT_MIN, Util.EPIC_ENCHANT_MAX);
                 break;
             // legendary
             case 3:
-                multiplier = (rand.nextFloat() * (Util.LEGENDARY_ENCHANT_MAX - Util.LEGENDARY_ENCHANT_MIN)) + Util.LEGENDARY_ENCHANT_MIN;
+                multiplier = MathUtils.random(Util.LEGENDARY_ENCHANT_MIN, Util.LEGENDARY_ENCHANT_MAX);
                 break;
         }
 

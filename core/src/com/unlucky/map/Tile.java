@@ -6,8 +6,6 @@ import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Entity;
 import com.unlucky.resource.Util;
 
-import java.util.Random;
-
 /**
  * Stores information about each tile on a map, including what it contains (Entity)
  * and how the player interacts with it

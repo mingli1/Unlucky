@@ -1,11 +1,10 @@
 package com.unlucky.resource;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Entity;
 import com.unlucky.map.TileMap;
-
-import java.util.Random;
 
 /**
  * Stores useful constants and functions
@@ -127,30 +126,17 @@ public class Util {
         return (int) (Math.pow(enemyLevel, 1.1)) + offset;
     }
 
-    // Random
+    // Random helper functions
 
     /**
-     * Returns whether or not an event is successful given a probability in %
+     * Returns if an event was successful given a probability
      *
      * @param p
-     * @param rand
      * @return
      */
-    public static boolean isSuccess(int p, Random rand) {
-        int k = rand.nextInt(100);
+    public static boolean isSuccess(int p) {
+        int k = MathUtils.random(99);
         return k < p;
-    }
-
-    /**
-     * Returns a random number within in a range
-     *
-     * @param n0 min
-     * @param n1 max
-     * @param rand
-     * @return
-     */
-    public static int getRandomValue(int n0, int n1, Random rand) {
-        return rand.nextInt((n1 - n0) + 1) + n0;
     }
 
     /**
@@ -158,13 +144,12 @@ public class Util {
      *
      * @param mu avg
      * @param sigma deviation
-     * @param rand
      * @return
      */
-    public static int getDeviatedRandomValue(int mu, int sigma, Random rand) {
+    public static int getDeviatedRandomValue(int mu, int sigma) {
         int n0 = mu - sigma;
         int n1 = mu + sigma;
-        return rand.nextInt((n1 - n0) + 1) + n0;
+        return MathUtils.random(n0, n1);
     }
 
     // Map

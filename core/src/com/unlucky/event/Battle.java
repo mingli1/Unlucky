@@ -1,5 +1,6 @@
 package com.unlucky.event;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.unlucky.battle.Move;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Player;
@@ -46,32 +47,29 @@ public class Battle {
 
         // set to below or above player's level by 3
         //opponent.setLevel(Util.getRandomValue(player.getLevel(), player.getLevel() + 3, opponent.getRandom()));
-        opponent.setLevel(Util.getDeviatedRandomValue(player.getLevel(), 3, opponent.getRandom()));
+        opponent.setLevel(Util.getDeviatedRandomValue(player.getLevel(), 3));
         if (opponent.getLevel() <= 0) opponent.setLevel(1);
 
-        float eliteMultiplier = (player.getRandom().nextFloat() *
-                (Util.MAX_ELITE_MULTIPLIER - Util.MIN_ELITE_MULTIPLIER)) + Util.MIN_ELITE_MULTIPLIER;
+        float eliteMultiplier = MathUtils.random(Util.MIN_ELITE_MULTIPLIER, Util.MAX_ELITE_MULTIPLIER);
+        float bossMultiplier = MathUtils.random(Util.MIN_BOSS_MULTIPLIER, Util.MAX_BOSS_MULTIPLIER);
 
-        float bossMultiplier = (player.getRandom().nextFloat() *
-                (Util.MAX_BOSS_MULTIPLIER - Util.MIN_BOSS_MULTIPLIER)) + Util.MIN_BOSS_MULTIPLIER;
-
-        int mhp = Util.getRandomValue(Util.ENEMY_INIT_MIN_MHP, Util.ENEMY_INIT_MAX_MHP, opponent.getRandom());
-        int minDmg = Util.getRandomValue(Util.ENEMY_INIT_MIN_MINDMG, Util.ENEMY_INIT_MAX_MINDMG, opponent.getRandom());
-        int maxDmg = Util.getRandomValue(Util.ENEMY_INIT_MIN_MAXDMG, Util.ENEMY_INIT_MAX_MAXDMG, opponent.getRandom());
+        int mhp = MathUtils.random(Util.ENEMY_INIT_MIN_MHP, Util.ENEMY_INIT_MAX_MHP);
+        int minDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MINDMG, Util.ENEMY_INIT_MAX_MINDMG);
+        int maxDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MAXDMG, Util.ENEMY_INIT_MAX_MAXDMG);
 
         for (int i = 0; i < opponent.getLevel() - 1; i++) {
-            mhp += Util.getRandomValue(Util.ENEMY_MIN_HP_INCREASE, Util.ENEMY_MAX_HP_INCREASE, opponent.getRandom());
+            mhp += MathUtils.random(Util.ENEMY_MIN_HP_INCREASE, Util.ENEMY_MAX_HP_INCREASE);
 
-            int dmgMean = Util.getRandomValue(Util.ENEMY_MIN_DMG_INCREASE, Util.ENEMY_MAX_DMG_INCREASE, opponent.getRandom());
-            int minDmgIncrease = (dmgMean - opponent.getRandom().nextInt(3));
-            int maxDmgIncrease = (dmgMean + opponent.getRandom().nextInt(3));
+            int dmgMean = MathUtils.random(Util.ENEMY_MIN_DMG_INCREASE, Util.ENEMY_MAX_DMG_INCREASE);
+            int minDmgIncrease = (dmgMean - MathUtils.random(2));
+            int maxDmgIncrease = (dmgMean + MathUtils.random(2));
 
             minDmg += minDmgIncrease;
             maxDmg += maxDmgIncrease;
         }
 
         // random acc
-        opponent.setAccuracy(Util.getRandomValue(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY, opponent.getRandom()));
+        opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
 
         if (opponent.isElite()) {
             opponent.setMaxHp((int) (eliteMultiplier * mhp));
@@ -106,14 +104,14 @@ public class Battle {
 
         // distract/enemy debuff
         if (options[0]) opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
-        else opponent.setAccuracy(Util.getRandomValue(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY, opponent.getRandom()));
+        else opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
 
         // accounting for player accuracy or accuracy buff
-        if (Util.isSuccess(player.getAccuracy(), player.getRandom()) || options[1]) {
+        if (Util.isSuccess(player.getAccuracy()) || options[1]) {
             player.useMove(move.type);
             // accurate or wide
             if (move.type < 2) {
-                int damage = Util.getRandomValue(Math.round(move.minDamage), Math.round(move.maxDamage), player.getRandom());
+                int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                 if (options[2]) damage *= Util.INTIMIDATE_MULT;
                 opponent.hit(damage);
                 dialog = new String[] {
@@ -125,7 +123,7 @@ public class Battle {
             else if (move.type == 2) {
                 int damage = Math.round(move.minDamage);
                 if (options[2]) damage *= Util.INTIMIDATE_MULT;
-                if (Util.isSuccess(move.crit, player.getRandom())) {
+                if (Util.isSuccess(move.crit)) {
                     damage *= Util.CRIT_MULTIPLIER;
                     opponent.hit(damage);
                     dialog = new String[] {
@@ -143,7 +141,7 @@ public class Battle {
             }
             // heal
             else if (move.type == 3) {
-                int heal = Util.getRandomValue(Math.round(move.minHeal), Math.round(move.maxHeal), player.getRandom());
+                int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
                 player.heal(heal);
                 dialog = new String[] {
                         "You used " + move.name + "!",
@@ -176,13 +174,13 @@ public class Battle {
             opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp());
         }
         String[] dialog = null;
-        Move move = opponent.getMoveset().moveset[opponent.getRandom().nextInt(4)];
+        Move move = opponent.getMoveset().moveset[MathUtils.random(3)];
 
-        if (Util.isSuccess(opponent.getAccuracy(), opponent.getRandom())) {
+        if (Util.isSuccess(opponent.getAccuracy())) {
             opponent.useMove(move.type);
             // accurate or wide
             if (move.type < 2) {
-                int damage = Util.getRandomValue(Math.round(move.minDamage), Math.round(move.maxDamage), opponent.getRandom());
+                int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                 player.hit(damage);
                 dialog = new String[] {
                         opponent.getId() + " used " + move.name + "!",
@@ -192,7 +190,7 @@ public class Battle {
             // crit (3x damage if success)
             else if (move.type == 2) {
                 int damage = Math.round(move.minDamage);
-                if (Util.isSuccess(move.crit, opponent.getRandom())) {
+                if (Util.isSuccess(move.crit)) {
                     damage *= Util.CRIT_MULTIPLIER;
                     player.hit(damage);
                     dialog = new String[] {
@@ -210,7 +208,7 @@ public class Battle {
             }
             // heal
             else if (move.type == 3) {
-                int heal = Util.getRandomValue(Math.round(move.minHeal), Math.round(move.maxHeal), opponent.getRandom());
+                int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
                 opponent.heal(heal);
                 dialog = new String[] {
                         opponent.getId() + " used " + move.name + "!",
@@ -233,11 +231,11 @@ public class Battle {
      */
     public int getBattleExp() {
         if (opponent.isElite())
-            return (int) (1.5 * Util.calculateExpEarned(opponent.getLevel(), opponent.getRandom().nextInt(3) + 1));
+            return (int) (1.5 * Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2) + 1));
         else if (opponent.isBoss())
-            return (3 * Util.calculateExpEarned(opponent.getLevel(), opponent.getRandom().nextInt(3) + 1));
+            return (3 * Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2) + 1));
         else
-            return Util.calculateExpEarned(opponent.getLevel(), opponent.getRandom().nextInt(3) + 1);
+            return Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2) + 1);
     }
 
     /**
@@ -252,7 +250,7 @@ public class Battle {
         int diff = player.getLevel() - opponent.getLevel();
 
         for (int i = 0; i < opponent.getLevel(); i++) {
-            gold += opponent.getRandom().nextInt(3) + 1;
+            gold += MathUtils.random(2) + 1;
         }
         gold -= (opponent.getLevel() * diff);
         if (gold <= 0) gold = 1;
@@ -270,28 +268,28 @@ public class Battle {
      */
     public Item getItemObtained(ResourceManager rm) {
         if (opponent.isElite()) {
-            if (Util.isSuccess(Util.ELITE_ITEM_DROP, player.getRandom())) {
+            if (Util.isSuccess(Util.ELITE_ITEM_DROP)) {
                 // elite will drop rare, epic, and legendary items at 60/30/10 chances
-                int k = player.getRandom().nextInt(100);
+                int k = MathUtils.random(99);
                 // rare
-                if (k < 60) return rm.getItem(1, player.getRandom());
-                else if (k < 90) return rm.getItem(2, player.getRandom());
-                else if (k < 100) return rm.getItem(3, player.getRandom());
+                if (k < 60) return rm.getItem(1);
+                else if (k < 90) return rm.getItem(2);
+                else if (k < 100) return rm.getItem(3);
             }
         }
         else if (opponent.isBoss()) {
-            if (Util.isSuccess(Util.BOSS_ITEM_DROP, player.getRandom())) {
+            if (Util.isSuccess(Util.BOSS_ITEM_DROP)) {
                 // boss will only drop epic and legendary items at 70/30 chances
-                int k = player.getRandom().nextInt(100);
+                int k = MathUtils.random(99);
                 // epic
-                if (k < 70) return rm.getItem(2, player.getRandom());
+                if (k < 70) return rm.getItem(2);
                     // legendary
-                else return rm.getItem(3, player.getRandom());
+                else return rm.getItem(3);
             }
         }
         else {
-            if (Util.isSuccess(Util.NORMAL_ITEM_DROP, player.getRandom())) {
-                return rm.getRandomItem(player.getRandom());
+            if (Util.isSuccess(Util.NORMAL_ITEM_DROP)) {
+                return rm.getRandomItem();
             }
         }
         //return rm.getRandomItemFromPool(opponent.getRandom());
@@ -314,7 +312,7 @@ public class Battle {
                 ret = "The enemy dropped a " + item.getDialogName() + "! " +
                         "The item was added to your inventory.";
                 // scale item stats to match enemy level
-                item.adjust(opponent.getLevel(), opponent.getRandom());
+                item.adjust(opponent.getLevel());
                 player.inventory.addItem(item);
             }
         }

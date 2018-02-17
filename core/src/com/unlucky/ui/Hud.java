@@ -5,6 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -106,7 +107,7 @@ public class Hud extends UI implements Disposable {
     private void shuffleMagnitudes() {
         for (int i = 0; i < 4; i++) {
             // each magnitude between 1 and 4
-            mags[i] = rand.nextInt(4) + 1;
+            mags[i] = MathUtils.random(3) + 1;
         }
     }
 
@@ -247,6 +248,7 @@ public class Hud extends UI implements Disposable {
      * /item [rarity] (adds a random item of a given rarity 0-3)
      * /setweather [weatherId] (0 - none, 1 - rain, 2 - heavy rain, 3 - thunderstorm, 4 - snow, 5 - blizzard)
      * /addentity [entityID] [tileX] [tileY] (adds an entity to a a tile position)
+     * /removeentity [tileX] [tileY] (removes the entity at a tile position)
      *
      * @param command
      */
@@ -276,8 +278,8 @@ public class Hud extends UI implements Disposable {
             }
         }
         if (eq(cmd, "/randitem")) {
-            Item i = rm.getRandomItem(rand);
-            i.adjust(player.getLevel(), rand);
+            Item i = rm.getRandomItem();
+            i.adjust(player.getLevel());
             player.inventory.addItem(i);
         }
         if (cmd.startsWith("/item")) {
@@ -285,8 +287,8 @@ public class Hud extends UI implements Disposable {
             if (input.length == 2) {
                 int rarity = Integer.parseInt(input[1]);
                 if (rarity >= 0 && rarity < 4) {
-                    Item i = rm.getItem(rarity, rand);
-                    i.adjust(player.getLevel(), rand);
+                    Item i = rm.getItem(rarity);
+                    i.adjust(player.getLevel());
                     player.inventory.addItem(i);
                 }
             }
@@ -315,6 +317,9 @@ public class Hud extends UI implements Disposable {
                     tileMap.addEntity(Util.getEntity(entityId, tileMap.toMapCoords(x, y), tileMap, rm), x, y);
                 }
             }
+        }
+        if (cmd.startsWith("/removeentity")) {
+
         }
     }
 

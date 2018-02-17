@@ -60,9 +60,9 @@ public class GameMap {
         renderLightmap = lightmap != null;
         // @TODO set weather and lightmap based on map composite id
 
-        particleFactory = new ParticleFactory(gameScreen.getCamera(), player.getRandom(), rm);
+        particleFactory = new ParticleFactory(gameScreen.getCamera(), rm);
 
-        setWeather(WeatherType.BLIZZARD);
+        setWeather(WeatherType.RAIN);
     }
 
     /**
@@ -77,7 +77,7 @@ public class GameMap {
                     new Vector2(Util.RAINDROP_X, -100));
         }
         else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
-            particleFactory.set(Particle.RAINDROP, 95,
+            particleFactory.set(Particle.RAINDROP, 75,
                     new Vector2(Util.RAINDROP_X, -120));
         }
         else if (weather == WeatherType.SNOW) {

@@ -523,8 +523,8 @@ public class InventoryUI extends UI implements Disposable {
      */
     private void enchant() {
         // 50% success
-        if (Util.isSuccess(Util.ENCHANT, player.getRandom())) {
-            currentItem.enchant(player.getRandom());
+        if (Util.isSuccess(Util.ENCHANT)) {
+            currentItem.enchant();
             // update item tooltip
             tooltip.updateText(currentItem);
             new Dialog("Success!", rm.dialogSkin) {
@@ -547,7 +547,7 @@ public class InventoryUI extends UI implements Disposable {
         // enchant failed
         else {
             // 40% chance to destroy item
-            if (Util.isSuccess(Util.DESTROY_ITEM_IF_FAIL, player.getRandom())) {
+            if (Util.isSuccess(Util.DESTROY_ITEM_IF_FAIL)) {
                 new Dialog("Fail!", rm.dialogSkin) {
                     {
                         Label l = new Label("Enchanting failed.\nThe item has been destroyed.", rm.dialogSkin);

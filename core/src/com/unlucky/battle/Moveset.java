@@ -1,10 +1,8 @@
 package com.unlucky.battle;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.resource.Util;
-
-import java.util.Random;
 
 /**
  * A Moveset is a set of 4 random moves that an Entity gets each battle
@@ -13,7 +11,6 @@ import java.util.Random;
  */
 public class Moveset {
 
-    private Random rand;
     private ResourceManager rm;
 
     /**
@@ -29,7 +26,6 @@ public class Moveset {
 
     public Moveset(ResourceManager rm) {
         this.rm = rm;
-        rand = new Random();
 
         moveset = new Move[4];
         names = new String[4];
@@ -45,7 +41,7 @@ public class Moveset {
 
         for (int i = 0; i < 4; i++) {
             // reset damage seed for a new value between player's dmg range each iteration
-            dmg = Util.getRandomValue(min, max, rand);
+            dmg = MathUtils.random(min, max);
             if (moveset[i].type == 3) moveset[i].setHeal(hp);
             else moveset[i].setDamage(dmg);
 
@@ -71,7 +67,7 @@ public class Moveset {
         moveset = getBossMoves(bossIndex);
         int dmg;
         for (int i = 0; i < 4; i++) {
-            dmg = Util.getRandomValue(min, max, rand);
+            dmg = MathUtils.random(min, max);
             if (moveset[i].type == 3) moveset[i].setHeal(hp);
             else moveset[i].setDamage(dmg);
         }
@@ -93,7 +89,7 @@ public class Moveset {
 
         int index;
         for (int i = 0; i < ret.length; i++) {
-            index = rand.nextInt(all.size);
+            index = MathUtils.random(all.size - 1);
             Move randMove = all.get(index);
             Move temp = null;
 
@@ -122,7 +118,7 @@ public class Moveset {
         Move[] ret = new Move[4];
         int index;
         for (int i = 0; i < ret.length; i++) {
-            index = rand.nextInt(pool.size);
+            index = MathUtils.random(pool.size - 1);
             Move randMove = pool.get(index);
             Move temp = null;
 
@@ -138,22 +134,6 @@ public class Moveset {
         }
 
         return ret;
-    }
-
-    public Move getAccurateMove() {
-        return moveset[0];
-    }
-
-    public Move getWideMove() {
-        return moveset[1];
-    }
-
-    public Move getCritMove() {
-        return moveset[2];
-    }
-
-    public Move getHealMove() {
-        return moveset[3];
     }
 
 }

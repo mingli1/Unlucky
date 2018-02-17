@@ -2,6 +2,7 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
@@ -81,10 +82,10 @@ public class BattleUIHandler extends UI implements Disposable {
         currentState = BattleState.DIALOG;
 
         String[] intro;
-        boolean saved = Util.isSuccess(Util.SAVED_FROM_BATTLE, rand);
+        boolean saved = Util.isSuccess(Util.SAVED_FROM_BATTLE);
 
         if (enemy.isBoss()) {
-            if (Util.isSuccess(50, rand)) {
+            if (MathUtils.randomBoolean()) {
                 intro = new String[] {
                         "you encountered the boss " + enemy.getId() + "!",
                         "its power is far greater than any regular enemy."
@@ -109,7 +110,7 @@ public class BattleUIHandler extends UI implements Disposable {
                 battleEventHandler.startDialog(intro, BattleEvent.NONE, BattleEvent.END_BATTLE);
             } else {
                 // 50-50 chance for first attack from enemy or player
-                if (Util.isSuccess(50, rand)) {
+                if (MathUtils.randomBoolean()) {
                     intro = new String[]{
                             "you encountered " + enemy.getId() + "! " +
                                     "maybe there's a chance it doesn't want to fight...",

@@ -2,6 +2,7 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -69,7 +70,7 @@ public class MoveUI extends BattleUI {
      * Resetting variables that are only set once the entire battle
      */
     public void init() {
-        optionIndex = rand.nextInt(3);
+        optionIndex = MathUtils.random(2);
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -310,7 +311,7 @@ public class MoveUI extends BattleUI {
                 uiHandler.currentState = BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 // 7% chance to run from the battle
-                if (Util.isSuccess(Util.RUN_FROM_BATTLE, rand)) {
+                if (Util.isSuccess(Util.RUN_FROM_BATTLE)) {
                     uiHandler.battleEventHandler.startDialog(new String[]{
                             "You successfully ran from the battle!"
                     }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);

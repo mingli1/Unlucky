@@ -2,14 +2,13 @@ package com.unlucky.effects;
 
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
-
-import java.util.Random;
 
 /**
  * Stores and manages particles
@@ -35,18 +34,16 @@ public class ParticleFactory {
     private int viewWidth;
     private int viewHeight;
 
-    private Random rand;
     private OrthographicCamera cam;
     private final ResourceManager rm;
 
-    public ParticleFactory(int type, int numParticles, Vector2 velocity, OrthographicCamera cam, Random rand, final ResourceManager rm) {
+    public ParticleFactory(int type, int numParticles, Vector2 velocity, OrthographicCamera cam, final ResourceManager rm) {
         this.type = type;
         this.numParticles = numParticles;
         this.velocity = velocity;
         this.cam = cam;
         this.viewWidth = (int) cam.viewportWidth;
         this.viewHeight = (int) cam.viewportHeight;
-        this.rand = rand;
         this.rm = rm;
 
         particles = new Array<Particle>();
@@ -58,11 +55,10 @@ public class ParticleFactory {
         };
     }
 
-    public ParticleFactory(OrthographicCamera cam, Random rand, final ResourceManager rm) {
+    public ParticleFactory(OrthographicCamera cam, final ResourceManager rm) {
         this.cam = cam;
         this.viewWidth = (int) cam.viewportWidth;
         this.viewHeight = (int) cam.viewportHeight;
-        this.rand = rand;
         this.rm = rm;
 
         particles = new Array<Particle>();
@@ -123,20 +119,20 @@ public class ParticleFactory {
      */
     public void spawn() {
         Particle item = particlePool.obtain();
-        Vector2 weatherParticleSpawnPosition = new Vector2(cam.position.x + Util.getRandomValue(-viewWidth / 2, viewWidth / 2, rand),
-                cam.position.y + Util.getRandomValue(-viewHeight / 2, viewHeight / 2, rand));
+        Vector2 weatherParticleSpawnPosition = new Vector2(cam.position.x + MathUtils.random(-viewWidth / 2, viewWidth / 2),
+                cam.position.y + MathUtils.random(-viewHeight / 2, viewHeight / 2));
         switch (type) {
             case Particle.RAINDROP:
-                float rls = rand.nextFloat() + 0.4f;
+                float rls = MathUtils.random(0.4f, 1.4f);
                 Vector2 rv = new Vector2(this.velocity.x,
-                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.RAINDROP_Y_DEVIATED, rand));
+                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.RAINDROP_Y_DEVIATED));
                 AnimationManager rd = new AnimationManager(rm.raindropAnim16x16, 3, 0, 1 / 6f);
                 item.init(type, weatherParticleSpawnPosition, rv, rls, rm.raindrop, rd);
                 break;
             case Particle.SNOWFLAKE:
-                float sls = rand.nextFloat() + 0.3f;
+                float sls = MathUtils.random(0.3f, 1.4f);
                 Vector2 sv = new Vector2(this.velocity.x,
-                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED, rand));
+                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED));
                 item.init(type, weatherParticleSpawnPosition, sv, sls, rm.snowflake, null);
                 break;
         }

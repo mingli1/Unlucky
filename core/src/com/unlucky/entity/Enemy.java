@@ -53,7 +53,7 @@ public class Enemy extends Entity {
         bam = new AnimationManager(rm.battleSprites96x96, 2, animIndex, delay);
 
         // determine if boss
-        isElite = Util.isSuccess(Util.ELITE_CHANCE, rand);
+        isElite = Util.isSuccess(Util.ELITE_CHANCE);
         if (isElite) this.id = "[ELITE] " + id;
     }
 

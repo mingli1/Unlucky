@@ -213,7 +213,7 @@ public class BattleEventHandler extends BattleUI {
                         uiHandler.moveUI.toggleMoveAndOptionUI(false);
                         uiHandler.currentState = BattleState.DIALOG;
                         // 1% chance for revival after dead
-                        if (Util.isSuccess(Util.REVIVAL, player.getRandom())) {
+                        if (Util.isSuccess(Util.REVIVAL)) {
                             startDialog(new String[] {
                                     "You took fatal damage and died!",
                                     "However, it looks like luck was on your side and you revived!"
@@ -244,7 +244,7 @@ public class BattleEventHandler extends BattleUI {
                         player.setMoveUsed(-1);
 
                         // 1% chance for enemy revival
-                        if (Util.isSuccess(Util.REVIVAL, battle.opponent.getRandom())) {
+                        if (Util.isSuccess(Util.REVIVAL)) {
                             startDialog(new String[] {
                                     "The enemy took fatal damage and died!",
                                     "Oh no, it looks like the enemy has been revived!"

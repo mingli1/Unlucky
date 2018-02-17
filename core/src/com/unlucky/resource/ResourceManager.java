@@ -2,10 +2,10 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -14,8 +14,6 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
 import com.unlucky.inventory.Item;
-
-import java.util.Random;
 
 /**
  * Main resource loading and storage class. Uses an AssetManager to manage textures, sounds,
@@ -42,7 +40,8 @@ public class ResourceManager {
     public TextureRegion[][] battleAttacks64x64;
     public TextureRegion[][] battleHeal96x96;
     public TextureRegion[][] levelUp96x96;
-    public TextureRegion[][] raindrop16x16;
+    public TextureRegion raindrop;
+    public TextureRegion[][] raindropAnim16x16;
     public TextureRegion snowflake;
     public TextureRegion lightning;
     public TextureRegion lightmap;
@@ -119,7 +118,8 @@ public class ResourceManager {
         battleHeal96x96 = atlas.findRegion("96x96_battle_heal").split(96, 96);
         levelUp96x96 = atlas.findRegion("96x96_level_up").split(96, 96);
         levelupscreen400x240 = atlas.findRegion("level_up");
-        raindrop16x16 = atlas.findRegion("raindrop").split(16, 16);
+        raindrop = atlas.findRegion("raindrop");
+        raindropAnim16x16 = atlas.findRegion("raindrop_anim").split(16, 16);
         snowflake = atlas.findRegion("snowflake");
         lightning = atlas.findRegion("lightning");
         lightmap = atlas.findRegion("testlightmap");
@@ -252,11 +252,10 @@ public class ResourceManager {
      * This was made so that duplicate Item actors could be created
      *
      * @param rarity
-     * @param rand
      * @return
      */
-    public Item getItem(int rarity, Random rand) {
-        Item item = items.get(rarity).get(rand.nextInt(items.get(rarity).size));
+    public Item getItem(int rarity) {
+        Item item = items.get(rarity).get(MathUtils.random(items.get(rarity).size - 1));
         if (item.type == 0)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
         else if (item.type == 1)
@@ -285,19 +284,18 @@ public class ResourceManager {
     /**
      * Returns a random Item from the item pool with weighted rarity
      *
-     * @param rand
      * @return
      */
-    public Item getRandomItem(Random rand) {
-        int k = rand.nextInt(100);
+    public Item getRandomItem() {
+        int k = MathUtils.random(99);
         // common
-        if (k < Util.COMMON_ITEM_RNG_INDEX) return getItem(0, rand);
+        if (k < Util.COMMON_ITEM_RNG_INDEX) return getItem(0);
         // rare
-        else if (k < Util.RARE_ITEM_RNG_INDEX) return getItem(1, rand);
+        else if (k < Util.RARE_ITEM_RNG_INDEX) return getItem(1);
         // epic
-        else if (k < Util.EPIC_ITEM_RNG_INDEX) return getItem(2, rand);
+        else if (k < Util.EPIC_ITEM_RNG_INDEX) return getItem(2);
         // legendary
-        else if (k < Util.LEGENDARY_ITEM_RNG_INDEX) return getItem(3, rand);
+        else if (k < Util.LEGENDARY_ITEM_RNG_INDEX) return getItem(3);
 
         return null;
     }
@@ -305,11 +303,10 @@ public class ResourceManager {
     /**
      * Returns a random Item from the item pool regardless of rarity
      *
-     * @param rand
      * @return
      */
-    public Item getRandomItemFromPool(Random rand) {
-        return getItem(rand.nextInt(4), rand);
+    public Item getRandomItemFromPool() {
+        return getItem(MathUtils.random(3));
     }
 
     public void dispose() {

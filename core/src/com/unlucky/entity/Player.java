@@ -1,6 +1,7 @@
 package com.unlucky.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
@@ -58,7 +59,7 @@ public class Player extends Entity {
 
         exp = 0;
         // offset between 3 and 5
-        maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
+        maxExp = Util.calculateMaxExp(1, MathUtils.random(3, 5));
 
         // create tilemap animation
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -87,7 +88,7 @@ public class Player extends Entity {
 
         exp = 0;
         // offset between 3 and 5
-        maxExp = Util.calculateMaxExp(1, Util.getRandomValue(3, 5, rand));
+        maxExp = Util.calculateMaxExp(1, MathUtils.random(3, 5));
 
         // create tilemap animation
         am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
@@ -128,17 +129,17 @@ public class Player extends Entity {
     public void levelUp(int remainder) {
         level++;
 
-        hpIncrease += Util.getRandomValue(Util.PLAYER_MIN_HP_INCREASE, Util.PLAYER_MAX_HP_INCREASE, rand);
-        int dmgMean = Util.getRandomValue(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE, rand);
+        hpIncrease += MathUtils.random(Util.PLAYER_MIN_HP_INCREASE, Util.PLAYER_MAX_HP_INCREASE);
+        int dmgMean = MathUtils.random(Util.PLAYER_MIN_DMG_INCREASE, Util.PLAYER_MAX_DMG_INCREASE);
 
         // deviates from mean by 0 to 2
-        minDmgIncrease += (dmgMean - rand.nextInt(2));
-        maxDmgIncrease += (dmgMean + rand.nextInt(2));
+        minDmgIncrease += (dmgMean - MathUtils.random(1));
+        maxDmgIncrease += (dmgMean + MathUtils.random(1));
         // accuracy increases by 1% every 10 levels
         accuracyIncrease += level % 10 == 0 ? 1 : 0;
 
         int prevMaxExp = maxExp;
-        maxExp = Util.calculateMaxExp(level, Util.getRandomValue(3, 5, rand));
+        maxExp = Util.calculateMaxExp(level, MathUtils.random(3, 5));
         maxExpIncrease += (maxExp - prevMaxExp);
 
         // another level up
@@ -211,7 +212,7 @@ public class Player extends Entity {
      */
     public void finishTeleporting() {
         teleporting = false;
-        changeDirection(rand.nextInt(4));
+        changeDirection(MathUtils.random(3));
     }
 
     public void potion(int heal) {
@@ -231,14 +232,14 @@ public class Player extends Entity {
     public String[] getQuestionMarkDialog(int mapLevel) {
         String[] ret = null;
 
-        if (Util.isSuccess(Util.TILE_INTERATION, rand)) {
-            int k = rand.nextInt(100);
+        if (Util.isSuccess(Util.TILE_INTERATION)) {
+            int k = MathUtils.random(99);
             // gold
             if (k < 50) {
                 // gold per level scaled off map's average level
                 int gold = 0;
                 for (int i = 0; i < mapLevel; i++) {
-                    gold += Util.getRandomValue(7, 13, rand);
+                    gold += MathUtils.random(7, 13);
                 }
                 this.gold += gold;
                 ret = new String[] {
@@ -258,7 +259,7 @@ public class Player extends Entity {
             }
             // item
             else if (k < 100) {
-                Item item = rm.getRandomItem(rand);
+                Item item = rm.getRandomItem();
                 if (inventory.isFull()) {
                     ret = new String[] {
                             "The random tile gave something!",
@@ -272,7 +273,7 @@ public class Player extends Entity {
                             "It dropped a " + item.getDialogName() + "!",
                             "The item was added to your inventory."
                     };
-                    item.adjust(mapLevel, rand);
+                    item.adjust(mapLevel);
                     inventory.addItem(item);
                 }
             }
@@ -297,8 +298,8 @@ public class Player extends Entity {
     public String[] getExclamDialog(int mapLevel) {
         String[] ret = null;
 
-        if (Util.isSuccess(Util.TILE_INTERATION, rand)) {
-            if (Util.isSuccess(60, rand)) {
+        if (Util.isSuccess(Util.TILE_INTERATION)) {
+            if (Util.isSuccess(60)) {
                 int dmg = 3 * mapLevel;
                 hp -= dmg;
                 if (hp <= 0) {
@@ -319,7 +320,7 @@ public class Player extends Entity {
             else {
                 int steal = 0;
                 for (int i = 0; i < mapLevel; i++) {
-                    steal += Util.getRandomValue(4, 9, rand);
+                    steal += MathUtils.random(4, 9);
                 }
                 gold -= steal;
                 if (gold < 0) gold = 0;
@@ -344,7 +345,7 @@ public class Player extends Entity {
     public void teleport() {
         Tile currentTile = tileMap.getTile(tileMap.toTileCoords(position));
         Array<Tile> candidates = tileMap.getTeleportationTiles(currentTile);
-        Tile choose = candidates.get(rand.nextInt(candidates.size));
+        Tile choose = candidates.get(MathUtils.random(candidates.size - 1));
         position.set(tileMap.toMapCoords(choose.tilePosition));
     }
 
