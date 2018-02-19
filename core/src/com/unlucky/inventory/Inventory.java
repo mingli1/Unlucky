@@ -124,4 +124,13 @@ public class Inventory {
         return true;
     }
 
+    /**
+     * Clears every item in the inventory
+     */
+    public void clear() {
+        for (int i = 0; i < NUM_SLOTS; i++) {
+            removeItem(i);
+        }
+    }
+
 }
