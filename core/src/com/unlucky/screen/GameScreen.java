@@ -60,8 +60,8 @@ public class GameScreen extends AbstractScreen {
         multiplexer.addProcessor(hud.stage);
         multiplexer.addProcessor(battleUIHandler.stage);
         multiplexer.addProcessor(levelUp.stage);
-        multiplexer.addProcessor(dialog.stage);
         multiplexer.addProcessor(inventoryUI.stage);
+        multiplexer.addProcessor(dialog.stage);
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -135,12 +135,6 @@ public class GameScreen extends AbstractScreen {
 
             // render map and player
             gameMap.render(dt, game.batch, cam);
-
-            if (gameMap.hasLightMap()) {
-                game.batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-                game.batch.draw(rm.lightmap, 0, 0);
-                game.batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            }
         }
 
         game.batch.end();
