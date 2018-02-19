@@ -45,6 +45,8 @@ public class BattleScene extends BattleUI {
     private Moving enemySprite;
     private boolean renderPlayer = true;
     private boolean renderEnemy = true;
+    private final Vector2 PLAYER_ORIGIN = new Vector2(-96, 100);
+    private final Vector2 ENEMY_ORIGIN = new Vector2(400, 100);
 
     // battle animations
     private AnimationManager[] attackAnims;
@@ -103,9 +105,9 @@ public class BattleScene extends BattleUI {
         enemyHudLabel.setTouchable(Touchable.disabled);
 
         // create player sprite
-        playerSprite = new Moving(new Vector2(-96, 100), new Vector2(70, 100), 150.f);
+        playerSprite = new Moving(PLAYER_ORIGIN, new Vector2(70, 100), 150.f);
         // create enemy sprite
-        enemySprite = new Moving(new Vector2(400, 100), new Vector2(240, 100), 150.f);
+        enemySprite = new Moving(ENEMY_ORIGIN, new Vector2(240, 100), 150.f);
 
         // create animations
         attackAnims = new AnimationManager[3];
@@ -169,10 +171,16 @@ public class BattleScene extends BattleUI {
      * for a new battle
      */
     public void resetPositions() {
+        playerHud.moving.origin.set(new Vector2(-145, 200));
+        enemyHud.moving.origin.set(new Vector2(400, 200));
+
+        playerSprite.origin.set(new Vector2(-96, 100));
+        enemySprite.origin.set(new Vector2(400, 100));
+
         playerHud.setPosition(playerHud.moving.origin.x, playerHud.moving.origin.y);
         enemyHud.setPosition(enemyHud.moving.origin.x, enemyHud.moving.origin.y);
-        playerSprite.position.set(playerSprite.origin.x, playerSprite.origin.y);
-        enemySprite.position.set(enemySprite.origin.x, enemySprite.origin.y);
+        playerSprite.position.set(playerSprite.origin);
+        enemySprite.position.set(enemySprite.origin);
     }
 
     public void update(float dt) {
