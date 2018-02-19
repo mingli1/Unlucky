@@ -1,18 +1,24 @@
 package com.unlucky.ui;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.animation.AnimationManager;
+import com.unlucky.effects.Moving;
+import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Entity;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
 import com.unlucky.map.TileMap;
+import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
 
 /**
@@ -34,9 +40,11 @@ public class BattleScene extends BattleUI {
     private HealthBar enemyHpBar;
     private Label enemyHudLabel;
 
-    // Battle scene sprites
-    private MovingImageUI playerSprite;
-    private MovingImageUI enemySprite;
+    // Battle scene sprite positions
+    private Moving playerSprite;
+    private Moving enemySprite;
+    private boolean renderPlayer = true;
+    private boolean renderEnemy = true;
 
     // battle animations
     private AnimationManager[] attackAnims;
@@ -61,6 +69,9 @@ public class BattleScene extends BattleUI {
     private Label.LabelStyle same;
     private Label.LabelStyle stronger;
     private Label.LabelStyle strongest;
+
+    // weather conditions
+    private ParticleFactory factory;
 
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
@@ -92,9 +103,9 @@ public class BattleScene extends BattleUI {
         enemyHudLabel.setTouchable(Touchable.disabled);
 
         // create player sprite
-        playerSprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(-96, 100), new Vector2(70, 100), 150.f, 96, 96);
+        playerSprite = new Moving(new Vector2(-96, 100), new Vector2(70, 100), 150.f);
         // create enemy sprite
-        enemySprite = new MovingImageUI(rm.battleSprites96x96[0][0], new Vector2(400, 100), new Vector2(240, 100), 150.f, 96, 96);
+        enemySprite = new Moving(new Vector2(400, 100), new Vector2(240, 100), 150.f);
 
         // create animations
         attackAnims = new AnimationManager[3];
@@ -103,12 +114,12 @@ public class BattleScene extends BattleUI {
         }
         healAnim = new AnimationManager(rm.battleHeal96x96, 3, 0, 1 / 5f);
 
+        factory = new ParticleFactory((OrthographicCamera) stage.getCamera(), rm);
+
         stage.addActor(playerHud);
         stage.addActor(playerHudLabel);
         stage.addActor(enemyHud);
         stage.addActor(enemyHudLabel);
-        stage.addActor(playerSprite);
-        stage.addActor(enemySprite);
     }
 
     public void toggle(boolean toggle) {
@@ -137,10 +148,20 @@ public class BattleScene extends BattleUI {
         enemyHudLabel.setVisible(toggle);
         enemyHud.start();
 
-        playerSprite.setVisible(toggle);
-        enemySprite.setVisible(toggle);
         playerSprite.start();
         enemySprite.start();
+
+        if (gameScreen.gameMap.weather == WeatherType.RAIN) {
+            factory.set(2, 40, new Vector2(Util.RAINDROP_X * 2, -200));
+        } else if (gameScreen.gameMap.weather == WeatherType.HEAVY_RAIN ||
+                gameScreen.gameMap.weather == WeatherType.THUNDERSTORM) {
+            factory.set(2, 75, new Vector2(Util.RAINDROP_X * 2, -240));
+        } else if (gameScreen.gameMap.weather == WeatherType.SNOW) {
+            factory.set(3, 100, new Vector2(Util.SNOWFLAKE_X * 2, -120));
+        } else if (gameScreen.gameMap.weather == WeatherType.BLIZZARD) {
+            factory.set(3, 300, new Vector2(Util.SNOWFLAKE_X + 100, -160));
+        }
+
     }
 
     /**
@@ -148,56 +169,55 @@ public class BattleScene extends BattleUI {
      * for a new battle
      */
     public void resetPositions() {
-        playerHud.setPosition(playerHud.getOrigin().x, playerHud.getOrigin().y);
-        enemyHud.setPosition(enemyHud.getOrigin().x, enemyHud.getOrigin().y);
-        playerSprite.setPosition(playerSprite.getOrigin().x, playerSprite.getOrigin().y);
-        enemySprite.setPosition(enemySprite.getOrigin().x, enemySprite.getOrigin().y);
+        playerHud.setPosition(playerHud.moving.origin.x, playerHud.moving.origin.y);
+        enemyHud.setPosition(enemyHud.moving.origin.x, enemyHud.moving.origin.y);
+        playerSprite.position.set(playerSprite.origin.x, playerSprite.origin.y);
+        enemySprite.position.set(enemySprite.origin.x, enemySprite.origin.y);
     }
 
     public void update(float dt) {
         playerHud.update(dt);
         enemyHud.update(dt);
 
+        if (gameScreen.gameMap.weather != WeatherType.NORMAL) factory.update(dt);
+
         // entity sprite animations
         player.getBam().update(dt);
         if (battle.opponent.getBam() != null) battle.opponent.getBam().update(dt);
-
-        // hit animation
-        if (showHitAnim) {
-            hitAnimDurationTimer += dt;
-            if (hitAnimDurationTimer < 0.7f) {
-                hitAnimAlternateTimer += dt;
-                if (hitAnimAlternateTimer > 0.1f) {
-                    if (lastHit == 1) playerSprite.setVisible(!playerSprite.isVisible());
-                    else enemySprite.setVisible(!enemySprite.isVisible());
-                    hitAnimAlternateTimer = 0;
-                }
-            } else {
-                hitAnimDurationTimer = 0;
-                showHitAnim = false;
-            }
-
-        }
-        else {
-            playerSprite.setVisible(true);
-            enemySprite.setVisible(true);
-            playerSprite.setImage(player.getBam().getKeyFrame(true));
-            enemySprite.setImage(battle.opponent.getBam().getKeyFrame(true));
-        }
 
         playerSprite.update(dt);
         enemySprite.update(dt);
 
         // when enemy dies, its sprite falls off the screen
         if (player.isDead()) {
-            float dy = playerSprite.getY() - 4;
-            playerSprite.setY(dy);
-            if (playerSprite.getY() < -96) playerSprite.setY(-96);
+            float dy = playerSprite.position.y - 4;
+            playerSprite.position.y = dy;
+            if (playerSprite.position.y < -96) playerSprite.position.y = -96;
         }
         if (battle.opponent.isDead()) {
-            float dy = enemySprite.getY() - 4;
-            enemySprite.setY(dy);
-            if (enemySprite.getY() < -96) enemySprite.setY(-96);
+            float dy = enemySprite.position.y - 4;
+            enemySprite.position.y = dy;
+            if (enemySprite.position.y < -96) enemySprite.position.y = -96;
+        }
+
+        // render player and enemy sprites based on moving positions
+        // hit animation
+        if (showHitAnim) {
+            hitAnimDurationTimer += dt;
+            if (hitAnimDurationTimer < 0.7f) {
+                hitAnimAlternateTimer += dt;
+                if (hitAnimAlternateTimer > 0.1f) {
+                    if (lastHit == 1) renderPlayer = !renderPlayer;
+                    else renderEnemy = !renderEnemy;
+                    hitAnimAlternateTimer = 0;
+                }
+            } else {
+                hitAnimDurationTimer = 0;
+                showHitAnim = false;
+            }
+        }
+        else {
+            renderPlayer = renderEnemy = true;
         }
 
         // show health bar animation after an entity uses its move
@@ -255,10 +275,12 @@ public class BattleScene extends BattleUI {
     }
 
     public void render(float dt) {
-        playerHpBar.render(dt);
-        enemyHpBar.render(dt);
-
         gameScreen.getBatch().begin();
+        if (renderPlayer)
+            gameScreen.getBatch().draw(player.getBam().getKeyFrame(true), playerSprite.position.x, playerSprite.position.y);
+        if (renderEnemy)
+            gameScreen.getBatch().draw(battle.opponent.getBam().getKeyFrame(true), enemySprite.position.x, enemySprite.position.y);
+
         // render attack or heal animations
         // player side
         if (player.getMoveUsed() != -1) {
@@ -276,7 +298,19 @@ public class BattleScene extends BattleUI {
                 gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 240, 100);
             }
         }
+
+        // render weather and lighting conditions if any
+        if (gameScreen.gameMap.weather != WeatherType.NORMAL) factory.render(gameScreen.getBatch());
+
+        if (gameScreen.gameMap.isDark) {
+            gameScreen.getBatch().setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            gameScreen.getBatch().draw(rm.battledarkness, 0, 0);
+            gameScreen.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
         gameScreen.getBatch().end();
+
+        playerHpBar.render(dt);
+        enemyHpBar.render(dt);
     }
 
 }
