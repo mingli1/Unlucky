@@ -19,6 +19,7 @@ import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
@@ -250,6 +251,10 @@ public class Hud extends UI implements Disposable {
      * /addentity [entityID] [tileX] [tileY] (adds an entity to a a tile position)
      * /removeentity [tileX] [tileY] (removes the entity at a tile position)
      * /togglenight [boolean] (toggles night time on or off with true or false)
+     * /fillinv (fills the inventory with random items)
+     * /clearinv (clear the inventory)
+     * /fillrarity [rarity] (fills the inventory with items of a given rarity)
+     * /levelup [exp] (levels up the player based on a given amount of exp)
      *
      * @param command
      */
@@ -334,6 +339,37 @@ public class Hud extends UI implements Disposable {
             if (input.length == 2) {
                 boolean toggle = Boolean.parseBoolean(input[1]);
                 gameScreen.gameMap.setDarkness(toggle);
+            }
+        }
+        if (eq(cmd, "/fillinv")) {
+            player.inventory.clear();
+            for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                Item item = rm.getRandomItem();
+                item.adjust(player.getLevel());
+                player.inventory.addItem(item);
+            }
+        }
+        if (eq(cmd, "/clearinv")) {
+            player.inventory.clear();
+        }
+        if (cmd.startsWith("/fillrarity")) {
+            player.inventory.clear();
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int rarity = Integer.parseInt(input[1]);
+                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                    Item item = rm.getItem(rarity);
+                    item.adjust(player.getLevel());
+                    player.inventory.addItem(item);
+                }
+            }
+        }
+        if (cmd.startsWith("/levelup")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int exp = Integer.parseInt(input[1]);
+                player.levelUp(exp);
+                player.applyLevelUp();
             }
         }
     }
