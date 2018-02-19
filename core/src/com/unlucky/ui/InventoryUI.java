@@ -695,8 +695,8 @@ public class InventoryUI extends UI implements Disposable {
      */
     public void start() {
         // ui slides left to right
-        ui.setOrigin(new Vector2(400, 14));
-        ui.setTarget(new Vector2(14, 14));
+        ui.moving.origin.set(new Vector2(400, 14));
+        ui.moving.target.set(new Vector2(14, 14));
         ui.start();
 
         exitButton.setDisabled(false);
@@ -721,8 +721,8 @@ public class InventoryUI extends UI implements Disposable {
         exitButton.setTouchable(Touchable.disabled);
 
         // ui slides off screen right to left
-        ui.setTarget(new Vector2(400, 14));
-        ui.setOrigin(new Vector2(14, 14));
+        ui.moving.target.set(new Vector2(400, 14));
+        ui.moving.origin.set(new Vector2(14, 14));
         ui.start();
 
         ended = true;

@@ -43,8 +43,14 @@ public class ResourceManager {
     public TextureRegion raindrop;
     public TextureRegion[][] raindropAnim16x16;
     public TextureRegion snowflake;
+    public TextureRegion bigsnow;
+    public TextureRegion bigrain;
     public TextureRegion lightning;
-    public TextureRegion lightmap;
+
+    // Lighting
+    public TextureRegion darkness;
+    public TextureRegion battledarkness;
+    public TextureRegion light80x80;
 
     // UI
     public TextureRegion[][] dirpad20x20;
@@ -122,7 +128,13 @@ public class ResourceManager {
         raindropAnim16x16 = atlas.findRegion("raindrop_anim").split(16, 16);
         snowflake = atlas.findRegion("snowflake");
         lightning = atlas.findRegion("lightning");
-        lightmap = atlas.findRegion("testlightmap");
+        bigrain = atlas.findRegion("big_rain");
+        bigsnow = atlas.findRegion("big_snow");
+
+        // light
+        darkness = atlas.findRegion("darkness");
+        battledarkness = atlas.findRegion("battle_darkness");
+        light80x80 = atlas.findRegion("80x80_light");
 
         // ui
         dirpad20x20 = atlas.findRegion("dir_pad").split(40, 40);

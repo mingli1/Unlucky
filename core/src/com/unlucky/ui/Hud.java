@@ -249,6 +249,7 @@ public class Hud extends UI implements Disposable {
      * /setweather [weatherId] (0 - none, 1 - rain, 2 - heavy rain, 3 - thunderstorm, 4 - snow, 5 - blizzard)
      * /addentity [entityID] [tileX] [tileY] (adds an entity to a a tile position)
      * /removeentity [tileX] [tileY] (removes the entity at a tile position)
+     * /togglenight [boolean] (toggles night time on or off with true or false)
      *
      * @param command
      */
@@ -319,7 +320,21 @@ public class Hud extends UI implements Disposable {
             }
         }
         if (cmd.startsWith("/removeentity")) {
-
+            String[] input = cmd.split(" ");
+            if (input.length == 3) {
+                int x = Integer.parseInt(input[1]);
+                int y = Integer.parseInt(input[2]);
+                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
+                    tileMap.removeEntity(x, y);
+                }
+            }
+        }
+        if (cmd.startsWith("/togglenight")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                boolean toggle = Boolean.parseBoolean(input[1]);
+                gameScreen.gameMap.setDarkness(toggle);
+            }
         }
     }
 

@@ -1,5 +1,6 @@
 package com.unlucky.map;
 
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -8,6 +9,7 @@ import com.unlucky.effects.Particle;
 import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -33,6 +35,7 @@ public class GameMap {
     public WeatherType weather;
     // lightmap of map
     public TextureRegion lightmap;
+    public boolean isDark;
 
     public TileMap tileMap;
     public Player player;
@@ -40,7 +43,7 @@ public class GameMap {
     private GameScreen gameScreen;
     private ResourceManager rm;
 
-    public boolean renderLightmap;
+    public boolean renderLight;
     private float lightningTime = 0;
     private float durationTime = 0;
 
@@ -56,13 +59,18 @@ public class GameMap {
         tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
         player.setMap(tileMap);
 
-        lightmap = rm.lightmap;
-        renderLightmap = lightmap != null;
+        lightmap = rm.darkness;
+        setDarkness(true);
+
+        renderLight = lightmap != null;
         // @TODO set weather and lightmap based on map composite id
+        // set lightmapIndex from tilemap file
 
         particleFactory = new ParticleFactory(gameScreen.getCamera(), rm);
 
         setWeather(WeatherType.RAIN);
+
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 30), tileMap, rm), 10, 30);
     }
 
     /**
@@ -88,6 +96,14 @@ public class GameMap {
             particleFactory.set(Particle.SNOWFLAKE, 300,
                     new Vector2(Util.SNOWFLAKE_X + 50, -80));
         }
+    }
+
+    /**
+     * Sets the darkness of the map
+     */
+    public void setDarkness(boolean isDark) {
+        this.isDark = isDark;
+        renderLight = isDark;
     }
 
     public void update(float dt) {
@@ -139,20 +155,32 @@ public class GameMap {
             if (lightningTime >= 7) {
                 durationTime += dt;
                 if (durationTime < 0.2f) {
-                    renderLightmap = false;
+                    renderLight = false;
                     batch.draw(rm.lightning, cam.position.x - cam.viewportWidth / 2, cam.position.y - cam.viewportHeight / 2);
                 }
                 if (durationTime > 0.2f) {
                     lightningTime = 0;
                     durationTime = 0;
-                    renderLightmap = true;
+                    renderLight = true;
                 }
             }
         }
-    }
 
-    public boolean hasLightMap() {
-        return renderLightmap;
+        if (renderLight) {
+            if (lightmap != null) {
+                batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+                batch.draw(lightmap, cam.position.x - Unlucky.V_WIDTH / 2, cam.position.y - Unlucky.V_HEIGHT / 2);
+                //batch.draw(rm.light80x80, player.getPosition().x - 40, player.getPosition().y - 40);
+                batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE);
+                for (int i = 0; i < tileMap.tileMap.length; i++) {
+                    Tile t = tileMap.tileMap[i];
+                    if (t.id == 98) {
+                        batch.draw(rm.light80x80, tileMap.toMapCoords(t.tilePosition).x - 40, tileMap.toMapCoords(t.tilePosition).y - 40);
+                    }
+                }
+                batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            }
+        }
     }
 
 }

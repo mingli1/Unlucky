@@ -135,6 +135,18 @@ public class ParticleFactory {
                         Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED));
                 item.init(type, weatherParticleSpawnPosition, sv, sls, rm.snowflake, null);
                 break;
+            case Particle.BIG_RAIN:
+                float brls = MathUtils.random(0.4f, 1.4f);
+                Vector2 brv = new Vector2(this.velocity.x,
+                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.RAINDROP_Y_DEVIATED * 2));
+                item.init(type, weatherParticleSpawnPosition, brv, brls, rm.bigrain, null);
+                break;
+            case Particle.BIG_SNOW:
+                float bsls = MathUtils.random(0.3f, 1.4f);
+                Vector2 bsv = new Vector2(this.velocity.x,
+                        Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED * 2));
+                item.init(type, weatherParticleSpawnPosition, bsv, bsls, rm.bigsnow, null);
+                break;
         }
         particles.add(item);
     }

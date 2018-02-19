@@ -32,13 +32,10 @@ public class BattleUIHandler extends UI implements Disposable {
     public BattleScene battleScene;
 
     // battle
-    private Battle battle;
     public BattleState currentState;
 
     public BattleUIHandler(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-
-        this.battle = battle;
 
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, gameScreen.getBatch());
@@ -59,10 +56,10 @@ public class BattleUIHandler extends UI implements Disposable {
     }
 
     public void render(float dt) {
+        battleScene.render(dt);
+
         stage.act(dt);
         stage.draw();
-
-        battleScene.render(dt);
 
         if (currentState == BattleState.MOVE) moveUI.render(dt);
         if (currentState == BattleState.DIALOG) battleEventHandler.render(dt);
