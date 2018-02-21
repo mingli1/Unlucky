@@ -22,6 +22,7 @@ public class Entity {
 
     // animation
     protected AnimationManager am;
+    protected boolean pauseAnim = false;
     // battle scene animation
     protected AnimationManager bam;
 
@@ -103,7 +104,7 @@ public class Entity {
         }
 
         // animation
-        am.update(dt);
+        if (!pauseAnim) am.update(dt);
     }
 
     public void render(SpriteBatch batch, boolean looping) {
@@ -347,7 +348,15 @@ public class Entity {
             }
             // ice sliding
             else if (currentTile.isIce()) {
-                if (!nextTileBlocked(prevDir)) changeDirection(prevDir);
+                if (!nextTileBlocked(prevDir)) {
+                    move(prevDir, 1);
+                    am.setAnimation(prevDir);
+                    am.stopAnimation();
+                    pauseAnim = true;
+                }
+            }
+            else {
+                pauseAnim = false;
             }
         }
     }
