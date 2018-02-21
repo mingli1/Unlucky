@@ -225,7 +225,7 @@ public class Player extends Entity {
      * Green question mark tiles can drop 70% of the time
      * if does drop:
      * - gold (50% of the time) (based on map level)
-     * - heals for 20% of max hp (45% of the time)
+     * - heals based on map level (45% of the time)
      * - items (5% of the time)
      *
      * @return
@@ -250,7 +250,10 @@ public class Player extends Entity {
             }
             // heal
             else if (k < 95) {
-                int heal = (int) (0.2 * maxHp);
+                int heal = 0;
+                for (int i = 0; i < mapLevel; i++) {
+                    heal += MathUtils.random(2, 5);
+                }
                 this.hp += heal;
                 if (hp > maxHp) hp = maxHp;
                 ret = new String[] {
@@ -301,7 +304,10 @@ public class Player extends Entity {
 
         if (Util.isSuccess(Util.TILE_INTERATION)) {
             if (Util.isSuccess(60)) {
-                int dmg = 3 * mapLevel;
+                int dmg = 0;
+                for (int i = 0; i < mapLevel; i++) {
+                    dmg += MathUtils.random(1, 4);
+                }
                 hp -= dmg;
                 if (hp <= 0) {
                     ret = new String[]{"" +
@@ -312,7 +318,7 @@ public class Player extends Entity {
                     hp = maxHp;
                 }
                 else {
-                    ret = new String[]{
+                    ret = new String[] {
                             "The random tile cursed you!",
                             "It damaged you for " + dmg + " damage!"
                     };
