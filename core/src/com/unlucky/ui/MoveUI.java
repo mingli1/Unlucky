@@ -41,16 +41,24 @@ public class MoveUI extends BattleUI {
     private Label[] moveDescLabels;
     private Label[] optionNameLabels;
     private Label[] optionDescLabels;
-    private String[] buffs = { "Distract", "Focus", "Intimidate" };
+    private boolean[] optionButtonTouchable = new boolean[2];
+
+    // Special moves
+    private String[] buffs = {
+            "Distract",
+            "Focus",
+            "Intimidate",
+            "Reflect"
+    };
     private String[] buffDescs = {
-            "Next enemy attack\nhas -45% ACC",
-            "Next attack has\n100% ACC",
-            "Next attack has\n+25% DMG"
+            "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
+            "100% ACC\nand +" + Util.P_FOCUS_CRIT + "% cr it",
+            "+" + Util.P_INTIMIDATE + "% DMG",
+            "Next enemy attack\nis reflected back"
     };
 
     private int optionIndex;
-    private boolean[] optionButtonTouchable = new boolean[2];
-    private boolean[] usedBuff = new boolean[3];
+    private boolean[] usedBuff = new boolean[Util.NUM_SPECIAL_MOVES];
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                   BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
@@ -70,7 +78,8 @@ public class MoveUI extends BattleUI {
      * Resetting variables that are only set once the entire battle
      */
     public void init() {
-        optionIndex = MathUtils.random(2);
+        optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
+        //optionIndex = 3;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -174,10 +183,6 @@ public class MoveUI extends BattleUI {
     /**
      * Creates the UI for the Run and ______ buttons
      * Run will have some random low percentage to escape the battle
-     * The other option can be one of
-     * - Distract: The Enemy's accuracy is decreased by 35% for one turn
-     * - Focus: The player's next move is guaranteed to hit
-     * - Intimidate: The player's next move has 15% increased damage
      */
     private void createOptionUI() {
         // make buttons
@@ -253,7 +258,7 @@ public class MoveUI extends BattleUI {
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
                     // reshuffle moveset for next turn
                     resetMoves();
-                    String[] dialog = battle.handleMove(move, usedBuff);
+                    String[] dialog = battle.handleMove(move);
                     uiHandler.battleEventHandler.startDialog(dialog, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
                 }
             });
@@ -269,38 +274,28 @@ public class MoveUI extends BattleUI {
         optionButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                for (int i = 0; i < Util.NUM_SPECIAL_MOVES; i++) usedBuff[i] = false;
+
                 uiHandler.currentState = BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 usedBuff[optionIndex] = true;
+                battle.buffs = usedBuff;
 
-                // render dialog
-                switch (optionIndex) {
-                    // distract
-                    case 0:
-                        uiHandler.battleEventHandler.startDialog(new String[] {
-                                "You kicked some dirt into the enemy's face.",
-                                "The enemy's next attack has " + Util.P_DISTRACT + "% reduced accuracy!"
-                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
-                        break;
-                    // focus
-                    case 1:
-                        uiHandler.battleEventHandler.startDialog(new String[] {
-                                "You begin concentrating on your next attack",
-                                "Your next move has 100% accuracy."
-                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
-                        break;
-                    // intimidate
-                    case 2:
-                        uiHandler.battleEventHandler.startDialog(new String[] {
-                                "You intimidate the enemy causing it to lower its defense.",
-                                "Your next attack has " + Util.P_INTIMIDATE + "% increased damage."
-                        }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
-                        break;
-                }
+                uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(optionIndex),
+                        BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
+
+                /**
                 // disable button
                 optionButtons[0].setTouchable(Touchable.disabled);
                 optionDescLabels[0].setText("already used");
                 optionButtonTouchable[0] = false;
+                 */
+                // @TODO give special move every 3 moves
+                optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
+                String buff = buffs[optionIndex];
+                String desc = buffDescs[optionIndex];
+                optionNameLabels[0].setText(buff);
+                optionDescLabels[0].setText(desc);
             }
         });
 

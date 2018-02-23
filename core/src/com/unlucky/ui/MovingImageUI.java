@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.unlucky.effects.Moving;
 
 /**
@@ -50,10 +49,6 @@ public class MovingImageUI extends Image {
     public void update(float dt) {
         moving.update(dt);
         this.setPosition(moving.position.x, moving.position.y);
-    }
-
-    public void setImage(TextureRegion image) {
-        this.setDrawable(new TextureRegionDrawable(image));
     }
 
 }

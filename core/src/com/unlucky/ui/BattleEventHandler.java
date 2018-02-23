@@ -104,6 +104,13 @@ public class BattleEventHandler extends BattleUI {
                     anim = currentText.split("");
                     beginCycle = true;
                 }
+                // clicking on the box during a text animation completes it early
+                else if (beginCycle && !endCycle) {
+                    resultingText = currentText;
+                    textLabel.setText(resultingText);
+                    beginCycle = false;
+                    endCycle = true;
+                }
             }
         });
         stage.addActor(clickLabel);
@@ -204,89 +211,28 @@ public class BattleEventHandler extends BattleUI {
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
                 uiHandler.currentState = BattleState.MOVE;
                 if (prevEvent == BattleEvent.ENEMY_TURN) {
-                    // player dead
-                    if (player.applyDamage()) {
-                        // reset animation
-                        battle.opponent.setPrevMoveUsed(-1);
-                        battle.opponent.setMoveUsed(-1);
-
-                        uiHandler.moveUI.toggleMoveAndOptionUI(false);
-                        uiHandler.currentState = BattleState.DIALOG;
-                        // 1% chance for revival after dead
-                        if (Util.isSuccess(Util.REVIVAL)) {
-                            startDialog(new String[] {
-                                    "You took fatal damage and died!",
-                                    "However, it looks like luck was on your side and you revived!"
-                            }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
-                            player.setHp(player.getMaxHp());
-                            player.setDead(false);
-                            return;
+                    if (battle.buffs[Util.REFLECT]) {
+                        battle.resetBuffs();
+                        // double heal
+                        if (battle.opponent.getPrevMoveUsed() != -1) {
+                            battle.opponent.applyHeal();
                         }
+                        // damage move
                         else {
-                            startDialog(new String[]{
-                                    "Oh no, you took too much damage and died!",
-                                    "Luckily, this game is still in development," +
-                                            " so you can't really die yet."
-                            }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
-                            player.setHp(player.getMaxHp());
-                            return;
+                            player.setMoveUsed(player.getPrevMoveUsed());
+                            player.setPrevMoveUsed(-1);
+                            if (applyEnemyDamage()) return;
                         }
                     }
-                    battle.opponent.applyHeal();
+                    else {
+                        if (applyPlayerDamage()) return;
+                        battle.opponent.applyHeal();
+                    }
                 }
                 break;
             case ENEMY_TURN:
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
-                    // enemy dead
-                    if (battle.opponent.applyDamage()) {
-                        // reset animation
-                        player.setPrevMoveUsed(-1);
-                        player.setMoveUsed(-1);
-
-                        // 1% chance for enemy revival
-                        if (Util.isSuccess(Util.REVIVAL)) {
-                            startDialog(new String[] {
-                                    "The enemy took fatal damage and died!",
-                                    "Oh no, it looks like the enemy has been revived!"
-                            }, BattleEvent.ENEMY_TURN, BattleEvent.ENEMY_TURN);
-                            battle.opponent.setHp(battle.opponent.getMaxHp());
-                            battle.opponent.setDead(false);
-                            return;
-                        }
-                        // defeated enemy and gained experience and gold
-                        // maybe the player gets an item
-                        else {
-                            int expGained = battle.getBattleExp();
-                            int goldGained = battle.getGoldGained();
-                            Item itemGained = battle.getItemObtained(rm);
-
-                            player.addGold(goldGained);
-
-                            // level up occurs
-                            if (player.getExp() + expGained >= player.getMaxExp()) {
-                                int remainder = (player.getExp() + expGained) - player.getMaxExp();
-                                player.levelUp(remainder);
-                                startDialog(new String[] {
-                                        "You defeated " + battle.opponent.getId() + "!",
-                                        "You obtained " + goldGained + " gold.",
-                                        battle.getItemDialog(itemGained),
-                                        "You gained " + expGained + " experience.",
-                                        "You leveled up!"
-                                }, BattleEvent.ENEMY_TURN, BattleEvent.LEVEL_UP);
-                                return;
-                            }
-                            else {
-                                player.addExp(expGained);
-                                startDialog(new String[] {
-                                        "You defeated " + battle.opponent.getId() + "!",
-                                        "You obtained " + goldGained + " gold.",
-                                        battle.getItemDialog(itemGained),
-                                        "You gained " + expGained + " experience."
-                                }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
-                                return;
-                            }
-                        }
-                    }
+                    if (applyEnemyDamage()) return;
                     player.applyHeal();
                 }
                 String[] dialog = battle.enemyTurn();
@@ -297,6 +243,97 @@ public class BattleEventHandler extends BattleUI {
                 gameScreen.levelUp.start();
                 break;
         }
+    }
+
+    private boolean applyPlayerDamage() {
+        player.applyDamage();
+        // player dead
+        if (player.isDead()) {
+            // reset animation
+            battle.opponent.setPrevMoveUsed(-1);
+            battle.opponent.setMoveUsed(-1);
+
+            uiHandler.moveUI.toggleMoveAndOptionUI(false);
+            uiHandler.currentState = BattleState.DIALOG;
+            // 1% chance for revival after dead
+            if (Util.isSuccess(Util.REVIVAL)) {
+                startDialog(new String[] {
+                        "You took fatal damage and died!",
+                        "However, it looks like luck was on your side and you revived!"
+                }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
+                player.setHp(player.getMaxHp());
+                player.setDead(false);
+                return true;
+            }
+            else {
+                startDialog(new String[]{
+                        "Oh no, you took too much damage and died!",
+                        "Luckily, this game is still in development," +
+                                " so you can't really die yet."
+                }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
+                player.setHp(player.getMaxHp());
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean applyEnemyDamage() {
+        battle.opponent.applyDamage();
+        // enemy dead
+        if (battle.opponent.isDead()) {
+            // reset animation
+            player.setPrevMoveUsed(-1);
+            player.setMoveUsed(-1);
+
+            uiHandler.moveUI.toggleMoveAndOptionUI(false);
+            uiHandler.currentState = BattleState.DIALOG;
+
+            // 1% chance for enemy revival
+            if (Util.isSuccess(Util.REVIVAL)) {
+                startDialog(new String[] {
+                        "The enemy took fatal damage and died!",
+                        "Oh no, it looks like the enemy has been revived!"
+                }, BattleEvent.ENEMY_TURN, BattleEvent.ENEMY_TURN);
+                battle.opponent.setHp(battle.opponent.getMaxHp());
+                battle.opponent.setDead(false);
+                return true;
+            }
+            // defeated enemy and gained experience and gold
+            // maybe the player gets an item
+            else {
+                int expGained = battle.getBattleExp();
+                int goldGained = battle.getGoldGained();
+                Item itemGained = battle.getItemObtained(rm);
+
+                player.addGold(goldGained);
+
+                // level up occurs
+                if (player.getExp() + expGained >= player.getMaxExp()) {
+                    int remainder = (player.getExp() + expGained) - player.getMaxExp();
+                    player.levelUp(remainder);
+                    startDialog(new String[] {
+                            "You defeated " + battle.opponent.getId() + "!",
+                            "You obtained " + goldGained + " gold.",
+                            battle.getItemDialog(itemGained),
+                            "You gained " + expGained + " experience.",
+                            "You leveled up!"
+                    }, BattleEvent.ENEMY_TURN, BattleEvent.LEVEL_UP);
+                    return true;
+                }
+                else {
+                    player.addExp(expGained);
+                    startDialog(new String[] {
+                            "You defeated " + battle.opponent.getId() + "!",
+                            "You obtained " + goldGained + " gold.",
+                            battle.getItemDialog(itemGained),
+                            "You gained " + expGained + " experience."
+                    }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
