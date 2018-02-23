@@ -52,7 +52,7 @@ public class Hud extends UI implements Disposable {
     private ImageButton[] optionButtons;
 
     // debug
-    private Label fps;
+    private Label util;
 
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -70,11 +70,11 @@ public class Hud extends UI implements Disposable {
 
         BitmapFont f = rm.pixel10;
         Label.LabelStyle lp = new Label.LabelStyle(f, new Color(1, 1, 1, 1));
-        fps = new Label("", lp);
-        fps.setPosition(10, 230);
-        fps.setTouchable(Touchable.disabled);
+        util = new Label("", lp);
+        util.setPosition(10, 220);
+        util.setTouchable(Touchable.disabled);
 
-        stage.addActor(fps);
+        stage.addActor(util);
     }
 
     public void update(float dt) {}
@@ -83,7 +83,9 @@ public class Hud extends UI implements Disposable {
         stage.act(dt);
         stage.draw();
 
-        fps.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()) + " fps");
+        util.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()) + " fps\n" +
+                "(" + (int) (player.getPosition().x / 16) + ", " +
+                (int) (player.getPosition().y / 16) + ")");
     }
 
     /**
