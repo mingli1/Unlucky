@@ -7,7 +7,8 @@ package com.unlucky.battle;
  * - Accurate: close damage range with little standard deviation for most consistent damage
  * - Wide: high risk high reward type; very large damage range
  * - Crit: fixed damage but has chance for critical strike that does massive damage
- * - Healing: heals the Entity based on set range
+ * - Healing: heals the Entity based on set range and reduces the damage of
+ * the next attack by some set percentage
  *
  * In terms of maximum damage: Crit > Wide > Accurate
  * In terms of damage over time: Accurate > Wide > Crit
@@ -38,9 +39,11 @@ public class Move {
 
     // Crit chance in %
     public int crit;
+    // Damage reduction in %
+    public int dmgReduction;
 
     /**
-     * Constructor for Accurate, Wide, and Healing types
+     * Constructor for Accurate and Wide moves
      *
      * @param type
      * @param name
@@ -51,16 +54,9 @@ public class Move {
         this.type = type;
         this.name = name;
 
-        if (type == 0 || type == 1) {
-            this.minDamage = min;
-            this.maxDamage = max;
-            minHeal = maxHeal = crit = -1;
-        }
-        else {
-            this.minHeal = min;
-            this.maxHeal = max;
-            minDamage = maxDamage = crit = -1;
-        }
+        this.minDamage = min;
+        this.maxDamage = max;
+        minHeal = maxHeal = crit = -1;
     }
 
     /**
@@ -77,6 +73,24 @@ public class Move {
         minDamage = maxDamage = damage;
         minHeal = maxHeal = -1;
         this.crit = crit;
+    }
+
+    /**
+     * Constructor for Heal type
+     *
+     * @param name
+     * @param min
+     * @param max
+     * @param dmgReduction
+     */
+    public Move(String name, float min, float max, int dmgReduction) {
+        type = 3;
+        this.name = name;
+
+        this.minHeal = min;
+        this.maxHeal = max;
+        minDamage = maxDamage = crit = -1;
+        this.dmgReduction = dmgReduction;
     }
 
     /**
