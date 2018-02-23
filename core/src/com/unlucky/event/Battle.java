@@ -24,10 +24,20 @@ public class Battle {
     private TileMap tileMap;
     private Player player;
 
+    // special move buffs
+    public boolean[] buffs;
+
     public Battle(GameScreen gameScreen, TileMap tileMap, Player player) {
         this.gameScreen = gameScreen;
         this.tileMap = tileMap;
         this.player = player;
+
+        buffs = new boolean[Util.NUM_SPECIAL_MOVES];
+        resetBuffs();
+    }
+
+    public void resetBuffs() {
+        for (int i = 0; i < buffs.length; i++) buffs[i] = false;
     }
 
     /**
@@ -99,20 +109,20 @@ public class Battle {
      * @param move
      * @return a string array for the dialog ui description
      */
-    public String[] handleMove(Move move, boolean[] options) {
+    public String[] handleMove(Move move) {
         String[] dialog = null;
 
         // distract/enemy debuff
-        if (options[0]) opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
+        if (buffs[Util.DISTRACT]) opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
         else opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
 
         // accounting for player accuracy or accuracy buff
-        if (Util.isSuccess(player.getAccuracy()) || options[1]) {
+        if (Util.isSuccess(player.getAccuracy()) || buffs[Util.FOCUS]) {
             player.useMove(move.type);
             // accurate or wide
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
-                if (options[2]) damage *= Util.INTIMIDATE_MULT;
+                if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
                 opponent.hit(damage);
                 dialog = new String[] {
                         "You used " + move.name + "!",
@@ -122,8 +132,13 @@ public class Battle {
             // crit (3x damage if success)
             else if (move.type == 2) {
                 int damage = Math.round(move.minDamage);
-                if (options[2]) damage *= Util.INTIMIDATE_MULT;
-                if (Util.isSuccess(move.crit)) {
+                int critChance;
+
+                if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
+                if (buffs[Util.FOCUS]) critChance = move.crit + Util.P_FOCUS_CRIT;
+                else critChance = move.crit;
+
+                if (Util.isSuccess(critChance)) {
                     damage *= Util.CRIT_MULTIPLIER;
                     opponent.hit(damage);
                     dialog = new String[] {
@@ -155,7 +170,7 @@ public class Battle {
         }
 
         // buffs used up so reset
-        for (int i = 0; i < options.length; i++) options[i] = false;
+        //for (int i = 0; i < buffs.length; i++) buffs[i] = false;
 
         return dialog;
     }
@@ -177,50 +192,132 @@ public class Battle {
         Move move = opponent.getMoveset().moveset[MathUtils.random(3)];
 
         if (Util.isSuccess(opponent.getAccuracy())) {
-            opponent.useMove(move.type);
-            // accurate or wide
-            if (move.type < 2) {
-                int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
-                player.hit(damage);
-                dialog = new String[] {
-                        opponent.getId() + " used " + move.name + "!",
-                        "It did " + damage + " damage to you."
-                };
-            }
-            // crit (3x damage if success)
-            else if (move.type == 2) {
-                int damage = Math.round(move.minDamage);
-                if (Util.isSuccess(move.crit)) {
-                    damage *= Util.CRIT_MULTIPLIER;
-                    player.hit(damage);
-                    dialog = new String[] {
+            // enemy's attack is reflected back at itself
+            if (buffs[Util.REFLECT]) {
+                // accurate or wide
+                if (move.type < 2) {
+                    player.useMove(move.type);
+                    int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
+                    opponent.hit(damage);
+                    dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
-                            "It's a critical strike!",
-                            "It did " + damage + " damage to you."
+                            "The attack was reflected back and did " + damage + " damage to " + opponent.getId() + "!"
                     };
-                } else {
+                }
+                // crit (3x damage if success)
+                else if (move.type == 2) {
+                    player.useMove(move.type);
+                    int damage = Math.round(move.minDamage);
+                    if (Util.isSuccess(move.crit)) {
+                        damage *= Util.CRIT_MULTIPLIER;
+                        opponent.hit(damage);
+                        dialog = new String[]{
+                                opponent.getId() + " used " + move.name + "!",
+                                "It's a critical strike!",
+                                "The attack was reflected back and did " + damage + " damage to " + opponent.getId() + "!"
+                        };
+                    } else {
+                        opponent.hit(damage);
+                        dialog = new String[] {
+                                opponent.getId() + " used " + move.name + "!",
+                                "The attack was reflected back and did " + damage + " damage to " + opponent.getId() + "!"
+                        };
+                    }
+                }
+                // heal gets doubled when reflected
+                else if (move.type == 3) {
+                    opponent.useMove(move.type);
+                    int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
+                    heal *= 2;
+                    opponent.heal(heal);
+                    dialog = new String[]{
+                            opponent.getId() + " used " + move.name + "!",
+                            "The heal was reflected and enhanced the enemy's healing!",
+                            opponent.getId() + " healed for " + heal + " health points."
+                    };
+                }
+            }
+            else {
+                opponent.useMove(move.type);
+                // accurate or wide
+                if (move.type < 2) {
+                    int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                     player.hit(damage);
-                    dialog = new String[] {
+                    dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
                             "It did " + damage + " damage to you."
                     };
                 }
-            }
-            // heal
-            else if (move.type == 3) {
-                int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
-                opponent.heal(heal);
-                dialog = new String[] {
-                        opponent.getId() + " used " + move.name + "!",
-                        opponent.getId() + " healed for " + heal + " health points."
-                };
+                // crit (3x damage if success)
+                else if (move.type == 2) {
+                    int damage = Math.round(move.minDamage);
+                    if (Util.isSuccess(move.crit)) {
+                        damage *= Util.CRIT_MULTIPLIER;
+                        player.hit(damage);
+                        dialog = new String[]{
+                                opponent.getId() + " used " + move.name + "!",
+                                "It's a critical strike!",
+                                "It did " + damage + " damage to you."
+                        };
+                    } else {
+                        player.hit(damage);
+                        dialog = new String[]{
+                                opponent.getId() + " used " + move.name + "!",
+                                "It did " + damage + " damage to you."
+                        };
+                    }
+                }
+                // heal
+                else if (move.type == 3) {
+                    int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
+                    opponent.heal(heal);
+                    dialog = new String[]{
+                            opponent.getId() + " used " + move.name + "!",
+                            opponent.getId() + " healed for " + heal + " health points."
+                    };
+                }
             }
         }
         else {
             dialog = new String[] { opponent.getId() + "'s move missed!"};
         }
 
+        // only reset buffs that don't affect enemy's turn
+        if (!buffs[Util.REFLECT]) resetBuffs();
+
         return dialog;
+    }
+
+    /**
+     * Returns the dialogs associated with each special move
+     *
+     * @param index
+     * @return
+     */
+    public String[] getSpecialMoveDialog(int index) {
+        switch (index) {
+            case Util.DISTRACT:
+                return new String[] {
+                        "You kicked some dirt into the enemy's face.",
+                        "The enemy's next attack has " + Util.P_DISTRACT + "% reduced accuracy!"
+                };
+            case Util.FOCUS:
+                return new String[] {
+                        "You begin concentrating on your next attack.",
+                        "Your next move has 100% accuracy and critical strike chance is increased by " + Util.P_FOCUS_CRIT + "%!"
+                };
+            case Util.INTIMIDATE:
+                return new String[] {
+                        "You intimidate the enemy causing it to lower its defense.",
+                        "Your next attack has " + Util.P_INTIMIDATE + "% increased damage."
+                };
+            case Util.REFLECT:
+                return new String[] {
+                        "You intensely prepare for the enemy's next attack.",
+                        "The enemy's next move will be reflected back at itself!"
+                };
+        }
+        return null;
     }
 
     /**
