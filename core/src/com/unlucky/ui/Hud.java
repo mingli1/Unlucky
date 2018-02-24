@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Inventory;
@@ -257,6 +258,7 @@ public class Hud extends UI implements Disposable {
      * /clearinv (clear the inventory)
      * /fillrarity [rarity] (fills the inventory with items of a given rarity)
      * /levelup [exp] (levels up the player based on a given amount of exp)
+     * /battle [entityId] (automatically starts a battle with the given entity id)
      *
      * @param command
      */
@@ -372,6 +374,13 @@ public class Hud extends UI implements Disposable {
                 int exp = Integer.parseInt(input[1]);
                 player.levelUp(exp);
                 player.applyLevelUp();
+            }
+        }
+        if (cmd.startsWith("/battle")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int entityId = Integer.parseInt(input[1]);
+                player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
             }
         }
     }
