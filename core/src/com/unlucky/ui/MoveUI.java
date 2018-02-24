@@ -96,6 +96,7 @@ public class MoveUI extends BattleUI {
      */
     public void init() {
         turnCounter = 0;
+        onCd = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
