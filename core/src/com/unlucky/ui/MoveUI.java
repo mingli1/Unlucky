@@ -6,9 +6,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.battle.Move;
 import com.unlucky.entity.Player;
@@ -35,6 +37,7 @@ public class MoveUI extends BattleUI {
     // Styles
     private ImageButton.ImageButtonStyle[] moveStyles;
     private ImageButton.ImageButtonStyle[] optionStyles;
+    private ImageButton.ImageButtonStyle[] disabled;
 
     // Labels
     private Label[] moveNameLabels;
@@ -56,8 +59,8 @@ public class MoveUI extends BattleUI {
     };
     private String[] buffDescs = {
             "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
-            "100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit",
-            "+" + Util.P_INTIMIDATE + "% DMG",
+            "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance",
+            "Next attack is\namplified by " + Util.P_INTIMIDATE + "%",
             "Next enemy attack\nis reflected back",
             Util.P_STUN + "% chance to\nstun enemy",
             "Heal moves damage\nDamage moves heal"
@@ -98,12 +101,16 @@ public class MoveUI extends BattleUI {
         turnCounter = 0;
         onCd = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
+        optionIndex = 1;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
         optionDescLabels[0].setText(desc);
         optionDescLabels[1].setText("7% chance to run\nfrom a battle");
-        for (int i = 0; i < 2; i++) optionButtonTouchable[i] = true;
+        for (int i = 0; i < 2; i++) {
+            optionButtonTouchable[i] = true;
+            optionButtons[i].setStyle(optionStyles[1 - i]);
+        }
         for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
         resetMoves();
     }
@@ -148,6 +155,7 @@ public class MoveUI extends BattleUI {
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
         optionDescLabels[0].setText(desc);
+        optionButtons[0].setStyle(optionStyles[1]);
         optionButtons[0].setTouchable(Touchable.enabled);
         optionButtonTouchable[0] = true;
     }
@@ -218,8 +226,13 @@ public class MoveUI extends BattleUI {
     private void createOptionUI() {
         // make buttons
         optionButtons = new ImageButton[2];
-        optionStyles = rm.loadImageButtonStyles(1, rm.stdmedbutton110x50);
-        for (int i = 0; i < 2; i++) optionButtons[i] = new ImageButton(optionStyles[0]);
+        disabled = new ImageButton.ImageButtonStyle[2];
+        optionStyles = rm.loadImageButtonStyles(2, rm.stdmedbutton110x50);
+        for (int i = 0; i < 2; i++) {
+            optionButtons[i] = new ImageButton(optionStyles[1 - i]);
+            disabled[i] = new ImageButton.ImageButtonStyle();
+            disabled[i].imageUp = new TextureRegionDrawable(rm.stdmedbutton110x50[1][1 - i]);
+        }
 
         // set pos
         // ____ button
@@ -322,6 +335,7 @@ public class MoveUI extends BattleUI {
                 // disable button until cooldown over
                 onCd = true;
                 optionButtons[0].setTouchable(Touchable.disabled);
+                optionButtons[0].setStyle(disabled[0]);
                 optionNameLabels[0].setText("ON COOLDOWN");
                 optionButtonTouchable[0] = false;
             }
@@ -346,6 +360,7 @@ public class MoveUI extends BattleUI {
                     }, BattleEvent.PLAYER_TURN, BattleEvent.ENEMY_TURN);
                 }
                 optionButtons[1].setTouchable(Touchable.disabled);
+                optionButtons[1].setStyle(disabled[1]);
                 optionDescLabels[1].setText("cannot run again");
                 optionButtonTouchable[1] = false;
             }
