@@ -24,6 +24,9 @@ public class Battle {
     private TileMap tileMap;
     private Player player;
 
+    // dmg reduction from heals, -1 if no reduction
+    public int playerRed = -1;
+    public int enemyRed = -1;
     // special move buffs
     public boolean[] buffs;
 
@@ -123,6 +126,7 @@ public class Battle {
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                 if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
+                damage = reduceDamage(damage);
                 opponent.hit(damage);
                 dialog = new String[] {
                         "You used " + move.name + "!",
@@ -140,6 +144,7 @@ public class Battle {
 
                 if (Util.isSuccess(critChance)) {
                     damage *= Util.CRIT_MULTIPLIER;
+                    damage = reduceDamage(damage);
                     opponent.hit(damage);
                     dialog = new String[] {
                             "You used " + move.name + "!",
@@ -147,6 +152,7 @@ public class Battle {
                             "It did " + damage + " damage to " + opponent.getId() + "."
                     };
                 } else {
+                    damage = reduceDamage(damage);
                     opponent.hit(damage);
                     dialog = new String[] {
                             "You used " + move.name + "!",
@@ -154,12 +160,14 @@ public class Battle {
                     };
                 }
             }
-            // heal
+            // heal + set dmg reduction for next turn
             else if (move.type == 3) {
                 int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
+                playerRed = move.dmgReduction;
                 player.heal(heal);
                 dialog = new String[] {
                         "You used " + move.name + "!",
+                        "The enemy's next attack does -" + move.dmgReduction + "% damage!",
                         "You healed for " + heal + " health points."
                 };
             }
@@ -168,9 +176,6 @@ public class Battle {
             // move missed; enemy turn
             dialog = new String[] {"Oh no, your move missed!"};
         }
-
-        // buffs used up so reset
-        //for (int i = 0; i < buffs.length; i++) buffs[i] = false;
 
         return dialog;
     }
@@ -229,9 +234,11 @@ public class Battle {
                     opponent.useMove(move.type);
                     int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
                     heal *= 2;
+                    enemyRed = move.dmgReduction;
                     opponent.heal(heal);
                     dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
+                            "Your next attack does -" + move.dmgReduction + "% damage!",
                             "The heal was reflected and enhanced the enemy's healing!",
                             opponent.getId() + " healed for " + heal + " health points."
                     };
@@ -242,6 +249,7 @@ public class Battle {
                 // accurate or wide
                 if (move.type < 2) {
                     int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
+                    damage = reduceDamage(damage);
                     player.hit(damage);
                     dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
@@ -253,6 +261,7 @@ public class Battle {
                     int damage = Math.round(move.minDamage);
                     if (Util.isSuccess(move.crit)) {
                         damage *= Util.CRIT_MULTIPLIER;
+                        damage = reduceDamage(damage);
                         player.hit(damage);
                         dialog = new String[]{
                                 opponent.getId() + " used " + move.name + "!",
@@ -260,6 +269,7 @@ public class Battle {
                                 "It did " + damage + " damage to you."
                         };
                     } else {
+                        damage = reduceDamage(damage);
                         player.hit(damage);
                         dialog = new String[]{
                                 opponent.getId() + " used " + move.name + "!",
@@ -270,9 +280,11 @@ public class Battle {
                 // heal
                 else if (move.type == 3) {
                     int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
+                    enemyRed = move.dmgReduction;
                     opponent.heal(heal);
                     dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
+                            "Your next attack does -" + move.dmgReduction + "% damage!",
                             opponent.getId() + " healed for " + heal + " health points."
                     };
                 }
@@ -286,6 +298,25 @@ public class Battle {
         if (!buffs[Util.REFLECT]) resetBuffs();
 
         return dialog;
+    }
+
+    /**
+     * Reduces the damage of an entity by the heal damage reduction
+     *
+     * @param damage
+     * @return
+     */
+    public int reduceDamage(int damage) {
+        int dmg = damage;
+        if (playerRed != -1) {
+            dmg -= ((playerRed / 100f) * damage);
+            playerRed = -1;
+        }
+        else if (enemyRed != -1) {
+            dmg -= ((enemyRed / 100f) * damage);
+            enemyRed = -1;
+        }
+        return dmg;
     }
 
     /**
