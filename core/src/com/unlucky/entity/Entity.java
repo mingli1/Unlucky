@@ -132,9 +132,9 @@ public class Entity {
     }
 
     /**
-     * Returns true if the entity is dead after a change in hp
+     * Applies the damage done by the previous move
      */
-    public boolean applyDamage() {
+    public void applyDamage() {
         previousHp = hp;
         moveUsed = prevMoveUsed;
         prevMoveUsed = -1;
@@ -143,9 +143,7 @@ public class Entity {
         if (hp <= 0) {
             hp = 0;
             dead = true;
-            return true;
         }
-        return false;
     }
 
     public void applyHeal() {
@@ -520,6 +518,8 @@ public class Entity {
     public void useMove(int move) {
         this.prevMoveUsed = move;
     }
+
+    public int getPrevMoveUsed() { return prevMoveUsed; }
 
     public void setMoveUsed(int moveUsed) {
         this.moveUsed = moveUsed;

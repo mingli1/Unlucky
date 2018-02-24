@@ -54,8 +54,9 @@ public class Moveset {
                 descriptions[i] = "dmg: " + Math.round(moveset[i].minDamage) + " + "
                         + moveset[i].crit + "% to crit";
             } else {
-                descriptions[i] = "Heals: " + Math.round(moveset[i].minHeal)
-                        + "-" + Math.round(moveset[i].maxHeal);
+                descriptions[i] = "HP: " + Math.round(moveset[i].minHeal)
+                        + "-" + Math.round(moveset[i].maxHeal) + ", -" + moveset[i].dmgReduction
+                        + "% DMG";
             }
         }
     }
@@ -98,7 +99,7 @@ public class Moveset {
             else if (randMove.type == 2)
                 temp = new Move(randMove.name, randMove.minDamage, randMove.crit);
             else if (randMove.type == 3)
-                temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
+                temp = new Move(randMove.name, randMove.minHeal, randMove.maxHeal, randMove.dmgReduction);
 
             ret[i] = temp;
             all.removeIndex(index);
@@ -127,7 +128,7 @@ public class Moveset {
             else if (randMove.type == 2)
                 temp = new Move(randMove.name, randMove.minDamage, randMove.crit);
             else if (randMove.type == 3)
-                temp = new Move(randMove.type, randMove.name, randMove.minHeal, randMove.maxHeal);
+                temp = new Move(randMove.name, randMove.minHeal, randMove.maxHeal, randMove.dmgReduction);
 
             ret[i] = temp;
             //pool.removeIndex(index);

@@ -78,7 +78,7 @@ public class BattleEventHandler extends BattleUI {
         textLabel = new Label("", font);
         textLabel.setWrap(true);
         textLabel.setTouchable(Touchable.disabled);
-        textLabel.setFontScale(1.8f);
+        textLabel.setFontScale(1.7f);
         textLabel.setPosition(16, 12);
         textLabel.setSize(350, 52);
         textLabel.setAlignment(Align.topLeft);

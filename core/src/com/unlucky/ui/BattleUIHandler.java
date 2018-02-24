@@ -51,6 +51,7 @@ public class BattleUIHandler extends UI implements Disposable {
     }
 
     public void update(float dt) {
+        if (currentState == BattleState.MOVE) moveUI.update(dt);
         if (currentState == BattleState.DIALOG) battleEventHandler.update(dt);
         battleScene.update(dt);
     }

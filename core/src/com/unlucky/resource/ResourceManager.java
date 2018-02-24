@@ -149,6 +149,9 @@ public class ResourceManager {
         selectedslot28x28 = atlas.findRegion("selected_slot");
         invbuttons92x28 = atlas.findRegion("inv_buttons").split(92, 28);
 
+        // fix font spacing
+        pixel10.setUseIntegerPositions(false);
+
         loadMoves();
         loadItems();
     }
@@ -197,8 +200,8 @@ public class ResourceManager {
         //System.out.println("crit: " + critMoves.size);
         // heal Moves
         for (JsonValue move : base.get("healing")) {
-            Move m = new Move(move.getInt("type"), move.getString("name"),
-                    move.getFloat("minHeal"), move.getFloat("maxHeal"));
+            Move m = new Move(move.getString("name"), move.getFloat("minHeal"),
+                    move.getFloat("maxHeal"), move.getInt("dmgReduction"));
             healMoves.add(m);
         }
         //System.out.println("heal: " + healMoves.size);
@@ -210,8 +213,8 @@ public class ResourceManager {
                 slimeMoves.add(new Move(1, move.getString("name"),
                         move.getFloat("minDamage"), move.getFloat("maxDamage")));
             else
-                slimeMoves.add(new Move(3, move.getString("name"),
-                        move.getFloat("minHeal"), move.getFloat("maxHeal")));
+                slimeMoves.add(new Move(move.getString("name"),
+                        move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
         }
         bossMoves.add(slimeMoves);
 
@@ -221,8 +224,8 @@ public class ResourceManager {
                 lpMoves.add(new Move(0, move.getString("name"),
                         move.getFloat("minDamage"), move.getFloat("maxDamage")));
             else
-                lpMoves.add(new Move(3, move.getString("name"),
-                        move.getFloat("minHeal"), move.getFloat("maxHeal")));
+                lpMoves.add(new Move(move.getString("name"),
+                        move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
         }
         bossMoves.add(lpMoves);
     }

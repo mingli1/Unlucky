@@ -56,7 +56,7 @@ public class MoveUI extends BattleUI {
     };
     private String[] buffDescs = {
             "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
-            "100% ACC\nand +" + Util.P_FOCUS_CRIT + "% cr it",
+            "100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit",
             "+" + Util.P_INTIMIDATE + "% DMG",
             "Next enemy attack\nis reflected back",
             Util.P_STUN + "% chance to\nstun enemy",
@@ -84,7 +84,7 @@ public class MoveUI extends BattleUI {
             resetSpecialMoves();
         }
         else {
-            if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn ( s ) until\n" +
+            if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn(s) until\n" +
                     "new special move");
         }
     }
@@ -184,7 +184,7 @@ public class MoveUI extends BattleUI {
             moveNameLabels[i] = new Label(player.getMoveset().names[i], font);
             moveNameLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
             moveNameLabels[i].setAlignment(Align.topLeft);
-            moveNameLabels[i].setFontScale(1.3f);
+            moveNameLabels[i].setFontScale(1.25f);
             moveNameLabels[i].setTouchable(Touchable.disabled);
 
             moveDescLabels[i] = new Label(player.getMoveset().descriptions[i], font);
@@ -240,14 +240,14 @@ public class MoveUI extends BattleUI {
         optionNameLabels[0] = new Label(randBuff, font);
         optionNameLabels[0].setAlignment(Align.topLeft);
         optionNameLabels[0].setSize(110, 50);
-        optionNameLabels[0].setFontScale(1.3f);
+        optionNameLabels[0].setFontScale(1.25f);
         optionNameLabels[0].setTouchable(Touchable.disabled);
         optionNameLabels[0].setPosition(2 * Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 13);
 
         optionDescLabels[0] = new Label(desc, font);
         optionDescLabels[0].setAlignment(Align.topLeft);
         optionDescLabels[0].setSize(110, 50);
-        optionDescLabels[0].setFontScale(0.8f);
+        optionDescLabels[0].setFontScale(0.7f);
         optionDescLabels[0].setTouchable(Touchable.disabled);
         optionDescLabels[0].setPosition(2 * Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 25);
 
@@ -261,7 +261,7 @@ public class MoveUI extends BattleUI {
         optionDescLabels[1] = new Label("7% chance to run\nfrom a battle", font);
         optionDescLabels[1].setAlignment(Align.topLeft);
         optionDescLabels[1].setSize(110, 50);
-        optionDescLabels[1].setFontScale(0.8f);
+        optionDescLabels[1].setFontScale(0.7f);
         optionDescLabels[1].setTouchable(Touchable.disabled);
         optionDescLabels[1].setPosition(2 * Util.MOVE_WIDTH + 15, -25);
 

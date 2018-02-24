@@ -14,7 +14,7 @@ import com.unlucky.map.TileMap;
 public class Util {
 
     // rates
-    public static final float TEXT_SPEED = 0.02f;
+    public static final float TEXT_SPEED = 0.03f;
     public static final float HP_BAR_DECAY_RATE = 50.f;
     public static final float TRANSITION_SCREEN_SPEED = 300.f;
 
@@ -33,12 +33,19 @@ public class Util {
     public static final int DIR_PAD_SIZE = 40;
     public static final int DIR_PAD_OFFSET = 10;
 
+    // Special move indexes
+    public static final int S_MOVE_CD = 3; // num of turns cooldown for special moves
+    public static final int NUM_SPECIAL_MOVES = 6;
+    public static final int DISTRACT = 0;
+    public static final int FOCUS = 1;
+    public static final int INTIMIDATE = 2;
+    public static final int REFLECT = 3;
+    public static final int STUN = 4;
+    public static final int INVERT = 5;
+
     // Button dimensions
     public static final int MOVE_WIDTH = 145;
     public static final int MOVE_HEIGHT = 50;
-
-    public static final int STD_MED_WIDTH = 110;
-    public static final int STD_MED_HEIGHT = 50;
 
     // Probabilities, Percentages, and Multipliers
     public static final int RUN_FROM_BATTLE = 7;
@@ -47,13 +54,17 @@ public class Util {
     public static final int PLAYER_ACCURACY = 80;
     public static final int ENEMY_MIN_ACCURACY = 75;
     public static final int ENEMY_MAX_ACCURACY = 95;
-    public static final int P_DISTRACT = 45;
-    public static final int P_INTIMIDATE = 25;
-    public static final float INTIMIDATE_MULT = 1.25f;
     public static final int REVIVAL = 1;
     public static final int ENCHANT = 50;
     public static final int DESTROY_ITEM_IF_FAIL = 50;
     public static final int TILE_INTERATION = 70;
+
+    // Battle special moves
+    public static final int P_DISTRACT = 50;
+    public static final int P_INTIMIDATE = 40;
+    public static final float INTIMIDATE_MULT = 1.4f;
+    public static final int P_FOCUS_CRIT = 30;
+    public static final int P_STUN = 60;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
@@ -94,8 +105,10 @@ public class Util {
     public static final int ENEMY_INIT_MIN_MAXDMG = 6;
     public static final int ENEMY_INIT_MAX_MAXDMG = 9;
 
-    public static final int ENEMY_MIN_HP_INCREASE = 5;
-    public static final int ENEMY_MAX_HP_INCREASE = 13;
+    //public static final int ENEMY_MIN_HP_INCREASE = 5;
+    public static final int ENEMY_MIN_HP_INCREASE = 10;
+    //public static final int ENEMY_MAX_HP_INCREASE = 13;
+    public static final int ENEMY_MAX_HP_INCREASE = 26;
     public static final int ENEMY_MIN_DMG_INCREASE = 2;
     public static final int ENEMY_MAX_DMG_INCREASE = 5;
 

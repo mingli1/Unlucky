@@ -71,6 +71,11 @@ public class GameMap {
         setWeather(WeatherType.RAIN);
 
         tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 30), tileMap, rm), 10, 30);
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 29), tileMap, rm), 10, 29);
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 28), tileMap, rm), 10, 28);
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 27), tileMap, rm), 10, 27);
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 26), tileMap, rm), 10, 26);
+        tileMap.addEntity(Util.getEntity(2, tileMap.toMapCoords(10, 25), tileMap, rm), 10, 25);
     }
 
     /**
