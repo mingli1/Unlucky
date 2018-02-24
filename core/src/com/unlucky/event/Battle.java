@@ -121,17 +121,28 @@ public class Battle {
 
         // accounting for player accuracy or accuracy buff
         if (Util.isSuccess(player.getAccuracy()) || buffs[Util.FOCUS]) {
-            player.useMove(move.type);
             // accurate or wide
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                 if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
-                damage = reduceDamage(damage);
-                opponent.hit(damage);
-                dialog = new String[] {
-                        "You used " + move.name + "!",
-                        "It did " + damage + " damage to " + opponent.getId() + "."
-                };
+                if (buffs[Util.INVERT]) {
+                    // for heal animation
+                    player.useMove(3);
+                    player.heal(damage);
+                    dialog = new String[] {
+                            "You used inverted " + move.name + "!",
+                            "It healed you for " + damage + " health points!"
+                    };
+                }
+                else {
+                    player.useMove(move.type);
+                    damage = reduceDamage(damage);
+                    opponent.hit(damage);
+                    dialog = new String[]{
+                            "You used " + move.name + "!",
+                            "It did " + damage + " damage to " + opponent.getId() + "."
+                    };
+                }
             }
             // crit (3x damage if success)
             else if (move.type == 2) {
@@ -144,32 +155,66 @@ public class Battle {
 
                 if (Util.isSuccess(critChance)) {
                     damage *= Util.CRIT_MULTIPLIER;
-                    damage = reduceDamage(damage);
-                    opponent.hit(damage);
-                    dialog = new String[] {
-                            "You used " + move.name + "!",
-                            "It's a critical strike!",
-                            "It did " + damage + " damage to " + opponent.getId() + "."
-                    };
+                    if (buffs[Util.INVERT]) {
+                        player.useMove(3);
+                        player.heal(damage);
+                        dialog = new String[] {
+                                "You used inverted " + move.name + "!",
+                                "It's a critical strike!",
+                                "It healed you for " + damage + " health points!"
+                        };
+                    }
+                    else {
+                        player.useMove(move.type);
+                        damage = reduceDamage(damage);
+                        opponent.hit(damage);
+                        dialog = new String[]{
+                                "You used " + move.name + "!",
+                                "It's a critical strike!",
+                                "It did " + damage + " damage to " + opponent.getId() + "."
+                        };
+                    }
                 } else {
-                    damage = reduceDamage(damage);
-                    opponent.hit(damage);
-                    dialog = new String[] {
-                            "You used " + move.name + "!",
-                            "It did " + damage + " damage to " + opponent.getId() + "."
-                    };
+                    if (buffs[Util.INVERT]) {
+                        player.useMove(3);
+                        player.heal(damage);
+                        dialog = new String[] {
+                                "You used inverted " + move.name + "!",
+                                "It healed you for " + damage + " health points!"
+                        };
+                    }
+                    else {
+                        player.useMove(move.type);
+                        damage = reduceDamage(damage);
+                        opponent.hit(damage);
+                        dialog = new String[]{
+                                "You used " + move.name + "!",
+                                "It did " + damage + " damage to " + opponent.getId() + "."
+                        };
+                    }
                 }
             }
             // heal + set dmg reduction for next turn
             else if (move.type == 3) {
                 int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
-                playerRed = move.dmgReduction;
-                player.heal(heal);
-                dialog = new String[] {
-                        "You used " + move.name + "!",
-                        "The enemy's next attack does -" + move.dmgReduction + "% damage!",
-                        "You healed for " + heal + " health points."
-                };
+                if (buffs[Util.INVERT]) {
+                    player.useMove(MathUtils.random(0, 2));
+                    opponent.hit(heal);
+                    dialog = new String[] {
+                            "You used inverted " + move.name + "!",
+                            "It did " + heal + " damage to " + opponent.getId() + "."
+                    };
+                }
+                else {
+                    player.useMove(move.type);
+                    playerRed = move.dmgReduction;
+                    player.heal(heal);
+                    dialog = new String[]{
+                            "You used " + move.name + "!",
+                            "The enemy's next attack does -" + move.dmgReduction + "% damage!",
+                            "You healed for " + heal + " health points."
+                    };
+                }
             }
         }
         else {
@@ -186,6 +231,16 @@ public class Battle {
      * @return the dialog of the enemy's move and damage
      */
     public String[] enemyTurn() {
+        // skip turn if stunned
+        if (buffs[Util.STUN]) {
+            if (Util.isSuccess(Util.P_STUN)) {
+                resetBuffs();
+                return new String[] {
+                        "The enemy was stunned and could not move!"
+                };
+            }
+        }
+
         // get special boss moves
         if (opponent.isBoss()) {
             opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp(), opponent.getBossIndex());
@@ -346,6 +401,16 @@ public class Battle {
                 return new String[] {
                         "You intensely prepare for the enemy's next attack.",
                         "The enemy's next move will be reflected back at itself!"
+                };
+            case Util.STUN:
+                return new String[] {
+                        "You attempt to immobilize the enemy by hypnotizing it!",
+                        "The enemy may be stunned and miss its turn."
+                };
+            case Util.INVERT:
+                return new String[] {
+                        "You manipulate the powers of your moveset.",
+                        "Heal moves do damage and damage moves heal for one turn!"
                 };
         }
         return null;
