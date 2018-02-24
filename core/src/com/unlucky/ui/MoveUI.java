@@ -44,17 +44,23 @@ public class MoveUI extends BattleUI {
     private boolean[] optionButtonTouchable = new boolean[2];
 
     // Special moves
+    private boolean onCd = false;
+    private int turnCounter = 0;
     private String[] buffs = {
             "Distract",
             "Focus",
             "Intimidate",
-            "Reflect"
+            "Reflect",
+            "Stun",
+            "Invert"
     };
     private String[] buffDescs = {
             "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
             "100% ACC\nand +" + Util.P_FOCUS_CRIT + "% cr it",
             "+" + Util.P_INTIMIDATE + "% DMG",
-            "Next enemy attack\nis reflected back"
+            "Next enemy attack\nis reflected back",
+            Util.P_STUN + "% chance to\nstun enemy",
+            "Heal moves damage\nDamage moves heal"
     };
 
     private int optionIndex;
@@ -70,7 +76,18 @@ public class MoveUI extends BattleUI {
         createOptionUI();
     }
 
-    public void update(float dt) {}
+    public void update(float dt) {
+        // reset and generate new random special move after cooldown
+        if (turnCounter == Util.S_MOVE_CD) {
+            onCd = false;
+            turnCounter = 0;
+            resetSpecialMoves();
+        }
+        else {
+            if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn ( s ) until\n" +
+                    "new special move");
+        }
+    }
 
     public void render(float dt) {}
 
@@ -78,8 +95,8 @@ public class MoveUI extends BattleUI {
      * Resetting variables that are only set once the entire battle
      */
     public void init() {
+        turnCounter = 0;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-        //optionIndex = 3;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -119,6 +136,19 @@ public class MoveUI extends BattleUI {
             moveNameLabels[i].setText(player.getMoveset().names[i]);
             moveDescLabels[i].setText(player.getMoveset().descriptions[i]);
         }
+    }
+
+    /**
+     * Generates new random special move
+     */
+    private void resetSpecialMoves() {
+        optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
+        String buff = buffs[optionIndex];
+        String desc = buffDescs[optionIndex];
+        optionNameLabels[0].setText(buff);
+        optionDescLabels[0].setText(desc);
+        optionButtons[0].setTouchable(Touchable.enabled);
+        optionButtonTouchable[0] = true;
     }
 
     /**
@@ -253,6 +283,10 @@ public class MoveUI extends BattleUI {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     // the move the player clicked
+                    if (onCd) turnCounter++;
+                    // when not on cooldown reset special moves every turn
+                    else resetSpecialMoves();
+
                     Move move = player.getMoveset().moveset[index];
                     uiHandler.currentState = BattleState.DIALOG;
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
@@ -284,18 +318,11 @@ public class MoveUI extends BattleUI {
                 uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(optionIndex),
                         BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
 
-                /**
-                // disable button
+                // disable button until cooldown over
+                onCd = true;
                 optionButtons[0].setTouchable(Touchable.disabled);
-                optionDescLabels[0].setText("already used");
+                optionNameLabels[0].setText("ON COOLDOWN");
                 optionButtonTouchable[0] = false;
-                 */
-                // @TODO give special move every 3 moves
-                optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-                String buff = buffs[optionIndex];
-                String desc = buffDescs[optionIndex];
-                optionNameLabels[0].setText(buff);
-                optionDescLabels[0].setText(desc);
             }
         });
 
@@ -305,6 +332,8 @@ public class MoveUI extends BattleUI {
             public void clicked(InputEvent event, float x, float y) {
                 uiHandler.currentState = BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                if (onCd) turnCounter++;
+                else resetSpecialMoves();
                 // 7% chance to run from the battle
                 if (Util.isSuccess(Util.RUN_FROM_BATTLE)) {
                     uiHandler.battleEventHandler.startDialog(new String[]{
