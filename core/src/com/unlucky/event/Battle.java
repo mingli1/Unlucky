@@ -2,6 +2,7 @@ package com.unlucky.event;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.unlucky.battle.Move;
+import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.inventory.Item;
@@ -116,7 +117,10 @@ public class Battle {
         String[] dialog = null;
 
         // distract/enemy debuff
-        if (buffs[Util.DISTRACT]) opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
+        if (buffs[Util.DISTRACT]) {
+            opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
+            opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
+        }
         else opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
 
         // accounting for player accuracy or accuracy buff
@@ -209,6 +213,7 @@ public class Battle {
                     player.useMove(move.type);
                     playerRed = move.dmgReduction;
                     player.heal(heal);
+                    player.statusEffects.addEffect(StatusEffect.DMG_RED);
                     dialog = new String[]{
                             "You used " + move.name + "!",
                             "The enemy's next attack does -" + move.dmgReduction + "% damage!",
@@ -235,6 +240,7 @@ public class Battle {
         if (buffs[Util.STUN]) {
             if (Util.isSuccess(Util.P_STUN)) {
                 resetBuffs();
+                opponent.statusEffects.addEffect(StatusEffect.STUN);
                 return new String[] {
                         "The enemy was stunned and could not move!"
                 };
@@ -337,6 +343,7 @@ public class Battle {
                     int heal = MathUtils.random(Math.round(move.minHeal), Math.round(move.maxHeal));
                     enemyRed = move.dmgReduction;
                     opponent.heal(heal);
+                    opponent.statusEffects.addEffect(StatusEffect.DMG_RED);
                     dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
                             "Your next attack does -" + move.dmgReduction + "% damage!",
