@@ -31,6 +31,9 @@ public class Battle {
     // special move buffs
     public boolean[] buffs;
 
+    // sacrifice percentage dmg
+    public float psacrifice = 0;
+
     public Battle(GameScreen gameScreen, TileMap tileMap, Player player) {
         this.gameScreen = gameScreen;
         this.tileMap = tileMap;
@@ -129,6 +132,8 @@ public class Battle {
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                 if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
+                if (buffs[Util.SACRIFICE]) damage *= psacrifice;
+
                 if (buffs[Util.INVERT]) {
                     // for heal animation
                     player.useMove(3);
@@ -154,6 +159,7 @@ public class Battle {
                 int critChance;
 
                 if (buffs[Util.INTIMIDATE]) damage *= Util.INTIMIDATE_MULT;
+                if (buffs[Util.SACRIFICE]) damage *= psacrifice;
                 if (buffs[Util.FOCUS]) critChance = move.crit + Util.P_FOCUS_CRIT;
                 else critChance = move.crit;
 
@@ -418,6 +424,12 @@ public class Battle {
                 return new String[] {
                         "You manipulate the powers of your moveset.",
                         "Heal moves do damage and damage moves heal for one turn!"
+                };
+            case Util.SACRIFICE:
+                return new String[] {
+                        "You sacrifice all but 1 HP!",
+                        "Your next attack has " + (int) Math.ceil(((player.getHp() - 1) / (float) player.getMaxHp()) * 100) +
+                                "% increased damage!"
                 };
         }
         return null;
