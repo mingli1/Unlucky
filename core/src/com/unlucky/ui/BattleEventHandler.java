@@ -86,7 +86,7 @@ public class BattleEventHandler extends BattleUI {
         stage.addActor(textLabel);
 
         clickLabel = new Label("", font);
-        clickLabel.setSize(400, 80);
+        clickLabel.setSize(400, 240);
         clickLabel.setPosition(0, 0);
 
         clickLabel.addListener(new ClickListener() {
@@ -197,7 +197,8 @@ public class BattleEventHandler extends BattleUI {
     }
 
     /**
-     * @TODO: Clean this up
+     * Handles battle events and turn based system
+     *
      * @param event
      */
     public void handleBattleEvent(BattleEvent event) {
@@ -205,12 +206,21 @@ public class BattleEventHandler extends BattleUI {
             case NONE:
                 return;
             case END_BATTLE:
+                player.statusEffects.clear();
                 gameScreen.setCurrentEvent(EventState.TRANSITION);
                 gameScreen.transition.start(EventState.BATTLING, EventState.MOVING);
                 break;
             case PLAYER_TURN:
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
                 uiHandler.currentState = BattleState.MOVE;
+
+                // sacrifice move sets player hp to 1
+                if (battle.buffs[Util.SACRIFICE]) {
+                    battle.psacrifice = ((player.getHp() - 1) / (float) player.getMaxHp()) + 1;
+                    player.hit(player.getHp() - 1);
+                    player.applyDamage();
+                }
+
                 if (prevEvent == BattleEvent.ENEMY_TURN) {
                     player.statusEffects.clear();
                     if (battle.opponent.statusEffects.contains(StatusEffect.DMG_RED))
@@ -254,6 +264,11 @@ public class BattleEventHandler extends BattleUI {
         }
     }
 
+    /**
+     * Applies damage dealt to player and checks if they are dead
+     *
+     * @return
+     */
     private boolean applyPlayerDamage() {
         player.applyDamage();
         // player dead
@@ -287,6 +302,11 @@ public class BattleEventHandler extends BattleUI {
         return false;
     }
 
+    /**
+     * Applies damage dealt to enemy and check if they are dead
+     *
+     * @return
+     */
     private boolean applyEnemyDamage() {
         battle.opponent.applyDamage();
         // enemy dead
