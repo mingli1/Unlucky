@@ -3,6 +3,7 @@ package com.unlucky.entity;
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
+import com.unlucky.battle.StatusSet;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -25,11 +26,14 @@ public class Enemy extends Entity {
     // amount of gold an Enemy will drop
     protected int goldDrop;
 
+    // battle status effects
+    public StatusSet statusEffects;
+
     public Enemy(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
         speed = 0;
         moveset = new Moveset(rm);
-        //accuracy = Util.ENEMY_ACCURACY;
+        statusEffects = new StatusSet(false, rm);
     }
 
     /**
@@ -55,6 +59,8 @@ public class Enemy extends Entity {
         // determine if boss
         isElite = Util.isSuccess(Util.ELITE_CHANCE);
         if (isElite) this.id = "[ELITE] " + id;
+
+        statusEffects = new StatusSet(false, rm);
     }
 
     /**
@@ -77,6 +83,8 @@ public class Enemy extends Entity {
         bam = new AnimationManager(rm.battleSprites96x96, 2, animIndex, delay);
         isBoss = true;
         this.bossIndex = bossIndex;
+
+        statusEffects = new StatusSet(false, rm);
     }
 
     public int getGoldDrop() {

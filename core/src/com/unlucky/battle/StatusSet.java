@@ -38,16 +38,40 @@ public class StatusSet {
         }
     }
 
+    public void clear() {
+        effects.clear();
+    }
+
     /**
-     * Removes an effect from the list if the effect is in it
+     * Removes all multi turn status effects
+     */
+    public void clearAllButSingleTurnEffects() {
+        for (int i = 0; i < effects.size; i++) {
+            if (effects.get(i).type == StatusEffect.DMG_RED) {
+                effects.removeIndex(i);
+            }
+        }
+    }
+
+    /**
+     * Removes all single turn status effects
+     */
+    public void clearAllButMultiTurnEffects() {
+        for (int i = 0; i < effects.size; i++) {
+            if (effects.get(i).type != StatusEffect.DMG_RED) {
+                effects.removeIndex(i);
+            }
+        }
+    }
+
+    /**
+     * Returns if the set contains a certain effect
      *
      * @param effect
+     * @return
      */
-    public void removeEffect(int effect) {
-        int i = findEffect(effect);
-        if (i != -1) {
-            effects.removeIndex(i);
-        }
+    public boolean contains(int effect) {
+        return findEffect(effect) != -1;
     }
 
     /**

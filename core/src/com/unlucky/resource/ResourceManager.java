@@ -59,6 +59,7 @@ public class ResourceManager {
     public TextureRegion[][] optionbutton32x32;
     public TextureRegion[][] exitbutton18x18;
     public TextureRegion[][] invbuttons92x28;
+    public TextureRegion[] statuseffects20x20;
     public TextureRegion dialogBox400x80;
     public TextureRegion playerhpbar145x40;
     public TextureRegion enemyhpbar145x40;
@@ -148,6 +149,7 @@ public class ResourceManager {
         exitbutton18x18 = atlas.findRegion("exit_button").split(18, 18);
         selectedslot28x28 = atlas.findRegion("selected_slot");
         invbuttons92x28 = atlas.findRegion("inv_buttons").split(92, 28);
+        statuseffects20x20 = atlas.findRegion("20x20status_effects").split(20, 20)[0];
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);

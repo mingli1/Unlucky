@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
+import com.unlucky.battle.StatusSet;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
@@ -43,6 +44,9 @@ public class Player extends Entity {
     public Inventory inventory;
     public Equipment equips;
 
+    // battle status effects
+    public StatusSet statusEffects;
+
     public Player(String id, ResourceManager rm) {
         super(id, rm);
 
@@ -70,6 +74,8 @@ public class Player extends Entity {
         moveset = new Moveset(rm);
         // damage seed is a random number between the damage range
         moveset.reset(minDamage, maxDamage, maxHp);
+
+        statusEffects = new StatusSet(true, rm);
     }
 
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
@@ -99,6 +105,8 @@ public class Player extends Entity {
         moveset = new Moveset(rm);
         // damage seed is a random number between the damage range
         moveset.reset(minDamage, maxDamage, maxHp);
+
+        statusEffects = new StatusSet(true, rm);
     }
 
     public void update(float dt) {
@@ -354,6 +362,11 @@ public class Player extends Entity {
         Array<Tile> candidates = tileMap.getTeleportationTiles(currentTile);
         Tile choose = candidates.get(MathUtils.random(candidates.size - 1));
         position.set(tileMap.toMapCoords(choose.tilePosition));
+    }
+
+    public void setBattling(Enemy opponent) {
+        this.opponent = opponent;
+        battling = true;
     }
 
     public boolean isBattling() {

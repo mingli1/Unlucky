@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.battle.Move;
+import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
@@ -101,7 +102,6 @@ public class MoveUI extends BattleUI {
         turnCounter = 0;
         onCd = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-        optionIndex = 1;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -150,6 +150,7 @@ public class MoveUI extends BattleUI {
      * Generates new random special move
      */
     private void resetSpecialMoves() {
+        for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
@@ -331,6 +332,13 @@ public class MoveUI extends BattleUI {
 
                 uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(optionIndex),
                         BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
+
+                // add status icons that should show immediately after dialog
+                if (usedBuff[Util.DISTRACT]) battle.opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
+                if (usedBuff[Util.FOCUS]) player.statusEffects.addEffect(StatusEffect.ACC_INC);
+                if (usedBuff[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (usedBuff[Util.REFLECT]) battle.opponent.statusEffects.addEffect(StatusEffect.REFLECT);
+                if (usedBuff[Util.INVERT]) player.statusEffects.addEffect(StatusEffect.INVERT);
 
                 // disable button until cooldown over
                 onCd = true;

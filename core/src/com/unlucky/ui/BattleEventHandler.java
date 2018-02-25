@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
+import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
@@ -211,6 +212,12 @@ public class BattleEventHandler extends BattleUI {
                 uiHandler.moveUI.toggleMoveAndOptionUI(true);
                 uiHandler.currentState = BattleState.MOVE;
                 if (prevEvent == BattleEvent.ENEMY_TURN) {
+                    player.statusEffects.clear();
+                    if (battle.opponent.statusEffects.contains(StatusEffect.DMG_RED))
+                        battle.opponent.statusEffects.clearAllButMultiTurnEffects();
+                    else
+                        battle.opponent.statusEffects.clear();
+
                     if (battle.buffs[Util.REFLECT]) {
                         battle.resetBuffs();
                         // double heal
@@ -232,6 +239,8 @@ public class BattleEventHandler extends BattleUI {
                 break;
             case ENEMY_TURN:
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
+                    if (battle.opponent.statusEffects.contains(StatusEffect.DMG_RED))
+                        battle.opponent.statusEffects.clearAllButSingleTurnEffects();
                     if (applyEnemyDamage()) return;
                     player.applyHeal();
                 }

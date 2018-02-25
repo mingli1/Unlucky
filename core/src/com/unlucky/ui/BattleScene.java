@@ -14,7 +14,6 @@ import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Entity;
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
-import com.unlucky.event.BattleEvent;
 import com.unlucky.map.TileMap;
 import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
@@ -315,6 +314,13 @@ public class BattleScene extends BattleUI {
             gameScreen.getBatch().draw(rm.battledarkness, 0, 0);
             gameScreen.getBatch().setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
+
+        // render player and enemy status icons
+        player.statusEffects.render(gameScreen.getBatch());
+        battle.opponent.statusEffects.render(gameScreen.getBatch());
+
+        //System.out.println(battle.opponent.statusEffects.effects.size);
+
         gameScreen.getBatch().end();
 
         playerHpBar.render(dt);

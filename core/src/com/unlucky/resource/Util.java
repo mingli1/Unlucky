@@ -2,6 +2,7 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Entity;
 import com.unlucky.map.TileMap;

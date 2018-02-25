@@ -104,7 +104,6 @@ public class HealthBar {
         // bottom rect
         shapeRenderer.setColor(color.r > 0 ? 175 / 255.f : 0, color.g > 0 ? 175 / 255.f : 0, color.b > 0 ? 175 / 255.f : 0, 1);
         shapeRenderer.rect(position.x, position.y, hpBarWidth, hpBarHeight / 2);
-
         // render hp animation
         // entity damaged
         if (entity.getHp() < entity.getPreviousHp()) {
