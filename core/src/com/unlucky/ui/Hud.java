@@ -259,6 +259,8 @@ public class Hud extends UI implements Disposable {
      * /fillrarity [rarity] (fills the inventory with items of a given rarity)
      * /levelup [exp] (levels up the player based on a given amount of exp)
      * /battle [entityId] (automatically starts a battle with the given entity id)
+     * /setacc [acc] (sets the accuracy of the player)
+     * /setsmovecd [cd] (sets the cooldown of special moves based on num of turns; 0 for no cd to test the icons)
      *
      * @param command
      */
@@ -381,6 +383,20 @@ public class Hud extends UI implements Disposable {
             if (input.length == 2) {
                 int entityId = Integer.parseInt(input[1]);
                 player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
+            }
+        }
+        if (cmd.startsWith("/setacc")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int acc = Integer.parseInt(input[1]);
+                if (acc >= 0) player.setAccuracy(acc);
+            }
+        }
+        if (cmd.startsWith("/setsmovecd")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int cd = Integer.parseInt(input[1]);
+                if (cd >= 0) player.smoveCd = cd;
             }
         }
     }
