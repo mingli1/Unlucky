@@ -153,13 +153,13 @@ public class GameMap {
             if (lightningTime >= 7) {
                 durationTime += dt;
                 if (durationTime < 0.2f) {
-                    renderLight = false;
+                    if (isDark) renderLight = false;
                     batch.draw(rm.lightning, cam.position.x - cam.viewportWidth / 2, cam.position.y - cam.viewportHeight / 2);
                 }
                 if (durationTime > 0.2f) {
                     lightningTime = 0;
                     durationTime = 0;
-                    renderLight = true;
+                    if (isDark) renderLight = true;
                 }
             }
         }
