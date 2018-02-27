@@ -62,7 +62,6 @@ public class GameMap {
         lightmap = rm.darkness;
         setDarkness(true);
 
-        renderLight = lightmap != null;
         // @TODO set weather and lightmap based on map composite id
         // set lightmapIndex from tilemap file
 
@@ -168,14 +167,6 @@ public class GameMap {
             if (lightmap != null) {
                 batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
                 batch.draw(lightmap, cam.position.x - Unlucky.V_WIDTH / 2, cam.position.y - Unlucky.V_HEIGHT / 2);
-                //batch.draw(rm.light80x80, player.getPosition().x - 40, player.getPosition().y - 40);
-                batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE);
-                for (int i = 0; i < tileMap.tileMap.length; i++) {
-                    Tile t = tileMap.tileMap[i];
-                    if (t.id == 98) {
-                        batch.draw(rm.light80x80, tileMap.toMapCoords(t.tilePosition).x - 40, tileMap.toMapCoords(t.tilePosition).y - 40);
-                    }
-                }
                 batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             }
         }
