@@ -249,6 +249,10 @@ public class BattleEventHandler extends BattleUI {
                 break;
             case ENEMY_TURN:
                 if (prevEvent == BattleEvent.PLAYER_TURN) {
+                    // shield
+                    if (battle.buffs[Util.SHIELD]) {
+                        player.setShield((int) ((Util.P_SHIELD / 100f) * (float) player.getMaxHp()));
+                    }
                     if (battle.opponent.statusEffects.contains(StatusEffect.DMG_RED))
                         battle.opponent.statusEffects.clearAllButSingleTurnEffects();
                     if (applyEnemyDamage()) return;

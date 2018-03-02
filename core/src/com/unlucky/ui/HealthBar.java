@@ -44,37 +44,59 @@ public class HealthBar {
     }
 
     public void update(float dt) {
-        // calculate health bar width based on player's current hp
-        hpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / entity.getHp()));
+        if (entity.isHasShield()) {
+            // calculate health bar width based on player's current shield
+            hpBarWidth = (maxHpBarWidth / ((float) entity.getMaxShield() / entity.getShield()));
 
-        // entity damaged
-        if (entity.getHp() < entity.getPreviousHp()) {
-            if (!initialized) {
-                // the width of the decaying hp bar is the difference between the previous and current hp
-                decayingHpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getPreviousHp() - entity.getHp())));
-                initialized = true;
+            // entity damaged
+            if (entity.getShield() < entity.getPrevShield()) {
+                if (!initialized) {
+                    // the width of the decaying hp bar is the difference between the previous and current hp
+                    decayingHpBarWidth = (maxHpBarWidth / ((float) entity.getMaxShield() / (entity.getPrevShield() - entity.getShield())));
+                    initialized = true;
+                }
+                if (decayingHpBarWidth < 0) {
+                    // reset
+                    decayingHpBarWidth = 0;
+                    entity.setHasShield(false);
+                    initialized = false;
+                }
+                decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE * dt;
             }
-            if (decayingHpBarWidth < 0) {
-                // reset
-                decayingHpBarWidth = 0;
-                entity.setPreviousHp(entity.getHp());
-                initialized = false;
-            }
-            decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE * dt;
         }
-        // entity healed
-        else if (entity.getHp() > entity.getPreviousHp()) {
-            if (!initialized) {
-                decayingHpBarWidth = (-maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getHp() - entity.getPreviousHp())));
-                initialized = true;
+        else {
+            // calculate health bar width based on player's current hp
+            hpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / entity.getHp()));
+
+            // entity damaged
+            if (entity.getHp() < entity.getPreviousHp()) {
+                if (!initialized) {
+                    // the width of the decaying hp bar is the difference between the previous and current hp
+                    decayingHpBarWidth = (maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getPreviousHp() - entity.getHp())));
+                    initialized = true;
+                }
+                if (decayingHpBarWidth < 0) {
+                    // reset
+                    decayingHpBarWidth = 0;
+                    entity.setPreviousHp(entity.getHp());
+                    initialized = false;
+                }
+                decayingHpBarWidth -= Util.HP_BAR_DECAY_RATE * dt;
             }
-            if (decayingHpBarWidth > 0) {
-                // reset
-                decayingHpBarWidth = 0;
-                entity.setPreviousHp(entity.getHp());
-                initialized = false;
+            // entity healed
+            else if (entity.getHp() > entity.getPreviousHp()) {
+                if (!initialized) {
+                    decayingHpBarWidth = (-maxHpBarWidth / ((float) entity.getMaxHp() / (entity.getHp() - entity.getPreviousHp())));
+                    initialized = true;
+                }
+                if (decayingHpBarWidth > 0) {
+                    // reset
+                    decayingHpBarWidth = 0;
+                    entity.setPreviousHp(entity.getHp());
+                    initialized = false;
+                }
+                decayingHpBarWidth += Util.HP_BAR_DECAY_RATE * dt;
             }
-            decayingHpBarWidth += Util.HP_BAR_DECAY_RATE * dt;
         }
     }
 
@@ -97,23 +119,41 @@ public class HealthBar {
         // create black bg
         shapeRenderer.setColor(0, 0, 0, 1);
         shapeRenderer.rect(position.x, position.y, maxHpBarWidth, hpBarHeight);
-        // render actual health bar
-        // top rect
-        shapeRenderer.setColor(color);
-        shapeRenderer.rect(position.x, position.y + (hpBarHeight / 2), hpBarWidth, hpBarHeight / 2);
-        // bottom rect
-        shapeRenderer.setColor(color.r > 0 ? 175 / 255.f : 0, color.g > 0 ? 175 / 255.f : 0, color.b > 0 ? 175 / 255.f : 0, 1);
-        shapeRenderer.rect(position.x, position.y, hpBarWidth, hpBarHeight / 2);
-        // render hp animation
-        // entity damaged
-        if (entity.getHp() < entity.getPreviousHp()) {
-            shapeRenderer.setColor(damageColor);
-            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
+
+        if (entity.isHasShield()) {
+            // render actual health bar
+            // top rect
+            shapeRenderer.setColor(new Color(225 / 255.f, 225 / 255.f, 225 / 255.f, 1));
+            shapeRenderer.rect(position.x, position.y + (hpBarHeight / 2), hpBarWidth, hpBarHeight / 2);
+            // bottom rect
+            shapeRenderer.setColor(new Color(175 / 255.f, 175 / 255.f, 175 / 255.f, 1));
+            shapeRenderer.rect(position.x, position.y, hpBarWidth, hpBarHeight / 2);
+            // render hp animation
+            // entity damaged
+            if (entity.getShield() < entity.getPrevShield()) {
+                shapeRenderer.setColor(damageColor);
+                shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
+            }
         }
-        // entity healed
-        else if (entity.getHp() > entity.getPreviousHp()) {
-            shapeRenderer.setColor(healColor);
-            shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
+        else {
+            // render actual health bar
+            // top rect
+            shapeRenderer.setColor(color);
+            shapeRenderer.rect(position.x, position.y + (hpBarHeight / 2), hpBarWidth, hpBarHeight / 2);
+            // bottom rect
+            shapeRenderer.setColor(color.r > 0 ? 175 / 255.f : 0, color.g > 0 ? 175 / 255.f : 0, color.b > 0 ? 175 / 255.f : 0, 1);
+            shapeRenderer.rect(position.x, position.y, hpBarWidth, hpBarHeight / 2);
+            // render hp animation
+            // entity damaged
+            if (entity.getHp() < entity.getPreviousHp()) {
+                shapeRenderer.setColor(damageColor);
+                shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
+            }
+            // entity healed
+            else if (entity.getHp() > entity.getPreviousHp()) {
+                shapeRenderer.setColor(healColor);
+                shapeRenderer.rect(position.x + hpBarWidth, position.y, decayingHpBarWidth, hpBarHeight);
+            }
         }
 
         shapeRenderer.end();

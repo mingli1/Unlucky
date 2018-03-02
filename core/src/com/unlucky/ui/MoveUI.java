@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -56,7 +55,9 @@ public class MoveUI extends BattleUI {
             "Intimidate",
             "Reflect",
             "Stun",
-            "Invert"
+            "Invert",
+            "Sacrifice",
+            "Shield"
     };
     private String[] buffDescs = {
             "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
@@ -64,7 +65,9 @@ public class MoveUI extends BattleUI {
             "Next attack is\namplified by " + Util.P_INTIMIDATE + "%",
             "Next enemy attack\nis reflected back",
             Util.P_STUN + "% chance to\nstun enemy",
-            "Heal moves damage\nDamage moves heal"
+            "Heal moves damage\nDamage moves heal",
+            "Sacrifice all but 1 hp\nfor increased dmg",
+            "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% of max hp"
     };
 
     private int optionIndex;
@@ -80,15 +83,20 @@ public class MoveUI extends BattleUI {
         createOptionUI();
     }
 
+    boolean p = false;
+
     public void update(float dt) {
         // reset and generate new random special move after cooldown
-        if (turnCounter == Util.S_MOVE_CD) {
+        //if (turnCounter == Util.S_MOVE_CD) {
+        if (turnCounter == player.smoveCd) {
             onCd = false;
             turnCounter = 0;
-            resetSpecialMoves();
+            if(p) resetSpecialMoves();
+            p = false;
         }
         else {
-            if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn(s) until\n" +
+            //if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn(s) until\n" +
+            if (onCd) optionDescLabels[0].setText(player.smoveCd - turnCounter + " turn(s) until\n" +
                     "new special move");
         }
     }
@@ -102,6 +110,7 @@ public class MoveUI extends BattleUI {
         turnCounter = 0;
         onCd = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
+        optionIndex = 7;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -339,6 +348,8 @@ public class MoveUI extends BattleUI {
                 if (usedBuff[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
                 if (usedBuff[Util.REFLECT]) battle.opponent.statusEffects.addEffect(StatusEffect.REFLECT);
                 if (usedBuff[Util.INVERT]) player.statusEffects.addEffect(StatusEffect.INVERT);
+                if (usedBuff[Util.SACRIFICE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (usedBuff[Util.SHIELD]) player.statusEffects.addEffect(StatusEffect.SHIELD);
 
                 // disable button until cooldown over
                 onCd = true;
@@ -346,6 +357,8 @@ public class MoveUI extends BattleUI {
                 optionButtons[0].setStyle(disabled[0]);
                 optionNameLabels[0].setText("ON COOLDOWN");
                 optionButtonTouchable[0] = false;
+
+                p = true;
             }
         });
 

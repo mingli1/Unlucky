@@ -47,6 +47,9 @@ public class Player extends Entity {
     // battle status effects
     public StatusSet statusEffects;
 
+    // FOR TESTING ONLY
+    public int smoveCd = 3;
+
     public Player(String id, ResourceManager rm) {
         super(id, rm);
 
@@ -111,9 +114,6 @@ public class Player extends Entity {
 
     public void update(float dt) {
         super.update(dt);
-
-        // Stop animation when player isn't moving
-        if (canMove()) am.stopAnimation();
 
         // check for Entity interaction
         if (tileMap.containsEntity(tileMap.toTileCoords(position)) && canMove()) {

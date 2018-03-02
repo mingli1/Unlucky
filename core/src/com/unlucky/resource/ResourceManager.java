@@ -50,7 +50,6 @@ public class ResourceManager {
     // Lighting
     public TextureRegion darkness;
     public TextureRegion battledarkness;
-    public TextureRegion light80x80;
 
     // UI
     public TextureRegion[][] dirpad20x20;
@@ -135,7 +134,6 @@ public class ResourceManager {
         // light
         darkness = atlas.findRegion("darkness");
         battledarkness = atlas.findRegion("battle_darkness");
-        light80x80 = atlas.findRegion("80x80_light");
 
         // ui
         dirpad20x20 = atlas.findRegion("dir_pad").split(40, 40);

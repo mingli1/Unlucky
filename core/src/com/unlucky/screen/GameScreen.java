@@ -92,6 +92,7 @@ public class GameScreen extends AbstractScreen {
             cam.update();
 
             gameMap.update(dt);
+            hud.update(dt);
         }
 
         if (currentEvent == EventState.BATTLING) {

@@ -8,5 +8,5 @@ package com.unlucky.ui;
 public enum BattleState {
     NONE,
     MOVE,
-    DIALOG
+    DIALOG,
 }

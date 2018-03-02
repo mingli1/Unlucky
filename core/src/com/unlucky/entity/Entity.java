@@ -28,19 +28,21 @@ public class Entity {
     // position (x,y) in map coordinates (tile * tileSize)
     protected Vector2 position;
     /**
+     * -1 - stop
      * 0 - down
      * 1 - up
      * 2 - right
      * 3 - left
      */
-    protected boolean[] moving;
+    protected int moving;
+    // entity is in a continuous movement
+    protected boolean continueMoving;
     protected float speed;
     // the Entity's current tile coordinates
     protected int currentTileX;
     protected int currentTileY;
-    // The amount of tiles for a direction to move
-    protected int magnitude;
     protected int prevDir = -1;
+    protected boolean onSpecialTile = false;
     // tile causing a dialog event
     protected boolean tileInteraction = false;
     // teleportation tiles
@@ -68,6 +70,12 @@ public class Entity {
     protected int minDamage;
     protected int maxDamage;
 
+    // shield
+    protected boolean hasShield = false;
+    protected int shield;
+    protected int maxShield;
+    protected int prevShield;
+
     // level up information
     protected int level;
 
@@ -80,8 +88,7 @@ public class Entity {
         this.rm = rm;
 
         position = new Vector2();
-        moving = new boolean[4];
-        for (int i = 0; i < 4; i++) moving[i] = false;
+        moving = -1;
     }
 
     public Entity(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
@@ -131,12 +138,55 @@ public class Entity {
     }
 
     /**
+     * Adds a shield to the entity's health bar
+     *
+     * @param mshield
+     */
+    public void setShield(int mshield) {
+        hasShield = true;
+        this.shield = this.maxShield = this.prevShield = mshield;
+    }
+
+    /**
      * Applies the damage done by the previous move
      */
     public void applyDamage() {
+        // with a shield the damage is applied to the shield first
+        if (hasShield) {
+            if (damage == 0) {
+                hasShield = false;
+                return;
+            }
+            prevShield = shield;
+            moveUsed = prevMoveUsed;
+            prevMoveUsed = -1;
+
+            // if the damage breaks through the shield then the player's hp bar is damaged
+            if (shield - damage < 0) {
+                damage = Math.abs(shield - damage);
+                shield = 0;
+                damageHp();
+            }
+            // damage breaks through the entire shield but does not damage hp bar
+            else if (shield - damage == 0) {
+                shield = 0;
+            }
+            // damage damages the shield
+            else {
+                shield -= damage;
+                damage = 0;
+            }
+
+        }
+        else {
+            moveUsed = prevMoveUsed;
+            prevMoveUsed = -1;
+            damageHp();
+        }
+    }
+
+    private void damageHp() {
         previousHp = hp;
-        moveUsed = prevMoveUsed;
-        prevMoveUsed = -1;
         hp -= damage;
         damage = 0;
         if (hp <= 0) {
@@ -160,13 +210,11 @@ public class Entity {
      *
      * @param dir
      */
-    public void move(int dir, int mag) {
+    public void move(int dir) {
         currentTileX = (int) (position.x / tileMap.tileSize);
         currentTileY = (int) (position.y / tileMap.tileSize);
-        magnitude = mag;
         prevDir = dir;
-
-        moving[dir] = true;
+        moving = dir;
     }
 
     /**
@@ -175,8 +223,7 @@ public class Entity {
      * @return
      */
     public boolean canMove() {
-        for (boolean i : moving) if (i) return false;
-        return true;
+        return moving == -1;
     }
 
     /**
@@ -203,64 +250,38 @@ public class Entity {
     }
 
     /**
-     * If an entity cannot move the full magnitude in a direction, this calculates
-     * the farthest it can go before it has to stop
-     * If an entity encounters another Entity in its path, the Entity will go on the same
-     * tile as the Entity encountered to trigger an interaction
+     * Returns the next tile coordinate to move to either
+     * currentPos +/- 1 or currentPos if the next tile is blocked
      *
      * @param dir
      * @return
      */
-    public int adjustMagnitude(int dir) {
+    public int nextPosition(int dir) {
         switch (dir) {
             case 0: // down
-                for (int i = currentTileY - 1; i >= currentTileY - magnitude; i--) {
-                    Tile t = tileMap.getTile(currentTileX, i);
-                    if (t.isBlocked() || i <= 0) {
-                        if (i == currentTileY - 1) {
-                            return currentTileY;
-                        }
-                        else return i + 1;
-                    }
-                    if (tileMap.containsEntity(currentTileX, i) || t.isSpecial()) return i;
+                Tile d = tileMap.getTile(currentTileX, currentTileY - 1);
+                if (d.isBlocked() || currentTileY - 1 <= 0) {
+                    return currentTileY;
                 }
-                return currentTileY - magnitude;
+                return currentTileY - 1;
             case 1: // up
-                for (int i = currentTileY + 1; i <= currentTileY + magnitude; i++) {
-                    Tile t = tileMap.getTile(currentTileX, i);
-                    if (t.isBlocked() || i >= tileMap.mapHeight - 1) {
-                        if (i == currentTileY + 1) {
-                            return currentTileY;
-                        }
-                        else return i - 1;
-                    }
-                    if (tileMap.containsEntity(currentTileX, i) || t.isSpecial()) return i;
+                Tile u = tileMap.getTile(currentTileX, currentTileY + 1);
+                if (u.isBlocked() || currentTileY + 1 >= tileMap.mapHeight - 1) {
+                    return currentTileY;
                 }
-                return currentTileY + magnitude;
+                return currentTileY + 1;
             case 2: // right
-                for (int i = currentTileX + 1; i <= currentTileX + magnitude; i++) {
-                    Tile t = tileMap.getTile(i, currentTileY);
-                    if (t.isBlocked() || i >= tileMap.mapWidth - 1) {
-                        if (i == currentTileX + 1) {
-                            return currentTileX;
-                        }
-                        else return i - 1;
-                    }
-                    if (tileMap.containsEntity(i, currentTileY) || t.isSpecial()) return i;
+                Tile r = tileMap.getTile(currentTileX + 1, currentTileY);
+                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth - 1) {
+                    return currentTileX;
                 }
-                return currentTileX + magnitude;
+                return currentTileX + 1;
             case 3: // left
-                for (int i = currentTileX - 1; i >= currentTileX - magnitude; i--) {
-                    Tile t = tileMap.getTile(i, currentTileY);
-                    if (t.isBlocked() || i <= 0) {
-                        if (i == currentTileX - 1) {
-                            return currentTileX;
-                        }
-                        else return i + 1;
-                    }
-                    if (tileMap.containsEntity(i, currentTileY) || t.isSpecial()) return i;
+                Tile l = tileMap.getTile(currentTileX - 1, currentTileY);
+                if (l.isBlocked() || currentTileX - 1 <= 0) {
+                    return currentTileX;
                 }
-                return currentTileX - magnitude;
+                return currentTileX - 1;
         }
         return 0;
     }
@@ -272,6 +293,9 @@ public class Entity {
         int cx = (int) (position.x / tileMap.tileSize);
         int cy = (int) (position.y / tileMap.tileSize);
         Tile currentTile = tileMap.getTile(cx, cy);
+
+        if (currentTile.isSpecial()) onSpecialTile = true;
+        else onSpecialTile = false;
 
         if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
@@ -346,7 +370,7 @@ public class Entity {
             // ice sliding
             else if (currentTile.isIce()) {
                 if (!nextTileBlocked(prevDir)) {
-                    move(prevDir, 1);
+                    move(prevDir);
                     am.setAnimation(prevDir);
                     am.stopAnimation();
                     pauseAnim = true;
@@ -359,83 +383,81 @@ public class Entity {
     }
 
     public void changeDirection(int dir) {
-        move(dir, 1);
+        move(dir);
         prevDir = dir;
         am.setAnimation(dir);
     }
 
     /**
      * Updates every tick and moves an Entity if not on the tile map grid
-     * @TODO fix jittery movement on delta time
+     * @TODO: FIX MOVEMENT
      */
     public void handleMovement(float dt) {
         // down
-        if (moving[0]) {
-            int targetY = adjustMagnitude(0);
+        if (moving == 0) {
+            int targetY = nextPosition(0);
             if (targetY == currentTileY) {
-                moving[0] = false;
+                moving = -1;
             } else {
-                position.y -= 1;
+                position.y -= speed * dt;
                 if (position.y <= targetY * tileMap.tileSize &&
                         position.y - speed * dt <= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
-                    moving[0] = false;
+                    moving = -1;
                 }
             }
         }
         // up
-        else if (moving[1]) {
-            int targetY = adjustMagnitude(1);
+        if (moving == 1) {
+            int targetY = nextPosition(1);
             if (targetY == currentTileY) {
-                moving[1] = false;
+                moving = -1;
             } else {
-                position.y += 1;
+                position.y += speed * dt;
                 if (position.y >= targetY * tileMap.tileSize &&
                         position.y + speed * dt >= targetY * tileMap.tileSize) {
                     position.y = targetY * tileMap.tileSize;
-                    moving[1] = false;
+                    moving = -1;
                 }
             }
         }
         // right
-        else if (moving[2]) {
-            int targetX = adjustMagnitude(2);
+        if (moving == 2) {
+            int targetX = nextPosition(2);
             if (targetX == currentTileX) {
-                moving[2] = false;
+                moving = -1;
             } else {
-                position.x += 1;
+                position.x += speed * dt;
                 if (position.x >= targetX * tileMap.tileSize &&
                         position.x + speed * dt >= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
-                    moving[2] = false;
+                    moving = -1;
                 }
             }
         }
         // left
-        else if (moving[3]) {
-            int targetX = adjustMagnitude(3);
+        if (moving == 3) {
+            int targetX = nextPosition(3);
             if (targetX == currentTileX) {
-                moving[3] = false;
+                moving = -1;
             } else {
-                position.x -= 1;
+                position.x -= speed * dt;
                 if (position.x <= targetX * tileMap.tileSize &&
                         position.x - speed * dt <= targetX * tileMap.tileSize) {
                     position.x = targetX * tileMap.tileSize;
-                    moving[3] = false;
+                    moving = -1;
                 }
             }
-        }
-    }
-
-    public void stop() {
-        for (int i = 0; i < moving.length; i++) {
-            moving[i] = false;
         }
     }
 
     public void setMap(TileMap map) {
         this.tileMap = map;
         this.position.set(map.toMapCoords(map.playerSpawn));
+    }
+
+    public void setContinueMoving(boolean p) {
+        continueMoving = p;
     }
 
     public void setAccuracy(int accuracy) {
@@ -470,8 +492,8 @@ public class Entity {
         return position;
     }
 
-    public boolean isMoving(int dir) {
-        return moving[dir];
+    public boolean isMoving() {
+        return moving != -1;
     }
 
     public Moveset getMoveset() { return moveset; }
@@ -526,6 +548,8 @@ public class Entity {
 
     public void setPrevMoveUsed(int prevMoveUsed) { this.prevMoveUsed = prevMoveUsed; }
 
+    public boolean isOnSpecialTile() { return onSpecialTile; }
+
     public boolean isTileInteraction() { return tileInteraction; }
 
     public boolean isTeleporting() { return teleporting; }
@@ -536,6 +560,34 @@ public class Entity {
      */
     public Tile getCurrentTile() {
         return tileMap.getTile(tileMap.toTileCoords(position));
+    }
+
+    public boolean isHasShield() {
+        return hasShield;
+    }
+
+    public void setHasShield(boolean hasShield) {
+        this.hasShield = hasShield;
+    }
+
+    public int getShield() {
+        return shield;
+    }
+
+    public int getMaxShield() {
+        return maxShield;
+    }
+
+    public void setMaxShield(int maxShield) {
+        this.maxShield = maxShield;
+    }
+
+    public int getPrevShield() {
+        return prevShield;
+    }
+
+    public void setPrevShield(int prevShield) {
+        this.prevShield = prevShield;
     }
 
 }

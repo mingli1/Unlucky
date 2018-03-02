@@ -431,6 +431,11 @@ public class Battle {
                         "Your next attack has " + (int) Math.ceil(((player.getHp() - 1) / (float) player.getMaxHp()) * 100) +
                                 "% increased damage!"
                 };
+            case Util.SHIELD:
+                return new String[] {
+                        "You channel your defenses for the enemy's next attack.",
+                        "You summon a shield that absorbs " + (int) ((Util.P_SHIELD / 100f) * (float) player.getMaxHp()) + " damage!"
+                };
         }
         return null;
     }

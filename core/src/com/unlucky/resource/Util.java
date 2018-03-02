@@ -2,7 +2,6 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Enemy;
 import com.unlucky.entity.Entity;
 import com.unlucky.map.TileMap;
@@ -36,13 +35,15 @@ public class Util {
 
     // Special move indexes
     public static final int S_MOVE_CD = 3; // num of turns cooldown for special moves
-    public static final int NUM_SPECIAL_MOVES = 6;
+    public static final int NUM_SPECIAL_MOVES = 8;
     public static final int DISTRACT = 0;
     public static final int FOCUS = 1;
     public static final int INTIMIDATE = 2;
     public static final int REFLECT = 3;
     public static final int STUN = 4;
     public static final int INVERT = 5;
+    public static final int SACRIFICE = 6;
+    public static final int SHIELD = 7;
 
     // Button dimensions
     public static final int MOVE_WIDTH = 145;
@@ -66,6 +67,7 @@ public class Util {
     public static final float INTIMIDATE_MULT = 1.4f;
     public static final int P_FOCUS_CRIT = 30;
     public static final int P_STUN = 60;
+    public static final int P_SHIELD = 20;
 
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;

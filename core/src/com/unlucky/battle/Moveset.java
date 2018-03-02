@@ -81,9 +81,9 @@ public class Moveset {
      */
     private Move[] getRandomMoves() {
         Array<Move> all = new Array<Move>();
-        //all.addAll(rm.accurateMoves);
-        //all.addAll(rm.wideMoves);
-        //all.addAll(rm.critMoves);
+        all.addAll(rm.accurateMoves);
+        all.addAll(rm.wideMoves);
+        all.addAll(rm.critMoves);
         all.addAll(rm.healMoves);
 
         Move[] ret = new Move[4];

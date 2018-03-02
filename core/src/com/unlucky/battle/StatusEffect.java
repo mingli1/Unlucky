@@ -18,6 +18,7 @@ public class StatusEffect {
     public static final int REFLECT = 4;
     public static final int STUN = 5;
     public static final int INVERT = 6;
+    public static final int SHIELD = 7;
 
     public int type;
     public TextureRegion icon;

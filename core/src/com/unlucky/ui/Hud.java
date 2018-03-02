@@ -45,6 +45,8 @@ public class Hud extends UI implements Disposable {
     private ImageButton[] dirPad;
     // if dir pad is held down
     private boolean touchDown = false;
+    // for keyboard
+    private boolean kTouchDown = false;
     private int dirIndex = -1;
 
     // option buttons: inventoryUI and settings
@@ -74,14 +76,39 @@ public class Hud extends UI implements Disposable {
 
     public void update(float dt) {
         // handle movement based on button press
-        if (touchDown && !player.isOnSpecialTile()) movePlayer(dirIndex);
+        if ((touchDown || kTouchDown) && !player.isOnSpecialTile()) movePlayer(dirIndex);
         else player.getAm().stopAnimation();
 
+        kTouchDown = Gdx.input.isKeyPressed(Input.Keys.S) ||
+                Gdx.input.isKeyPressed(Input.Keys.W) ||
+                Gdx.input.isKeyPressed(Input.Keys.D) ||
+                Gdx.input.isKeyPressed(Input.Keys.A);
+
+        player.setContinueMoving(touchDown || kTouchDown);
+
         // keyboard input
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) movePlayer(0);
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) movePlayer(1);
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) movePlayer(2);
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) movePlayer(3);
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) dirIndex = 0;
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) dirIndex = 1;
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) dirIndex = 2;
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) dirIndex = 3;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
+            toggle(false);
+            gameScreen.setCurrentEvent(EventState.INVENTORY);
+            gameScreen.inventoryUI.start();
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            Gdx.input.getTextInput(new Input.TextInputListener() {
+                @Override
+                public void input(String text) {
+                    handleCommands(text);
+                }
+
+                @Override
+                public void canceled() {
+
+                }
+            }, "Debug Command Prompt", "", "");
+        }
     }
 
     public void render(float dt) {

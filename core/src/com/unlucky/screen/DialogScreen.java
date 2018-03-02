@@ -88,7 +88,7 @@ public class DialogScreen extends UI implements Disposable {
         stage.addActor(textLabel);
 
         clickLabel = new Label("", font);
-        clickLabel.setSize(400, 80);
+        clickLabel.setSize(400, 240);
         clickLabel.setPosition(0, 0);
 
         clickLabel.addListener(new ClickListener() {
