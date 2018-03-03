@@ -263,9 +263,19 @@ public class Battle {
         String[] dialog = null;
         Move move = opponent.getMoveset().moveset[MathUtils.random(3)];
 
+        if (opponent.isBoss() || opponent.isElite()) {
+            // when below 20% hp, elite and bosses will always try to go for heal moves as first priority
+            if (opponent.healthBelow(20)) move = opponent.getMoveset().getHealPriority();
+            // when player is below 20%, elite and bosses will always go for damage moves
+            if (player.healthBelow(20)) move = opponent.getMoveset().getDamagePriority();
+        }
+
         if (Util.isSuccess(opponent.getAccuracy())) {
             // enemy's attack is reflected back at itself
             if (buffs[Util.REFLECT]) {
+                // elites and bosses will try to counter reflect by prioritizing heal moves
+                if (opponent.isBoss() || opponent.isElite()) move = opponent.getMoveset().getHealPriority();
+
                 // accurate or wide
                 if (move.type < 2) {
                     player.useMove(move.type);
