@@ -75,6 +75,36 @@ public class Moveset {
     }
 
     /**
+     * Returns the first damage move from a moveset
+     * If there are no damage moves then it returns a random heal move
+     *
+     * @return
+     */
+    public Move getDamagePriority() {
+        for (int i = 0; i < moveset.length; i++) {
+            if (moveset[i].type != 3) {
+                return moveset[i];
+            }
+        }
+        return moveset[MathUtils.random(3)];
+    }
+
+    /**
+     * Returns the first heal move from a moveset
+     * If there are no heal moves, then it returns a random move
+     *
+     * @return
+     */
+    public Move getHealPriority() {
+        for (int i = 0; i < moveset.length; i++) {
+            if (moveset[i].type == 3) {
+                return moveset[i];
+            }
+        }
+        return moveset[MathUtils.random(3)];
+    }
+
+    /**
      * Returns a Move array with 4 unique moves chosen from all possible Moves
      *
      * @return
