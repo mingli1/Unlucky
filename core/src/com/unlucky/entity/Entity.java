@@ -590,4 +590,14 @@ public class Entity {
         this.prevShield = prevShield;
     }
 
+    /**
+     * Returns if the entity's hp is below or equal to a certain threshold
+     *
+     * @param percentage
+     * @return
+     */
+    public boolean healthBelow(int percentage) {
+        return hp <= (int) ((percentage / 100f) * (float) maxHp);
+    }
+
 }

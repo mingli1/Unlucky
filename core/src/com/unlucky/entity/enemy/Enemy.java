@@ -1,9 +1,10 @@
-package com.unlucky.entity;
+package com.unlucky.entity.enemy;
 
 import com.badlogic.gdx.math.Vector2;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.battle.StatusSet;
+import com.unlucky.entity.Entity;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;

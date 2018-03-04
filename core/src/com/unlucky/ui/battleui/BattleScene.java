@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -19,6 +19,7 @@ import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
+import com.unlucky.ui.MovingImageUI;
 
 /**
  * Displays health bars, battle animations, move animations, etc.

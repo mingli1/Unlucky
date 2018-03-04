@@ -1,11 +1,11 @@
-package com.unlucky.ui;
+package com.unlucky.ui.battleui;
 
 import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
-import com.unlucky.event.BattleEvent;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
+import com.unlucky.ui.UI;
 
 /**
  * Superclass for all UI related to battle events

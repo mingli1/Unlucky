@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.ui.inventory;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,6 +31,8 @@ import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
+import com.unlucky.ui.MovingImageUI;
+import com.unlucky.ui.UI;
 
 /**
  * InventoryUI UI that allows for management of items and equips

@@ -1,6 +1,5 @@
 package com.unlucky.entity;
 
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +23,7 @@ import com.unlucky.resource.Util;
 public class Player extends Entity {
 
     // Battle
-    private Enemy opponent;
+    private com.unlucky.entity.enemy.Enemy opponent;
     private boolean battling = false;
 
     // exp and level up
@@ -117,7 +116,7 @@ public class Player extends Entity {
 
         // check for Entity interaction
         if (tileMap.containsEntity(tileMap.toTileCoords(position)) && canMove()) {
-            opponent = (Enemy) tileMap.getEntity(tileMap.toTileCoords(position));
+            opponent = (com.unlucky.entity.enemy.Enemy) tileMap.getEntity(tileMap.toTileCoords(position));
             battling = true;
         }
     }
@@ -203,7 +202,7 @@ public class Player extends Entity {
         if (hp > maxHp) hp = maxHp;
     }
 
-    public Enemy getOpponent() {
+    public com.unlucky.entity.enemy.Enemy getOpponent() {
         return opponent;
     }
 
@@ -364,7 +363,7 @@ public class Player extends Entity {
         position.set(tileMap.toMapCoords(choose.tilePosition));
     }
 
-    public void setBattling(Enemy opponent) {
+    public void setBattling(com.unlucky.entity.enemy.Enemy opponent) {
         this.opponent = opponent;
         battling = true;
     }

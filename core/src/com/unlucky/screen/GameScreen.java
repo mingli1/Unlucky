@@ -13,9 +13,9 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.map.GameMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.ui.BattleUIHandler;
+import com.unlucky.ui.battleui.BattleUIHandler;
 import com.unlucky.ui.Hud;
-import com.unlucky.ui.InventoryUI;
+import com.unlucky.ui.inventory.InventoryUI;
 
 /**
  * Handles all gameplay.

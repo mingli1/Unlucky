@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -19,6 +19,7 @@ import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
+import com.unlucky.event.BattleState;
 
 /**
  * Renders a dialog box that creates text animations given text

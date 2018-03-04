@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.unlucky.entity.Enemy;
+import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Inventory;

@@ -7,7 +7,7 @@ import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.Util;
-import com.unlucky.ui.BattleUIHandler;
+import com.unlucky.ui.battleui.BattleUIHandler;
 import com.unlucky.ui.Hud;
 
 /**

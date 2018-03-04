@@ -3,7 +3,7 @@ package com.unlucky.event;
 import com.badlogic.gdx.math.MathUtils;
 import com.unlucky.battle.Move;
 import com.unlucky.battle.StatusEffect;
-import com.unlucky.entity.Enemy;
+import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;

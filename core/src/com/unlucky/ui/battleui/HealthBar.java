@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;

@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,8 +14,7 @@ import com.badlogic.gdx.utils.Align;
 import com.unlucky.battle.Move;
 import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Player;
-import com.unlucky.event.Battle;
-import com.unlucky.event.BattleEvent;
+import com.unlucky.event.*;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -26,7 +25,7 @@ import com.unlucky.screen.GameScreen;
  *
  * @author Ming Li
  */
-public class MoveUI extends BattleUI {
+public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
 
     private Stage stage;
 
@@ -74,7 +73,7 @@ public class MoveUI extends BattleUI {
     private boolean[] usedBuff = new boolean[Util.NUM_SPECIAL_MOVES];
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
-                  BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
+                  com.unlucky.ui.battleui.BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
@@ -110,7 +109,6 @@ public class MoveUI extends BattleUI {
         turnCounter = 0;
         onCd = false;
         optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-        optionIndex = 7;
         String buff = buffs[optionIndex];
         String desc = buffDescs[optionIndex];
         optionNameLabels[0].setText(buff);
@@ -312,7 +310,7 @@ public class MoveUI extends BattleUI {
                     else resetSpecialMoves();
 
                     Move move = player.getMoveset().moveset[index];
-                    uiHandler.currentState = BattleState.DIALOG;
+                    uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
                     // reshuffle moveset for next turn
                     resetMoves();
@@ -334,7 +332,7 @@ public class MoveUI extends BattleUI {
             public void clicked(InputEvent event, float x, float y) {
                 for (int i = 0; i < Util.NUM_SPECIAL_MOVES; i++) usedBuff[i] = false;
 
-                uiHandler.currentState = BattleState.DIALOG;
+                uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 usedBuff[optionIndex] = true;
                 battle.buffs = usedBuff;
@@ -366,7 +364,7 @@ public class MoveUI extends BattleUI {
         optionButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                uiHandler.currentState = BattleState.DIALOG;
+                uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 if (onCd) turnCounter++;
                 else resetSpecialMoves();

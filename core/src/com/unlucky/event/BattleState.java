@@ -1,4 +1,4 @@
-package com.unlucky.ui;
+package com.unlucky.event;
 
 /**
  * Finite State Machine for Battle events
