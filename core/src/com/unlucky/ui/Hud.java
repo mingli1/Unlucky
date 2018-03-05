@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -54,6 +55,7 @@ public class Hud extends UI implements Disposable {
 
     // debug
     private Label util;
+    private Label smove;
 
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -71,7 +73,12 @@ public class Hud extends UI implements Disposable {
         util.setPosition(10, 220);
         util.setTouchable(Touchable.disabled);
 
+        smove = new Label("", lp);
+        smove.setPosition(310, 70);
+        smove.setTouchable(Touchable.disabled);
+
         stage.addActor(util);
+        stage.addActor(smove);
     }
 
     public void update(float dt) {
@@ -118,6 +125,8 @@ public class Hud extends UI implements Disposable {
         util.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()) + " fps\n" +
                 "(" + (int) (player.getPosition().x / 16) + ", " +
                 (int) (player.getPosition().y / 16) + ")");
+
+        smove.setText("Smoveset: \n" + player.smoveset.toString());
     }
 
     /**
@@ -254,6 +263,10 @@ public class Hud extends UI implements Disposable {
      * /battle [entityId] (automatically starts a battle with the given entity id)
      * /setacc [acc] (sets the accuracy of the player)
      * /setsmovecd [cd] (sets the cooldown of special moves based on num of turns; 0 for no cd to test the icons)
+     * (0 - distract, 1 - focus, 2 - intimidate, 3 - reflect, 4 - stun, 5 - invert, 6 - sacrifice, 7 - shield)
+     * /addsmove [smoveId] (adds a smove to the player's current smoveset)
+     * /setsmoveset [smoveId0] [smoveId1] ... [smoveId4] (clears and sets the player's smoveset and adds up to 5 smoves)
+     * /clearsmoveset (clears the player's smoveset)
      *
      * @param command
      */
@@ -375,7 +388,9 @@ public class Hud extends UI implements Disposable {
             String[] input = cmd.split(" ");
             if (input.length == 2) {
                 int entityId = Integer.parseInt(input[1]);
-                player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
+                if (entityId == 2 || entityId == 3) {
+                    player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
+                }
             }
         }
         if (cmd.startsWith("/setacc")) {
@@ -391,6 +406,30 @@ public class Hud extends UI implements Disposable {
                 int cd = Integer.parseInt(input[1]);
                 if (cd >= 0) player.smoveCd = cd;
             }
+        }
+        if (cmd.startsWith("/addsmove")) {
+            String[] input = cmd.split(" ");
+            if (input.length == 2) {
+                int smoveId = Integer.parseInt(input[1]);
+                if (smoveId >= 0 && smoveId < Util.NUM_SPECIAL_MOVES) {
+                    player.smoveset.addSMove(smoveId);
+                }
+            }
+        }
+        if (cmd.startsWith("/setsmoveset")) {
+            String[] input = cmd.split(" ");
+            if (input.length > 1 && input.length <= 6) {
+                player.smoveset.clear();
+                for (int i = 1; i < input.length; i++) {
+                    int smoveId = Integer.parseInt(input[i]);
+                    if (smoveId >= 0 && smoveId < Util.NUM_SPECIAL_MOVES) {
+                        player.smoveset.addSMove(smoveId);
+                    }
+                }
+            }
+        }
+        if (eq(cmd, "/clearsmoveset")) {
+            player.smoveset.clear();
         }
     }
 

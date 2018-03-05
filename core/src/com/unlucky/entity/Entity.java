@@ -14,7 +14,7 @@ import com.unlucky.resource.ResourceManager;
  *
  * @author Ming Li
  */
-public class Entity {
+public abstract class Entity {
 
     protected String id;
     protected ResourceManager rm;
@@ -527,6 +527,14 @@ public class Entity {
     public int getMinDamage() { return minDamage; }
 
     public int getMaxDamage() { return maxDamage; }
+
+    public void setMinDamage(int minDamage) {
+        this.minDamage = minDamage;
+    }
+
+    public void setMaxDamage(int maxDamage) {
+        this.maxDamage = maxDamage;
+    }
 
     public int getAccuracy() { return accuracy; }
 

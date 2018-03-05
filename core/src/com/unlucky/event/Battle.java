@@ -3,6 +3,7 @@ package com.unlucky.event;
 import com.badlogic.gdx.math.MathUtils;
 import com.unlucky.battle.Move;
 import com.unlucky.battle.StatusEffect;
+import com.unlucky.entity.enemy.Boss;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.inventory.Item;
@@ -53,7 +54,6 @@ public class Battle {
      * If boss, then stats are 2.4-3.0x higher
      * @TODO Scale enemies based on level of map
      * @TODO exp and gold calculations
-     * @TODO CHANGE ALL THESE CALCULATIONS TO SCALE OFF ENEMY LEVEL
      *
      * @param opponent
      */
@@ -67,42 +67,7 @@ public class Battle {
         opponent.setLevel(Util.getDeviatedRandomValue(player.getLevel(), 3));
         if (opponent.getLevel() <= 0) opponent.setLevel(1);
 
-        float eliteMultiplier = MathUtils.random(Util.MIN_ELITE_MULTIPLIER, Util.MAX_ELITE_MULTIPLIER);
-        float bossMultiplier = MathUtils.random(Util.MIN_BOSS_MULTIPLIER, Util.MAX_BOSS_MULTIPLIER);
-
-        int mhp = MathUtils.random(Util.ENEMY_INIT_MIN_MHP, Util.ENEMY_INIT_MAX_MHP);
-        int minDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MINDMG, Util.ENEMY_INIT_MAX_MINDMG);
-        int maxDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MAXDMG, Util.ENEMY_INIT_MAX_MAXDMG);
-
-        for (int i = 0; i < opponent.getLevel() - 1; i++) {
-            mhp += MathUtils.random(Util.ENEMY_MIN_HP_INCREASE, Util.ENEMY_MAX_HP_INCREASE);
-
-            int dmgMean = MathUtils.random(Util.ENEMY_MIN_DMG_INCREASE, Util.ENEMY_MAX_DMG_INCREASE);
-            int minDmgIncrease = (dmgMean - MathUtils.random(2));
-            int maxDmgIncrease = (dmgMean + MathUtils.random(2));
-
-            minDmg += minDmgIncrease;
-            maxDmg += maxDmgIncrease;
-        }
-
-        // random acc
-        opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
-
-        if (opponent.isElite()) {
-            opponent.setMaxHp((int) (eliteMultiplier * mhp));
-            opponent.setMinDamage((int) (eliteMultiplier * minDmg));
-            opponent.setMaxDamage((int) (eliteMultiplier * maxDmg));
-        }
-        else if (opponent.isBoss()) {
-            opponent.setMaxHp((int) (bossMultiplier * mhp));
-            opponent.setMinDamage((int) (bossMultiplier * minDmg));
-            opponent.setMaxDamage((int) (bossMultiplier * maxDmg));
-        }
-        else {
-            opponent.setMaxHp(mhp);
-            opponent.setMinDamage(minDmg);
-            opponent.setMaxDamage(maxDmg);
-        }
+        opponent.setStats();
 
         System.out.println("level: " + opponent.getLevel());
         System.out.println("mhp: " + opponent.getMaxHp());
@@ -255,7 +220,7 @@ public class Battle {
 
         // get special boss moves
         if (opponent.isBoss()) {
-            opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp(), opponent.getBossIndex());
+            opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp(), ((Boss) opponent).bossId);
         }
         else {
             opponent.getMoveset().reset(opponent.getMinDamage(), opponent.getMaxDamage(), opponent.getMaxHp());

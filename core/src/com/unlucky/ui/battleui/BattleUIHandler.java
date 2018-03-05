@@ -6,6 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.unlucky.entity.enemy.Boss;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.*;
@@ -85,13 +86,15 @@ public class BattleUIHandler extends UI implements Disposable {
             if (MathUtils.randomBoolean()) {
                 intro = new String[] {
                         "you encountered the boss " + enemy.getId() + "!",
-                        "its power is far greater than any regular enemy."
+                        "its power is far greater than any regular enemy.",
+                        "Passive: " + ((Boss) enemy).getPassiveDescription()
                 };
                 battleEventHandler.startDialog(intro, BattleEvent.NONE, BattleEvent.PLAYER_TURN);
             } else {
                 intro = new String[] {
                         "you encountered the boss " + enemy.getId() + "!",
                         "its power is far greater than any regular enemy.",
+                        "Passive: " + ((Boss) enemy).getPassiveDescription(),
                         enemy.getId() + " strikes first!"
                 };
                 battleEventHandler.startDialog(intro, BattleEvent.NONE, BattleEvent.ENEMY_TURN);

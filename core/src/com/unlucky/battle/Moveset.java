@@ -64,8 +64,8 @@ public class Moveset {
     /**
      * Resets moveset for bosses
      */
-    public void reset(int min, int max, int hp, int bossIndex) {
-        moveset = getBossMoves(bossIndex);
+    public void reset(int min, int max, int hp, int bossId) {
+        moveset = getBossMoves(bossId);
         int dmg;
         for (int i = 0; i < 4; i++) {
             dmg = MathUtils.random(min, max);
@@ -141,11 +141,11 @@ public class Moveset {
     /**
      * Returns a Move array with 4 unique moves from a boss's movepool
      *
-     * @param bossIndex
+     * @param bossId
      * @return
      */
-    private Move[] getBossMoves(int bossIndex) {
-        Array<Move> pool = rm.bossMoves.get(bossIndex);
+    private Move[] getBossMoves(int bossId) {
+        Array<Move> pool = rm.bossMoves.get(bossId);
         Move[] ret = new Move[4];
         int index;
         for (int i = 0; i < ret.length; i++) {

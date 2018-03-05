@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
+import com.unlucky.battle.SpecialMoveset;
 import com.unlucky.battle.StatusSet;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
@@ -45,6 +46,8 @@ public class Player extends Entity {
 
     // battle status effects
     public StatusSet statusEffects;
+    // special moveset
+    public SpecialMoveset smoveset;
 
     // FOR TESTING ONLY
     public int smoveCd = 3;
@@ -78,6 +81,7 @@ public class Player extends Entity {
         moveset.reset(minDamage, maxDamage, maxHp);
 
         statusEffects = new StatusSet(true, rm);
+        smoveset = new SpecialMoveset();
     }
 
     public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
@@ -109,6 +113,7 @@ public class Player extends Entity {
         moveset.reset(minDamage, maxDamage, maxHp);
 
         statusEffects = new StatusSet(true, rm);
+        smoveset = new SpecialMoveset();
     }
 
     public void update(float dt) {

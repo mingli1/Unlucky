@@ -32,11 +32,23 @@ public class SpecialMoveset {
         }
     }
 
+    public SpecialMove getMoveAt(int i) {
+        return smoveset.get(i);
+    }
+
     /**
      * Clears the smoveset
      */
     public void clear() {
         smoveset.clear();
+    }
+
+    public String toString() {
+        String ret = "";
+        for (int i = 0; i < smoveset.size; i++) {
+            ret += smoveset.get(i).name + "\n";
+        }
+        return ret;
     }
 
     /**

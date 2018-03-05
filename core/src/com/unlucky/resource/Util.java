@@ -2,8 +2,10 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.unlucky.entity.enemy.Enemy;
+import com.unlucky.battle.SpecialMove;
+import com.unlucky.entity.enemy.Boss;
 import com.unlucky.entity.Entity;
+import com.unlucky.entity.enemy.Normal;
 import com.unlucky.map.TileMap;
 
 /**
@@ -45,6 +47,23 @@ public class Util {
     public static final int SACRIFICE = 6;
     public static final int SHIELD = 7;
 
+    public static final SpecialMove S_DISTRACT = new SpecialMove(DISTRACT,
+            "Distract", "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC");
+    public static final SpecialMove S_FOCUS = new SpecialMove(FOCUS,
+            "Focus", "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance");
+    public static final SpecialMove S_INTIMIDATE = new SpecialMove(INTIMIDATE,
+            "Intimidate", "Next attack is\namplified by " + Util.P_INTIMIDATE + "%");
+    public static final SpecialMove S_REFLECT = new SpecialMove(REFLECT,
+            "Reflect", "Next enemy attack\nis reflected back");
+    public static final SpecialMove S_STUN = new SpecialMove(STUN,
+            "Stun", Util.P_STUN + "% chance to\nstun enemy");
+    public static final SpecialMove S_INVERT = new SpecialMove(INVERT,
+            "Invert", "Heal moves damage\nDamage moves heal");
+    public static final SpecialMove S_SACRIFICE = new SpecialMove(SACRIFICE,
+            "Sacrifice", "Sacrifice all but 1 hp\nfor increased dmg");
+    public static final SpecialMove S_SHIELD = new SpecialMove(SHIELD,
+            "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% of max hp");
+
     // Button dimensions
     public static final int MOVE_WIDTH = 145;
     public static final int MOVE_HEIGHT = 50;
@@ -61,7 +80,7 @@ public class Util {
     public static final int DESTROY_ITEM_IF_FAIL = 50;
     public static final int TILE_INTERATION = 70;
 
-    // Battle special moves
+    // Battle special moves percentages
     public static final int P_DISTRACT = 50;
     public static final int P_INTIMIDATE = 40;
     public static final float INTIMIDATE_MULT = 1.4f;
@@ -72,8 +91,6 @@ public class Util {
     public static final int CRIT_MULTIPLIER = 3;
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
     public static final float MAX_ELITE_MULTIPLIER = 1.6f;
-    public static final float MIN_BOSS_MULTIPLIER = 2.4f;
-    public static final float MAX_BOSS_MULTIPLIER = 3.0f;
 
     public static final int NORMAL_ITEM_DROP = 40;
     public static final int ELITE_ITEM_DROP = 60;
@@ -194,9 +211,9 @@ public class Util {
      */
     public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
         switch (id) {
-            case 2: return new Enemy("slime", position, map, rm, 2, 1, 1 / 3f);
-            case 3: return new Enemy("king slime", 0, position, map, rm, 2, 2, 1 / 3f);
-            case 4: return new Enemy("logan paul", 1, position, map, rm, 2, 3, 1 / 3f);
+            case 2: return new Normal("slime", position, map, rm, 2, 1, 1 / 3f);
+            case 3: return new Boss("king slime", 0, position, map, rm, 2, 2, 1 / 3f);
+            case 4: return new Boss("logan paul", 1, position, map, rm, 2, 3, 1 / 3f);
         }
         return null;
     }

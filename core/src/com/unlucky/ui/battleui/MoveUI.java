@@ -2,7 +2,6 @@ package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -12,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.battle.Move;
+import com.unlucky.battle.SpecialMove;
 import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Player;
 import com.unlucky.event.*;
@@ -25,7 +25,7 @@ import com.unlucky.screen.GameScreen;
  *
  * @author Ming Li
  */
-public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
+public class MoveUI extends BattleUI {
 
     private Stage stage;
 
@@ -46,31 +46,9 @@ public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
     private boolean[] optionButtonTouchable = new boolean[2];
 
     // Special moves
+    private SpecialMove smove;
     private boolean onCd = false;
     private int turnCounter = 0;
-    private String[] buffs = {
-            "Distract",
-            "Focus",
-            "Intimidate",
-            "Reflect",
-            "Stun",
-            "Invert",
-            "Sacrifice",
-            "Shield"
-    };
-    private String[] buffDescs = {
-            "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC",
-            "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance",
-            "Next attack is\namplified by " + Util.P_INTIMIDATE + "%",
-            "Next enemy attack\nis reflected back",
-            Util.P_STUN + "% chance to\nstun enemy",
-            "Heal moves damage\nDamage moves heal",
-            "Sacrifice all but 1 hp\nfor increased dmg",
-            "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% of max hp"
-    };
-
-    private int optionIndex;
-    private boolean[] usedBuff = new boolean[Util.NUM_SPECIAL_MOVES];
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                   com.unlucky.ui.battleui.BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
@@ -108,17 +86,12 @@ public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
     public void init() {
         turnCounter = 0;
         onCd = false;
-        optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-        String buff = buffs[optionIndex];
-        String desc = buffDescs[optionIndex];
-        optionNameLabels[0].setText(buff);
-        optionDescLabels[0].setText(desc);
         optionDescLabels[1].setText("7% chance to run\nfrom a battle");
         for (int i = 0; i < 2; i++) {
             optionButtonTouchable[i] = true;
             optionButtons[i].setStyle(optionStyles[1 - i]);
         }
-        for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
+        resetSpecialMoves();
         resetMoves();
     }
 
@@ -157,15 +130,21 @@ public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
      * Generates new random special move
      */
     private void resetSpecialMoves() {
-        for (int i = 0; i < usedBuff.length; i++) usedBuff[i] = false;
-        optionIndex = MathUtils.random(Util.NUM_SPECIAL_MOVES - 1);
-        String buff = buffs[optionIndex];
-        String desc = buffDescs[optionIndex];
-        optionNameLabels[0].setText(buff);
-        optionDescLabels[0].setText(desc);
-        optionButtons[0].setStyle(optionStyles[1]);
-        optionButtons[0].setTouchable(Touchable.enabled);
-        optionButtonTouchable[0] = true;
+        smove = player.smoveset.smoveset.random();
+        if (smove != null) {
+            optionNameLabels[0].setText(smove.name);
+            optionDescLabels[0].setText(smove.desc);
+            optionButtons[0].setStyle(optionStyles[1]);
+            optionButtons[0].setTouchable(Touchable.enabled);
+            optionButtonTouchable[0] = true;
+        }
+        else {
+            optionNameLabels[0].setText("NONE");
+            optionDescLabels[0].setText("No special\nmoves equipped");
+            optionButtons[0].setStyle(disabled[0]);
+            optionButtons[0].setTouchable(Touchable.disabled);
+            optionButtonTouchable[0] = false;
+        }
     }
 
     /**
@@ -255,17 +234,14 @@ public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
         BitmapFont bitmapFont = rm.pixel10;
         Label.LabelStyle font = new Label.LabelStyle(bitmapFont, new Color(255, 255, 255, 255));
 
-        String randBuff = buffs[optionIndex];
-        String desc =  buffDescs[optionIndex];
-
-        optionNameLabels[0] = new Label(randBuff, font);
+        optionNameLabels[0] = new Label("", font);
         optionNameLabels[0].setAlignment(Align.topLeft);
         optionNameLabels[0].setSize(110, 50);
         optionNameLabels[0].setFontScale(1.25f);
         optionNameLabels[0].setTouchable(Touchable.disabled);
         optionNameLabels[0].setPosition(2 * Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 13);
 
-        optionDescLabels[0] = new Label(desc, font);
+        optionDescLabels[0] = new Label("", font);
         optionDescLabels[0].setAlignment(Align.topLeft);
         optionDescLabels[0].setSize(110, 50);
         optionDescLabels[0].setFontScale(0.7f);
@@ -330,24 +306,21 @@ public class MoveUI extends com.unlucky.ui.battleui.BattleUI {
         optionButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                for (int i = 0; i < Util.NUM_SPECIAL_MOVES; i++) usedBuff[i] = false;
-
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
-                usedBuff[optionIndex] = true;
-                battle.buffs = usedBuff;
+                battle.buffs[smove.id] = true;
 
-                uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(optionIndex),
+                uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(smove.id),
                         BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
 
                 // add status icons that should show immediately after dialog
-                if (usedBuff[Util.DISTRACT]) battle.opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
-                if (usedBuff[Util.FOCUS]) player.statusEffects.addEffect(StatusEffect.ACC_INC);
-                if (usedBuff[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
-                if (usedBuff[Util.REFLECT]) battle.opponent.statusEffects.addEffect(StatusEffect.REFLECT);
-                if (usedBuff[Util.INVERT]) player.statusEffects.addEffect(StatusEffect.INVERT);
-                if (usedBuff[Util.SACRIFICE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
-                if (usedBuff[Util.SHIELD]) player.statusEffects.addEffect(StatusEffect.SHIELD);
+                if (battle.buffs[Util.DISTRACT]) battle.opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
+                if (battle.buffs[Util.FOCUS]) player.statusEffects.addEffect(StatusEffect.ACC_INC);
+                if (battle.buffs[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (battle.buffs[Util.REFLECT]) battle.opponent.statusEffects.addEffect(StatusEffect.REFLECT);
+                if (battle.buffs[Util.INVERT]) player.statusEffects.addEffect(StatusEffect.INVERT);
+                if (battle.buffs[Util.SACRIFICE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (battle.buffs[Util.SHIELD]) player.statusEffects.addEffect(StatusEffect.SHIELD);
 
                 // disable button until cooldown over
                 onCd = true;
