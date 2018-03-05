@@ -239,7 +239,7 @@ public class BattleScene extends BattleUI {
             enemyHudLabel.setText(battle.opponent.getId());
         }
         else {
-            enemyHudLabel.setText("LV." + battle.opponent.getLevel() + " " + battle.opponent.getId());
+            enemyHudLabel.setText(battle.opponent.getId());
         }
 
         // set positions relative to hud position
