@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.battle.StatusEffect;
 import com.unlucky.entity.Player;
+import com.unlucky.entity.enemy.Boss;
 import com.unlucky.event.Battle;
 import com.unlucky.event.BattleEvent;
 import com.unlucky.event.EventState;
@@ -323,8 +324,10 @@ public class BattleEventHandler extends BattleUI {
             uiHandler.moveUI.toggleMoveAndOptionUI(false);
             uiHandler.currentState = BattleState.DIALOG;
 
-            // 1% chance for enemy revival
-            if (Util.isSuccess(Util.REVIVAL)) {
+            if (bossDeathEvents()) return true;
+
+            // 1% chance for enemy revival (bosses can't revive)
+            if (Util.isSuccess(Util.REVIVAL) && !battle.opponent.isBoss()) {
                 startDialog(new String[] {
                         "The enemy took fatal damage and died!",
                         "Oh no, it looks like the enemy has been revived!"
@@ -363,6 +366,37 @@ public class BattleEventHandler extends BattleUI {
                             battle.getItemDialog(itemGained),
                             "You gained " + expGained + " experience."
                     }, BattleEvent.ENEMY_TURN, BattleEvent.END_BATTLE);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * A boss may have a special death event
+     *
+     * @return
+     */
+    private boolean bossDeathEvents() {
+        if (battle.opponent.isBoss()) {
+            Boss b = (Boss) battle.opponent;
+
+            // king slime respawn
+            if (b.bossId == 0) {
+                if (battle.opponent.numRespawn + 1 < 4) {
+                    battle.opponent.numRespawn++;
+                    // shrink king slime
+                    battle.opponent.battleSize -= 16;
+                    battle.opponent.setOnlyMaxHp((int) Math.ceil(battle.opponent.getMaxHp() / 2));
+                    battle.opponent.setPreviousHp(0);
+                    battle.opponent.setHp(battle.opponent.getMaxHp());
+                    battle.opponent.setDead(false);
+
+                    startDialog(new String[] {
+                            "King Slime respawned with half its health points!",
+                            "It will respawn " + (3 - battle.opponent.numRespawn) + " more time(s)!"
+                    }, BattleEvent.ENEMY_TURN, BattleEvent.ENEMY_TURN);
                     return true;
                 }
             }
