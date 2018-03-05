@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -284,10 +285,19 @@ public class BattleScene extends BattleUI {
 
     public void render(float dt) {
         gameScreen.getBatch().begin();
-        if (renderPlayer)
+        if (renderPlayer) {
             gameScreen.getBatch().draw(player.getBam().getKeyFrame(true), playerSprite.position.x, playerSprite.position.y);
-        if (renderEnemy)
-            gameScreen.getBatch().draw(battle.opponent.getBam().getKeyFrame(true), enemySprite.position.x, enemySprite.position.y);
+        }
+        if (renderEnemy) {
+            TextureRegion r = battle.opponent.getBam().getKeyFrame(true);
+            if (battle.opponent.isBoss()) {
+                gameScreen.getBatch().draw(r, enemySprite.position.x + (96 - battle.opponent.battleSize) / 2, enemySprite.position.y,
+                        battle.opponent.battleSize, battle.opponent.battleSize);
+            }
+            else {
+                gameScreen.getBatch().draw(r, enemySprite.position.x, enemySprite.position.y);
+            }
+        }
 
         // render attack or heal animations
         // player side
