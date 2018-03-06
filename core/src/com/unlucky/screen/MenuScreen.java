@@ -45,6 +45,8 @@ public class MenuScreen extends AbstractScreen {
     @Override
     public void show() {
         resetTitleAnimation();
+        // fade in animation
+        stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.3f)));
     }
 
     public void update(float dt) {
@@ -54,7 +56,13 @@ public class MenuScreen extends AbstractScreen {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(game.gameScreen);
+            // fade out animation
+            stage.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    game.setScreen(game.gameScreen);
+                }
+            })));
         }
     }
 
