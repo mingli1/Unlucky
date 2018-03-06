@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.unlucky.effects.Moving;
 import com.unlucky.main.Unlucky;
@@ -21,6 +23,7 @@ public class MenuScreen extends AbstractScreen {
 
     // title animation (each letter moves down at descending speeds)
     private Moving[] titleMoves;
+    private Image[] letters;
 
     public MenuScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -31,8 +34,11 @@ public class MenuScreen extends AbstractScreen {
 
         // one for each letter
         titleMoves = new Moving[7];
-        for (int i = 0; i < titleMoves.length; i++) {
+        letters = new Image[7];
+        for (int i = 0; i < 7; i++) {
             titleMoves[i] = new Moving(new Vector2(), new Vector2(), 0);
+            letters[i] = new Image(rm.title[i]);
+            stage.addActor(letters[i]);
         }
     }
 
@@ -42,28 +48,22 @@ public class MenuScreen extends AbstractScreen {
     }
 
     public void update(float dt) {
-        for (int i = 0; i < titleMoves.length; i++) {
+        for (int i = 0; i < 7; i++) {
             titleMoves[i].update(dt);
+            letters[i].setPosition(titleMoves[i].position.x, titleMoves[i].position.y);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) game.setScreen(game.gameScreen);
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            game.setScreen(game.gameScreen);
+        }
     }
 
     public void render(float dt) {
+        super.render(dt);
         update(dt);
 
         // clear screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        game.batch.setProjectionMatrix(stage.getCamera().combined);
-        game.batch.begin();
-
-        // render title
-        for (int i = 0; i < titleMoves.length; i++) {
-            game.batch.draw(rm.title[i], titleMoves[i].position.x, titleMoves[i].position.y);
-        }
-
-        game.batch.end();
 
         stage.act(dt);
         stage.draw();
@@ -81,6 +81,11 @@ public class MenuScreen extends AbstractScreen {
             titleMoves[i].horizontal = false;
             titleMoves[i].start();
         }
+    }
+
+    @Override
+    public void dispose() {
+      super.dispose();
     }
 
 }
