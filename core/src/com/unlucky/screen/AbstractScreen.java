@@ -15,7 +15,7 @@ import com.unlucky.resource.ResourceManager;
  *
  * @author Ming Li
  */
-public class AbstractScreen implements Screen {
+public abstract class AbstractScreen implements Screen {
 
     protected final Unlucky game;
     protected final ResourceManager rm;
