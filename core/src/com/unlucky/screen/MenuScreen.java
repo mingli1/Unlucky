@@ -1,7 +1,6 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -31,6 +30,8 @@ public class MenuScreen extends AbstractScreen {
 
     // to delay the batch rendering until after the screen fades in
     private boolean renderBatch = false;
+    // to remove previous clicks buffered before switching the screen
+    private boolean clickable = true;
 
     // title animation (each letter moves down at descending speeds)
     private Moving[] titleMoves;
@@ -44,6 +45,8 @@ public class MenuScreen extends AbstractScreen {
 
     // play button
     private ImageButton playButton;
+    // other buttons
+    private ImageButton[] optionButtons;
 
     public MenuScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -67,6 +70,7 @@ public class MenuScreen extends AbstractScreen {
         }
 
         handlePlayButton();
+        handleOptionButtons();
     }
 
     @Override
@@ -111,15 +115,34 @@ public class MenuScreen extends AbstractScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // fade out animation
-                stage.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.run(new Runnable() {
-                    @Override
-                    public void run() {
-                        game.setScreen(game.gameScreen);
-                    }
-                })));
+                if (clickable) {
+                    clickable = false;
+                    // fade out animation
+                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                        Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            clickable = true;
+                            game.setScreen(game.gameScreen);
+                        }
+                    })));
+                }
             }
         });
+    }
+
+    private void handleOptionButtons() {
+        ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(2, rm.menuButtons);
+        optionButtons = new ImageButton[2];
+        for (int i = 0; i < optionButtons.length; i++) {
+            optionButtons[i] = new ImageButton(styles[i]);
+            optionButtons[i].setSize(32, 32);
+            stage.addActor(optionButtons[i]);
+        }
+        // inventory button
+        optionButtons[0].setPosition(30, 170);
+        // settings button
+        optionButtons[1].setPosition(300, 170);
     }
 
     public void update(float dt) {
@@ -130,10 +153,6 @@ public class MenuScreen extends AbstractScreen {
 
         for (int i = 0; i < bg.length; i++) {
             bg[i].update(dt);
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-
         }
     }
 
