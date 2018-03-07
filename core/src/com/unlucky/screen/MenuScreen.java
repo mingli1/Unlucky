@@ -2,15 +2,23 @@ package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.unlucky.effects.Moving;
 import com.unlucky.main.Unlucky;
+import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 
 /**
@@ -21,9 +29,21 @@ import com.unlucky.resource.ResourceManager;
  */
 public class MenuScreen extends AbstractScreen {
 
+    // to delay the batch rendering until after the screen fades in
+    private boolean renderBatch = false;
+
     // title animation (each letter moves down at descending speeds)
     private Moving[] titleMoves;
     private Image[] letters;
+
+    // title screen bg
+    private Background[] bg;
+
+    // label style
+    private Label.LabelStyle menuStyle;
+
+    // play button
+    private ImageButton playButton;
 
     public MenuScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -31,6 +51,11 @@ public class MenuScreen extends AbstractScreen {
         // Override
         viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
+
+        // background
+        createBackground();
+
+        menuStyle = new Label.LabelStyle(rm.pixel10, new Color(79 / 255.f, 79 / 255.f, 117 / 255.f, 1));
 
         // one for each letter
         titleMoves = new Moving[7];
@@ -40,13 +65,61 @@ public class MenuScreen extends AbstractScreen {
             letters[i] = new Image(rm.title[i]);
             stage.addActor(letters[i]);
         }
+
+        handlePlayButton();
     }
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(stage);
+        renderBatch = false;
         resetTitleAnimation();
         // fade in animation
-        stage.addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.3f)));
+        stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
+            @Override
+            public void run() {
+                renderBatch = true;
+            }
+        }), Actions.fadeIn(0.5f)));
+    }
+
+    /**
+     * Creates the parallax background
+     */
+    private void createBackground() {
+        bg = new Background[3];
+
+        // ordered by depth
+        // sky
+        bg[0] = new Background(rm.titleScreenBackground[0], (OrthographicCamera) stage.getCamera(), new Vector2(0, 0), 2);
+        bg[0].setVector(0, 0);
+        // back clouds
+        bg[1] = new Background(rm.titleScreenBackground[2], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0), 2);
+        bg[1].setVector(40, 0);
+        // front clouds
+        bg[2] = new Background(rm.titleScreenBackground[1], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0), 2);
+        bg[2].setVector(120, 0);
+    }
+
+    private void handlePlayButton() {
+        ImageButton.ImageButtonStyle s = new ImageButton.ImageButtonStyle();
+        s.imageUp = new TextureRegionDrawable(rm.playButton[0][0]);
+        s.imageDown = new TextureRegionDrawable(rm.playButton[1][0]);
+        playButton = new ImageButton(s);
+        playButton.setPosition(120, 70);
+        stage.addActor(playButton);
+        playButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // fade out animation
+                stage.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        game.setScreen(game.gameScreen);
+                    }
+                })));
+            }
+        });
     }
 
     public void update(float dt) {
@@ -55,14 +128,12 @@ public class MenuScreen extends AbstractScreen {
             letters[i].setPosition(titleMoves[i].position.x, titleMoves[i].position.y);
         }
 
+        for (int i = 0; i < bg.length; i++) {
+            bg[i].update(dt);
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            // fade out animation
-            stage.addAction(Actions.sequence(Actions.fadeOut(0.3f), Actions.run(new Runnable() {
-                @Override
-                public void run() {
-                    game.setScreen(game.gameScreen);
-                }
-            })));
+
         }
     }
 
@@ -72,6 +143,15 @@ public class MenuScreen extends AbstractScreen {
 
         // clear screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        if (renderBatch) {
+            stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
+            stage.getBatch().begin();
+            for (int i = 0; i < bg.length; i++) {
+                bg[i].render((SpriteBatch) stage.getBatch());
+            }
+            stage.getBatch().end();
+        }
 
         stage.act(dt);
         stage.draw();
