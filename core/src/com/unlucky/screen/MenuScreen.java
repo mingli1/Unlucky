@@ -48,6 +48,8 @@ public class MenuScreen extends AbstractScreen {
     // other buttons
     private ImageButton[] optionButtons;
 
+    private static final int NUM_BUTTONS = 6;
+
     public MenuScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
@@ -132,17 +134,26 @@ public class MenuScreen extends AbstractScreen {
     }
 
     private void handleOptionButtons() {
-        ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(2, rm.menuButtons);
-        optionButtons = new ImageButton[2];
-        for (int i = 0; i < optionButtons.length; i++) {
+        ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(NUM_BUTTONS, rm.menuButtons);
+        optionButtons = new ImageButton[NUM_BUTTONS];
+        for (int i = 0; i < NUM_BUTTONS; i++) {
             optionButtons[i] = new ImageButton(styles[i]);
-            optionButtons[i].setSize(32, 32);
+            optionButtons[i].setSize(40, 40);
+            optionButtons[i].getImage().setFillParent(true);
             stage.addActor(optionButtons[i]);
         }
         // inventory button
-        optionButtons[0].setPosition(30, 170);
+        optionButtons[0].setPosition(12, 170);
         // settings button
-        optionButtons[1].setPosition(300, 170);
+        optionButtons[1].setPosition(342, 170);
+        // shop button
+        optionButtons[2].setPosition(12, 100);
+        // smove button
+        optionButtons[3].setPosition(12, 30);
+        // statistics button
+        optionButtons[4].setPosition(340, 100);
+        // credits button
+        optionButtons[5].setPosition(340, 30);
     }
 
     public void update(float dt) {
