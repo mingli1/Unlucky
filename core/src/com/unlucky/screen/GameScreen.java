@@ -1,6 +1,7 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -35,6 +36,9 @@ public class GameScreen extends AbstractScreen {
     public DialogScreen dialog;
     public InventoryUI inventoryUI;
 
+    // input
+    private InputMultiplexer multiplexer;
+
     // battle background
     private Background[] bg;
 
@@ -56,12 +60,16 @@ public class GameScreen extends AbstractScreen {
         createBackground(0);
 
         // input multiplexer
-        InputMultiplexer multiplexer = new InputMultiplexer();
+        multiplexer = new InputMultiplexer();
         multiplexer.addProcessor(hud.stage);
         multiplexer.addProcessor(battleUIHandler.stage);
         multiplexer.addProcessor(levelUp.stage);
         multiplexer.addProcessor(inventoryUI.stage);
         multiplexer.addProcessor(dialog.stage);
+    }
+
+    @Override
+    public void show() {
         Gdx.input.setInputProcessor(multiplexer);
     }
 
@@ -107,6 +115,10 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.LEVEL_UP) levelUp.update(dt);
         if (currentEvent == EventState.TILE_EVENT) dialog.update(dt);
         if (currentEvent == EventState.INVENTORY) inventoryUI.update(dt);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
+            game.setScreen(game.menuScreen);
+        }
     }
 
     public void render(float dt) {

@@ -388,7 +388,7 @@ public class Hud extends UI implements Disposable {
             String[] input = cmd.split(" ");
             if (input.length == 2) {
                 int entityId = Integer.parseInt(input[1]);
-                if (entityId == 2 || entityId == 3) {
+                if (entityId >= 2 && entityId <= 4) {
                     player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
                 }
             }

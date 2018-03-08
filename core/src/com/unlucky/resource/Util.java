@@ -212,8 +212,8 @@ public class Util {
     public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
         switch (id) {
             case 2: return new Normal("slime", position, map, rm, 2, 1, 1 / 3f);
-            case 3: return new Boss("king slime", 0, position, map, rm, 2, 2, 1 / 3f);
-            case 4: return new Boss("logan paul", 1, position, map, rm, 2, 3, 1 / 3f);
+            case 3: return new Normal("blue slime", position, map, rm, 2, 2, 1 / 3f);
+            case 4: return new Boss("king slime", 0, position, map, rm, 2, 3, 1 / 3f);
         }
         return null;
     }

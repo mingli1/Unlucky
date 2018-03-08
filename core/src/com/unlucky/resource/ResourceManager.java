@@ -47,6 +47,12 @@ public class ResourceManager {
     public TextureRegion bigrain;
     public TextureRegion lightning;
 
+    // Menu
+    public TextureRegion[] title;
+    public TextureRegion[] titleScreenBackground;
+    public TextureRegion[][] playButton;
+    public TextureRegion[][] menuButtons;
+
     // Lighting
     public TextureRegion darkness;
     public TextureRegion battledarkness;
@@ -130,6 +136,12 @@ public class ResourceManager {
         lightning = atlas.findRegion("lightning");
         bigrain = atlas.findRegion("big_rain");
         bigsnow = atlas.findRegion("big_snow");
+
+        // menu
+        title = atlas.findRegion("unlucky_title").split(36, 48)[0];
+        titleScreenBackground = atlas.findRegion("title_bg").split(400, 240)[0];
+        playButton = atlas.findRegion("play_button").split(160, 80);
+        menuButtons = atlas.findRegion("menu_buttons").split(32, 32);
 
         // light
         darkness = atlas.findRegion("darkness");
@@ -217,17 +229,6 @@ public class ResourceManager {
                         move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
         }
         bossMoves.add(slimeMoves);
-
-        Array<Move> lpMoves = new Array<Move>();
-        for (JsonValue move : boss.get("loganpaul")) {
-            if (move.getInt("type") == 0)
-                lpMoves.add(new Move(0, move.getString("name"),
-                        move.getFloat("minDamage"), move.getFloat("maxDamage")));
-            else
-                lpMoves.add(new Move(move.getString("name"),
-                        move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
-        }
-        bossMoves.add(lpMoves);
     }
 
     private void loadItems() {
