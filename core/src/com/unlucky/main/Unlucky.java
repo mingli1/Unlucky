@@ -3,10 +3,12 @@ package com.unlucky.main;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.unlucky.entity.Player;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
 import com.unlucky.screen.MenuScreen;
+import com.unlucky.screen.WorldSelectScreen;
 
 /**
  * "Unlucky" is a RPG/Dungeon Crawler based on RNG
@@ -36,6 +38,7 @@ public class Unlucky extends Game {
     // Screens
     public MenuScreen menuScreen;
     public GameScreen gameScreen;
+    public WorldSelectScreen worldSelectScreen;
 
 	public void create() {
         batch = new SpriteBatch();
@@ -44,6 +47,10 @@ public class Unlucky extends Game {
 
         menuScreen = new MenuScreen(this, rm);
         gameScreen = new GameScreen(this, rm);
+        worldSelectScreen = new WorldSelectScreen(this, rm);
+
+        // profiler
+        GLProfiler.enable();
 
         this.setScreen(menuScreen);
 	}
@@ -56,6 +63,21 @@ public class Unlucky extends Game {
 	public void dispose() {
         batch.dispose();
         super.dispose();
+
+        GLProfiler.disable();
 	}
+
+    /**
+     * Logs profile for SpriteBatch calls
+     */
+	public void profile(String source) {
+        System.out.println("Profiling " + source + "..." + "\n" +
+            "  Drawcalls: " + GLProfiler.drawCalls +
+            ", Calls: " + GLProfiler.calls +
+            ", TextureBindings: " + GLProfiler.textureBindings +
+            ", ShaderSwitches:  " + GLProfiler.shaderSwitches +
+            "vertexCount: " + GLProfiler.vertexCount.value);
+        GLProfiler.reset();
+    }
 
 }
