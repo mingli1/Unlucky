@@ -61,4 +61,9 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         super.render(dt);
     }
 
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
+
 }
