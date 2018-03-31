@@ -8,12 +8,14 @@ import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
 import com.unlucky.battle.SpecialMoveset;
 import com.unlucky.battle.StatusSet;
+import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Statistics;
 import com.unlucky.resource.Util;
 
 /**
@@ -23,8 +25,32 @@ import com.unlucky.resource.Util;
  */
 public class Player extends Entity {
 
+    /**
+     * -1 - stop
+     * 0 - down
+     * 1 - up
+     * 2 - right
+     * 3 - left
+     */
+    private int moving = -1;
+    // entity is in a continuous movement
+    private boolean continueMoving;
+    private float speed;
+    // the Entity's current tile coordinates
+    private int currentTileX;
+    private int currentTileY;
+    private int prevDir = -1;
+    private boolean onSpecialTile = false;
+    // tile causing a dialog event
+    private boolean tileInteraction = false;
+    // teleportation tiles
+    private boolean teleporting = false;
+
+    // Statistics
+    public Statistics stats = new Statistics();
+
     // Battle
-    private com.unlucky.entity.enemy.Enemy opponent;
+    private Enemy opponent;
     private boolean battling = false;
 
     // exp and level up
@@ -119,6 +145,11 @@ public class Player extends Entity {
     public void update(float dt) {
         super.update(dt);
 
+        // movement
+        handleMovement(dt);
+        // special tile handling
+        handleSpecialTiles();
+
         // check for Entity interaction
         if (tileMap.containsEntity(tileMap.toTileCoords(position)) && canMove()) {
             opponent = (com.unlucky.entity.enemy.Enemy) tileMap.getEntity(tileMap.toTileCoords(position));
@@ -130,6 +161,253 @@ public class Player extends Entity {
         // draw shadow
         batch.draw(rm.shadow11x6, position.x + 3, position.y - 3);
         batch.draw(am.getKeyFrame(true), position.x + 1, position.y);
+    }
+
+    /**
+     * Moves an entity to a target position with a given magnitude.
+     * Player movement triggered by input
+     *
+     * @param dir
+     */
+    public void move(int dir) {
+        currentTileX = (int) (position.x / tileMap.tileSize);
+        currentTileY = (int) (position.y / tileMap.tileSize);
+        prevDir = dir;
+        moving = dir;
+    }
+
+    /**
+     * Checks if movement boolean array is all false
+     *
+     * @return
+     */
+    public boolean canMove() {
+        return moving == -1;
+    }
+
+    /**
+     * This method is to fix a problem where the player can reset their
+     * movement magnitudes continuously on a blocked tile
+     *
+     * @param dir
+     * @return
+     */
+    public boolean nextTileBlocked(int dir) {
+        currentTileX = (int) (position.x / tileMap.tileSize);
+        currentTileY = (int) (position.y / tileMap.tileSize);
+        switch (dir) {
+            case 0: // down
+                return tileMap.getTile(currentTileX, currentTileY - 1).isBlocked();
+            case 1: // up
+                return tileMap.getTile(currentTileX, currentTileY + 1).isBlocked();
+            case 2: // right
+                return tileMap.getTile(currentTileX + 1, currentTileY).isBlocked();
+            case 3: // left
+                return tileMap.getTile(currentTileX - 1, currentTileY).isBlocked();
+        }
+        return false;
+    }
+
+    /**
+     * Returns the next tile coordinate to move to either
+     * currentPos +/- 1 or currentPos if the next tile is blocked
+     *
+     * @param dir
+     * @return
+     */
+    public int nextPosition(int dir) {
+        switch (dir) {
+            case 0: // down
+                Tile d = tileMap.getTile(currentTileX, currentTileY - 1);
+                if (d.isBlocked() || currentTileY - 1 <= 0) {
+                    return currentTileY;
+                }
+                return currentTileY - 1;
+            case 1: // up
+                Tile u = tileMap.getTile(currentTileX, currentTileY + 1);
+                if (u.isBlocked() || currentTileY + 1 >= tileMap.mapHeight - 1) {
+                    return currentTileY;
+                }
+                return currentTileY + 1;
+            case 2: // right
+                Tile r = tileMap.getTile(currentTileX + 1, currentTileY);
+                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth - 1) {
+                    return currentTileX;
+                }
+                return currentTileX + 1;
+            case 3: // left
+                Tile l = tileMap.getTile(currentTileX - 1, currentTileY);
+                if (l.isBlocked() || currentTileX - 1 <= 0) {
+                    return currentTileX;
+                }
+                return currentTileX - 1;
+        }
+        return 0;
+    }
+
+    /**
+     * Handles the player's next movements when standing on a special tile
+     */
+    public void handleSpecialTiles() {
+        int cx = (int) (position.x / tileMap.tileSize);
+        int cy = (int) (position.y / tileMap.tileSize);
+        Tile currentTile = tileMap.getTile(cx, cy);
+
+        if (currentTile.isSpecial()) onSpecialTile = true;
+        else onSpecialTile = false;
+
+        if (canMove()) {
+            // Player goes forwards or backwards from the tile in the direction they entered
+            if (currentTile.isChange()) {
+                boolean k = MathUtils.randomBoolean();
+                switch (prevDir) {
+                    case 0: // down
+                        if (k) changeDirection(1);
+                        else changeDirection(0);
+                        break;
+                    case 1: // up
+                        if (k) changeDirection(0);
+                        else changeDirection(1);
+                        break;
+                    case 2: // right
+                        if (k) changeDirection(3);
+                        else changeDirection(2);
+                        break;
+                    case 3: // left
+                        if (k) changeDirection(2);
+                        else changeDirection(3);
+                        break;
+                }
+            }
+            // Player goes 1 tile in a random direction not the direction they entered the tile on
+            else if (currentTile.isInAndOut()) {
+                // output direction (all other directions other than input direction)
+                int odir = MathUtils.random(2);
+                switch (prevDir) {
+                    case 0: // down
+                        if (odir == 0) changeDirection(3);
+                        else if (odir == 1) changeDirection(2);
+                        else changeDirection(0);
+                        break;
+                    case 1: // up
+                        if (odir == 0) changeDirection(3);
+                        else if (odir == 1) changeDirection(2);
+                        else changeDirection(1);
+                        break;
+                    case 2: // right
+                        if (odir == 0) changeDirection(0);
+                        else if (odir == 1) changeDirection(1);
+                        else changeDirection(2);
+                        break;
+                    case 3: // left
+                        if (odir == 0) changeDirection(0);
+                        else if (odir == 1) changeDirection(1);
+                        else changeDirection(3);
+                        break;
+                }
+            }
+            else if (currentTile.isDown()) {
+                changeDirection(0);
+            }
+            else if (currentTile.isUp()) {
+                changeDirection(1);
+            }
+            else if (currentTile.isRight()) {
+                changeDirection(2);
+            }
+            else if (currentTile.isLeft()) {
+                changeDirection(3);
+            }
+            // trigger dialog event
+            else if (currentTile.isQuestionMark() || currentTile.isExclamationMark()) {
+                tileInteraction = true;
+            }
+            // trigger teleport event
+            else if (currentTile.isTeleport()) {
+                teleporting = true;
+            }
+            // ice sliding
+            else if (currentTile.isIce()) {
+                if (!nextTileBlocked(prevDir)) {
+                    move(prevDir);
+                    am.setAnimation(prevDir);
+                    am.stopAnimation();
+                    pauseAnim = true;
+                }
+            }
+            else {
+                pauseAnim = false;
+            }
+        }
+    }
+
+    public void changeDirection(int dir) {
+        move(dir);
+        prevDir = dir;
+        am.setAnimation(dir);
+    }
+
+    /**
+     * Updates every tick and moves an Entity if not on the tile map grid
+     * @TODO: FIX MOVEMENT
+     */
+    public void handleMovement(float dt) {
+        // down
+        if (moving == 0) {
+            int targetY = nextPosition(0);
+            if (targetY == currentTileY) {
+                moving = -1;
+            } else {
+                position.y -= speed * dt;
+                if (position.y <= targetY * tileMap.tileSize &&
+                    position.y - speed * dt <= targetY * tileMap.tileSize) {
+                    position.y = targetY * tileMap.tileSize;
+                    moving = -1;
+                }
+            }
+        }
+        // up
+        if (moving == 1) {
+            int targetY = nextPosition(1);
+            if (targetY == currentTileY) {
+                moving = -1;
+            } else {
+                position.y += speed * dt;
+                if (position.y >= targetY * tileMap.tileSize &&
+                    position.y + speed * dt >= targetY * tileMap.tileSize) {
+                    position.y = targetY * tileMap.tileSize;
+                    moving = -1;
+                }
+            }
+        }
+        // right
+        if (moving == 2) {
+            int targetX = nextPosition(2);
+            if (targetX == currentTileX) {
+                moving = -1;
+            } else {
+                position.x += speed * dt;
+                if (position.x >= targetX * tileMap.tileSize &&
+                    position.x + speed * dt >= targetX * tileMap.tileSize) {
+                    position.x = targetX * tileMap.tileSize;
+                    moving = -1;
+                }
+            }
+        }
+        // left
+        if (moving == 3) {
+            int targetX = nextPosition(3);
+            if (targetX == currentTileX) {
+                moving = -1;
+            } else {
+                position.x -= speed * dt;
+                if (position.x <= targetX * tileMap.tileSize &&
+                    position.x - speed * dt <= targetX * tileMap.tileSize) {
+                    position.x = targetX * tileMap.tileSize;
+                    moving = -1;
+                }
+            }
+        }
     }
 
     /**
@@ -207,7 +485,7 @@ public class Player extends Entity {
         if (hp > maxHp) hp = maxHp;
     }
 
-    public com.unlucky.entity.enemy.Enemy getOpponent() {
+    public Enemy getOpponent() {
         return opponent;
     }
 
@@ -434,5 +712,27 @@ public class Player extends Entity {
     public void addGold(int g) { this.gold += g; }
 
     public int getGold() { return gold; }
+
+    public int getCurrentTileX() {
+        return currentTileX;
+    }
+
+    public int getCurrentTileY() {
+        return currentTileY;
+    }
+
+    public void setContinueMoving(boolean p) {
+        continueMoving = p;
+    }
+
+    public boolean isMoving() {
+        return moving != -1;
+    }
+
+    public boolean isOnSpecialTile() { return onSpecialTile; }
+
+    public boolean isTileInteraction() { return tileInteraction; }
+
+    public boolean isTeleporting() { return teleporting; }
 
 }
