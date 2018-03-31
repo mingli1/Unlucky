@@ -1,4 +1,4 @@
-package com.unlucky.screen;
+package com.unlucky.screen.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,6 +20,7 @@ import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.screen.GameScreen;
 import com.unlucky.ui.UI;
 
 import java.util.Arrays;

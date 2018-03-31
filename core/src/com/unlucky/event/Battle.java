@@ -35,6 +35,11 @@ public class Battle {
     // sacrifice percentage dmg
     public float psacrifice = 0;
 
+    // cumulative damage by player over the battle
+    public int cumulativeDamage = 0;
+    // cumulative healing by player over the battle
+    public int cumulativeHealing = 0;
+
     public Battle(GameScreen gameScreen, TileMap tileMap, Player player) {
         this.gameScreen = gameScreen;
         this.tileMap = tileMap;
@@ -69,10 +74,10 @@ public class Battle {
 
         opponent.setStats();
 
-        System.out.println("level: " + opponent.getLevel());
-        System.out.println("mhp: " + opponent.getMaxHp());
-        System.out.println("dmg: " + opponent.getMinDamage() + "-" + opponent.getMaxDamage());
-        System.out.println("acc: " + opponent.getAccuracy());
+        //System.out.println("level: " + opponent.getLevel());
+        //System.out.println("mhp: " + opponent.getMaxHp());
+        //System.out.println("dmg: " + opponent.getMinDamage() + "-" + opponent.getMaxDamage());
+        //System.out.println("acc: " + opponent.getAccuracy());
     }
 
     /**
@@ -103,6 +108,10 @@ public class Battle {
                     // for heal animation
                     player.useMove(3);
                     player.heal(damage);
+                    player.stats.hpHealed += damage;
+                    player.stats.updateMax(player.stats.maxHealSingleMove, damage);
+                    cumulativeHealing += damage;
+
                     dialog = new String[] {
                             "You used inverted " + move.name + "!",
                             "It healed you for " + damage + " health points!"
@@ -111,6 +120,10 @@ public class Battle {
                 else {
                     player.useMove(move.type);
                     damage = reduceDamage(damage);
+                    cumulativeDamage += damage;
+                    player.stats.damageDealt += damage;
+                    player.stats.updateMax(player.stats.maxDamageSingleHit, damage);
+
                     opponent.hit(damage);
                     dialog = new String[]{
                             "You used " + move.name + "!",
@@ -133,6 +146,10 @@ public class Battle {
                     if (buffs[Util.INVERT]) {
                         player.useMove(3);
                         player.heal(damage);
+                        player.stats.hpHealed += damage;
+                        player.stats.updateMax(player.stats.maxHealSingleMove, damage);
+                        cumulativeHealing += damage;
+
                         dialog = new String[] {
                                 "You used inverted " + move.name + "!",
                                 "It's a critical strike!",
@@ -142,6 +159,10 @@ public class Battle {
                     else {
                         player.useMove(move.type);
                         damage = reduceDamage(damage);
+                        cumulativeDamage += damage;
+                        player.stats.damageDealt += damage;
+                        player.stats.updateMax(player.stats.maxDamageSingleHit, damage);
+
                         opponent.hit(damage);
                         dialog = new String[]{
                                 "You used " + move.name + "!",
@@ -153,6 +174,10 @@ public class Battle {
                     if (buffs[Util.INVERT]) {
                         player.useMove(3);
                         player.heal(damage);
+                        player.stats.hpHealed += damage;
+                        player.stats.updateMax(player.stats.maxHealSingleMove, damage);
+                        cumulativeHealing += damage;
+
                         dialog = new String[] {
                                 "You used inverted " + move.name + "!",
                                 "It healed you for " + damage + " health points!"
@@ -161,6 +186,10 @@ public class Battle {
                     else {
                         player.useMove(move.type);
                         damage = reduceDamage(damage);
+                        cumulativeDamage += damage;
+                        player.stats.damageDealt += damage;
+                        player.stats.updateMax(player.stats.maxDamageSingleHit, damage);
+
                         opponent.hit(damage);
                         dialog = new String[]{
                                 "You used " + move.name + "!",
@@ -175,6 +204,10 @@ public class Battle {
                 if (buffs[Util.INVERT]) {
                     player.useMove(MathUtils.random(0, 2));
                     opponent.hit(heal);
+                    cumulativeDamage += heal;
+                    player.stats.damageDealt += heal;
+                    player.stats.updateMax(player.stats.maxDamageSingleHit, heal);
+
                     dialog = new String[] {
                             "You used inverted " + move.name + "!",
                             "It did " + heal + " damage to " + opponent.getId() + "."
@@ -184,7 +217,11 @@ public class Battle {
                     player.useMove(move.type);
                     playerRed = move.dmgReduction;
                     player.heal(heal);
+                    cumulativeHealing += heal;
+                    player.stats.hpHealed += heal;
+                    player.stats.updateMax(player.stats.maxHealSingleMove, heal);
                     player.statusEffects.addEffect(StatusEffect.DMG_RED);
+
                     dialog = new String[]{
                             "You used " + move.name + "!",
                             "The enemy's next attack does -" + move.dmgReduction + "% damage!",
@@ -194,6 +231,7 @@ public class Battle {
             }
         }
         else {
+            player.stats.numMovesMissed++;
             // move missed; enemy turn
             dialog = new String[] {"Oh no, your move missed!"};
         }
@@ -292,6 +330,7 @@ public class Battle {
                 if (move.type < 2) {
                     int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));
                     damage = reduceDamage(damage);
+                    player.stats.damageTaken += damage;
                     player.hit(damage);
                     dialog = new String[]{
                             opponent.getId() + " used " + move.name + "!",
@@ -304,6 +343,7 @@ public class Battle {
                     if (Util.isSuccess(move.crit)) {
                         damage *= Util.CRIT_MULTIPLIER;
                         damage = reduceDamage(damage);
+                        player.stats.damageTaken += damage;
                         player.hit(damage);
                         dialog = new String[]{
                                 opponent.getId() + " used " + move.name + "!",
@@ -312,6 +352,7 @@ public class Battle {
                         };
                     } else {
                         damage = reduceDamage(damage);
+                        player.stats.damageTaken += damage;
                         player.hit(damage);
                         dialog = new String[]{
                                 opponent.getId() + " used " + move.name + "!",

@@ -26,6 +26,9 @@ public abstract class AbstractScreen implements Screen {
     // main stage of each screen
     protected Stage stage;
 
+    // to delay the batch rendering until after transition finishes
+    protected boolean renderBatch = false;
+
     public AbstractScreen(final Unlucky game, final ResourceManager rm) {
         this.game = game;
         this.rm = rm;
@@ -39,7 +42,10 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public void render(float dt) {}
+    public void render(float dt) {
+        stage.act(dt);
+        stage.draw();
+    }
 
     @Override
     public void resize(int width, int height) {

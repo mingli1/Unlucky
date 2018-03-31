@@ -26,10 +26,13 @@ public class Background {
     private float dx;
     private float dy;
 
+    private int camScale;
+
     public Background(TextureRegion image, OrthographicCamera cam, Vector2 scale, int camScale) {
         this.image = image;
         this.cam = cam;
         this.scale = scale;
+        this.camScale = camScale;
         numDrawX = (Unlucky.V_WIDTH * camScale) / image.getRegionWidth() + 1;
         numDrawY = (Unlucky.V_HEIGHT * camScale) / image.getRegionHeight() + 1;
 

@@ -1,4 +1,4 @@
-package com.unlucky.screen;
+package com.unlucky.screen.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -21,6 +21,7 @@ import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 import com.unlucky.ui.UI;
 
 /**

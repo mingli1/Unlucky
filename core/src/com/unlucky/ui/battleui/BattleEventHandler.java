@@ -208,6 +208,12 @@ public class BattleEventHandler extends BattleUI {
             case NONE:
                 return;
             case END_BATTLE:
+                // update battle stats
+                player.stats.updateMax(player.stats.maxDamageSingleBattle, battle.cumulativeDamage);
+                player.stats.updateMax(player.stats.maxHealSingleBattle, battle.cumulativeHealing);
+                battle.cumulativeDamage = battle.cumulativeHealing = 0;
+
+                player.resetShield();
                 player.statusEffects.clear();
                 gameScreen.setCurrentEvent(EventState.TRANSITION);
                 gameScreen.transition.start(EventState.BATTLING, EventState.MOVING);
@@ -302,6 +308,8 @@ public class BattleEventHandler extends BattleUI {
                                 " so you can't really die yet."
                 }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
                 player.setHp(player.getMaxHp());
+
+                player.stats.numDeaths++;
                 return true;
             }
         }
@@ -344,6 +352,12 @@ public class BattleEventHandler extends BattleUI {
                 Item itemGained = battle.getItemObtained(rm);
 
                 player.addGold(goldGained);
+                player.stats.cumulativeGold += goldGained;
+                player.stats.cumulativeExp += expGained;
+
+                if (battle.opponent.isElite()) player.stats.elitesDefeated++;
+                else if (battle.opponent.isBoss()) player.stats.bossesDefeated++;
+                else player.stats.enemiesDefeated++;
 
                 // level up occurs
                 if (player.getExp() + expGained >= player.getMaxExp()) {

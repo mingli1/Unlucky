@@ -52,6 +52,7 @@ public class ResourceManager {
     public TextureRegion[] titleScreenBackground;
     public TextureRegion[][] playButton;
     public TextureRegion[][] menuButtons;
+    public TextureRegion[] worldSelectBackgrounds;
 
     // Lighting
     public TextureRegion darkness;
@@ -138,10 +139,11 @@ public class ResourceManager {
         bigsnow = atlas.findRegion("big_snow");
 
         // menu
-        title = atlas.findRegion("unlucky_title").split(36, 48)[0];
-        titleScreenBackground = atlas.findRegion("title_bg").split(400, 240)[0];
-        playButton = atlas.findRegion("play_button").split(160, 80);
-        menuButtons = atlas.findRegion("menu_buttons").split(32, 32);
+        title = atlas.findRegion("unlucky_title").split(18, 24)[0];
+        titleScreenBackground = atlas.findRegion("title_bg").split(200, 120)[0];
+        playButton = atlas.findRegion("play_button").split(80, 40);
+        menuButtons = atlas.findRegion("menu_buttons").split(16, 16);
+        worldSelectBackgrounds = atlas.findRegion("stage_select_bg").split(200, 120)[0];
 
         // light
         darkness = atlas.findRegion("darkness");

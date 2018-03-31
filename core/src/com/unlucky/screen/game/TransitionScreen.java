@@ -1,4 +1,4 @@
-package com.unlucky.screen;
+package com.unlucky.screen.game;
 
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -7,6 +7,7 @@ import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.Util;
+import com.unlucky.screen.GameScreen;
 import com.unlucky.ui.battleui.BattleUIHandler;
 import com.unlucky.ui.Hud;
 

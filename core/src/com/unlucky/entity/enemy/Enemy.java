@@ -30,7 +30,6 @@ public abstract class Enemy extends Entity {
 
     public Enemy(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
         super(id, position, tileMap, rm);
-        speed = 0;
         moveset = new Moveset(rm);
         statusEffects = new StatusSet(false, rm);
         battleSize = 96;

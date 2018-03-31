@@ -174,6 +174,7 @@ public class Player extends Entity {
         currentTileY = (int) (position.y / tileMap.tileSize);
         prevDir = dir;
         moving = dir;
+        stats.numSteps++;
     }
 
     /**

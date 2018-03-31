@@ -76,7 +76,7 @@ public class Unlucky extends Game {
             ", Calls: " + GLProfiler.calls +
             ", TextureBindings: " + GLProfiler.textureBindings +
             ", ShaderSwitches:  " + GLProfiler.shaderSwitches +
-            "vertexCount: " + GLProfiler.vertexCount.value);
+            " vertexCount: " + GLProfiler.vertexCount.value);
         GLProfiler.reset();
     }
 

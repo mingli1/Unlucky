@@ -82,6 +82,9 @@ public class BattleUIHandler extends UI implements Disposable {
         String[] intro;
         boolean saved = Util.isSuccess(Util.SAVED_FROM_BATTLE);
 
+        if (enemy.isElite()) player.stats.eliteEncountered++;
+        else if (enemy.isBoss()) player.stats.bossEncountered++;
+
         if (enemy.isBoss()) {
             if (MathUtils.randomBoolean()) {
                 intro = new String[] {

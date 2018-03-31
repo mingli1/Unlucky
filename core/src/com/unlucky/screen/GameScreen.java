@@ -31,9 +31,9 @@ public class GameScreen extends AbstractScreen {
     public Hud hud;
     public BattleUIHandler battleUIHandler;
     public Battle battle;
-    public TransitionScreen transition;
-    public LevelUpScreen levelUp;
-    public DialogScreen dialog;
+    public com.unlucky.screen.game.TransitionScreen transition;
+    public com.unlucky.screen.game.LevelUpScreen levelUp;
+    public com.unlucky.screen.game.DialogScreen dialog;
     public InventoryUI inventoryUI;
 
     // input
@@ -51,9 +51,9 @@ public class GameScreen extends AbstractScreen {
         battle = new Battle(this, gameMap.tileMap, gameMap.player);
         hud = new Hud(this, gameMap.tileMap, gameMap.player, rm);
         battleUIHandler = new BattleUIHandler(this, gameMap.tileMap, gameMap.player, battle, rm);
-        transition = new TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
-        levelUp = new LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
-        dialog = new DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
+        transition = new com.unlucky.screen.game.TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
+        levelUp = new com.unlucky.screen.game.LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
+        dialog = new com.unlucky.screen.game.DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
         inventoryUI = new InventoryUI(this, gameMap.tileMap, gameMap.player, rm);
 
         // create bg
@@ -118,6 +118,9 @@ public class GameScreen extends AbstractScreen {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
             game.setScreen(game.menuScreen);
+        }
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            System.out.println(gameMap.player.stats.toString());
         }
     }
 

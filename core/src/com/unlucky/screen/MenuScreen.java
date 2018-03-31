@@ -7,14 +7,14 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.Align;
 import com.unlucky.effects.Moving;
 import com.unlucky.main.Unlucky;
 import com.unlucky.parallax.Background;
@@ -28,8 +28,6 @@ import com.unlucky.resource.ResourceManager;
  */
 public class MenuScreen extends AbstractScreen {
 
-    // to delay the batch rendering until after the screen fades in
-    private boolean renderBatch = false;
     // to remove previous clicks buffered before switching the screen
     private boolean clickable = true;
 
@@ -42,6 +40,7 @@ public class MenuScreen extends AbstractScreen {
 
     // label style
     private Label.LabelStyle menuStyle;
+    private Label battleLabel;
 
     // play button
     private ImageButton playButton;
@@ -69,6 +68,15 @@ public class MenuScreen extends AbstractScreen {
 
         handlePlayButton();
         handleOptionButtons();
+
+        battleLabel = new Label("Battle", menuStyle);
+        battleLabel.setSize(80, 40);
+        battleLabel.setFontScale(1.5f);
+        battleLabel.setTouchable(Touchable.disabled);
+        battleLabel.setAlignment(Align.center);
+        battleLabel.setPosition(60, 35);
+
+        stage.addActor(battleLabel);
     }
 
     @Override
