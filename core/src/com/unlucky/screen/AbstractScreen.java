@@ -28,6 +28,8 @@ public abstract class AbstractScreen implements Screen {
 
     // to delay the batch rendering until after transition finishes
     protected boolean renderBatch = false;
+    // to toggle color fading for batch draw calls
+    protected boolean batchFade = true;
 
     public AbstractScreen(final Unlucky game, final ResourceManager rm) {
         this.game = game;

@@ -83,6 +83,7 @@ public class MenuScreen extends AbstractScreen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
         renderBatch = false;
+        batchFade = true;
         resetTitleAnimation();
         // fade in animation
         stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
@@ -123,13 +124,14 @@ public class MenuScreen extends AbstractScreen {
             public void clicked(InputEvent event, float x, float y) {
                 if (clickable) {
                     clickable = false;
+                    batchFade = false;
                     // fade out animation
                     stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
                         Actions.run(new Runnable() {
                         @Override
                         public void run() {
                             clickable = true;
-                            game.setScreen(game.gameScreen);
+                            game.setScreen(game.worldSelectScreen);
                         }
                     })));
                 }
@@ -180,6 +182,9 @@ public class MenuScreen extends AbstractScreen {
         if (renderBatch) {
             stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
             stage.getBatch().begin();
+            // fix fading
+            if (batchFade) stage.getBatch().setColor(Color.WHITE);
+
             for (int i = 0; i < bg.length; i++) {
                 bg[i].render((SpriteBatch) stage.getBatch());
             }
