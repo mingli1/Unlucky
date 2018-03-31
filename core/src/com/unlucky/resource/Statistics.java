@@ -8,11 +8,6 @@ package com.unlucky.resource;
  */
 public class Statistics {
 
-    // Game statistics
-
-    // total time spent on the game in milliseconds
-    public float timePlayed;
-
     // Player statistics
 
     // total amount of exp the player has gained
@@ -48,7 +43,9 @@ public class Statistics {
     // max damage dealt in a single battle
     public MaxStat maxDamageSingleBattle;
     // max heal in a single move
-    public MaxStat maxHeal;
+    public MaxStat maxHealSingleMove;
+    // max heal healed in a single battle
+    public MaxStat maxHealSingleBattle;
     // number of moves missed by player
     public int numMovesMissed;
 
@@ -67,7 +64,8 @@ public class Statistics {
         maxDamageSingleBattle = new MaxStat();
         maxDamageSingleHit = new MaxStat();
         maxDungeonScore = new MaxStat();
-        maxHeal = new MaxStat();
+        maxHealSingleMove = new MaxStat();
+        maxHealSingleBattle = new MaxStat();
     }
 
     /**
@@ -89,14 +87,35 @@ public class Statistics {
      */
     public String toString() {
         return "PLAYER STATISTICS\n"
+             + "Total exp gained: " + cumulativeExp + "\n"
+             + "Total gold earned: " + cumulativeGold + "\n"
              + "Damage taken: " + damageTaken + "\n"
              + "HP Healed: " + hpHealed + "\n"
+             + "Number of deaths: " + numDeaths + "\n"
+             + "Number of successful enchants: " + numEnchants + "\n"
+             + "MAP STATISTICS\n"
+             + "Total number of steps: " + numSteps + "\n"
              + "BATTLE STATISTICS\n"
              + "Damage dealt: " + damageDealt + "\n"
              + "Most damage in single hit: " + maxDamageSingleHit.stat + "\n"
              + "Most damage in single battle: " + maxDamageSingleBattle.stat + "\n"
-             + "Most healing in single move: " + maxHeal.stat + "\n"
-             + "Number of moves missed: " + numMovesMissed;
+             + "Most healing in single move: " + maxHealSingleMove.stat + "\n"
+             + "Most healing in single battle: " + maxHealSingleBattle.stat + "\n"
+             + "Number of moves missed: " + numMovesMissed + "\n"
+             + "Number of enemies defeated: " + enemiesDefeated + "\n"
+             + "Number of elites defeated: " + elitesDefeated + "\n"
+             + "Number of bosses defeated: " + bossesDefeated + "\n"
+             + "Number of elites encountered: " + eliteEncountered + "\n"
+             + "Number of bosses encountered: " + bossEncountered;
+    }
+
+    /**
+     * Returns all statistics represented by list of strings
+     *
+     * @return
+     */
+    public String[] toList() {
+        return toString().split("\\r?\\n");
     }
 
 }
