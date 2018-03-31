@@ -5,9 +5,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 
@@ -21,7 +19,7 @@ import com.unlucky.resource.ResourceManager;
  */
 public class WorldSelectScreen extends DoubleDimensionScreen {
 
-    private static final int NUM_WORLDS = 5;
+    private static final int NUM_WORLDS = 10;
 
     // current world selection index that determines bg and descriptions
     private int currentWorldIndex = 0;
@@ -31,8 +29,17 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         "????????????????????",
         "????????????????????",
         "????????????????????",
+        "????????????????????",
+        "????????????????????",
+        "????????????????????",
+        "????????????????????",
+        "????????????????????",
         "????????????????????"
     };
+
+    // screen banner
+    private Label bannerLabel;
+    private Image banner;
 
     // Scene2D scroll pane
     private Table scrollTable;
@@ -42,23 +49,38 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
+        // create title label
+        banner = new Image(rm.screenBanner);
+        banner.setPosition(15, 205);
+        stage.addActor(banner);
+
+        createScollPane();
+    }
+
+    /**
+     * Creates the scrollable world selections
+     */
+    private void createScollPane() {
         scrollTable = new Table();
         scrollTable.setFillParent(true);
         stage.addActor(scrollTable);
 
         selectionContainer = new Table();
+        selectionContainer.padLeft(0);
         for (int i = 0; i < NUM_WORLDS; i++) {
             TextButton b = new TextButton(worldStrs[i], rm.skin);
-            selectionContainer.add(b).size(160, 40).row();
+            selectionContainer.add(b).padBottom(8).size(180, 60).row();
         }
         selectionContainer.pack();
         selectionContainer.setTransform(true);
         selectionContainer.setOrigin(selectionContainer.getWidth() / 2,
-                                     selectionContainer.getHeight() / 2);
+            selectionContainer.getHeight() / 2);
 
         scrollPane = new ScrollPane(selectionContainer, rm.skin);
-        scrollTable.add(scrollPane).size(180, 185).fill();
-        scrollTable.setPosition(-85, 0);
+        scrollPane.setScrollingDisabled(true, false);
+        scrollPane.setFadeScrollBars(false);
+        scrollTable.add(scrollPane).size(210, 202).fill();
+        scrollTable.setPosition(-85, -20);
     }
 
     @Override
