@@ -19,7 +19,7 @@ import com.unlucky.screen.WorldSelectScreen;
  */
 public class Unlucky extends Game {
 
-    public static final String TITLE = "Unlucky Version 0.7.0";
+    public static final String TITLE = "Unlucky Version 0.7.1";
 
     // Desktop screen dimensions
     public static final int V_WIDTH = 200;
