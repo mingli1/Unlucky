@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.utils.Align;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 
@@ -50,9 +52,19 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         super(game, rm);
 
         // create title label
-        banner = new Image(rm.screenBanner);
+        banner = new Image(rm.skin, "default-slider");
         banner.setPosition(15, 205);
+        banner.setSize(202, 24);
         stage.addActor(banner);
+
+        bannerLabel = new Label("SELECT A WORLD", rm.skin);
+        bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
+        bannerLabel.setSize(100, 24);
+        bannerLabel.setTouchable(Touchable.disabled);
+        bannerLabel.setPosition(15 + 5, 205);
+        bannerLabel.setFontScale(2.f);
+        bannerLabel.setAlignment(Align.left);
+        stage.addActor(bannerLabel);
 
         createScollPane();
     }
@@ -66,7 +78,6 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         stage.addActor(scrollTable);
 
         selectionContainer = new Table();
-        selectionContainer.padLeft(0);
         for (int i = 0; i < NUM_WORLDS; i++) {
             TextButton b = new TextButton(worldStrs[i], rm.skin);
             selectionContainer.add(b).padBottom(8).size(180, 60).row();
