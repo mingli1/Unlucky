@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -28,17 +29,31 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     // current world selection index that determines bg and descriptions
     private int currentWorldIndex = 0;
 
-    private String[] worldStrs = {
+    // Strings
+    private String[] worldNames = {
         "SLIME FOREST",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????",
-        "????????????????????"
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+        "????????????????",
+    };
+
+    private String[] worldDescs = {
+        "LV. 1-7\nBOSS: KING SLIME",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???",
+        "LV. ???-???\nBOSS: ???"
     };
 
     // screen banner
@@ -49,6 +64,11 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     private Table scrollTable;
     private Table selectionContainer;
     private ScrollPane scrollPane;
+    private Label.LabelStyle nameStyle;
+    private Label.LabelStyle descStyle;
+
+    // side description
+    private Image descField;
 
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -68,7 +88,14 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         bannerLabel.setAlignment(Align.left);
         stage.addActor(bannerLabel);
 
+        // create side description
+        descField = new Image(rm.skin, "default-slider");
+        descField.setPosition(228, 72);
+        descField.setSize(158, 128);
+        stage.addActor(descField);
+
         handleExitButton();
+        handleEnterButton();
         createScollPane();
     }
 
@@ -97,17 +124,46 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     }
 
     /**
+     * Handles the position and events of the enter button
+     */
+    protected void handleEnterButton() {
+        enterButtonGroup.setPosition(228, 8);
+        stage.addActor(enterButtonGroup);
+    }
+
+    /**
      * Creates the scrollable world selections
      */
     private void createScollPane() {
+        nameStyle = new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1));
+        descStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
+
         scrollTable = new Table();
         scrollTable.setFillParent(true);
         stage.addActor(scrollTable);
 
         selectionContainer = new Table();
         for (int i = 0; i < NUM_WORLDS; i++) {
-            TextButton b = new TextButton(worldStrs[i], rm.skin);
-            selectionContainer.add(b).padBottom(8).size(180, 60).row();
+            // button and label group
+            Group g = new Group();
+            g.setSize(180, 60);
+
+            TextButton b = new TextButton("", rm.skin);
+            b.setFillParent(true);
+
+            Label name = new Label(worldNames[i], nameStyle);
+            name.setPosition(10, 40);
+            name.setFontScale(1.7f);
+            name.setTouchable(Touchable.disabled);
+            Label desc = new Label(worldDescs[i], descStyle);
+            desc.setPosition(10, 15);
+            desc.setTouchable(Touchable.disabled);
+
+            g.addActor(b);
+            g.addActor(name);
+            g.addActor(desc);
+
+            selectionContainer.add(g).padBottom(8).size(180, 60).row();
         }
         selectionContainer.pack();
         selectionContainer.setTransform(true);
