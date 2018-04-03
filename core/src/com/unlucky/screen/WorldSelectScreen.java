@@ -1,7 +1,6 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
@@ -10,7 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 
@@ -25,6 +26,7 @@ import com.unlucky.resource.ResourceManager;
 public class WorldSelectScreen extends DoubleDimensionScreen {
 
     private static final int NUM_WORLDS = 10;
+    private static final int WORLDS_ENABLED = 1;
 
     // current world selection index that determines bg and descriptions
     private int currentWorldIndex = 0;
@@ -56,6 +58,20 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         "LV. ???-???\nBOSS: ???"
     };
 
+    private String[] worldFullDescs = {
+        "Insert a long, drawn out, made up description of the world " +
+            "with some lore that has no relevance to the game whatsoever.",
+        "????????",
+        "????????",
+        "????????",
+        "????????",
+        "????????",
+        "????????",
+        "????????",
+        "????????",
+        "????????"
+    };
+
     // screen banner
     private Label bannerLabel;
     private Image banner;
@@ -66,9 +82,12 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     private ScrollPane scrollPane;
     private Label.LabelStyle nameStyle;
     private Label.LabelStyle descStyle;
+    private TextButton.TextButtonStyle buttonSelected;
+    private Array<TextButton> scrollButtons;
 
     // side description
     private Image descField;
+    private Label fullDescLabel;
 
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -93,6 +112,15 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         descField.setPosition(228, 72);
         descField.setSize(158, 128);
         stage.addActor(descField);
+
+        fullDescLabel = new Label(worldFullDescs[currentWorldIndex],
+            new Label.LabelStyle(rm.pixel10, Color.WHITE));
+        fullDescLabel.setPosition(236, 80);
+        fullDescLabel.setSize(150, 112);
+        fullDescLabel.setTouchable(Touchable.disabled);
+        fullDescLabel.setWrap(true);
+        fullDescLabel.setAlignment(Align.topLeft);
+        stage.addActor(fullDescLabel);
 
         handleExitButton();
         handleEnterButton();
@@ -132,11 +160,15 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     }
 
     /**
-     * Creates the scrollable world selections
+     * Creates the scrollable world selections and handles button events
      */
     private void createScollPane() {
+        scrollButtons = new Array<TextButton>();
+
         nameStyle = new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1));
         descStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
+        buttonSelected = new TextButton.TextButtonStyle();
+        buttonSelected.up = new TextureRegionDrawable(rm.skin.getRegion("default-round-down"));
 
         scrollTable = new Table();
         scrollTable.setFillParent(true);
@@ -144,11 +176,35 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
 
         selectionContainer = new Table();
         for (int i = 0; i < NUM_WORLDS; i++) {
+            final int index = i;
+
             // button and label group
             Group g = new Group();
             g.setSize(180, 60);
 
-            TextButton b = new TextButton("", rm.skin);
+            final TextButton b = new TextButton("", rm.skin);
+            b.getStyle().checked = b.getStyle().down;
+            b.getStyle().over = null;
+            if (i == 0) b.setChecked(true);
+            scrollButtons.add(b);
+
+            // disable worlds not available
+            /*
+            if (i > WORLDS_ENABLED - 1) {
+                b.setDisabled(true);
+                b.setTouchable(Touchable.disabled);
+            }
+            */
+
+            // select world
+            b.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    currentWorldIndex = index;
+                    selectAt(currentWorldIndex);
+                    fullDescLabel.setText(worldFullDescs[currentWorldIndex]);
+                }
+            });
             b.setFillParent(true);
 
             Label name = new Label(worldNames[i], nameStyle);
@@ -173,8 +229,22 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         scrollPane = new ScrollPane(selectionContainer, rm.skin);
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
+        scrollPane.layout();
         scrollTable.add(scrollPane).size(210, 202).fill();
         scrollTable.setPosition(-85, -20);
+    }
+
+    /**
+     * Selects the button from the scroll pane at a given index
+     * and unselects all buttons that are not at the index
+     *
+     * @param index
+     */
+    private void selectAt(int index) {
+        for (TextButton t : scrollButtons) {
+            if (t.isChecked()) t.setChecked(false);
+        }
+        scrollButtons.get(index).setChecked(true);
     }
 
     @Override
@@ -189,21 +259,14 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
                 renderBatch = true;
             }
         }), Actions.fadeIn(0.5f)));
+
+        // automatically scroll to the position of the currently selected world button
+        float r = (float) currentWorldIndex / (NUM_WORLDS - 1);
+        scrollPane.setScrollPercentY(r);
     }
 
     public void update(float dt) {
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY)) {
-            batchFade = false;
-            // fade out animation
-            stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                Actions.run(new Runnable() {
-                    @Override
-                    public void run() {
-                        renderBatch = false;
-                        game.setScreen(game.menuScreen);
-                    }
-                })));
-        }
+
     }
 
     public void render(float dt) {
@@ -220,7 +283,7 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
 
             // render world background corresponding to the selected world
             // possibly expensive scaling call?
-            stage.getBatch().draw(rm.worldSelectBackgrounds[currentWorldIndex], 0, 0,
+            stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0,
                 Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
 
             //game.profile("WorldSelectScreen");
