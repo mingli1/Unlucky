@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
@@ -66,7 +68,32 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         bannerLabel.setAlignment(Align.left);
         stage.addActor(bannerLabel);
 
+        handleExitButton();
         createScollPane();
+    }
+
+    /**
+     * Handles the position and events of the exit button
+     */
+    protected void handleExitButton() {
+        exitButton.setPosition(355, 199);
+        stage.addActor(exitButton);
+
+        // fade back to previous screen
+        exitButton.addListener(new ClickListener() {
+           @Override
+           public void clicked(InputEvent event, float x, float y) {
+               batchFade = false;
+               // fade out animation
+               stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                   Actions.run(new Runnable() {
+                   @Override
+                   public void run() {
+                       game.setScreen(game.menuScreen);
+                   }
+               })));
+           }
+        });
     }
 
     /**
