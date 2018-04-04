@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.main.Unlucky;
+import com.unlucky.map.World;
 import com.unlucky.resource.ResourceManager;
 
 /**
@@ -25,52 +26,14 @@ import com.unlucky.resource.ResourceManager;
  */
 public class WorldSelectScreen extends DoubleDimensionScreen {
 
-    private static final int NUM_WORLDS = 10;
+    // worlds that can be accessed
     private static final int WORLDS_ENABLED = 1;
 
     // current world selection index that determines bg and descriptions
     private int currentWorldIndex = 0;
 
-    // Strings
-    private String[] worldNames = {
-        "SLIME FOREST",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-        "????????????????",
-    };
-
-    private String[] worldDescs = {
-        "LV. 1-7\nBOSS: KING SLIME",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???",
-        "LV. ???-???\nBOSS: ???"
-    };
-
-    private String[] worldFullDescs = {
-        "Insert a long, drawn out, made up description of the world " +
-            "with some lore that has no relevance to the game whatsoever.",
-        "????????",
-        "????????",
-        "????????",
-        "????????",
-        "????????",
-        "????????",
-        "????????",
-        "????????",
-        "????????"
-    };
+    // Worlds
+    private Array<World> worlds;
 
     // screen banner
     private Label bannerLabel;
@@ -91,6 +54,8 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
 
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
+
+        initWorlds();
 
         // create title label
         banner = new Image(rm.skin, "default-slider");
@@ -113,7 +78,7 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         descField.setSize(158, 128);
         stage.addActor(descField);
 
-        fullDescLabel = new Label(worldFullDescs[currentWorldIndex],
+        fullDescLabel = new Label(worlds.get(currentWorldIndex).longDesc,
             new Label.LabelStyle(rm.pixel10, Color.WHITE));
         fullDescLabel.setPosition(236, 80);
         fullDescLabel.setSize(150, 112);
@@ -160,6 +125,24 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
     }
 
     /**
+     * Initializes all worlds in the game
+     */
+    private void initWorlds() {
+        worlds = new Array<World>();
+
+        World slimeForest = new World("SLIME FOREST", "LV. 1-7\nBOSS: KING SLIME",
+            "Insert a long, drawn out, made up description of the world " +
+                "with some lore that has no relevance to the game whatsoever.", 10);
+        World placeholder = new World("COMING SOON", "LV. ???-???\nBOSS: ???",
+            "??????????????", 0);
+
+        worlds.add(slimeForest);
+        for (int i = 0; i < 5; i++) {
+            worlds.add(placeholder);
+        }
+    }
+
+    /**
      * Creates the scrollable world selections and handles button events
      */
     private void createScollPane() {
@@ -175,7 +158,7 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         stage.addActor(scrollTable);
 
         selectionContainer = new Table();
-        for (int i = 0; i < NUM_WORLDS; i++) {
+        for (int i = 0; i < worlds.size; i++) {
             final int index = i;
 
             // button and label group
@@ -202,16 +185,16 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     currentWorldIndex = index;
                     selectAt(currentWorldIndex);
-                    fullDescLabel.setText(worldFullDescs[currentWorldIndex]);
+                    fullDescLabel.setText(worlds.get(currentWorldIndex).longDesc);
                 }
             });
             b.setFillParent(true);
 
-            Label name = new Label(worldNames[i], nameStyle);
+            Label name = new Label(worlds.get(i).name, nameStyle);
             name.setPosition(10, 40);
             name.setFontScale(1.7f);
             name.setTouchable(Touchable.disabled);
-            Label desc = new Label(worldDescs[i], descStyle);
+            Label desc = new Label(worlds.get(i).shortDesc, descStyle);
             desc.setPosition(10, 15);
             desc.setTouchable(Touchable.disabled);
 
@@ -261,13 +244,11 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         }), Actions.fadeIn(0.5f)));
 
         // automatically scroll to the position of the currently selected world button
-        float r = (float) currentWorldIndex / (NUM_WORLDS - 1);
+        float r = (float) currentWorldIndex / (worlds.size - 1);
         scrollPane.setScrollPercentY(r);
     }
 
-    public void update(float dt) {
-
-    }
+    public void update(float dt) {}
 
     public void render(float dt) {
         update(dt);
