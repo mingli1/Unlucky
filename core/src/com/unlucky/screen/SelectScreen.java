@@ -18,7 +18,7 @@ import com.unlucky.resource.ResourceManager;
  *
  * @author Ming Li
  */
-public abstract class DoubleDimensionScreen extends AbstractScreen {
+public abstract class SelectScreen extends AbstractScreen {
 
     // exit button
     protected ImageButton exitButton;
@@ -28,7 +28,7 @@ public abstract class DoubleDimensionScreen extends AbstractScreen {
     protected ImageButton enterButton;
     protected Label enterLabel;
 
-    public DoubleDimensionScreen(final Unlucky game, final ResourceManager rm) {
+    public SelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
         // Override
