@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -32,10 +33,11 @@ public class LevelSelectScreen extends SelectScreen {
     // current level selection
     private int currentLevelIndex;
 
+    // player stats to be displayed
+    private String playerStats;
+
     public LevelSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
-
-        bannerLabel.setText("SELECT A LEVEL");
 
         handleExitButton();
         handleEnterButton();
@@ -46,6 +48,19 @@ public class LevelSelectScreen extends SelectScreen {
     public void show() {
         super.show();
 
+        bannerLabel.setText(rm.worlds.get(worldIndex).name);
+        bannerLabel.getStyle().fontColor = new Color(150 / 255.f, 1, 1, 1);
+
+        playerStats = "Player\n-----------------------------------\n" +
+            "LEVEL: " + game.player.getLevel() +
+            "\nHP: " + game.player.getHp() + "/" + game.player.getMaxHp() +
+            "\nDAMAGE: " + game.player.getMinDamage() + "-" + game.player.getMaxDamage() +
+            "\nSPECIAL MOVESET: \n" + game.player.smoveset.toString();
+
+        // the side description will show player stats and level name
+        String levelName = rm.worlds.get(worldIndex).levels[currentLevelIndex].name;
+        fullDescLabel.setText(levelName + "\n\n" + playerStats);
+
         scrollTable.remove();
         createScrollPane();
     }
@@ -55,17 +70,9 @@ public class LevelSelectScreen extends SelectScreen {
      *
      * @param worldIndex
      */
-    public void setWorldIndex(int worldIndex) {
+    public void setWorld(int worldIndex) {
         this.worldIndex = worldIndex;
-    }
-
-    /**
-     * To init number of levels when switch from WorldSelect to LevelSelect
-     *
-     * @param numLevels
-     */
-    public void setNumLevels(int numLevels) {
-        this.numLevels = numLevels;
+        this.numLevels = rm.worlds.get(worldIndex).numLevels;
     }
 
     protected void handleExitButton() {
@@ -75,6 +82,23 @@ public class LevelSelectScreen extends SelectScreen {
     protected void handleEnterButton() {
         enterButtonGroup.setPosition(228, 8);
         stage.addActor(enterButtonGroup);
+        enterButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                // FOR TESTING RIGHT NOW
+                if (worldIndex == 0 && currentLevelIndex == 0) {
+                    batchFade = false;
+                    // fade out animation
+                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                        Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                game.setScreen(game.gameScreen);
+                            }
+                        })));
+                }
+            }
+        });
     }
 
     protected void createScrollPane() {
@@ -97,21 +121,6 @@ public class LevelSelectScreen extends SelectScreen {
             Group g = new Group();
             g.setSize(180, 40);
 
-            final TextButton b = new TextButton("", rm.skin);
-            b.getStyle().checked = b.getStyle().down;
-            b.getStyle().over = null;
-            if (i == 0) b.setChecked(true);
-            scrollButtons.add(b);
-
-            // select level
-            b.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    currentLevelIndex = index;
-                }
-            });
-            b.setFillParent(true);
-
             Level l = rm.worlds.get(worldIndex).levels[index];
 
             Label name = new Label(l.name, nameStyle);
@@ -121,6 +130,36 @@ public class LevelSelectScreen extends SelectScreen {
             Label desc = new Label("Average level: " + l.avgLevel, descStyle);
             desc.setPosition(10, 12);
             desc.setTouchable(Touchable.disabled);
+
+            final TextButton b = new TextButton("", rm.skin);
+            b.getStyle().checked = b.getStyle().down;
+            b.getStyle().over = null;
+            if (i == 0) b.setChecked(true);
+
+            // only enable the levels the player has defeated
+            if (index > rm.worlds.get(worldIndex).numLevelsEnabled - 1) {
+                b.setTouchable(Touchable.disabled);
+                name.setText("???????????????");
+                desc.setText("Average level:  ???");
+            }
+            else {
+                b.setTouchable(Touchable.enabled);
+                scrollButtons.add(b);
+                name.setText(l.name);
+                desc.setText("Average level: " + l.avgLevel);
+            }
+
+            // select level
+            b.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    currentLevelIndex = index;
+                    selectAt(currentLevelIndex);
+                    String levelName = rm.worlds.get(worldIndex).levels[currentLevelIndex].name;
+                    fullDescLabel.setText(levelName + "\n\n" + playerStats);
+                }
+            });
+            b.setFillParent(true);
 
             g.addActor(b);
             g.addActor(name);

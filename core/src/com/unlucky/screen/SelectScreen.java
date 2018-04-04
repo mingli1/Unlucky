@@ -186,6 +186,19 @@ public abstract class SelectScreen extends AbstractScreen {
     }
 
     /**
+     * Selects the button from the scroll pane at a given index
+     * and unselects all buttons that are not at the index
+     *
+     * @param index
+     */
+    protected void selectAt(int index) {
+        for (TextButton t : scrollButtons) {
+            if (t.isChecked()) t.setChecked(false);
+        }
+        scrollButtons.get(index).setChecked(true);
+    }
+
+    /**
      * Handles the position and events of the enter button
      */
     protected abstract void handleEnterButton();

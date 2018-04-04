@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.main.Unlucky;
-import com.unlucky.map.World;
 import com.unlucky.resource.ResourceManager;
 
 /**
@@ -32,7 +31,6 @@ public class WorldSelectScreen extends SelectScreen {
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
-        bannerLabel.setText("SELECT A WORLD");
         fullDescLabel.setText(rm.worlds.get(currentWorldIndex).longDesc);
 
         handleExitButton();
@@ -43,6 +41,9 @@ public class WorldSelectScreen extends SelectScreen {
     @Override
     public void show() {
         super.show();
+
+        bannerLabel.setText("SELECT A WORLD");
+        bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
 
         // automatically scroll to the position of the currently selected world button
         float r = (float) currentWorldIndex / (rm.worlds.size - 1);
@@ -67,8 +68,7 @@ public class WorldSelectScreen extends SelectScreen {
                         Actions.run(new Runnable() {
                         @Override
                         public void run() {
-                            game.levelSelectScreen.setNumLevels(rm.worlds.get(currentWorldIndex).numLevels);
-                            game.levelSelectScreen.setWorldIndex(currentWorldIndex);
+                            game.levelSelectScreen.setWorld(currentWorldIndex);
                             game.setScreen(game.levelSelectScreen);
                         }
                     })));
@@ -97,19 +97,32 @@ public class WorldSelectScreen extends SelectScreen {
             Group g = new Group();
             g.setSize(180, 60);
 
+            Label name = new Label(rm.worlds.get(i).name, nameStyle);
+            name.setPosition(10, 40);
+            name.setFontScale(1.7f);
+            name.setTouchable(Touchable.disabled);
+            Label desc = new Label(rm.worlds.get(i).shortDesc, descStyle);
+            desc.setPosition(10, 15);
+            desc.setTouchable(Touchable.disabled);
+
             final TextButton b = new TextButton("", rm.skin);
             b.getStyle().checked = b.getStyle().down;
             b.getStyle().over = null;
             if (i == 0) b.setChecked(true);
-            scrollButtons.add(b);
 
             // disable worlds not available
-            /*
             if (i > WORLDS_ENABLED - 1) {
-                b.setDisabled(true);
                 b.setTouchable(Touchable.disabled);
+                name.setText("???????????????");
+                desc.setText("LV. ???-???\nBOSS: ????????");
             }
-            */
+            else {
+                b.setTouchable(Touchable.enabled);
+                scrollButtons.add(b);
+
+                name.setText(rm.worlds.get(i).name);
+                desc.setText(rm.worlds.get(i).shortDesc);
+            }
 
             // select world
             b.addListener(new ClickListener() {
@@ -121,14 +134,6 @@ public class WorldSelectScreen extends SelectScreen {
                 }
             });
             b.setFillParent(true);
-
-            Label name = new Label(rm.worlds.get(i).name, nameStyle);
-            name.setPosition(10, 40);
-            name.setFontScale(1.7f);
-            name.setTouchable(Touchable.disabled);
-            Label desc = new Label(rm.worlds.get(i).shortDesc, descStyle);
-            desc.setPosition(10, 15);
-            desc.setTouchable(Touchable.disabled);
 
             g.addActor(b);
             g.addActor(name);
@@ -147,19 +152,6 @@ public class WorldSelectScreen extends SelectScreen {
         scrollPane.layout();
         scrollTable.add(scrollPane).size(210, 202).fill();
         scrollTable.setPosition(-85, -20);
-    }
-
-    /**
-     * Selects the button from the scroll pane at a given index
-     * and unselects all buttons that are not at the index
-     *
-     * @param index
-     */
-    private void selectAt(int index) {
-        for (TextButton t : scrollButtons) {
-            if (t.isChecked()) t.setChecked(false);
-        }
-        scrollButtons.get(index).setChecked(true);
     }
 
     public void render(float dt) {
