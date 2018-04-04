@@ -44,10 +44,11 @@ public class SpecialMoveset {
     }
 
     public String toString() {
-        String ret = "";
+        String ret = "[ ";
         for (int i = 0; i < smoveset.size; i++) {
-            ret += smoveset.get(i).name + "\n";
+            ret += smoveset.get(i).name + (i == smoveset.size - 1 ? "" : ", ");
         }
+        ret += " ]";
         return ret;
     }
 
