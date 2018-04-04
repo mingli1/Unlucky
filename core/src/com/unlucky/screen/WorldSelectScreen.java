@@ -1,8 +1,6 @@
 package com.unlucky.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -10,7 +8,6 @@ import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.World;
@@ -24,128 +21,63 @@ import com.unlucky.resource.ResourceManager;
  *
  * @author Ming Li
  */
-public class WorldSelectScreen extends DoubleDimensionScreen {
+public class WorldSelectScreen extends SelectScreen {
 
     // worlds that can be accessed
-    private static final int WORLDS_ENABLED = 1;
+    private static final int WORLDS_ENABLED = 3;
 
     // current world selection index that determines bg and descriptions
     private int currentWorldIndex = 0;
 
-    // Worlds
-    private Array<World> worlds;
-
-    // screen banner
-    private Label bannerLabel;
-    private Image banner;
-
-    // Scene2D scroll pane
-    private Table scrollTable;
-    private Table selectionContainer;
-    private ScrollPane scrollPane;
-    private Label.LabelStyle nameStyle;
-    private Label.LabelStyle descStyle;
-    private TextButton.TextButtonStyle buttonSelected;
-    private Array<TextButton> scrollButtons;
-
-    // side description
-    private Image descField;
-    private Label fullDescLabel;
-
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
-        initWorlds();
-
-        // create title label
-        banner = new Image(rm.skin, "default-slider");
-        banner.setPosition(15, 205);
-        banner.setSize(202, 24);
-        stage.addActor(banner);
-
-        bannerLabel = new Label("SELECT A WORLD", rm.skin);
-        bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
-        bannerLabel.setSize(100, 24);
-        bannerLabel.setTouchable(Touchable.disabled);
-        bannerLabel.setPosition(15 + 5, 205);
-        bannerLabel.setFontScale(2.f);
-        bannerLabel.setAlignment(Align.left);
-        stage.addActor(bannerLabel);
-
-        // create side description
-        descField = new Image(rm.skin, "default-slider");
-        descField.setPosition(228, 72);
-        descField.setSize(158, 128);
-        stage.addActor(descField);
-
-        fullDescLabel = new Label(worlds.get(currentWorldIndex).longDesc,
-            new Label.LabelStyle(rm.pixel10, Color.WHITE));
-        fullDescLabel.setPosition(236, 80);
-        fullDescLabel.setSize(150, 112);
-        fullDescLabel.setTouchable(Touchable.disabled);
-        fullDescLabel.setWrap(true);
-        fullDescLabel.setAlignment(Align.topLeft);
-        stage.addActor(fullDescLabel);
+        bannerLabel.setText("SELECT A WORLD");
+        fullDescLabel.setText(rm.worlds.get(currentWorldIndex).longDesc);
 
         handleExitButton();
         handleEnterButton();
-        createScollPane();
+        createScrollPane();
     }
 
-    /**
-     * Handles the position and events of the exit button
-     */
+    @Override
+    public void show() {
+        super.show();
+
+        // automatically scroll to the position of the currently selected world button
+        float r = (float) currentWorldIndex / (rm.worlds.size - 1);
+        scrollPane.setScrollPercentY(r);
+    }
+
     protected void handleExitButton() {
-        exitButton.setPosition(355, 199);
-        stage.addActor(exitButton);
-
-        // fade back to previous screen
-        exitButton.addListener(new ClickListener() {
-           @Override
-           public void clicked(InputEvent event, float x, float y) {
-               batchFade = false;
-               // fade out animation
-               stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                   Actions.run(new Runnable() {
-                   @Override
-                   public void run() {
-                       game.setScreen(game.menuScreen);
-                   }
-               })));
-           }
-        });
+        super.handleExitButton(game.menuScreen);
     }
 
-    /**
-     * Handles the position and events of the enter button
-     */
     protected void handleEnterButton() {
         enterButtonGroup.setPosition(228, 8);
         stage.addActor(enterButtonGroup);
+        enterLabel.setText("SELECT");
+        enterButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (currentWorldIndex < WORLDS_ENABLED) {
+                    batchFade = false;
+                    // fade out animation
+                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                        Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            game.levelSelectScreen.setNumLevels(rm.worlds.get(currentWorldIndex).numLevels);
+                            game.levelSelectScreen.setWorldIndex(currentWorldIndex);
+                            game.setScreen(game.levelSelectScreen);
+                        }
+                    })));
+                }
+            }
+        });
     }
 
-    /**
-     * Initializes all worlds in the game
-     */
-    private void initWorlds() {
-        worlds = new Array<World>();
-
-        World slimeForest = new World("SLIME FOREST", "LV. 1-7\nBOSS: KING SLIME",
-            "Insert a long, drawn out, made up description of the world " +
-                "with some lore that has no relevance to the game whatsoever.", 10);
-        World placeholder = new World("COMING SOON", "LV. ???-???\nBOSS: ???",
-            "??????????????", 0);
-
-        worlds.add(slimeForest);
-        for (int i = 0; i < 5; i++) {
-            worlds.add(placeholder);
-        }
-    }
-
-    /**
-     * Creates the scrollable world selections and handles button events
-     */
-    private void createScollPane() {
+    protected void createScrollPane() {
         scrollButtons = new Array<TextButton>();
 
         nameStyle = new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1));
@@ -158,7 +90,7 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         stage.addActor(scrollTable);
 
         selectionContainer = new Table();
-        for (int i = 0; i < worlds.size; i++) {
+        for (int i = 0; i < rm.worlds.size; i++) {
             final int index = i;
 
             // button and label group
@@ -185,16 +117,16 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
                 public void clicked(InputEvent event, float x, float y) {
                     currentWorldIndex = index;
                     selectAt(currentWorldIndex);
-                    fullDescLabel.setText(worlds.get(currentWorldIndex).longDesc);
+                    fullDescLabel.setText(rm.worlds.get(currentWorldIndex).longDesc);
                 }
             });
             b.setFillParent(true);
 
-            Label name = new Label(worlds.get(i).name, nameStyle);
+            Label name = new Label(rm.worlds.get(i).name, nameStyle);
             name.setPosition(10, 40);
             name.setFontScale(1.7f);
             name.setTouchable(Touchable.disabled);
-            Label desc = new Label(worlds.get(i).shortDesc, descStyle);
+            Label desc = new Label(rm.worlds.get(i).shortDesc, descStyle);
             desc.setPosition(10, 15);
             desc.setTouchable(Touchable.disabled);
 
@@ -230,54 +162,8 @@ public class WorldSelectScreen extends DoubleDimensionScreen {
         scrollButtons.get(index).setChecked(true);
     }
 
-    @Override
-    public void show() {
-        Gdx.input.setInputProcessor(stage);
-        renderBatch = false;
-        batchFade = true;
-        // fade in animation
-        stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
-            @Override
-            public void run() {
-                renderBatch = true;
-            }
-        }), Actions.fadeIn(0.5f)));
-
-        // automatically scroll to the position of the currently selected world button
-        float r = (float) currentWorldIndex / (worlds.size - 1);
-        scrollPane.setScrollPercentY(r);
-    }
-
-    public void update(float dt) {}
-
     public void render(float dt) {
-        update(dt);
-
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if (renderBatch) {
-            stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
-            stage.getBatch().begin();
-
-            // fix fading
-            if (batchFade) stage.getBatch().setColor(Color.WHITE);
-
-            // render world background corresponding to the selected world
-            // possibly expensive scaling call?
-            stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0,
-                Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
-
-            //game.profile("WorldSelectScreen");
-
-            stage.getBatch().end();
-        }
-
-        super.render(dt);
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
+        super.render(dt, currentWorldIndex);
     }
 
 }
