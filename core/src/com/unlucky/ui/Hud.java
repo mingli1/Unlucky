@@ -74,7 +74,7 @@ public class Hud extends UI implements Disposable {
         util.setTouchable(Touchable.disabled);
 
         smove = new Label("", lp);
-        smove.setPosition(310, 70);
+        smove.setPosition(150, 30);
         smove.setTouchable(Touchable.disabled);
 
         stage.addActor(util);
@@ -430,6 +430,9 @@ public class Hud extends UI implements Disposable {
         }
         if (eq(cmd, "/clearsmoveset")) {
             player.smoveset.clear();
+        }
+        if (eq(cmd, "/exit")) {
+            gameScreen.getGame().setScreen(gameScreen.getGame().menuScreen);
         }
     }
 
