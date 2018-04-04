@@ -50,9 +50,7 @@ public abstract class AbstractScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
-        viewport.update(width, height);
-    }
+    public void resize(int width, int height) {}
 
     @Override
     public void show() {}
@@ -82,5 +80,7 @@ public abstract class AbstractScreen implements Screen {
     public SpriteBatch getBatch() {
         return game.batch;
     }
+
+    public Unlucky getGame() { return game; }
 
 }
