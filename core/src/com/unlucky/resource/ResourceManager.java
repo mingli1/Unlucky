@@ -14,6 +14,8 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
 import com.unlucky.inventory.Item;
+import com.unlucky.map.Level;
+import com.unlucky.map.World;
 
 /**
  * Main resource loading and storage class. Uses an AssetManager to manage textures, sounds,
@@ -53,6 +55,8 @@ public class ResourceManager {
     public TextureRegion[][] playButton;
     public TextureRegion[][] menuButtons;
     public TextureRegion[] worldSelectBackgrounds;
+    public TextureRegion[][] menuExitButton;
+    public TextureRegion[][] enterButton;
 
     // Lighting
     public TextureRegion darkness;
@@ -80,6 +84,9 @@ public class ResourceManager {
     // misc
     public TextureRegion shadow11x6;
     public TextureRegion redarrow10x9;
+
+    // Worlds
+    public Array<World> worlds = new Array<World>();
 
     // Arrays for each type of Move
     // Contains the entire pool of moves for each type
@@ -144,6 +151,8 @@ public class ResourceManager {
         playButton = atlas.findRegion("play_button").split(80, 40);
         menuButtons = atlas.findRegion("menu_buttons").split(16, 16);
         worldSelectBackgrounds = atlas.findRegion("stage_select_bg").split(200, 120)[0];
+        menuExitButton = atlas.findRegion("menu_exit_button").split(28, 28);
+        enterButton = atlas.findRegion("enter_button").split(158, 56);
 
         // light
         darkness = atlas.findRegion("darkness");
@@ -166,6 +175,7 @@ public class ResourceManager {
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
 
+        loadWorlds();
         loadMoves();
         loadItems();
     }
@@ -185,6 +195,30 @@ public class ResourceManager {
             ret[i].imageDown = new TextureRegionDrawable(sprites[1][i]);
         }
         return ret;
+    }
+
+    private void loadWorlds() {
+        // parse worlds.json
+        JsonValue base = jsonReader.parse(Gdx.files.internal("maps/worlds.json"));
+
+        int worldIndex = 0;
+        for (JsonValue world : base.get("worlds")) {
+            String worldName = world.getString("name");
+            String shortDesc = world.getString("shortDesc");
+            String longDesc = world.getString("longDesc");
+            int numLevels = world.getInt("numLevels");
+
+            int levelIndex = 0;
+            Level[] temp = new Level[numLevels];
+            // load levels
+            for (JsonValue level : world.get("levels")) {
+                temp[levelIndex] = new Level(worldIndex, levelIndex, level.getString("name"), level.getInt("avgLevel"));
+                levelIndex++;
+            }
+            worlds.add(new World(worldName, shortDesc, longDesc, numLevels, temp));
+
+            worldIndex++;
+        }
     }
 
     private void loadMoves() {
