@@ -17,12 +17,22 @@ public class World {
 
     // the number of levels in the world
     public int numLevels;
+    // the number of levels the player is allowed to access
+    public int numLevelsEnabled;
+    // current selected level in this world
+    public int currentLevelIndex;
 
-    public World(String name, String shortDesc, String longDesc, int numLevels) {
+    // the levels this world contains
+    public Level[] levels;
+
+    public World(String name, String shortDesc, String longDesc, int numLevels, Level[] levels) {
         this.name = name;
         this.shortDesc = shortDesc;
         this.longDesc = longDesc;
         this.numLevels = numLevels;
+        this.levels = levels;
+        this.numLevelsEnabled = 3;
+        this.currentLevelIndex = 0;
     }
 
 }
