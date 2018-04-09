@@ -12,13 +12,14 @@ public class StatusEffect {
 
     // types of status effects
     public static final int DMG_RED = 0;
-    public static final int ACC_RED = 1;
-    public static final int ACC_INC = 2;
-    public static final int DMG_INC = 3;
+    public static final int DISTRACT = 1;
+    public static final int FOCUS = 2;
+    public static final int INTIMIDATE = 3;
     public static final int REFLECT = 4;
     public static final int STUN = 5;
     public static final int INVERT = 6;
     public static final int SHIELD = 7;
+    public static final int SACRIFICE = 8;
 
     public int type;
     public TextureRegion icon;

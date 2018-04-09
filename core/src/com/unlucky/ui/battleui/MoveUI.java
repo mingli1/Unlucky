@@ -314,12 +314,12 @@ public class MoveUI extends BattleUI {
                         BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_TURN);
 
                 // add status icons that should show immediately after dialog
-                if (battle.buffs[Util.DISTRACT]) battle.opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
-                if (battle.buffs[Util.FOCUS]) player.statusEffects.addEffect(StatusEffect.ACC_INC);
-                if (battle.buffs[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (battle.buffs[Util.DISTRACT]) battle.opponent.statusEffects.addEffect(StatusEffect.DISTRACT);
+                if (battle.buffs[Util.FOCUS]) player.statusEffects.addEffect(StatusEffect.FOCUS);
+                if (battle.buffs[Util.INTIMIDATE]) player.statusEffects.addEffect(StatusEffect.INTIMIDATE);
                 if (battle.buffs[Util.REFLECT]) battle.opponent.statusEffects.addEffect(StatusEffect.REFLECT);
                 if (battle.buffs[Util.INVERT]) player.statusEffects.addEffect(StatusEffect.INVERT);
-                if (battle.buffs[Util.SACRIFICE]) player.statusEffects.addEffect(StatusEffect.DMG_INC);
+                if (battle.buffs[Util.SACRIFICE]) player.statusEffects.addEffect(StatusEffect.SACRIFICE);
                 if (battle.buffs[Util.SHIELD]) player.statusEffects.addEffect(StatusEffect.SHIELD);
 
                 // disable button until cooldown over
