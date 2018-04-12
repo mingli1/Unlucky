@@ -2,7 +2,7 @@
 LibGDX Android RPG/Dungeon Crawler game based on RNG
 
 See videos of the game here:
-https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w
+https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0
 
 Screenshots from the game as of April 12, 2018: 
 
