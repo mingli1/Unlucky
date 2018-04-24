@@ -1,6 +1,7 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,6 +21,8 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 
+import java.awt.*;
+
 /**
  * The main menu screen of the game that holds all access points for playing,
  * managing the player's inventory, bank, shop, etc, and the settings
@@ -27,9 +30,6 @@ import com.unlucky.resource.ResourceManager;
  * @author Ming Li
  */
 public class MenuScreen extends AbstractScreen {
-
-    // to remove previous clicks buffered before switching the screen
-    private boolean clickable = true;
 
     // title animation (each letter moves down at descending speeds)
     private Moving[] titleMoves;
@@ -122,19 +122,7 @@ public class MenuScreen extends AbstractScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (clickable) {
-                    clickable = false;
-                    batchFade = false;
-                    // fade out animation
-                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                        Actions.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            clickable = true;
-                            game.setScreen(game.worldSelectScreen);
-                        }
-                    })));
-                }
+                setScreen(game.worldSelectScreen);
             }
         });
     }

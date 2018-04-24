@@ -90,7 +90,7 @@ public abstract class SelectScreen extends AbstractScreen {
         stage.addActor(banner);
 
         bannerLabel = new Label("", rm.skin);
-        bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
+        bannerLabel.setStyle(new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)));
         bannerLabel.setSize(100, 24);
         bannerLabel.setTouchable(Touchable.disabled);
         bannerLabel.setPosition(15 + 5, 205);
@@ -172,15 +172,7 @@ public abstract class SelectScreen extends AbstractScreen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                batchFade = false;
-                // fade out animation
-                stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                    Actions.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            game.setScreen(screen);
-                        }
-                    })));
+                setScreen(screen);
             }
         });
     }

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.main.Unlucky;
@@ -30,6 +31,8 @@ public abstract class AbstractScreen implements Screen {
     protected boolean renderBatch = false;
     // to toggle color fading for batch draw calls
     protected boolean batchFade = true;
+    // to remove previous clicks buffered before switching the screen
+    protected boolean clickable = true;
 
     public AbstractScreen(final Unlucky game, final ResourceManager rm) {
         this.game = game;
@@ -82,5 +85,24 @@ public abstract class AbstractScreen implements Screen {
     }
 
     public Unlucky getGame() { return game; }
+
+    /**
+     * Switches to a new screen while handling fading buffer
+     */
+    public void setScreen(final Screen screen) {
+        if (clickable) {
+            clickable = false;
+            batchFade = false;
+            // fade out animation
+            stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        clickable = true;
+                        game.setScreen(screen);
+                    }
+                })));
+        }
+    }
 
 }

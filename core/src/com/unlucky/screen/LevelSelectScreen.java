@@ -49,7 +49,7 @@ public class LevelSelectScreen extends SelectScreen {
         super.show();
 
         bannerLabel.setText(rm.worlds.get(worldIndex).name);
-        bannerLabel.getStyle().fontColor = new Color(150 / 255.f, 1, 1, 1);
+        bannerLabel.setStyle(new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1)));
 
         playerStats = "Player\n-----------------------------------\n" +
             "LEVEL: " + game.player.getLevel() +
@@ -91,15 +91,7 @@ public class LevelSelectScreen extends SelectScreen {
             public void clicked(InputEvent event, float x, float y) {
                 // FOR TESTING RIGHT NOW
                 if (worldIndex == 0 && currentLevelIndex == 0) {
-                    batchFade = false;
-                    // fade out animation
-                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                        Actions.run(new Runnable() {
-                            @Override
-                            public void run() {
-                                game.setScreen(game.gameScreen);
-                            }
-                        })));
+                    setScreen(game.gameScreen);
                 }
             }
         });
@@ -127,7 +119,12 @@ public class LevelSelectScreen extends SelectScreen {
 
             Level l = rm.worlds.get(worldIndex).levels[index];
 
-            Label name = new Label(l.name, nameStyle);
+            Label name;
+            // on last level (boss level) the name is red
+            if (i == numLevels - 1)
+                name = new Label(l.name, new Label.LabelStyle(rm.pixel10, new Color(225 / 255.f, 0, 0, 1)));
+            else
+                name = new Label(l.name, nameStyle);
             name.setPosition(10, 24);
             name.setFontScale(1.33f);
             name.setTouchable(Touchable.disabled);

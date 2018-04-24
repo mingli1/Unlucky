@@ -61,17 +61,21 @@ public class WorldSelectScreen extends SelectScreen {
         enterButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                if (currentWorldIndex < WORLDS_ENABLED) {
-                    batchFade = false;
-                    // fade out animation
-                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                        Actions.run(new Runnable() {
-                        @Override
-                        public void run() {
-                            game.levelSelectScreen.setWorld(currentWorldIndex);
-                            game.setScreen(game.levelSelectScreen);
-                        }
-                    })));
+                if (clickable) {
+                    clickable = false;
+                    if (currentWorldIndex < WORLDS_ENABLED) {
+                        batchFade = false;
+                        // fade out animation
+                        stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    clickable = true;
+                                    game.levelSelectScreen.setWorld(currentWorldIndex);
+                                    game.setScreen(game.levelSelectScreen);
+                                }
+                            })));
+                    }
                 }
             }
         });
