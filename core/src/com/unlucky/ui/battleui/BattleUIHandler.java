@@ -1,16 +1,10 @@
 package com.unlucky.ui.battleui;
 
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.enemy.Boss;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.*;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -22,37 +16,31 @@ import com.unlucky.ui.UI;
  *
  * @author Ming Li
  */
-public class BattleUIHandler extends UI implements Disposable {
+public class BattleUIHandler extends UI {
 
-    // Scene2D
-    public Stage stage;
-    public Viewport viewport;
     public MoveUI moveUI;
-    public com.unlucky.ui.battleui.BattleEventHandler battleEventHandler;
-    public com.unlucky.ui.battleui.BattleScene battleScene;
+    public BattleEventHandler battleEventHandler;
+    public BattleScene battleScene;
 
     // battle
-    public com.unlucky.event.BattleState currentState;
+    public BattleState currentState;
 
     public BattleUIHandler(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, gameScreen.getBatch());
+        currentState = BattleState.NONE;
 
-        currentState = com.unlucky.event.BattleState.NONE;
-
-        battleScene = new com.unlucky.ui.battleui.BattleScene(gameScreen, tileMap, player, battle, this, stage, rm);
+        battleScene = new BattleScene(gameScreen, tileMap, player, battle, this, stage, rm);
         moveUI = new MoveUI(gameScreen, tileMap, player, battle, this, stage, rm);
-        battleEventHandler = new com.unlucky.ui.battleui.BattleEventHandler(gameScreen, tileMap, player, battle, this, stage, rm);
+        battleEventHandler = new BattleEventHandler(gameScreen, tileMap, player, battle, this, stage, rm);
 
         moveUI.toggleMoveAndOptionUI(false);
         battleEventHandler.endDialog();
     }
 
     public void update(float dt) {
-        if (currentState == com.unlucky.event.BattleState.MOVE) moveUI.update(dt);
-        if (currentState == com.unlucky.event.BattleState.DIALOG) battleEventHandler.update(dt);
+        if (currentState == BattleState.MOVE) moveUI.update(dt);
+        if (currentState == BattleState.DIALOG) battleEventHandler.update(dt);
         battleScene.update(dt);
     }
 
@@ -62,8 +50,8 @@ public class BattleUIHandler extends UI implements Disposable {
         stage.act(dt);
         stage.draw();
 
-        if (currentState == com.unlucky.event.BattleState.MOVE) moveUI.render(dt);
-        if (currentState == com.unlucky.event.BattleState.DIALOG) battleEventHandler.render(dt);
+        if (currentState == BattleState.MOVE) moveUI.render(dt);
+        if (currentState == BattleState.DIALOG) battleEventHandler.render(dt);
     }
 
     /**
@@ -131,11 +119,6 @@ public class BattleUIHandler extends UI implements Disposable {
                 }
             }
         }
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 
 }

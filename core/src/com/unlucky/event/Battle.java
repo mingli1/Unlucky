@@ -91,7 +91,7 @@ public class Battle {
 
         // distract/enemy debuff
         if (buffs[Util.DISTRACT]) {
-            opponent.statusEffects.addEffect(StatusEffect.ACC_RED);
+            opponent.statusEffects.addEffect(StatusEffect.DISTRACT);
             opponent.setAccuracy(opponent.getAccuracy() - Util.P_DISTRACT);
         }
         else opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));

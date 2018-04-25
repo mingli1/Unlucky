@@ -1,22 +1,16 @@
 package com.unlucky.screen.game;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.Tile;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
@@ -30,10 +24,7 @@ import com.unlucky.ui.UI;
  *
  * @author Ming Li
  */
-public class DialogScreen extends UI implements Disposable {
-
-    public Stage stage;
-    public Viewport viewport;
+public class DialogScreen extends UI {
 
     private float stateTime = 0;
 
@@ -63,9 +54,6 @@ public class DialogScreen extends UI implements Disposable {
 
     public DialogScreen(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, gameScreen.getBatch());
 
         // create main UI
         ui = new Image(rm.dialogBox400x80);
@@ -213,11 +201,6 @@ public class DialogScreen extends UI implements Disposable {
                 gameScreen.hud.toggle(true);
                 break;
         }
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 
 }

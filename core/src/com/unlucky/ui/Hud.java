@@ -3,26 +3,19 @@ package com.unlucky.ui;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
@@ -34,11 +27,7 @@ import com.unlucky.screen.GameScreen;
  *
  * @author Ming Li
  */
-public class Hud extends UI implements Disposable {
-
-    // Scene2D
-    public Stage stage;
-    private Viewport viewport;
+public class Hud extends UI {
 
     // Buttons
     // --------------------------------------------------------------------
@@ -59,10 +48,6 @@ public class Hud extends UI implements Disposable {
 
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-
-        // the Hud needs more pixels to render text
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, gameScreen.getBatch());
 
         createDirPad();
         createOptionButtons();
@@ -445,11 +430,6 @@ public class Hud extends UI implements Disposable {
         if (player.canMove() && !player.nextTileBlocked(dir)) {
             player.move(dir);
         }
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 
 }

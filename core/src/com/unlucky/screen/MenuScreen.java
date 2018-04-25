@@ -102,13 +102,13 @@ public class MenuScreen extends AbstractScreen {
 
         // ordered by depth
         // sky
-        bg[0] = new Background(rm.titleScreenBackground[0], (OrthographicCamera) stage.getCamera(), new Vector2(0, 0), 2);
+        bg[0] = new Background(rm.titleScreenBackground[0], (OrthographicCamera) stage.getCamera(), new Vector2(0, 0));
         bg[0].setVector(0, 0);
         // back clouds
-        bg[1] = new Background(rm.titleScreenBackground[2], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0), 2);
+        bg[1] = new Background(rm.titleScreenBackground[2], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0));
         bg[1].setVector(20, 0);
         // front clouds
-        bg[2] = new Background(rm.titleScreenBackground[1], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0), 2);
+        bg[2] = new Background(rm.titleScreenBackground[1], (OrthographicCamera) stage.getCamera(), new Vector2(0.3f, 0));
         bg[2].setVector(60, 0);
     }
 
@@ -148,6 +148,14 @@ public class MenuScreen extends AbstractScreen {
         optionButtons[4].setPosition(170, 50);
         // credits button
         optionButtons[5].setPosition(170, 15);
+
+        // TODO: ABSTRACT THIS
+        optionButtons[4].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setScreen(game.statisticsScreen);
+            }
+        });
     }
 
     public void update(float dt) {

@@ -62,11 +62,11 @@ public class GameScreen extends AbstractScreen {
 
         // input multiplexer
         multiplexer = new InputMultiplexer();
-        multiplexer.addProcessor(hud.stage);
-        multiplexer.addProcessor(battleUIHandler.stage);
-        multiplexer.addProcessor(levelUp.stage);
-        multiplexer.addProcessor(inventoryUI.stage);
-        multiplexer.addProcessor(dialog.stage);
+        multiplexer.addProcessor(hud.getStage());
+        multiplexer.addProcessor(battleUIHandler.getStage());
+        multiplexer.addProcessor(levelUp.getStage());
+        multiplexer.addProcessor(inventoryUI.getStage());
+        multiplexer.addProcessor(dialog.getStage());
     }
 
     @Override
@@ -86,10 +86,10 @@ public class GameScreen extends AbstractScreen {
         // background image array is ordered by depth
         TextureRegion[] images = rm.battleBackgrounds400x240[bgIndex];
         // sky
-        bg[0] = new Background(images[0], (OrthographicCamera) battleUIHandler.stage.getCamera(), new Vector2(0.3f, 0), 2);
+        bg[0] = new Background(images[0], (OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0.3f, 0));
         bg[0].setVector(40, 0);
         // field
-        bg[1] = new Background(images[1], (OrthographicCamera) battleUIHandler.stage.getCamera(), new Vector2(0, 0), 2);
+        bg[1] = new Background(images[1], (OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0, 0));
         bg[1].setVector(0, 0);
     }
 
@@ -138,7 +138,7 @@ public class GameScreen extends AbstractScreen {
 
         if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) {
             // bg camera
-            game.batch.setProjectionMatrix(battleUIHandler.stage.getCamera().combined);
+            game.batch.setProjectionMatrix(battleUIHandler.getStage().getCamera().combined);
             for (int i = 0; i < bg.length; i++) {
                 bg[i].render(game.batch);
             }

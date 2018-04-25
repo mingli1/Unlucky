@@ -110,12 +110,41 @@ public class Statistics {
     }
 
     /**
-     * Returns all statistics represented by list of strings
+     * Returns a list of strings with line of statistics
      *
      * @return
      */
     public String[] toList() {
         return toString().split("\\r?\\n");
+    }
+
+    /**
+     * Returns a list of strings with statistics grouped by category
+     *
+     * @return
+     */
+    public String[] toGroupedList() {
+        // 0 - player stats, 1 - map stats, 2, battle stats
+        return new String[] {
+            "Total exp gained: " + cumulativeExp + "\n"
+                + "Total gold earned: " + cumulativeGold + "\n"
+                + "Damage taken: " + damageTaken + "\n"
+                + "HP Healed: " + hpHealed + "\n"
+                + "Number of deaths: " + numDeaths + "\n"
+                + "Number of successful enchants: " + numEnchants,
+            "Total number of steps: " + numSteps,
+            "Damage dealt: " + damageDealt + "\n"
+                + "Most damage in single hit: " + maxDamageSingleHit.stat + "\n"
+                + "Most damage in single battle: " + maxDamageSingleBattle.stat + "\n"
+                + "Most healing in single move: " + maxHealSingleMove.stat + "\n"
+                + "Most healing in single battle: " + maxHealSingleBattle.stat + "\n"
+                + "Number of moves missed: " + numMovesMissed + "\n"
+                + "Number of enemies defeated: " + enemiesDefeated + "\n"
+                + "Number of elites defeated: " + elitesDefeated + "\n"
+                + "Number of bosses defeated: " + bossesDefeated + "\n"
+                + "Number of elites encountered: " + eliteEncountered + "\n"
+                + "Number of bosses encountered: " + bossEncountered
+        };
     }
 
 }

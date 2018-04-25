@@ -1,14 +1,12 @@
 package com.unlucky.ui.inventory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -18,15 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.DragListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -40,11 +34,7 @@ import com.unlucky.ui.UI;
  *
  * @author Ming Li
  */
-public class InventoryUI extends UI implements Disposable {
-
-    // Scene2D
-    public Stage stage;
-    private Viewport viewport;
+public class InventoryUI extends UI {
 
     private boolean ended = false;
 
@@ -93,9 +83,6 @@ public class InventoryUI extends UI implements Disposable {
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, gameScreen.getBatch());
 
         ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(400, 14), new Vector2(14, 14), 450.f, 372, 212);
         ui.setTouchable(Touchable.enabled);
@@ -843,11 +830,6 @@ public class InventoryUI extends UI implements Disposable {
         shapeRenderer.setColor(200 / 255.f, 170 / 255.f, 0, 1);
         shapeRenderer.rect(ui.getX() + 16, ui.getY() + 160, expBarWidth, 2);
         shapeRenderer.end();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 
 }

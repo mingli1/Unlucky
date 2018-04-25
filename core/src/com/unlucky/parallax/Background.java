@@ -26,15 +26,12 @@ public class Background {
     private float dx;
     private float dy;
 
-    private int camScale;
-
-    public Background(TextureRegion image, OrthographicCamera cam, Vector2 scale, int camScale) {
+    public Background(TextureRegion image, OrthographicCamera cam, Vector2 scale) {
         this.image = image;
         this.cam = cam;
         this.scale = scale;
-        this.camScale = camScale;
-        numDrawX = (Unlucky.V_WIDTH * camScale) / image.getRegionWidth() + 1;
-        numDrawY = (Unlucky.V_HEIGHT * camScale) / image.getRegionHeight() + 1;
+        numDrawX = (Unlucky.V_WIDTH * 2) / image.getRegionWidth() + 1;
+        numDrawY = (Unlucky.V_HEIGHT * 2) / image.getRegionHeight() + 1;
 
         fixBleeding(image);
     }
@@ -78,9 +75,12 @@ public class Background {
 
             int colOffset = x > 0 ? -1 : 0;
             int rowOffset = y > 0 ? -1 : 0;
+
             for (int row = 0; row < numDrawY; row++) {
                 for (int col = 0; col < numDrawX; col++) {
-                    batch.draw(image, x + (col + colOffset) * image.getRegionWidth(), y + (row + rowOffset) * image.getRegionHeight());
+                    batch.draw(image,
+                        x + (col + colOffset) * image.getRegionWidth(),
+                        y + (row + rowOffset) * image.getRegionHeight());
                 }
             }
         }

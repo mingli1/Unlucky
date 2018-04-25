@@ -1,7 +1,13 @@
 package com.unlucky.ui;
 
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Disposable;
+import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
+import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
@@ -12,7 +18,10 @@ import com.unlucky.screen.GameScreen;
  *
  * @author Ming Li
  */
-public abstract class UI {
+public abstract class UI implements Disposable {
+
+    protected Stage stage;
+    protected Viewport viewport;
 
     protected ResourceManager rm;
     protected TileMap tileMap;
@@ -28,11 +37,24 @@ public abstract class UI {
         this.player = player;
         this.rm = rm;
 
+        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
+        stage = new Stage(viewport, gameScreen.getBatch());
+
         shapeRenderer = new ShapeRenderer();
     }
 
     public abstract void update(float dt);
 
     public abstract void render(float dt);
+
+    public Stage getStage() {
+        return stage;
+    }
+
+    @Override
+    public void dispose() {
+        stage.dispose();
+        shapeRenderer.dispose();
+    }
 
 }

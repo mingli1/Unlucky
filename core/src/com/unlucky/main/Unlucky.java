@@ -6,9 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.unlucky.entity.Player;
 import com.unlucky.resource.ResourceManager;
-import com.unlucky.screen.GameScreen;
-import com.unlucky.screen.MenuScreen;
-import com.unlucky.screen.WorldSelectScreen;
+import com.unlucky.screen.*;
 
 /**
  * "Unlucky" is a RPG/Dungeon Crawler based on RNG
@@ -19,7 +17,7 @@ import com.unlucky.screen.WorldSelectScreen;
  */
 public class Unlucky extends Game {
 
-    public static final String TITLE = "Unlucky Version 0.7.1";
+    public static final String TITLE = "Unlucky Version 0.7.2";
 
     // Desktop screen dimensions
     public static final int V_WIDTH = 200;
@@ -39,6 +37,8 @@ public class Unlucky extends Game {
     public MenuScreen menuScreen;
     public GameScreen gameScreen;
     public WorldSelectScreen worldSelectScreen;
+    public LevelSelectScreen levelSelectScreen;
+    public StatisticsScreen statisticsScreen;
 
 	public void create() {
         batch = new SpriteBatch();
@@ -48,6 +48,8 @@ public class Unlucky extends Game {
         menuScreen = new MenuScreen(this, rm);
         gameScreen = new GameScreen(this, rm);
         worldSelectScreen = new WorldSelectScreen(this, rm);
+        levelSelectScreen = new LevelSelectScreen(this, rm);
+        statisticsScreen = new StatisticsScreen(this, rm);
 
         // profiler
         GLProfiler.enable();

@@ -1,23 +1,17 @@
 package com.unlucky.screen.game;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
-import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.GameScreen;
@@ -31,10 +25,7 @@ import java.util.Arrays;
  *
  * @author Ming Li
  */
-public class LevelUpScreen extends UI implements Disposable {
-
-    public Stage stage;
-    public Viewport viewport;
+public class LevelUpScreen extends UI {
 
     // Scene2D
     private ImageButton ui;
@@ -61,9 +52,6 @@ public class LevelUpScreen extends UI implements Disposable {
 
     public LevelUpScreen(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, gameScreen.getBatch());
 
         // create bg
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
@@ -246,15 +234,10 @@ public class LevelUpScreen extends UI implements Disposable {
         stage.act(dt);
         stage.draw();
 
-        gameScreen.getBatch().setProjectionMatrix(gameScreen.battleUIHandler.stage.getCamera().combined);
+        gameScreen.getBatch().setProjectionMatrix(stage.getCamera().combined);
         gameScreen.getBatch().begin();
         gameScreen.getBatch().draw(levelUpAnim.getKeyFrame(true), 46, 55);
         gameScreen.getBatch().end();
-    }
-
-    @Override
-    public void dispose() {
-        stage.dispose();
     }
 
 }

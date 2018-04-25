@@ -173,7 +173,7 @@ public class TransitionScreen {
     }
 
     public void render(float dt) {
-        shapeRenderer.setProjectionMatrix(gameScreen.battleUIHandler.stage.getCamera().combined);
+        shapeRenderer.setProjectionMatrix(gameScreen.battleUIHandler.getStage().getCamera().combined);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         shapeRenderer.setColor(0, 0, 0, 1);
