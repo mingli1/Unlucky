@@ -375,7 +375,11 @@ public class InventoryUI extends UI {
                                 showSelectedSlot(item);
                                 tooltip.toFront();
                                 Vector2 tpos = getTooltipCoords(item);
-                                tooltip.show(item, tpos.x + tooltip.getWidth() / 2, tpos.y - tooltip.getHeight() / 2);
+                                // make sure items at the bottom don't get covered by the tooltip
+                                if (tpos.y <= 15)
+                                    tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
+                                else
+                                    tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
                             }
                         }
                     }
@@ -440,7 +444,6 @@ public class InventoryUI extends UI {
         ui.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println(x + ", " + y);
                 if (itemSelected) {
                     unselectItem();
                 }
