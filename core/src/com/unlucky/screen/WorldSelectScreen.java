@@ -55,7 +55,7 @@ public class WorldSelectScreen extends SelectScreen {
     }
 
     protected void handleEnterButton() {
-        enterButtonGroup.setPosition(228, 8);
+        enterButtonGroup.setPosition(114, 4);
         stage.addActor(enterButtonGroup);
         enterLabel.setText("SELECT");
         enterButton.addListener(new ClickListener() {
@@ -99,14 +99,15 @@ public class WorldSelectScreen extends SelectScreen {
 
             // button and label group
             Group g = new Group();
-            g.setSize(180, 60);
+            g.setSize(90, 30);
 
             Label name = new Label(rm.worlds.get(i).name, nameStyle);
-            name.setPosition(10, 40);
-            name.setFontScale(1.7f);
+            name.setPosition(5, 20);
+            name.setFontScale(1.7f / 2);
             name.setTouchable(Touchable.disabled);
             Label desc = new Label(rm.worlds.get(i).shortDesc, descStyle);
-            desc.setPosition(10, 15);
+            desc.setPosition(5, 6);
+            desc.setFontScale(0.5f);
             desc.setTouchable(Touchable.disabled);
 
             final TextButton b = new TextButton("", rm.skin);
@@ -143,7 +144,7 @@ public class WorldSelectScreen extends SelectScreen {
             g.addActor(name);
             g.addActor(desc);
 
-            selectionContainer.add(g).padBottom(8).size(180, 60).row();
+            selectionContainer.add(g).padBottom(4).size(90, 30).row();
         }
         selectionContainer.pack();
         selectionContainer.setTransform(true);
@@ -154,8 +155,8 @@ public class WorldSelectScreen extends SelectScreen {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
         scrollPane.layout();
-        scrollTable.add(scrollPane).size(210, 202).fill();
-        scrollTable.setPosition(-85, -20);
+        scrollTable.add(scrollPane).size(112, 101).fill();
+        scrollTable.setPosition(-38, -10);
     }
 
     public void render(float dt) {

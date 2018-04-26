@@ -84,7 +84,7 @@ public class LevelSelectScreen extends SelectScreen {
     }
 
     protected void handleEnterButton() {
-        enterButtonGroup.setPosition(228, 8);
+        enterButtonGroup.setPosition(114, 4);
         stage.addActor(enterButtonGroup);
         enterButton.addListener(new ClickListener() {
             @Override
@@ -115,7 +115,7 @@ public class LevelSelectScreen extends SelectScreen {
 
             // button and label group
             Group g = new Group();
-            g.setSize(180, 40);
+            g.setSize(90, 20);
 
             Level l = rm.worlds.get(worldIndex).levels[index];
 
@@ -125,11 +125,12 @@ public class LevelSelectScreen extends SelectScreen {
                 name = new Label(l.name, new Label.LabelStyle(rm.pixel10, new Color(225 / 255.f, 0, 0, 1)));
             else
                 name = new Label(l.name, nameStyle);
-            name.setPosition(10, 24);
-            name.setFontScale(1.33f);
+            name.setPosition(5, 10);
+            name.setFontScale(0.66f);
             name.setTouchable(Touchable.disabled);
             Label desc = new Label("Average level: " + l.avgLevel, descStyle);
-            desc.setPosition(10, 12);
+            desc.setPosition(5, 4);
+            desc.setFontScale(0.5f);
             desc.setTouchable(Touchable.disabled);
 
             final TextButton b = new TextButton("", rm.skin);
@@ -168,7 +169,7 @@ public class LevelSelectScreen extends SelectScreen {
             g.addActor(name);
             g.addActor(desc);
 
-            selectionContainer.add(g).padBottom(8).size(180, 40).row();
+            selectionContainer.add(g).padBottom(4).size(90, 20).row();
         }
         selectionContainer.pack();
         selectionContainer.setTransform(true);
@@ -179,8 +180,8 @@ public class LevelSelectScreen extends SelectScreen {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
         scrollPane.layout();
-        scrollTable.add(scrollPane).size(210, 202).fill();
-        scrollTable.setPosition(-85, -20);
+        scrollTable.add(scrollPane).size(112, 101).fill();
+        scrollTable.setPosition(-38, -10);
     }
 
     public void render(float dt) {

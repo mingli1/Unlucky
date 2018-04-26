@@ -54,20 +54,16 @@ public abstract class SelectScreen extends AbstractScreen {
     public SelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
-        // Override
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
-        stage = new Stage(viewport, game.batch);
-
         // init exit button
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
         style.imageUp = new TextureRegionDrawable(rm.menuExitButton[0][0]);
         style.imageDown = new TextureRegionDrawable(rm.menuExitButton[1][0]);
         exitButton = new ImageButton(style);
-        exitButton.setSize(36, 36);
+        exitButton.setSize(18, 18);
 
         // init enter button
         enterButtonGroup = new Group();
-        enterButtonGroup.setSize(158, 56);
+        enterButtonGroup.setSize(79, 28);
 
         ImageButton.ImageButtonStyle enterStyle = new ImageButton.ImageButtonStyle();
         enterStyle.imageUp = new TextureRegionDrawable(rm.enterButton[0][0]);
@@ -76,38 +72,38 @@ public abstract class SelectScreen extends AbstractScreen {
 
         enterLabel = new Label("ENTER", new Label.LabelStyle(rm.pixel10, new Color(79 / 255.f, 79 / 255.f, 117 / 255.f, 1)));
         enterLabel.setTouchable(Touchable.disabled);
-        enterLabel.setSize(158, 56);
+        enterLabel.setSize(79, 28);
         enterLabel.setAlignment(Align.center);
-        enterLabel.setFontScale(3.f);
+        enterLabel.setFontScale(1.5f);
 
         enterButtonGroup.addActor(enterButton);
         enterButtonGroup.addActor(enterLabel);
 
         // create title label
         banner = new Image(rm.skin, "default-slider");
-        banner.setPosition(15, 205);
-        banner.setSize(202, 24);
+        banner.setPosition(7, 102);
+        banner.setSize(101, 12);
         stage.addActor(banner);
 
         bannerLabel = new Label("", rm.skin);
         bannerLabel.setStyle(new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)));
-        bannerLabel.setSize(100, 24);
+        bannerLabel.setSize(50, 12);
         bannerLabel.setTouchable(Touchable.disabled);
-        bannerLabel.setPosition(15 + 5, 205);
-        bannerLabel.setFontScale(2.f);
+        bannerLabel.setPosition(10, 102);
         bannerLabel.setAlignment(Align.left);
         stage.addActor(bannerLabel);
 
         // create side description
         descField = new Image(rm.skin, "default-slider");
-        descField.setPosition(228, 72);
-        descField.setSize(158, 128);
+        descField.setPosition(114, 36);
+        descField.setSize(79, 64);
         stage.addActor(descField);
 
         fullDescLabel = new Label("", new Label.LabelStyle(rm.pixel10, Color.WHITE));
-        fullDescLabel.setPosition(236, 80);
-        fullDescLabel.setSize(150, 112);
+        fullDescLabel.setPosition(118, 40);
+        fullDescLabel.setSize(75, 56);
         fullDescLabel.setTouchable(Touchable.disabled);
+        fullDescLabel.setFontScale(0.5f);
         fullDescLabel.setWrap(true);
         fullDescLabel.setAlignment(Align.topLeft);
         stage.addActor(fullDescLabel);
@@ -150,8 +146,7 @@ public abstract class SelectScreen extends AbstractScreen {
             // render world background corresponding to the selected world
             // possibly expensive scaling call?
             // @TODO: change 0 to index
-            stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0,
-                Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
+            stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0);
 
             //game.profile("WorldSelectScreen");
 
@@ -165,7 +160,7 @@ public abstract class SelectScreen extends AbstractScreen {
      * Handles the position and events of the exit button
      */
     protected void handleExitButton(final Screen screen) {
-        exitButton.setPosition(355, 199);
+        exitButton.setPosition(177, 99);
         stage.addActor(exitButton);
 
         // fade back to previous screen
