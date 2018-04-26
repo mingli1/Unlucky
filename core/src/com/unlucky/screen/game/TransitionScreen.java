@@ -92,11 +92,11 @@ public class TransitionScreen {
 
         switch (transitionIndex) {
             case 0: x = 0; break;
-            case 1: y = Unlucky.V_HEIGHT * 2; break;
-            case 2: x0 = 0; x1 = Unlucky.V_WIDTH * 2; break;
-            case 3: y0 = 0; y1 = Unlucky.V_HEIGHT * 2; break;
-            case 4: x0 = 0; x1 = Unlucky.V_WIDTH * 2; break;
-            case 5: y0 = 0; y1 = Unlucky.V_HEIGHT * 2; break;
+            case 1: y = Unlucky.V_HEIGHT; break;
+            case 2: x0 = 0; x1 = Unlucky.V_WIDTH; break;
+            case 3: y0 = 0; y1 = Unlucky.V_HEIGHT; break;
+            case 4: x0 = 0; x1 = Unlucky.V_WIDTH; break;
+            case 5: y0 = 0; y1 = Unlucky.V_HEIGHT; break;
         }
     }
 
@@ -136,7 +136,7 @@ public class TransitionScreen {
                 // horizontal slide l2r
                 case 0:
                     x += Util.TRANSITION_SCREEN_SPEED * dt;
-                    if (x >= Unlucky.V_WIDTH * 2) end();
+                    if (x >= Unlucky.V_WIDTH) end();
                     break;
                 // vertical slide t2b
                 case 1:
@@ -147,29 +147,28 @@ public class TransitionScreen {
                 case 2:
                     x0 += Util.TRANSITION_SCREEN_SPEED * dt;
                     x1 -= Util.TRANSITION_SCREEN_SPEED * dt;
-                    if (x0 >= Unlucky.V_WIDTH * 2 && x1 <= 0) end();
+                    if (x0 >= Unlucky.V_WIDTH && x1 <= 0) end();
                     break;
                 // vertical strips
                 case 3:
                     y0 += Util.TRANSITION_SCREEN_SPEED * dt;
                     y1 -= Util.TRANSITION_SCREEN_SPEED * dt;
-                    if (y0 >= Unlucky.V_HEIGHT * 2 && y1 <= 0) end();
+                    if (y0 >= Unlucky.V_HEIGHT && y1 <= 0) end();
                     break;
                 // horizontal split
                 case 4:
                     x0 += Util.TRANSITION_SCREEN_SPEED * dt;
                     x1 -= Util.TRANSITION_SCREEN_SPEED * dt;
-                    if (x0 >= Unlucky.V_WIDTH && x1 <= Unlucky.V_WIDTH) end();
+                    if (x0 >= Unlucky.V_WIDTH / 2 && x1 <= Unlucky.V_WIDTH / 2) end();
                     break;
                 // vertical split
                 case 5:
                     y0 += Util.TRANSITION_SCREEN_SPEED * dt;
                     y1 -= Util.TRANSITION_SCREEN_SPEED * dt;
-                    if (y0 >= Unlucky.V_HEIGHT && y1 <= Unlucky.V_HEIGHT) end();
+                    if (y0 >= Unlucky.V_HEIGHT / 2 && y1 <= Unlucky.V_HEIGHT / 2) end();
                     break;
             }
         }
-        //System.out.println("x: " + x + ", y: " + y);
     }
 
     public void render(float dt) {
@@ -182,35 +181,35 @@ public class TransitionScreen {
             switch (transitionIndex) {
                 // horizontal slide l2r
                 case 0:
-                    shapeRenderer.rect(x, 0, -Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
+                    shapeRenderer.rect(x, 0, -Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
                     break;
                 // vertical slide t2b
                 case 1:
-                    shapeRenderer.rect(0, y, Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2);
+                    shapeRenderer.rect(0, y, Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
                     break;
-                // horizontal strips (height: 240 = 8 stripes of height 30)
+                // horizontal strips (height: 120 = 8 stripes of height 15)
                 case 2:
                     for (int i = 0; i < 8; i++) {
-                        if (i % 2 == 0) shapeRenderer.rect(x0, i * 30, -Unlucky.V_WIDTH * 2, 30);
-                        else shapeRenderer.rect(x1, i * 30, Unlucky.V_WIDTH * 2, 30);
+                        if (i % 2 == 0) shapeRenderer.rect(x0, i * 15, -Unlucky.V_WIDTH, 15);
+                        else shapeRenderer.rect(x1, i * 15, Unlucky.V_WIDTH, 15);
                     }
                     break;
-                // vertical strips (width: 400 = 10 stripes of width 40)
+                // vertical strips (width: 200 = 10 stripes of width 20)
                 case 3:
                     for (int i = 0; i < 10; i++) {
-                        if (i % 2 == 0) shapeRenderer.rect(i * 40, y0, 40, -Unlucky.V_HEIGHT * 2);
-                        else shapeRenderer.rect(i * 40, y1, 40, Unlucky.V_HEIGHT * 2);
+                        if (i % 2 == 0) shapeRenderer.rect(i * 20, y0, 20, -Unlucky.V_HEIGHT);
+                        else shapeRenderer.rect(i * 20, y1, 20, Unlucky.V_HEIGHT);
                     }
                     break;
                 // horizontal split
                 case 4:
-                    shapeRenderer.rect(x0, 0, -Unlucky.V_WIDTH, Unlucky.V_HEIGHT * 2);
-                    shapeRenderer.rect(x1, 0, Unlucky.V_WIDTH, Unlucky.V_HEIGHT * 2);
+                    shapeRenderer.rect(x0, 0, -Unlucky.V_WIDTH / 2, Unlucky.V_HEIGHT);
+                    shapeRenderer.rect(x1, 0, Unlucky.V_WIDTH / 2, Unlucky.V_HEIGHT);
                     break;
                 // vertical split
                 case 5:
-                    shapeRenderer.rect(0, y0, Unlucky.V_WIDTH * 2, -Unlucky.V_HEIGHT);
-                    shapeRenderer.rect(0, y1, Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT);
+                    shapeRenderer.rect(0, y0, Unlucky.V_WIDTH, -Unlucky.V_HEIGHT / 2);
+                    shapeRenderer.rect(0, y1, Unlucky.V_WIDTH, Unlucky.V_HEIGHT / 2);
                     break;
             }
         }
