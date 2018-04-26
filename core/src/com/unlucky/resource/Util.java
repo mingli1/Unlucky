@@ -17,8 +17,8 @@ public class Util {
 
     // rates
     public static final float TEXT_SPEED = 0.03f;
-    public static final float HP_BAR_DECAY_RATE = 50.f;
-    public static final float TRANSITION_SCREEN_SPEED = 300.f;
+    public static final float HP_BAR_DECAY_RATE = 25.f;
+    public static final float TRANSITION_SCREEN_SPEED = 150;
 
     public static final int RAINDROP_X = 50;
     public static final int RAINDROP_Y_DEVIATED = 20;
@@ -32,8 +32,8 @@ public class Util {
     public static final float PLAYER_WALKING_DELAY = 1 / 6f;
 
     // Directional pad button positions
-    public static final int DIR_PAD_SIZE = 40;
-    public static final int DIR_PAD_OFFSET = 10;
+    public static final int DIR_PAD_SIZE = 20;
+    public static final int DIR_PAD_OFFSET = 5;
 
     // Special move indexes
     public static final int S_MOVE_CD = 3; // num of turns cooldown for special moves
@@ -65,8 +65,8 @@ public class Util {
             "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% of max hp");
 
     // Button dimensions
-    public static final int MOVE_WIDTH = 145;
-    public static final int MOVE_HEIGHT = 50;
+    public static final int MOVE_WIDTH = 72;
+    public static final int MOVE_HEIGHT = 25;
 
     // Probabilities, Percentages, and Multipliers
     public static final int RUN_FROM_BATTLE = 7;
