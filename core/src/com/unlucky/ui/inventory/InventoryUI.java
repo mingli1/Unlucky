@@ -53,7 +53,7 @@ public class InventoryUI extends UI {
     private Label exp;
     private Label gold;
     // health bar (no need for dynamic one)
-    private int maxBarWidth = 124;
+    private int maxBarWidth = 62;
     private int hpBarWidth = 0;
     private int expBarWidth = 0;
     // selected slot
@@ -68,10 +68,10 @@ public class InventoryUI extends UI {
     private Label[] invButtonLabels;
 
     // constants
-    private static final int SLOT_WIDTH = 32;
-    private static final int SLOT_HEIGHT = 32;
-    private static final Rectangle EQUIPS_AREA = new Rectangle(23, 23, 138, 114);
-    private static final Rectangle INVENTORY_AREA = new Rectangle(181, 29, 192, 128);
+    private static final int SLOT_WIDTH = 16;
+    private static final int SLOT_HEIGHT = 16;
+    private static final Rectangle EQUIPS_AREA = new Rectangle(11, 11, 69, 57);
+    private static final Rectangle INVENTORY_AREA = new Rectangle(90, 14, 96, 64);
 
     // event handling
     private boolean dragging = false;
@@ -84,7 +84,7 @@ public class InventoryUI extends UI {
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
-        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(400, 14), new Vector2(14, 14), 450.f, 372, 212);
+        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
         ui.setTouchable(Touchable.enabled);
         stage.addActor(ui);
 
@@ -93,7 +93,7 @@ public class InventoryUI extends UI {
         exitStyle.imageUp = new TextureRegionDrawable(rm.exitbutton18x18[0][0]);
         exitStyle.imageDown = new TextureRegionDrawable(rm.exitbutton18x18[1][0]);
         exitButton = new ImageButton(exitStyle);
-        exitButton.setSize(18, 18);
+        exitButton.setSize(9, 9);
         exitButton.addListener(new ClickListener() {
            @Override
            public void clicked(InputEvent event, float x, float y) {
@@ -114,7 +114,8 @@ public class InventoryUI extends UI {
         headers = new Label[3];
         for (int i = 0; i < headers.length; i++) {
             headers[i] = new Label(headerStrs[i], stdWhite);
-            headers[i].setSize(124, 8);
+            headers[i].setSize(62, 4);
+            headers[i].setFontScale(0.5f);
             headers[i].setTouchable(Touchable.disabled);
             headers[i].setAlignment(Align.left);
             stage.addActor(headers[i]);
@@ -122,31 +123,36 @@ public class InventoryUI extends UI {
 
         // create stats
         hp = new Label("", green);
-        hp.setSize(124, 8);
+        hp.setSize(62, 4);
+        hp.setFontScale(0.5f);
         hp.setTouchable(Touchable.disabled);
         hp.setAlignment(Align.left);
         stage.addActor(hp);
 
         damage = new Label("", red);
-        damage.setSize(124, 8);
+        damage.setSize(62, 4);
+        damage.setFontScale(0.5f);
         damage.setTouchable(Touchable.disabled);
         damage.setAlignment(Align.left);
         stage.addActor(damage);
 
         accuracy = new Label("", blue);
-        accuracy.setSize(124, 8);
+        accuracy.setSize(62, 4);
+        accuracy.setFontScale(0.5f);
         accuracy.setTouchable(Touchable.disabled);
         accuracy.setAlignment(Align.left);
         stage.addActor(accuracy);
 
         exp = new Label("", yellow);
-        exp.setSize(124, 8);
+        exp.setSize(62, 4);
+        exp.setFontScale(0.5f);
         exp.setTouchable(Touchable.disabled);
         exp.setAlignment(Align.left);
         stage.addActor(exp);
 
         gold = new Label("", yellow);
-        gold.setSize(124, 8);
+        gold.setSize(62, 4);
+        gold.setFontScale(0.5f);
         gold.setTouchable(Touchable.disabled);
         gold.setAlignment(Align.left);
         stage.addActor(gold);
@@ -159,7 +165,7 @@ public class InventoryUI extends UI {
         stage.addActor(selectedSlot);
 
         tooltip = new ItemTooltip(rm.skin);
-        tooltip.setPosition(180, 30);
+        tooltip.setPosition(90, 15);
         stage.addActor(tooltip);
 
         enabled = new ImageButton.ImageButtonStyle();
@@ -229,8 +235,9 @@ public class InventoryUI extends UI {
             invButtons[i] = new ImageButton(disabled);
             invButtons[i].setTouchable(Touchable.disabled);
             invButtonLabels[i] = new Label(texts[i], textStyle);
+            invButtonLabels[i].setFontScale(0.5f);
             invButtonLabels[i].setTouchable(Touchable.disabled);
-            invButtonLabels[i].setSize(92, 28);
+            invButtonLabels[i].setSize(46, 14);
             invButtonLabels[i].setAlignment(Align.center);
             stage.addActor(invButtons[i]);
             stage.addActor(invButtonLabels[i]);
@@ -368,7 +375,7 @@ public class InventoryUI extends UI {
                                 showSelectedSlot(item);
                                 tooltip.toFront();
                                 Vector2 tpos = getTooltipCoords(item);
-                                tooltip.show(item, tpos.x + 16, tpos.y - tooltip.getHeight());
+                                tooltip.show(item, tpos.x + tooltip.getWidth() / 2, tpos.y - tooltip.getHeight() / 2);
                             }
                         }
                     }
@@ -433,6 +440,7 @@ public class InventoryUI extends UI {
         ui.addListener(new InputListener() {
             @Override
             public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                System.out.println(x + ", " + y);
                 if (itemSelected) {
                     unselectItem();
                 }
@@ -454,11 +462,12 @@ public class InventoryUI extends UI {
                 if (currentItem != null && currentItem.type > 1) {
                     new Dialog("Enchant", rm.dialogSkin) {
                         {
-                            Label l = new Label("Are you sure you want\nto enchant this item?", rm.dialogSkin);
+                            Label l = new Label("Are you sure you want\nto enchant " + currentItem.labelName + "?", rm.dialogSkin);
+                            l.setFontScale(0.5f);
                             l.setAlignment(Align.center);
                             text(l);
-                            getButtonTable().defaults().width(80);
-                            getButtonTable().defaults().height(30);
+                            getButtonTable().defaults().width(40);
+                            getButtonTable().defaults().height(15);
                             button("Yes", "yes");
                             button("No", "no");
                         }
@@ -482,11 +491,12 @@ public class InventoryUI extends UI {
                 if (currentItem != null) {
                     new Dialog("Sell", rm.dialogSkin) {
                         {
-                            Label l = new Label("Are you sure you want\nto sell this item?", rm.dialogSkin);
+                            Label l = new Label("Are you sure you want\nto sell " + currentItem.labelName + "?", rm.dialogSkin);
+                            l.setFontScale(0.5f);
                             l.setAlignment(Align.center);
                             text(l);
-                            getButtonTable().defaults().width(80);
-                            getButtonTable().defaults().height(30);
+                            getButtonTable().defaults().width(40);
+                            getButtonTable().defaults().height(15);
                             button("Yes", "yes");
                             button("No", "no");
                         }
@@ -519,10 +529,11 @@ public class InventoryUI extends UI {
             new Dialog("Success!", rm.dialogSkin) {
                 {
                     Label l = new Label("Enchanting succeeded.\nThe item has been upgraded.", rm.dialogSkin);
+                    l.setFontScale(0.5f);
                     l.setAlignment(Align.center);
                     text(l);
-                    getButtonTable().defaults().width(80);
-                    getButtonTable().defaults().height(30);
+                    getButtonTable().defaults().width(40);
+                    getButtonTable().defaults().height(15);
                     button("OK", "next");
                 }
 
@@ -540,10 +551,11 @@ public class InventoryUI extends UI {
                 new Dialog("Fail!", rm.dialogSkin) {
                     {
                         Label l = new Label("Enchanting failed.\nThe item has been destroyed.", rm.dialogSkin);
+                        l.setFontScale(0.5f);
                         l.setAlignment(Align.center);
                         text(l);
-                        getButtonTable().defaults().width(80);
-                        getButtonTable().defaults().height(30);
+                        getButtonTable().defaults().width(40);
+                        getButtonTable().defaults().height(15);
                         button("OK", "next");
                     }
 
@@ -559,10 +571,11 @@ public class InventoryUI extends UI {
                 new Dialog("Fail!", rm.dialogSkin) {
                     {
                         Label l = new Label("Enchanting failed.\nThe item is intact.", rm.dialogSkin);
+                        l.setFontScale(0.5f);
                         l.setAlignment(Align.center);
                         text(l);
-                        getButtonTable().defaults().width(80);
-                        getButtonTable().defaults().height(30);
+                        getButtonTable().defaults().width(40);
+                        getButtonTable().defaults().height(15);
                         button("OK", "next");
                     }
 
@@ -585,10 +598,11 @@ public class InventoryUI extends UI {
         new Dialog("Consume", rm.dialogSkin) {
             {
                 Label l = new Label("Heal for " + currentItem.hp + " HP\nusing this potion?", rm.dialogSkin);
+                l.setFontScale(0.5f);
                 l.setAlignment(Align.center);
                 text(l);
-                getButtonTable().defaults().width(80);
-                getButtonTable().defaults().height(30);
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
                 button("Yes", "yes");
                 button("No", "no");
             }
@@ -621,15 +635,15 @@ public class InventoryUI extends UI {
      */
     private void showSelectedSlot(Item item) {
         if (item.equipped) {
-            selectedSlot.setPosition(14 + (player.equips.positions[item.type - 2].x - 4),
-                    14 + (player.equips.positions[item.type - 2].y - 4));
+            selectedSlot.setPosition(7 + (player.equips.positions[item.type - 2].x - 2),
+                    7 + (player.equips.positions[item.type - 2].y - 2));
             selectedSlot.setVisible(true);
         }
         else {
             int i = item.index;
             int x = i % Inventory.NUM_COLS;
             int y = i / Inventory.NUM_COLS;
-            selectedSlot.setPosition(182 + (x * 32), 126 - (y * 32));
+            selectedSlot.setPosition(91 + (x * 16), 63 - (y * 16));
             selectedSlot.setVisible(true);
         }
     }
@@ -647,8 +661,8 @@ public class InventoryUI extends UI {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             int xx = i % Inventory.NUM_COLS;
             int yy = i / Inventory.NUM_COLS;
-            if (x >= 180 + (xx * SLOT_WIDTH) && x < 180 + (xx * SLOT_WIDTH) + SLOT_WIDTH &&
-                    y >= 114 - (yy * SLOT_HEIGHT) && y < 114 - (yy * SLOT_HEIGHT) + SLOT_HEIGHT)
+            if (x >= 90 + (xx * SLOT_WIDTH) && x < 90 + (xx * SLOT_WIDTH) + SLOT_WIDTH &&
+                    y >= 57 - (yy * SLOT_HEIGHT) && y < 57 - (yy * SLOT_HEIGHT) + SLOT_HEIGHT)
             {
                 return i;
             }
@@ -667,14 +681,14 @@ public class InventoryUI extends UI {
     private Vector2 getTooltipCoords(Item item) {
         Vector2 ret = new Vector2();
         if (item.equipped) {
-            ret.set(14 + (player.equips.positions[item.type - 2].x - 4),
-                    14 + (player.equips.positions[item.type - 2].y - 4));
+            ret.set(7 + (player.equips.positions[item.type - 2].x - 2),
+                    7 + (player.equips.positions[item.type - 2].y - 2));
         }
         else {
             int i = item.index;
             int x = i % Inventory.NUM_COLS;
             int y = i / Inventory.NUM_COLS;
-            ret.set(182 + (x * 32), 126 - (y * 32));
+            ret.set(91 + (x * 16), 63 - (y * 16));
         }
         return ret;
     }
@@ -684,8 +698,8 @@ public class InventoryUI extends UI {
      */
     public void start() {
         // ui slides left to right
-        ui.moving.origin.set(new Vector2(400, 14));
-        ui.moving.target.set(new Vector2(14, 14));
+        ui.moving.origin.set(new Vector2(200, 7));
+        ui.moving.target.set(new Vector2(7, 7));
         ui.start();
 
         exitButton.setDisabled(false);
@@ -710,8 +724,8 @@ public class InventoryUI extends UI {
         exitButton.setTouchable(Touchable.disabled);
 
         // ui slides off screen right to left
-        ui.moving.target.set(new Vector2(400, 14));
-        ui.moving.origin.set(new Vector2(14, 14));
+        ui.moving.target.set(new Vector2(200, 7));
+        ui.moving.origin.set(new Vector2(7, 7));
         ui.start();
 
         ended = true;
@@ -730,7 +744,7 @@ public class InventoryUI extends UI {
 
     public void update(float dt) {
         ui.update(dt);
-        if (ended && ui.getX() == 400 && ui.getY() == 14) {
+        if (ended && ui.getX() == 200 && ui.getY() == 7) {
             next();
         }
 
@@ -747,19 +761,19 @@ public class InventoryUI extends UI {
         gold.setText("GOLD: " + player.getGold());
 
         // update all positions
-        exitButton.setPosition(ui.getX() + 363, ui.getY() + 202);
-        headers[0].setPosition(ui.getX() + 16, ui.getY() + 192);
-        headers[1].setPosition(ui.getX() + 16, ui.getY() + 110);
-        headers[2].setPosition(ui.getX() + 168, ui.getY() + 192);
-        hp.setPosition(ui.getX() + 16, ui.getY() + 182);
-        damage.setPosition(ui.getX() + 16, ui.getY() + 148);
-        accuracy.setPosition(ui.getX() + 16, ui.getY() + 136);
-        exp.setPosition(ui.getX() + 16, ui.getY() + 166);
-        gold.setPosition(ui.getX() + 280, ui.getY() + 192);
+        exitButton.setPosition(ui.getX() + 181, ui.getY() + 101);
+        headers[0].setPosition(ui.getX() + 8, ui.getY() + 96);
+        headers[1].setPosition(ui.getX() + 8, ui.getY() + 55);
+        headers[2].setPosition(ui.getX() + 84, ui.getY() + 96);
+        hp.setPosition(ui.getX() + 8, ui.getY() + 91);
+        damage.setPosition(ui.getX() + 8, ui.getY() + 74);
+        accuracy.setPosition(ui.getX() + 8, ui.getY() + 68);
+        exp.setPosition(ui.getX() + 8, ui.getY() + 83);
+        gold.setPosition(ui.getX() + 140, ui.getY() + 96);
 
         for (int i = 0; i < 2; i++) {
-            invButtons[i].setPosition(ui.getX() + 168 + (i * 96), ui.getY() + 148);
-            invButtonLabels[i].setPosition(ui.getX() + 168 + (i * 96), ui.getY() + 148);
+            invButtons[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
+            invButtonLabels[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
         }
 
         if (!dragging) {
@@ -769,7 +783,7 @@ public class InventoryUI extends UI {
                 int x = i % Inventory.NUM_COLS;
                 int y = i / Inventory.NUM_COLS;
                 if (item != null) {
-                    item.actor.setPosition(ui.getX() + 172 + (x * 32), ui.getY() + (116 - (y * 32)));
+                    item.actor.setPosition(ui.getX() + 86 + (x * 16), ui.getY() + (58 - (y * 16)));
                 }
             }
             // update equips positions
@@ -817,18 +831,18 @@ public class InventoryUI extends UI {
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         // health bar
         shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 176, maxBarWidth, 4);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, maxBarWidth, 2);
         shapeRenderer.setColor(0, 225 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 178, hpBarWidth, 2);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 89, hpBarWidth, 1);
         shapeRenderer.setColor(0, 175 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 176, hpBarWidth, 2);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, hpBarWidth, 1);
         // exp bar
         shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 160, maxBarWidth, 4);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, maxBarWidth, 2);
         shapeRenderer.setColor(1, 212 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 162, expBarWidth, 2);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 81, expBarWidth, 1);
         shapeRenderer.setColor(200 / 255.f, 170 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 16, ui.getY() + 160, expBarWidth, 2);
+        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, expBarWidth, 1);
         shapeRenderer.end();
     }
 
