@@ -17,8 +17,7 @@ public class Particle implements Pool.Poolable {
     // types of particles
     public static final byte RAINDROP = 0;
     public static final byte SNOWFLAKE = 1;
-    public static final byte BIG_RAIN = 2;
-    public static final byte BIG_SNOW = 3;
+    public static final byte STATIC_RAINDROP = 2;
 
     // a particle's position relative to a camera
     public Vector2 position;
