@@ -179,23 +179,24 @@ public class MoveUI extends BattleUI {
             moveNameLabels[i] = new Label(player.getMoveset().names[i], font);
             moveNameLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
             moveNameLabels[i].setAlignment(Align.topLeft);
-            moveNameLabels[i].setFontScale(1.25f);
+            moveNameLabels[i].setFontScale(0.62f);
             moveNameLabels[i].setTouchable(Touchable.disabled);
 
             moveDescLabels[i] = new Label(player.getMoveset().descriptions[i], font);
             moveDescLabels[i].setSize(Util.MOVE_WIDTH, Util.MOVE_HEIGHT);
             moveDescLabels[i].setAlignment(Align.left);
+            moveDescLabels[i].setFontScale(0.5f);
             moveDescLabels[i].setTouchable(Touchable.disabled);
         }
-        moveNameLabels[0].setPosition(15, Util.MOVE_HEIGHT - 15);
-        moveNameLabels[1].setPosition(Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 15);
-        moveNameLabels[2].setPosition(15, -15);
-        moveNameLabels[3].setPosition(Util.MOVE_WIDTH + 15, -15);
+        moveNameLabels[0].setPosition(8, Util.MOVE_HEIGHT - 7);
+        moveNameLabels[1].setPosition(Util.MOVE_WIDTH + 7, Util.MOVE_HEIGHT - 7);
+        moveNameLabels[2].setPosition(8, -7);
+        moveNameLabels[3].setPosition(Util.MOVE_WIDTH + 7, -7);
 
-        moveDescLabels[0].setPosition(15, Util.MOVE_HEIGHT - 5);
-        moveDescLabels[1].setPosition(Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 5);
-        moveDescLabels[2].setPosition(15, -5);
-        moveDescLabels[3].setPosition(Util.MOVE_WIDTH + 15, -5);
+        moveDescLabels[0].setPosition(8, Util.MOVE_HEIGHT - 2);
+        moveDescLabels[1].setPosition(Util.MOVE_WIDTH + 7, Util.MOVE_HEIGHT - 2);
+        moveDescLabels[2].setPosition(8, -2);
+        moveDescLabels[3].setPosition(Util.MOVE_WIDTH + 7, -2);
 
         for (int i = 0; i < 4; i++) {
             stage.addActor(moveButtons[i]);
@@ -236,31 +237,31 @@ public class MoveUI extends BattleUI {
 
         optionNameLabels[0] = new Label("", font);
         optionNameLabels[0].setAlignment(Align.topLeft);
-        optionNameLabels[0].setSize(110, 50);
-        optionNameLabels[0].setFontScale(1.25f);
+        optionNameLabels[0].setSize(55, 25);
+        optionNameLabels[0].setFontScale(0.62f);
         optionNameLabels[0].setTouchable(Touchable.disabled);
-        optionNameLabels[0].setPosition(2 * Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 13);
+        optionNameLabels[0].setPosition(2 * Util.MOVE_WIDTH + 7, Util.MOVE_HEIGHT - 6);
 
         optionDescLabels[0] = new Label("", font);
         optionDescLabels[0].setAlignment(Align.topLeft);
-        optionDescLabels[0].setSize(110, 50);
-        optionDescLabels[0].setFontScale(0.7f);
+        optionDescLabels[0].setSize(55, 25);
+        optionDescLabels[0].setFontScale(0.7f / 2);
         optionDescLabels[0].setTouchable(Touchable.disabled);
-        optionDescLabels[0].setPosition(2 * Util.MOVE_WIDTH + 15, Util.MOVE_HEIGHT - 25);
+        optionDescLabels[0].setPosition(2 * Util.MOVE_WIDTH + 7, Util.MOVE_HEIGHT - 12);
 
         optionNameLabels[1] = new Label("Run", font);
         optionNameLabels[1].setAlignment(Align.topLeft);
-        optionNameLabels[1].setSize(110, 50);
-        optionNameLabels[1].setFontScale(1.3f);
+        optionNameLabels[1].setSize(55, 25);
+        optionNameLabels[1].setFontScale(0.62f);
         optionNameLabels[1].setTouchable(Touchable.disabled);
-        optionNameLabels[1].setPosition(2 * Util.MOVE_WIDTH + 15, -13);
+        optionNameLabels[1].setPosition(2 * Util.MOVE_WIDTH + 7, -6);
 
         optionDescLabels[1] = new Label("7% chance to run\nfrom a battle", font);
         optionDescLabels[1].setAlignment(Align.topLeft);
-        optionDescLabels[1].setSize(110, 50);
-        optionDescLabels[1].setFontScale(0.7f);
+        optionDescLabels[1].setSize(55, 25);
+        optionDescLabels[1].setFontScale(0.7f / 2);
         optionDescLabels[1].setTouchable(Touchable.disabled);
-        optionDescLabels[1].setPosition(2 * Util.MOVE_WIDTH + 15, -25);
+        optionDescLabels[1].setPosition(2 * Util.MOVE_WIDTH + 7, -12);
 
         for (int i = 0; i < 2; i++) {
             stage.addActor(optionButtons[i]);
