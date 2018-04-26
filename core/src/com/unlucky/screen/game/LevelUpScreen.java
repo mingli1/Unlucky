@@ -57,7 +57,7 @@ public class LevelUpScreen extends UI {
         ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
         style.imageUp = new TextureRegionDrawable(rm.levelupscreen400x240);
         ui = new ImageButton(style);
-        ui.setSize(400, 240);
+        ui.setSize(200, 120);
         ui.setPosition(0, 0);
         ui.setTouchable(Touchable.disabled);
         stage.addActor(ui);
@@ -75,17 +75,16 @@ public class LevelUpScreen extends UI {
         Label.LabelStyle blue = new Label.LabelStyle(font, new Color(0, 190 / 255.f, 1, 1));
 
         title = new Label("LEVEL UP!", titleFont);
-        title.setSize(400, 40);
-        title.setPosition(0, 190);
-        title.setFontScale(5.f);
+        title.setSize(200, 20);
+        title.setPosition(0, 95);
+        title.setFontScale(2.5f);
         title.setAlignment(Align.center);
         title.setTouchable(Touchable.disabled);
         stage.addActor(title);
 
         levelDesc = new Label("You reached level 1", stdWhite);
-        levelDesc.setSize(400, 40);
-        levelDesc.setPosition(0, 160);
-        levelDesc.setFontScale(2.f);
+        levelDesc.setSize(200, 20);
+        levelDesc.setPosition(0, 80);
         levelDesc.setAlignment(Align.center);
         levelDesc.setTouchable(Touchable.disabled);
         stage.addActor(levelDesc);
@@ -97,7 +96,7 @@ public class LevelUpScreen extends UI {
         for (int i = 0; i < statNames.length; i++) {
             statsDescs[i] = new Label(statNames[i], stdWhite);
             statsDescs[i].setSize(20, 20);
-            statsDescs[i].setFontScale(1.3f);
+            statsDescs[i].setFontScale(1.3f / 2);
             statsDescs[i].setPosition(200, 35 + (i * 25));
             statsDescs[i].setAlignment(Align.left);
             statsDescs[i].setTouchable(Touchable.disabled);
@@ -105,7 +104,7 @@ public class LevelUpScreen extends UI {
 
             stats[i] = new Label("1330", blue);
             stats[i].setSize(20, 20);
-            stats[i].setFontScale(1.3f);
+            stats[i].setFontScale(1.3f / 2);
             stats[i].setPosition(280, 35 + (i * 25));
             stats[i].setAlignment(Align.left);
             stats[i].setTouchable(Touchable.disabled);
@@ -113,7 +112,7 @@ public class LevelUpScreen extends UI {
 
             increases[i] = new Label("+20", yellow);
             increases[i].setSize(20, 20);
-            increases[i].setFontScale(1.3f);
+            increases[i].setFontScale(1.3f / 2);
             increases[i].setPosition(340, 35 + (i * 25));
             increases[i].setAlignment(Align.left);
             increases[i].setTouchable(Touchable.disabled);
@@ -121,8 +120,8 @@ public class LevelUpScreen extends UI {
         }
 
         clickToContinue = new Label("Click to continue", stdWhite);
-        clickToContinue.setSize(400, 20);
-        clickToContinue.setPosition(0, 5);
+        clickToContinue.setSize(200, 10);
+        clickToContinue.setPosition(0, 2);
         clickToContinue.setAlignment(Align.center);
         clickToContinue.setTouchable(Touchable.disabled);
         stage.addActor(clickToContinue);
@@ -236,7 +235,7 @@ public class LevelUpScreen extends UI {
 
         gameScreen.getBatch().setProjectionMatrix(stage.getCamera().combined);
         gameScreen.getBatch().begin();
-        gameScreen.getBatch().draw(levelUpAnim.getKeyFrame(true), 46, 55);
+        gameScreen.getBatch().draw(levelUpAnim.getKeyFrame(true), 23, 27);
         gameScreen.getBatch().end();
     }
 
