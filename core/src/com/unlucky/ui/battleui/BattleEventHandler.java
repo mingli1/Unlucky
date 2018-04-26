@@ -401,7 +401,7 @@ public class BattleEventHandler extends BattleUI {
                 if (battle.opponent.numRespawn + 1 < 4) {
                     battle.opponent.numRespawn++;
                     // shrink king slime
-                    battle.opponent.battleSize -= 16;
+                    battle.opponent.battleSize -= 8;
                     battle.opponent.setOnlyMaxHp((int) Math.ceil(battle.opponent.getMaxHp() / 2));
                     battle.opponent.setPreviousHp(0);
                     battle.opponent.setHp(battle.opponent.getMaxHp());

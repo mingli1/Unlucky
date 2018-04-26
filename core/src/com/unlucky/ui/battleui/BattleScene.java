@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.effects.Moving;
+import com.unlucky.effects.Particle;
 import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Entity;
 import com.unlucky.entity.Player;
@@ -46,8 +47,8 @@ public class BattleScene extends BattleUI {
     private Moving enemySprite;
     private boolean renderPlayer = true;
     private boolean renderEnemy = true;
-    private final Vector2 PLAYER_ORIGIN = new Vector2(-96, 100);
-    private final Vector2 ENEMY_ORIGIN = new Vector2(400, 100);
+    private final Vector2 PLAYER_ORIGIN = new Vector2(-48, 50);
+    private final Vector2 ENEMY_ORIGIN = new Vector2(200, 50);
 
     // battle animations
     private AnimationManager[] attackAnims;
@@ -92,23 +93,25 @@ public class BattleScene extends BattleUI {
         strongest = new Label.LabelStyle(font, new Color(225 / 255.f, 0, 0, 1));
 
         // create player hud
-        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-145, 200), new Vector2(0, 200), 200.f, 145, 40);
-        playerHpBar = new HealthBar(player, stage, shapeRenderer, 97, 8, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
+        playerHud = new MovingImageUI(rm.playerhpbar145x40, new Vector2(-72, 100), new Vector2(0, 100), 100.f, 72, 20);
+        playerHpBar = new HealthBar(player, stage, shapeRenderer, 48, 4, new Vector2(), new Color(0, 225 / 255.f, 0, 1));
         playerHudLabel = new Label("", ls);
-        playerHudLabel.setSize(99, 12);
+        playerHudLabel.setFontScale(0.5f);
+        playerHudLabel.setSize(49, 6);
         playerHudLabel.setTouchable(Touchable.disabled);
 
         // create enemy hud
-        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(400, 200), new Vector2(255, 200), 200.f, 145, 40);
-        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 97, 8, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
+        enemyHud = new MovingImageUI(rm.enemyhpbar145x40, new Vector2(200, 100), new Vector2(128, 100), 100.f, 72, 20);
+        enemyHpBar = new HealthBar(null, stage, shapeRenderer, 48, 4, new Vector2(), new Color(225 / 255.f, 0, 0, 1));
         enemyHudLabel = new Label("", ls);
-        enemyHudLabel.setSize(99, 12);
+        enemyHudLabel.setFontScale(0.5f);
+        enemyHudLabel.setSize(49, 6);
         enemyHudLabel.setTouchable(Touchable.disabled);
 
         // create player sprite
-        playerSprite = new Moving(PLAYER_ORIGIN, new Vector2(70, 100), 150.f);
+        playerSprite = new Moving(PLAYER_ORIGIN, new Vector2(35, 50), 75.f);
         // create enemy sprite
-        enemySprite = new Moving(ENEMY_ORIGIN, new Vector2(240, 100), 150.f);
+        enemySprite = new Moving(ENEMY_ORIGIN, new Vector2(120, 50), 75.f);
 
         // create animations
         attackAnims = new AnimationManager[3];
@@ -155,14 +158,14 @@ public class BattleScene extends BattleUI {
         enemySprite.start();
 
         if (gameScreen.gameMap.weather == WeatherType.RAIN) {
-            factory.set(2, 40, new Vector2(Util.RAINDROP_X * 2, -200));
+            factory.set(Particle.STATIC_RAINDROP, 40, new Vector2(Util.RAINDROP_X, -100));
         } else if (gameScreen.gameMap.weather == WeatherType.HEAVY_RAIN ||
                 gameScreen.gameMap.weather == WeatherType.THUNDERSTORM) {
-            factory.set(2, 75, new Vector2(Util.RAINDROP_X * 2, -240));
+            factory.set(Particle.STATIC_RAINDROP, 75, new Vector2(Util.RAINDROP_X, -120));
         } else if (gameScreen.gameMap.weather == WeatherType.SNOW) {
-            factory.set(3, 100, new Vector2(Util.SNOWFLAKE_X * 2, -120));
+            factory.set(Particle.SNOWFLAKE, 100, new Vector2(Util.SNOWFLAKE_X, -60));
         } else if (gameScreen.gameMap.weather == WeatherType.BLIZZARD) {
-            factory.set(3, 300, new Vector2(Util.SNOWFLAKE_X + 100, -160));
+            factory.set(Particle.SNOWFLAKE, 300, new Vector2(Util.SNOWFLAKE_X + 50, -80));
         }
 
     }
@@ -172,11 +175,11 @@ public class BattleScene extends BattleUI {
      * for a new battle
      */
     public void resetPositions() {
-        playerHud.moving.origin.set(new Vector2(-145, 200));
-        enemyHud.moving.origin.set(new Vector2(400, 200));
+        playerHud.moving.origin.set(new Vector2(-72, 100));
+        enemyHud.moving.origin.set(new Vector2(200, 100));
 
-        playerSprite.origin.set(new Vector2(-96, 100));
-        enemySprite.origin.set(new Vector2(400, 100));
+        playerSprite.origin.set(new Vector2(-48, 50));
+        enemySprite.origin.set(new Vector2(200, 50));
 
         playerHud.setPosition(playerHud.moving.origin.x, playerHud.moving.origin.y);
         enemyHud.setPosition(enemyHud.moving.origin.x, enemyHud.moving.origin.y);
@@ -199,14 +202,14 @@ public class BattleScene extends BattleUI {
 
         // when enemy dies, its sprite falls off the screen
         if (player.isDead()) {
-            float dy = playerSprite.position.y - 4;
+            float dy = playerSprite.position.y - 2;
             playerSprite.position.y = dy;
-            if (playerSprite.position.y < -96) playerSprite.position.y = -96;
+            if (playerSprite.position.y < -48) playerSprite.position.y = -48;
         }
         if (battle.opponent.isDead()) {
-            float dy = enemySprite.position.y - 4;
+            float dy = enemySprite.position.y - 2;
             enemySprite.position.y = dy;
-            if (enemySprite.position.y < -96) enemySprite.position.y = -96;
+            if (enemySprite.position.y < -48) enemySprite.position.y = -48;
         }
 
         // render player and enemy sprites based on moving positions
@@ -243,10 +246,10 @@ public class BattleScene extends BattleUI {
         }
 
         // set positions relative to hud position
-        playerHpBar.setPosition(new Vector2(playerHud.getX() + 40, playerHud.getY() + 8));
-        playerHudLabel.setPosition(playerHud.getX() + 40, playerHud.getY() + 20);
-        enemyHpBar.setPosition(new Vector2(enemyHud.getX() + 8, enemyHud.getY() + 8));
-        enemyHudLabel.setPosition(enemyHud.getX() + 12, enemyHud.getY() + 20);
+        playerHpBar.setPosition(new Vector2(playerHud.getX() + 20, playerHud.getY() + 4));
+        playerHudLabel.setPosition(playerHud.getX() + 20, playerHud.getY() + 10);
+        enemyHpBar.setPosition(new Vector2(enemyHud.getX() + 4, enemyHud.getY() + 4));
+        enemyHudLabel.setPosition(enemyHud.getX() + 6, enemyHud.getY() + 10);
 
         if (player.getMoveUsed() != -1) updateBattleAnimations(player, dt);
         if (battle.opponent.getMoveUsed() != -1) updateBattleAnimations(battle.opponent, dt);
@@ -291,7 +294,7 @@ public class BattleScene extends BattleUI {
         if (renderEnemy) {
             TextureRegion r = battle.opponent.getBam().getKeyFrame(true);
             if (battle.opponent.isBoss()) {
-                gameScreen.getBatch().draw(r, enemySprite.position.x + (96 - battle.opponent.battleSize) / 2, enemySprite.position.y,
+                gameScreen.getBatch().draw(r, enemySprite.position.x + (48 - battle.opponent.battleSize) / 2, enemySprite.position.y,
                         battle.opponent.battleSize, battle.opponent.battleSize);
             }
             else {
@@ -303,17 +306,17 @@ public class BattleScene extends BattleUI {
         // player side
         if (player.getMoveUsed() != -1) {
             if (player.getMoveUsed() < 3) {
-                gameScreen.getBatch().draw(attackAnims[player.getMoveUsed()].getKeyFrame(false), 255, 115);
+                gameScreen.getBatch().draw(attackAnims[player.getMoveUsed()].getKeyFrame(false), 127, 57);
             } else if (player.getMoveUsed() == 3) {
-                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 70, 100);
+                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 35, 50);
             }
         }
         // enemy side
         if (battle.opponent.getMoveUsed() != -1) {
             if (battle.opponent.getMoveUsed() < 3) {
-                gameScreen.getBatch().draw(attackAnims[battle.opponent.getMoveUsed()].getKeyFrame(false), 85, 115);
+                gameScreen.getBatch().draw(attackAnims[battle.opponent.getMoveUsed()].getKeyFrame(false), 42, 57);
             } else if (battle.opponent.getMoveUsed() == 3) {
-                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 240, 100);
+                gameScreen.getBatch().draw(healAnim.getKeyFrame(false), 120, 50);
             }
         }
 
