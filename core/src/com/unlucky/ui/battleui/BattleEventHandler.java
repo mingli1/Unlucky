@@ -68,7 +68,7 @@ public class BattleEventHandler extends BattleUI {
 
         // create main UI
         ui = new Image(rm.dialogBox400x80);
-        ui.setSize(400, 80);
+        ui.setSize(200, 40);
         ui.setPosition(0, 0);
         ui.setTouchable(Touchable.disabled);
 
@@ -81,14 +81,14 @@ public class BattleEventHandler extends BattleUI {
         textLabel = new Label("", font);
         textLabel.setWrap(true);
         textLabel.setTouchable(Touchable.disabled);
-        textLabel.setFontScale(1.7f);
-        textLabel.setPosition(16, 12);
-        textLabel.setSize(350, 52);
+        textLabel.setFontScale(1.7f / 2);
+        textLabel.setPosition(8, 6);
+        textLabel.setSize(175, 26);
         textLabel.setAlignment(Align.topLeft);
         stage.addActor(textLabel);
 
         clickLabel = new Label("", font);
-        clickLabel.setSize(400, 240);
+        clickLabel.setSize(200, 120);
         clickLabel.setPosition(0, 0);
 
         clickLabel.addListener(new ClickListener() {
@@ -192,8 +192,8 @@ public class BattleEventHandler extends BattleUI {
             gameScreen.getBatch().setProjectionMatrix(stage.getCamera().combined);
             gameScreen.getBatch().begin();
             // render red arrow to show when a text animation cycle is complete
-            if (posSwitch) gameScreen.getBatch().draw(rm.redarrow10x9, 365, 20);
-            else gameScreen.getBatch().draw(rm.redarrow10x9, 365, 25);
+            if (posSwitch) gameScreen.getBatch().draw(rm.redarrow10x9, 182, 10);
+            else gameScreen.getBatch().draw(rm.redarrow10x9, 182, 12);
             gameScreen.getBatch().end();
         }
     }
