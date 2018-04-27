@@ -30,30 +30,14 @@ public class ParticleFactory {
     // pool
     public Pool<Particle> particlePool;
 
+    private Vector2 particleVelocity = new Vector2();
+
     // camera viewport
     private int viewWidth;
     private int viewHeight;
 
     private OrthographicCamera cam;
     private final ResourceManager rm;
-
-    public ParticleFactory(int type, int numParticles, Vector2 velocity, OrthographicCamera cam, final ResourceManager rm) {
-        this.type = type;
-        this.numParticles = numParticles;
-        this.velocity = velocity;
-        this.cam = cam;
-        this.viewWidth = (int) cam.viewportWidth;
-        this.viewHeight = (int) cam.viewportHeight;
-        this.rm = rm;
-
-        particles = new Array<Particle>();
-        particlePool = new Pool<Particle>() {
-            @Override
-            protected Particle newObject() {
-                return new Particle();
-            }
-        };
-    }
 
     public ParticleFactory(OrthographicCamera cam, final ResourceManager rm) {
         this.cam = cam;
@@ -124,22 +108,22 @@ public class ParticleFactory {
         switch (type) {
             case Particle.RAINDROP:
                 float rls = MathUtils.random(0.4f, 1.4f);
-                Vector2 rv = new Vector2(this.velocity.x,
+                particleVelocity.set(this.velocity.x,
                         Util.getDeviatedRandomValue((int) this.velocity.y, Util.RAINDROP_Y_DEVIATED));
-                AnimationManager rd = new AnimationManager(rm.raindropAnim16x16, 3, 0, 1 / 6f);
-                item.init(type, weatherParticleSpawnPosition, rv, rls, rm.raindrop, rd);
+                AnimationManager rainAnim = new AnimationManager(rm.raindropAnim16x16, 3, 0, 1 / 6f);
+                item.init(type, weatherParticleSpawnPosition, particleVelocity, rls, rm.raindrop, rainAnim);
                 break;
             case Particle.SNOWFLAKE:
                 float sls = MathUtils.random(0.3f, 1.4f);
-                Vector2 sv = new Vector2(this.velocity.x,
+                particleVelocity.set(this.velocity.x,
                         Util.getDeviatedRandomValue((int) this.velocity.y, Util.SNOWFLAKE_Y_DEVIATED));
-                item.init(type, weatherParticleSpawnPosition, sv, sls, rm.snowflake, null);
+                item.init(type, weatherParticleSpawnPosition, particleVelocity, sls, rm.snowflake, null);
                 break;
             case Particle.STATIC_RAINDROP:
                 float srls = MathUtils.random(0.4f, 1.4f);
-                Vector2 srv = new Vector2(this.velocity.x,
+                particleVelocity.set(this.velocity.x,
                     Util.getDeviatedRandomValue((int) this.velocity.y, Util.RAINDROP_Y_DEVIATED));
-                item.init(type, weatherParticleSpawnPosition, srv, srls, rm.raindrop, null);
+                item.init(type, weatherParticleSpawnPosition, particleVelocity, srls, rm.raindrop, null);
                 break;
         }
         particles.add(item);
