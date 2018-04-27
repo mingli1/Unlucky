@@ -81,69 +81,62 @@ public class Statistics {
     }
 
     /**
-     * All statistics represented by a string
-     *
+     * Returns a list of statistics descriptions
      * @return
      */
-    public String toString() {
-        return "PLAYER STATISTICS\n"
-             + "Total exp gained: " + cumulativeExp + "\n"
-             + "Total gold earned: " + cumulativeGold + "\n"
-             + "Damage taken: " + damageTaken + "\n"
-             + "HP Healed: " + hpHealed + "\n"
-             + "Number of deaths: " + numDeaths + "\n"
-             + "Number of successful enchants: " + numEnchants + "\n"
-             + "MAP STATISTICS\n"
-             + "Total number of steps: " + numSteps + "\n"
-             + "BATTLE STATISTICS\n"
-             + "Damage dealt: " + damageDealt + "\n"
-             + "Most damage in single hit: " + maxDamageSingleHit.stat + "\n"
-             + "Most damage in single battle: " + maxDamageSingleBattle.stat + "\n"
-             + "Most healing in single move: " + maxHealSingleMove.stat + "\n"
-             + "Most healing in single battle: " + maxHealSingleBattle.stat + "\n"
-             + "Number of moves missed: " + numMovesMissed + "\n"
-             + "Number of enemies defeated: " + enemiesDefeated + "\n"
-             + "Number of elites defeated: " + elitesDefeated + "\n"
-             + "Number of bosses defeated: " + bossesDefeated + "\n"
-             + "Number of elites encountered: " + eliteEncountered + "\n"
-             + "Number of bosses encountered: " + bossEncountered;
-    }
-
-    /**
-     * Returns a list of strings with line of statistics
-     *
-     * @return
-     */
-    public String[] toList() {
-        return toString().split("\\r?\\n");
-    }
-
-    /**
-     * Returns a list of strings with statistics grouped by category
-     *
-     * @return
-     */
-    public String[] toGroupedList() {
-        // 0 - player stats, 1 - map stats, 2, battle stats
+    public String[] getDescList() {
         return new String[] {
-            "Total exp gained: " + cumulativeExp + "\n"
-                + "Total gold earned: " + cumulativeGold + "\n"
-                + "Damage taken: " + damageTaken + "\n"
-                + "HP Healed: " + hpHealed + "\n"
-                + "Number of deaths: " + numDeaths + "\n"
-                + "Number of successful enchants: " + numEnchants,
-            "Total number of steps: " + numSteps,
-            "Damage dealt: " + damageDealt + "\n"
-                + "Most damage in single hit: " + maxDamageSingleHit.stat + "\n"
-                + "Most damage in single battle: " + maxDamageSingleBattle.stat + "\n"
-                + "Most healing in single move: " + maxHealSingleMove.stat + "\n"
-                + "Most healing in single battle: " + maxHealSingleBattle.stat + "\n"
-                + "Number of moves missed: " + numMovesMissed + "\n"
-                + "Number of enemies defeated: " + enemiesDefeated + "\n"
-                + "Number of elites defeated: " + elitesDefeated + "\n"
-                + "Number of bosses defeated: " + bossesDefeated + "\n"
-                + "Number of elites encountered: " + eliteEncountered + "\n"
-                + "Number of bosses encountered: " + bossEncountered
+            "player statistics",
+            "Total exp gained: ",
+            "Total gold earned: ",
+            "Damage taken: ",
+            "HP Healed: ",
+            "Number of deaths: ",
+            "Number of successful enchants: ",
+            "map statistics",
+            "Total number of steps: ",
+            "battle statistics",
+            "Damage dealt: ",
+            "Most damage in single hit: ",
+            "Most damage in single battle: ",
+            "Most healing in single move: ",
+            "Most healing in single battle: ",
+            "Number of moves missed: ",
+            "Number of enemies defeated: ",
+            "Number of elites defeated: ",
+            "Number of bosses defeated: ",
+            "Number of elites encountered: ",
+            "Number of bosses encountered: "
+        };
+    }
+
+    /**
+     * Returns a list of statistics numbers
+     * @return
+     */
+    public String[] getStatsList() {
+        return new String[] {
+            "",
+            "" + cumulativeExp,
+            "" + cumulativeGold,
+            "" + damageTaken,
+            "" + hpHealed,
+            "" + numDeaths,
+            "" + numEnchants,
+            "",
+            "" + numSteps,
+            "",
+            "" + damageDealt,
+            "" + maxDamageSingleHit.stat,
+            "" + maxDamageSingleBattle.stat,
+            "" + maxHealSingleMove.stat,
+            "" + maxHealSingleBattle.stat,
+            "" + numMovesMissed,
+            "" + enemiesDefeated,
+            "" + elitesDefeated,
+            "" + bossesDefeated,
+            "" + eliteEncountered,
+            "" + bossEncountered
         };
     }
 
