@@ -36,7 +36,7 @@ public class BattleScene extends BattleUI {
     // player
     private MovingImageUI playerHud;
     private HealthBar playerHpBar;
-    private Label playerHudLabel;
+    public Label playerHudLabel;
     // enemy
     private MovingImageUI enemyHud;
     private HealthBar enemyHpBar;
@@ -129,8 +129,12 @@ public class BattleScene extends BattleUI {
     }
 
     public void toggle(boolean toggle) {
+        gameScreen.getGame().fps.setPosition(5, 115);
+        stage.addActor(gameScreen.getGame().fps);
+
         playerHud.setVisible(toggle);
         playerHudLabel.setVisible(toggle);
+        playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
         playerHud.start();
 
         if (toggle) {
@@ -148,6 +152,7 @@ public class BattleScene extends BattleUI {
                 else if (diff == 1 || diff == 2) enemyHudLabel.setStyle(stronger);
                 else if (diff >= 3) enemyHudLabel.setStyle(strongest);
             }
+            enemyHudLabel.setText(battle.opponent.getId());
         }
 
         enemyHud.setVisible(toggle);
@@ -236,20 +241,14 @@ public class BattleScene extends BattleUI {
         playerHpBar.update(dt);
         enemyHpBar.update(dt);
 
-        playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
-        // show enemy level
-        if (battle.opponent.isBoss()) {
-            enemyHudLabel.setText(battle.opponent.getId());
+        if (playerHud.getX() != playerHud.moving.target.x - 1 &&
+            enemyHud.getX() != enemyHud.moving.target.x - 1) {
+            // set positions relative to hud position
+            playerHpBar.setPosition(playerHud.getX() + 20, playerHud.getY() + 4);
+            playerHudLabel.setPosition(playerHud.getX() + 20, playerHud.getY() + 10);
+            enemyHpBar.setPosition(enemyHud.getX() + 4, enemyHud.getY() + 4);
+            enemyHudLabel.setPosition(enemyHud.getX() + 6, enemyHud.getY() + 10);
         }
-        else {
-            enemyHudLabel.setText(battle.opponent.getId());
-        }
-
-        // set positions relative to hud position
-        playerHpBar.setPosition(new Vector2(playerHud.getX() + 20, playerHud.getY() + 4));
-        playerHudLabel.setPosition(playerHud.getX() + 20, playerHud.getY() + 10);
-        enemyHpBar.setPosition(new Vector2(enemyHud.getX() + 4, enemyHud.getY() + 4));
-        enemyHudLabel.setPosition(enemyHud.getX() + 6, enemyHud.getY() + 10);
 
         if (player.getMoveUsed() != -1) updateBattleAnimations(player, dt);
         if (battle.opponent.getMoveUsed() != -1) updateBattleAnimations(battle.opponent, dt);

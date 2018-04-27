@@ -283,6 +283,7 @@ public class BattleEventHandler extends BattleUI {
      */
     private boolean applyPlayerDamage() {
         player.applyDamage();
+        gameScreen.battleUIHandler.battleScene.playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
         // player dead
         if (player.isDead()) {
             // reset animation
