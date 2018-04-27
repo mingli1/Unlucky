@@ -2,9 +2,12 @@ package com.unlucky.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.Vector2;
 import com.unlucky.entity.Player;
+import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.*;
 
@@ -40,6 +43,9 @@ public class Unlucky extends Game {
     public LevelSelectScreen levelSelectScreen;
     public StatisticsScreen statisticsScreen;
 
+    // main bg
+    public Background[] menuBackground;
+
 	public void create() {
         batch = new SpriteBatch();
         rm = new ResourceManager();
@@ -50,6 +56,23 @@ public class Unlucky extends Game {
         worldSelectScreen = new WorldSelectScreen(this, rm);
         levelSelectScreen = new LevelSelectScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
+
+        // create parallax background
+        menuBackground = new Background[3];
+
+        // ordered by depth
+        // sky
+        menuBackground[0] = new Background(rm.titleScreenBackground[0],
+            (OrthographicCamera) menuScreen.getStage().getCamera(), new Vector2(0, 0));
+        menuBackground[0].setVector(0, 0);
+        // back clouds
+        menuBackground[1] = new Background(rm.titleScreenBackground[2],
+            (OrthographicCamera) menuScreen.getStage().getCamera(), new Vector2(0.3f, 0));
+        menuBackground[1].setVector(20, 0);
+        // front clouds
+        menuBackground[2] = new Background(rm.titleScreenBackground[1],
+            (OrthographicCamera) menuScreen.getStage().getCamera(), new Vector2(0.3f, 0));
+        menuBackground[2].setVector(60, 0);
 
         // profiler
         GLProfiler.enable();
