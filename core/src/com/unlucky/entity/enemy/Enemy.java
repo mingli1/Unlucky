@@ -32,7 +32,7 @@ public abstract class Enemy extends Entity {
         super(id, position, tileMap, rm);
         moveset = new Moveset(rm);
         statusEffects = new StatusSet(false, rm);
-        battleSize = 96;
+        battleSize = 48;
         numRespawn = 0;
     }
 

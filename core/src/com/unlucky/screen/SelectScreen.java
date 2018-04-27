@@ -4,10 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -15,7 +13,6 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 
@@ -53,13 +50,6 @@ public abstract class SelectScreen extends AbstractScreen {
 
     public SelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
-
-        // init exit button
-        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
-        style.imageUp = new TextureRegionDrawable(rm.menuExitButton[0][0]);
-        style.imageDown = new TextureRegionDrawable(rm.menuExitButton[1][0]);
-        exitButton = new ImageButton(style);
-        exitButton.setSize(18, 18);
 
         // init enter button
         enterButtonGroup = new Group();
@@ -111,6 +101,9 @@ public abstract class SelectScreen extends AbstractScreen {
 
     @Override
     public void show() {
+        game.fps.setPosition(5, 115);
+        stage.addActor(game.fps);
+
         Gdx.input.setInputProcessor(stage);
         renderBatch = false;
         batchFade = true;
@@ -160,6 +153,12 @@ public abstract class SelectScreen extends AbstractScreen {
      * Handles the position and events of the exit button
      */
     protected void handleExitButton(final Screen screen) {
+        // init exit button
+        ImageButton.ImageButtonStyle style = new ImageButton.ImageButtonStyle();
+        style.imageUp = new TextureRegionDrawable(rm.menuExitButton[0][0]);
+        style.imageDown = new TextureRegionDrawable(rm.menuExitButton[1][0]);
+        exitButton = new ImageButton(style);
+        exitButton.setSize(18, 18);
         exitButton.setPosition(177, 99);
         stage.addActor(exitButton);
 
@@ -167,7 +166,8 @@ public abstract class SelectScreen extends AbstractScreen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                setScreen(screen);
+                game.menuScreen.transitionIn = 0;
+                setFadeScreen(screen);
             }
         });
     }

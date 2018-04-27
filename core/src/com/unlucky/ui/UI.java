@@ -37,7 +37,7 @@ public abstract class UI implements Disposable {
         this.player = player;
         this.rm = rm;
 
-        viewport = new ExtendViewport(Unlucky.V_WIDTH * 2, Unlucky.V_HEIGHT * 2, new OrthographicCamera());
+        viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, gameScreen.getBatch());
 
         shapeRenderer = new ShapeRenderer();

@@ -3,6 +3,7 @@ package com.unlucky.resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -129,14 +130,14 @@ public class ResourceManager {
         sprites16x16 = atlas.findRegion("16x16_sprites").split(16, 16);
         tiles16x16 = atlas.findRegion("16x16_tiles").split(16, 16);
         atiles16x16 = atlas.findRegion("16x16_atiles").split(16, 16);
-        items20x20 = atlas.findRegion("20x20_items").split(20, 20);
-        battleSprites96x96 = atlas.findRegion("96x96_battle_sprites").split(96, 96);
-        battleBackgrounds400x240 = atlas.findRegion("battle_bgs").split(400, 240);
+        items20x20 = atlas.findRegion("20x20_items").split(10, 10);
+        battleSprites96x96 = atlas.findRegion("96x96_battle_sprites").split(48, 48);
+        battleBackgrounds400x240 = atlas.findRegion("battle_bgs").split(200, 120);
         shadow11x6 = atlas.findRegion("11x6_shadow");
         redarrow10x9 = atlas.findRegion("10x9_redarrow");
-        battleAttacks64x64 = atlas.findRegion("64x64_battle_attacks").split(64, 64);
-        battleHeal96x96 = atlas.findRegion("96x96_battle_heal").split(96, 96);
-        levelUp96x96 = atlas.findRegion("96x96_level_up").split(96, 96);
+        battleAttacks64x64 = atlas.findRegion("64x64_battle_attacks").split(32, 32);
+        battleHeal96x96 = atlas.findRegion("96x96_battle_heal").split(48, 48);
+        levelUp96x96 = atlas.findRegion("96x96_level_up").split(48, 48);
         levelupscreen400x240 = atlas.findRegion("level_up");
         raindrop = atlas.findRegion("raindrop");
         raindropAnim16x16 = atlas.findRegion("raindrop_anim").split(16, 16);
@@ -151,29 +152,32 @@ public class ResourceManager {
         playButton = atlas.findRegion("play_button").split(80, 40);
         menuButtons = atlas.findRegion("menu_buttons").split(16, 16);
         worldSelectBackgrounds = atlas.findRegion("stage_select_bg").split(200, 120)[0];
-        menuExitButton = atlas.findRegion("menu_exit_button").split(28, 28);
-        enterButton = atlas.findRegion("enter_button").split(158, 56);
+        menuExitButton = atlas.findRegion("menu_exit_button").split(14, 14);
+        enterButton = atlas.findRegion("enter_button").split(79, 28);
 
         // light
         darkness = atlas.findRegion("darkness");
         battledarkness = atlas.findRegion("battle_darkness");
 
         // ui
-        dirpad20x20 = atlas.findRegion("dir_pad").split(40, 40);
-        movebutton145x50 = atlas.findRegion("move_buttons").split(145, 50);
-        stdmedbutton110x50 = atlas.findRegion("standard_med_button").split(110, 50);
+        dirpad20x20 = atlas.findRegion("dir_pad").split(20, 20);
+        movebutton145x50 = atlas.findRegion("move_buttons").split(72, 25);
+        stdmedbutton110x50 = atlas.findRegion("standard_med_button").split(55, 25);
         dialogBox400x80 = atlas.findRegion("dialog_box");
         playerhpbar145x40 = atlas.findRegion("player_hp_bar");
         enemyhpbar145x40 = atlas.findRegion("enemy_hp_bar");
-        optionbutton32x32 = atlas.findRegion("option_buttons").split(32, 32);
+        optionbutton32x32 = atlas.findRegion("option_buttons").split(16, 16);
         inventoryui372x212 = atlas.findRegion("inv_ui");
-        exitbutton18x18 = atlas.findRegion("exit_button").split(18, 18);
+        exitbutton18x18 = atlas.findRegion("exit_button").split(9, 9);
         selectedslot28x28 = atlas.findRegion("selected_slot");
-        invbuttons92x28 = atlas.findRegion("inv_buttons").split(92, 28);
-        statuseffects20x20 = atlas.findRegion("20x20status_effects").split(20, 20)[0];
+        invbuttons92x28 = atlas.findRegion("inv_buttons").split(46, 14);
+        statuseffects20x20 = atlas.findRegion("20x20status_effects").split(10, 10)[0];
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
+
+        NinePatch window = skin.getPatch("default-window");
+        //window.scale(2.0f, 2.0f);
 
         loadWorlds();
         loadMoves();

@@ -75,6 +75,9 @@ public class StatisticsScreen extends MenuExtensionScreen {
 
     @Override
     public void show() {
+        game.fps.setPosition(2, 2);
+        stage.addActor(game.fps);
+
         super.showSlide(true);
         // update statistics every screen show
         statsDescs = game.player.stats.getDescList();

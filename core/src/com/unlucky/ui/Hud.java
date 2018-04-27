@@ -2,14 +2,11 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
@@ -42,28 +39,11 @@ public class Hud extends UI {
     // option buttons: inventoryUI and settings
     private ImageButton[] optionButtons;
 
-    // debug
-    private Label util;
-    private Label smove;
-
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
         createOptionButtons();
-
-        BitmapFont f = rm.pixel10;
-        Label.LabelStyle lp = new Label.LabelStyle(f, new Color(1, 1, 1, 1));
-        util = new Label("", lp);
-        util.setPosition(10, 220);
-        util.setTouchable(Touchable.disabled);
-
-        smove = new Label("", lp);
-        smove.setPosition(150, 30);
-        smove.setTouchable(Touchable.disabled);
-
-        stage.addActor(util);
-        stage.addActor(smove);
     }
 
     public void update(float dt) {
@@ -107,11 +87,6 @@ public class Hud extends UI {
         stage.act(dt);
         stage.draw();
 
-        util.setText(String.valueOf(Gdx.graphics.getFramesPerSecond()) + " fps\n" +
-                "(" + (int) (player.getPosition().x / 16) + ", " +
-                (int) (player.getPosition().y / 16) + ")");
-
-        smove.setText("Smoveset: \n" + player.smoveset.toString());
     }
 
     /**
@@ -120,6 +95,10 @@ public class Hud extends UI {
      * @param toggle
      */
     public void toggle(boolean toggle) {
+        if (toggle) {
+            gameScreen.getGame().fps.setPosition(5, 115);
+            stage.addActor(gameScreen.getGame().fps);
+        }
         for (int i = 0; i < 4; i++) {
             dirPad[i].setDisabled(!toggle);
             dirPad[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
@@ -169,7 +148,7 @@ public class Hud extends UI {
         ImageButton.ImageButtonStyle[] styles = rm.loadImageButtonStyles(2, rm.optionbutton32x32);
         for (int i = 0; i < 2; i++) {
             optionButtons[i] = new ImageButton(styles[i]);
-            optionButtons[i].setPosition(310 + (i * 50), 200);
+            optionButtons[i].setPosition(155 + (i * 25), 100);
             stage.addActor(optionButtons[i]);
         }
         handleOptionEvents();
@@ -417,6 +396,7 @@ public class Hud extends UI {
             player.smoveset.clear();
         }
         if (eq(cmd, "/exit")) {
+            gameScreen.getGame().menuScreen.transitionIn = 0;
             gameScreen.getGame().setScreen(gameScreen.getGame().menuScreen);
         }
     }

@@ -2,10 +2,12 @@ package com.unlucky.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.entity.Player;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
@@ -46,10 +48,17 @@ public class Unlucky extends Game {
     // main bg
     public Background[] menuBackground;
 
+    // debugging
+    public Label fps;
+
 	public void create() {
         batch = new SpriteBatch();
         rm = new ResourceManager();
         player = new Player("player", rm);
+
+        // debugging
+        fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
+        fps.setFontScale(0.5f);
 
         menuScreen = new MenuScreen(this, rm);
         gameScreen = new GameScreen(this, rm);
@@ -81,7 +90,7 @@ public class Unlucky extends Game {
 	}
 
 	public void render() {
-        Gdx.graphics.setTitle(TITLE + " | " + Gdx.graphics.getFramesPerSecond() + " fps");
+        fps.setText(Gdx.graphics.getFramesPerSecond() + " fps");
         super.render();
 	}
 

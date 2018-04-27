@@ -95,25 +95,25 @@ public class LevelUpScreen extends UI {
 
         for (int i = 0; i < statNames.length; i++) {
             statsDescs[i] = new Label(statNames[i], stdWhite);
-            statsDescs[i].setSize(20, 20);
+            statsDescs[i].setSize(10, 10);
             statsDescs[i].setFontScale(1.3f / 2);
-            statsDescs[i].setPosition(200, 35 + (i * 25));
+            statsDescs[i].setPosition(100, 17 + (i * 12));
             statsDescs[i].setAlignment(Align.left);
             statsDescs[i].setTouchable(Touchable.disabled);
             stage.addActor(statsDescs[i]);
 
             stats[i] = new Label("1330", blue);
-            stats[i].setSize(20, 20);
+            stats[i].setSize(10, 10);
             stats[i].setFontScale(1.3f / 2);
-            stats[i].setPosition(280, 35 + (i * 25));
+            stats[i].setPosition(140, 17 + (i * 12));
             stats[i].setAlignment(Align.left);
             stats[i].setTouchable(Touchable.disabled);
             stage.addActor(stats[i]);
 
             increases[i] = new Label("+20", yellow);
-            increases[i].setSize(20, 20);
+            increases[i].setSize(10, 10);
             increases[i].setFontScale(1.3f / 2);
-            increases[i].setPosition(340, 35 + (i * 25));
+            increases[i].setPosition(170, 17 + (i * 12));
             increases[i].setAlignment(Align.left);
             increases[i].setTouchable(Touchable.disabled);
             stage.addActor(increases[i]);
@@ -121,6 +121,7 @@ public class LevelUpScreen extends UI {
 
         clickToContinue = new Label("Click to continue", stdWhite);
         clickToContinue.setSize(200, 10);
+        clickToContinue.setFontScale(0.5f);
         clickToContinue.setPosition(0, 2);
         clickToContinue.setAlignment(Align.center);
         clickToContinue.setTouchable(Touchable.disabled);

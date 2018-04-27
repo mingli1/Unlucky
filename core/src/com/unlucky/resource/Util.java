@@ -25,6 +25,11 @@ public class Util {
     public static final int SNOWFLAKE_X = 30;
     public static final int SNOWFLAKE_Y_DEVIATED = 30;
 
+    public static final Vector2 RAIN_VELOCITY = new Vector2(Util.RAINDROP_X, -100);
+    public static final Vector2 HEAVY_RAIN_VELOCITY = new Vector2(Util.RAINDROP_X, -120);
+    public static final Vector2 SNOW_VELOCITY = new Vector2(Util.SNOWFLAKE_X, -60);
+    public static final Vector2 BLIZZARD_VELOCITY = new Vector2(Util.SNOWFLAKE_X + 50, -80);
+
     // Animation indexes
     public static final int PLAYER_WALKING = 0;
 

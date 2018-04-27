@@ -72,6 +72,7 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
+        hud.toggle(true);
     }
 
     /**
@@ -149,7 +150,6 @@ public class GameScreen extends AbstractScreen {
         {
             // map camera
             game.batch.setProjectionMatrix(cam.combined);
-
             // render map and player
             gameMap.render(dt, game.batch, cam);
         }
@@ -162,6 +162,8 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
         if (currentEvent == EventState.INVENTORY) inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
+
+        //game.profile("GameScreen");
     }
 
     public void dispose() {

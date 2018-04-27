@@ -88,13 +88,40 @@ public abstract class AbstractScreen implements Screen {
 
     /**
      * Switches to a new screen while handling fading buffer
+     * Fade transition
+     *
+     * @param screen
      */
-    public void setScreen(final Screen screen) {
+    public void setFadeScreen(final Screen screen) {
         if (clickable) {
             clickable = false;
             batchFade = false;
             // fade out animation
             stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        clickable = true;
+                        game.setScreen(screen);
+                    }
+                })));
+        }
+    }
+
+    /**
+     * Switches to a new screen while handling fading buffer
+     * Slide transition either to the left or right
+     *
+     * @param screen
+     * @param right
+     */
+    public void setSlideScreen(final Screen screen, boolean right) {
+        if (clickable) {
+            clickable = false;
+            batchFade = false;
+            // slide animation
+            stage.addAction(Actions.sequence(
+                Actions.moveBy(right ? -Unlucky.V_WIDTH : Unlucky.V_WIDTH, 0, 0.3f),
                 Actions.run(new Runnable() {
                     @Override
                     public void run() {

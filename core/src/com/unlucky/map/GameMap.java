@@ -78,20 +78,16 @@ public class GameMap {
     public void setWeather(WeatherType weather) {
         this.weather = weather;
         if (weather == WeatherType.RAIN) {
-            particleFactory.set(Particle.RAINDROP, 40,
-                    new Vector2(Util.RAINDROP_X, -100));
+            particleFactory.set(Particle.RAINDROP, 40, Util.RAIN_VELOCITY);
         }
         else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
-            particleFactory.set(Particle.RAINDROP, 75,
-                    new Vector2(Util.RAINDROP_X, -120));
+            particleFactory.set(Particle.RAINDROP, 75, Util.HEAVY_RAIN_VELOCITY);
         }
         else if (weather == WeatherType.SNOW) {
-            particleFactory.set(Particle.SNOWFLAKE, 100,
-                    new Vector2(Util.SNOWFLAKE_X, -60));
+            particleFactory.set(Particle.SNOWFLAKE, 100, Util.SNOW_VELOCITY);
         }
         else if (weather == WeatherType.BLIZZARD) {
-            particleFactory.set(Particle.SNOWFLAKE, 300,
-                    new Vector2(Util.SNOWFLAKE_X + 50, -80));
+            particleFactory.set(Particle.SNOWFLAKE, 300, Util.BLIZZARD_VELOCITY);
         }
     }
 

@@ -700,6 +700,9 @@ public class InventoryUI extends UI {
      * Initializes the inventoryUI screen
      */
     public void start() {
+        gameScreen.getGame().fps.setPosition(2, 2);
+        stage.addActor(gameScreen.getGame().fps);
+
         // ui slides left to right
         ui.moving.origin.set(new Vector2(200, 7));
         ui.moving.target.set(new Vector2(7, 7));
