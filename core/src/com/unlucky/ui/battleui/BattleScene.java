@@ -180,11 +180,11 @@ public class BattleScene extends BattleUI {
      * for a new battle
      */
     public void resetPositions() {
-        playerHud.moving.origin.set(new Vector2(-72, 100));
-        enemyHud.moving.origin.set(new Vector2(200, 100));
+        playerHud.moving.origin.set(-72, 100);
+        enemyHud.moving.origin.set(200, 100);
 
-        playerSprite.origin.set(new Vector2(-48, 50));
-        enemySprite.origin.set(new Vector2(200, 50));
+        playerSprite.origin.set(-48, 50);
+        enemySprite.origin.set(200, 50);
 
         playerHud.setPosition(playerHud.moving.origin.x, playerHud.moving.origin.y);
         enemyHud.setPosition(enemyHud.moving.origin.x, enemyHud.moving.origin.y);
