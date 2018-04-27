@@ -99,9 +99,9 @@ public class StatusSet {
         for (int i = 0; i < effects.size; i++) {
             StatusEffect s = effects.get(i);
             if (player) {
-                if (s != null) batch.draw(s.icon, 2 + (i * 22), 180);
+                if (s != null) batch.draw(s.icon, 1 + (i * 11), 90);
             } else {
-                if (s != null) batch.draw(s.icon, 378 - (i * 22), 180);
+                if (s != null) batch.draw(s.icon, 189 - (i * 11), 90);
             }
         }
     }
