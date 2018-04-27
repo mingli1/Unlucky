@@ -95,7 +95,7 @@ public class StatisticsScreen extends MenuExtensionScreen {
         Label.LabelStyle[] headerStyles = new Label.LabelStyle[] {
             new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1)),
             new Label.LabelStyle(rm.pixel10, new Color(0, 195 / 255.f, 0, 1)),
-            new Label.LabelStyle(rm.pixel10, new Color(200 / 255.f, 30 / 255.f, 0, 1))
+            new Label.LabelStyle(rm.pixel10, new Color(230 / 255.f, 30 / 255.f, 0, 1))
         };
         Label.LabelStyle statStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
 
@@ -136,7 +136,7 @@ public class StatisticsScreen extends MenuExtensionScreen {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
         scrollPane.layout();
-        scrollTable.add(scrollPane).size(250, 84).fill();
+        scrollTable.add(scrollPane).size(250, 80).fill();
         scrollTable.setPosition(-30, -8);
     }
 
