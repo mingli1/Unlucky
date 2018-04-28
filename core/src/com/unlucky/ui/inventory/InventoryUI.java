@@ -36,6 +36,11 @@ import com.unlucky.ui.UI;
  */
 public class InventoryUI extends UI {
 
+    // whether or not the player is in battle or in the menu screen
+    // if in battle, the player cannot enchant, sell, or equip items and can only use potions
+    // if in menu, the player can fully access the inventory
+    private boolean inBattle = false;
+
     private boolean ended = false;
 
     // UI
@@ -79,10 +84,15 @@ public class InventoryUI extends UI {
     private int prevX, prevY;
     private boolean itemSelected = false;
     private Item currentItem;
-    private boolean showTooltipAfterEnchant = false;
+
+    public InventoryUI(GameScreen gameScreen, Player player, ResourceManager rm) {
+        this(gameScreen, null, player, rm);
+        inBattle = false;
+    }
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
+        inBattle = true;
 
         ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
         ui.setTouchable(Touchable.enabled);
@@ -288,7 +298,7 @@ public class InventoryUI extends UI {
                         int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                        if (item.equipped) {
+                        if (item.equipped && inBattle) {
                             if (INVENTORY_AREA.contains(ax, ay)) {
                                 int hi = getHoveredIndex(ax, ay);
                                 if (hi == -1)
@@ -298,6 +308,7 @@ public class InventoryUI extends UI {
                                         player.inventory.addItemAtIndex(item, hi);
                                         item.equipped = false;
                                         player.unequip(item);
+                                        updateText();
                                     }
                                     else {
                                         player.equips.addEquip(item);
@@ -311,17 +322,18 @@ public class InventoryUI extends UI {
                         else {
                             // dropping into equips slots
                             if (EQUIPS_AREA.contains(ax, ay)) {
-                                if (item.type > 1) {
+                                if (item.type > 1 && inBattle) {
                                     item.equipped = true;
                                     player.equip(item);
+                                    updateText();
                                     if (!player.equips.addEquip(item)) {
                                         // replace the equip with the item of same type
                                         Item swap = player.equips.removeEquip(item.type - 2);
                                         swap.equipped = false;
                                         player.unequip(swap);
                                         player.equips.addEquip(item);
-                                        //player.inventory.removeItem(item.index);
                                         player.inventory.addItemAtIndex(swap, item.index);
+                                        updateText();
                                     }
                                 } else {
                                     player.inventory.addItemAtIndex(item, item.index);
@@ -373,6 +385,7 @@ public class InventoryUI extends UI {
                                 itemSelected = true;
                                 currentItem = item;
                                 showSelectedSlot(item);
+                                if (inBattle) toggleInventoryButtons(true);
                                 tooltip.toFront();
                                 Vector2 tpos = getTooltipCoords(item);
                                 // make sure items at the bottom don't get covered by the tooltip
@@ -400,13 +413,14 @@ public class InventoryUI extends UI {
                                 consume();
                             }
                             // equip items with double click
-                            else if (item.type > 1) {
+                            else if (item.type > 1 && inBattle) {
                                 unselectItem();
                                 selectedSlot.setVisible(false);
                                 if (!item.equipped) {
                                     item.equipped = true;
                                     player.equip(item);
                                     player.inventory.removeItem(item.index);
+                                    updateText();
                                     if (!player.equips.addEquip(item)) {
                                         // replace the equip with the item of same type
                                         Item swap = player.equips.removeEquip(item.type - 2);
@@ -414,6 +428,7 @@ public class InventoryUI extends UI {
                                         player.unequip(swap);
                                         player.equips.addEquip(item);
                                         player.inventory.addItemAtIndex(swap, item.index);
+                                        updateText();
                                     }
                                 }
                                 // double clicking an equipped item unequips it and places it
@@ -426,6 +441,7 @@ public class InventoryUI extends UI {
                                         item.equipped = false;
                                         player.unequip(item);
                                     }
+                                    updateText();
                                 }
                             }
                         }
@@ -511,6 +527,7 @@ public class InventoryUI extends UI {
                                 player.inventory.items[currentItem.index].actor.remove();
                                 player.inventory.removeItem(currentItem.index);
                                 unselectItem();
+                                updateText();
                             }
                         }
 
@@ -542,7 +559,7 @@ public class InventoryUI extends UI {
 
                 @Override
                 protected void result(Object object) {
-                    if (object.equals("next")) showTooltipAfterEnchant = true;
+                    if (object.equals("next")) tooltip.setVisible(true);
                 }
 
             }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -584,9 +601,7 @@ public class InventoryUI extends UI {
 
                     @Override
                     protected void result(Object object) {
-                        if (object.equals("next")) {
-                            showTooltipAfterEnchant = true;
-                        }
+                        if (object.equals("next")) tooltip.setVisible(true);
                     }
 
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -617,6 +632,7 @@ public class InventoryUI extends UI {
                     player.inventory.items[currentItem.index].actor.remove();
                     player.inventory.removeItem(currentItem.index);
                     unselectItem();
+                    updateText();
                 }
             }
 
@@ -627,7 +643,7 @@ public class InventoryUI extends UI {
         itemSelected = false;
         currentItem = null;
         selectedSlot.setVisible(false);
-        invButtonLabels[1].setText("SELL");
+        toggleInventoryButtons(false);
         tooltip.hide();
     }
 
@@ -703,14 +719,17 @@ public class InventoryUI extends UI {
         gameScreen.getGame().fps.setPosition(2, 2);
         stage.addActor(gameScreen.getGame().fps);
 
-        // ui slides left to right
-        ui.moving.origin.set(new Vector2(200, 7));
-        ui.moving.target.set(new Vector2(7, 7));
-        ui.start();
+        if (inBattle) {
+            // ui slides left to right
+            ui.moving.origin.set(200, 7);
+            ui.moving.target.set(7, 7);
+            ui.start();
+        }
 
         exitButton.setDisabled(false);
         exitButton.setTouchable(Touchable.enabled);
 
+        updateText();
         addInventory();
         addEquips();
 
@@ -729,12 +748,14 @@ public class InventoryUI extends UI {
         exitButton.setDisabled(true);
         exitButton.setTouchable(Touchable.disabled);
 
-        // ui slides off screen right to left
-        ui.moving.target.set(new Vector2(200, 7));
-        ui.moving.origin.set(new Vector2(7, 7));
-        ui.start();
+        if (inBattle) {
+            // ui slides off screen right to left
+            ui.moving.target.set(200, 7);
+            ui.moving.origin.set(7, 7);
+            ui.start();
 
-        ended = true;
+            ended = true;
+        }
     }
 
     /**
@@ -748,16 +769,10 @@ public class InventoryUI extends UI {
         ended = false;
     }
 
-    public void update(float dt) {
-        ui.update(dt);
-        if (ended && ui.getX() == 200 && ui.getY() == 7) {
-            next();
-        }
-
-        // update bars
-        hpBarWidth = (int) (maxBarWidth / ((float) player.getMaxHp() / player.getHp()));
-        expBarWidth = (int) (maxBarWidth / ((float) player.getMaxExp() / player.getExp()));
-
+    /**
+     * Updates the player's stats and gold
+     */
+    private void updateText() {
         // update all text
         headers[0].setText("LV. " + player.getLevel() + " PLAYER");
         hp.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
@@ -765,45 +780,13 @@ public class InventoryUI extends UI {
         accuracy.setText("ACCURACY: " + player.getAccuracy() + "%");
         exp.setText("EXP: " + player.getExp() + "/" + player.getMaxExp());
         gold.setText("GOLD: " + player.getGold());
+    }
 
-        // update all positions
-        exitButton.setPosition(ui.getX() + 181, ui.getY() + 101);
-        headers[0].setPosition(ui.getX() + 8, ui.getY() + 96);
-        headers[1].setPosition(ui.getX() + 8, ui.getY() + 55);
-        headers[2].setPosition(ui.getX() + 84, ui.getY() + 96);
-        hp.setPosition(ui.getX() + 8, ui.getY() + 91);
-        damage.setPosition(ui.getX() + 8, ui.getY() + 74);
-        accuracy.setPosition(ui.getX() + 8, ui.getY() + 68);
-        exp.setPosition(ui.getX() + 8, ui.getY() + 83);
-        gold.setPosition(ui.getX() + 140, ui.getY() + 96);
-
-        for (int i = 0; i < 2; i++) {
-            invButtons[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
-            invButtonLabels[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
-        }
-
-        if (!dragging) {
-            // update inventory positions
-            for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-                Item item = player.inventory.getItem(i);
-                int x = i % Inventory.NUM_COLS;
-                int y = i / Inventory.NUM_COLS;
-                if (item != null) {
-                    item.actor.setPosition(ui.getX() + 86 + (x * 16), ui.getY() + (58 - (y * 16)));
-                }
-            }
-            // update equips positions
-            for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
-                float x = player.equips.positions[i].x;
-                float y = player.equips.positions[i].y;
-                if (player.equips.getEquipAt(i) != null) {
-                    player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
-                }
-            }
-        }
-
-        // enable inventory buttons when item is selected
-        if (itemSelected && !currentItem.equipped) {
+    /**
+     * Toggles inventory buttons if in battle and an item is selected or unselected
+     */
+    private void toggleInventoryButtons(boolean toggle) {
+        if (toggle) {
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setTouchable(Touchable.enabled);
                 if (currentItem.type < 2) {
@@ -821,11 +804,54 @@ public class InventoryUI extends UI {
                 invButtonLabels[1].setText("SELL");
             }
         }
+    }
 
-        if (showTooltipAfterEnchant) {
-            tooltip.setVisible(true);
-            showTooltipAfterEnchant = false;
+    public void update(float dt) {
+        ui.update(dt);
+        if (ended && ui.getX() == 200) {
+            next();
         }
+        else {
+            // update all positions
+            exitButton.setPosition(ui.getX() + 181, ui.getY() + 101);
+            headers[0].setPosition(ui.getX() + 8, ui.getY() + 96);
+            headers[1].setPosition(ui.getX() + 8, ui.getY() + 55);
+            headers[2].setPosition(ui.getX() + 84, ui.getY() + 96);
+            hp.setPosition(ui.getX() + 8, ui.getY() + 91);
+            damage.setPosition(ui.getX() + 8, ui.getY() + 74);
+            accuracy.setPosition(ui.getX() + 8, ui.getY() + 68);
+            exp.setPosition(ui.getX() + 8, ui.getY() + 83);
+            gold.setPosition(ui.getX() + 140, ui.getY() + 96);
+
+            for (int i = 0; i < 2; i++) {
+                invButtons[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
+                invButtonLabels[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
+            }
+
+            if (!dragging) {
+                // update inventory positions
+                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                    Item item = player.inventory.getItem(i);
+                    int x = i % Inventory.NUM_COLS;
+                    int y = i / Inventory.NUM_COLS;
+                    if (item != null) {
+                        item.actor.setPosition(ui.getX() + 86 + (x * 16), ui.getY() + (58 - (y * 16)));
+                    }
+                }
+                // update equips positions
+                for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+                    float x = player.equips.positions[i].x;
+                    float y = player.equips.positions[i].y;
+                    if (player.equips.getEquipAt(i) != null) {
+                        player.equips.getEquipAt(i).actor.setPosition(ui.getX() + x, ui.getY() + y);
+                    }
+                }
+            }
+        }
+
+        // update bars
+        hpBarWidth = (int) (maxBarWidth / ((float) player.getMaxHp() / player.getHp()));
+        expBarWidth = (int) (maxBarWidth / ((float) player.getMaxExp() / player.getExp()));
     }
 
     public void render(float dt) {
