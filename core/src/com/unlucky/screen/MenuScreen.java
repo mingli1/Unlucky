@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
@@ -46,6 +47,16 @@ public class MenuScreen extends MenuExtensionScreen {
 
     private static final int NUM_BUTTONS = 6;
 
+    // Credits Screen box
+    private Image dark;
+    private Group credits;
+    private Image frame;
+    private Label copyright;
+    private Label github;
+    private Label youtube;
+    private Image[] creditsIcons;
+    private ImageButton exitButton;
+
     public MenuScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
@@ -71,6 +82,8 @@ public class MenuScreen extends MenuExtensionScreen {
         battleLabel.setPosition(60, 35);
 
         stage.addActor(battleLabel);
+
+        createCreditsScreen();
     }
 
     @Override
@@ -137,13 +150,93 @@ public class MenuScreen extends MenuExtensionScreen {
         // credits button
         optionButtons[5].setPosition(170, 15);
 
-        // TODO: ABSTRACT THIS
+        // statistics screen
         optionButtons[4].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setSlideScreen(game.statisticsScreen, true);
             }
         });
+        // credits screen
+        optionButtons[5].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                credits.setVisible(true);
+            }
+        });
+    }
+
+    private void createCreditsScreen() {
+        credits = new Group();
+        credits.setVisible(false);
+        credits.setSize(Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
+
+        // darken the menu screen to focus on the credits
+        dark = new Image(rm.shade);
+        credits.addActor(dark);
+
+        frame = new Image(rm.skin, "textfield");
+        frame.setSize(100, 60);
+        frame.setPosition(Unlucky.V_WIDTH / 2 - 50, Unlucky.V_HEIGHT / 2 - 30);
+        credits.addActor(frame);
+
+        ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
+        exitStyle.imageUp = new TextureRegionDrawable(rm.exitbutton18x18[0][0]);
+        exitStyle.imageDown = new TextureRegionDrawable(rm.exitbutton18x18[1][0]);
+        exitButton = new ImageButton(exitStyle);
+        exitButton.setSize(14, 14);
+        exitButton.setPosition(50 + 92, 30 + 52);
+        credits.addActor(exitButton);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                credits.setVisible(false);
+            }
+        });
+
+        copyright = new Label("Unlucky " + Unlucky.VERSION + "\nCopyright (c) 2018 Ming Li",
+            new Label.LabelStyle(rm.pixel10, Color.WHITE));
+        copyright.setFontScale(0.75f);
+        copyright.setPosition(53, 70);
+        copyright.setTouchable(Touchable.disabled);
+        credits.addActor(copyright);
+
+        github = new Label("GITHUB", new Label.LabelStyle(rm.pixel10, new Color(140 / 255.f, 60 / 255.f, 1, 1)));
+        github.setPosition(80, 56);
+        credits.addActor(github);
+        github.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.net.openURI("https://github.com/mingli1/Unlucky");
+            }
+        });
+
+        youtube = new Label("YOUTUBE", new Label.LabelStyle(rm.pixel10, Color.RED));
+        youtube.setPosition(80, 38);
+        credits.addActor(youtube);
+        youtube.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.net.openURI("https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0");
+            }
+        });
+
+        creditsIcons = new Image[2];
+        for (int i = 0; i < 2; i++) {
+            final int index = i;
+            creditsIcons[i] = new Image(rm.creditsicons[i]);
+            creditsIcons[i].setPosition(56, 34 + i * 18);
+            creditsIcons[i].addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (index == 1) Gdx.net.openURI("https://github.com/mingli1/Unlucky");
+                    else Gdx.net.openURI("https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0");
+                }
+            });
+            credits.addActor(creditsIcons[i]);
+        }
+
+        stage.addActor(credits);
     }
 
     public void update(float dt) {
