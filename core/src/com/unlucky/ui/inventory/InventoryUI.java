@@ -1,12 +1,12 @@
 package com.unlucky.ui.inventory;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
@@ -21,6 +21,7 @@ import com.unlucky.event.EventState;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
+import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
@@ -39,9 +40,10 @@ public class InventoryUI extends UI {
     // whether or not the player is in battle or in the menu screen
     // if in battle, the player cannot enchant, sell, or equip items and can only use potions
     // if in menu, the player can fully access the inventory
-    private boolean inBattle = false;
+    public boolean inMenu = true;
 
     private boolean ended = false;
+    private boolean renderHealthBars = true;
 
     // UI
     // main background ui
@@ -52,11 +54,8 @@ public class InventoryUI extends UI {
     private Label[] headers;
     private String[] headerStrs = { "STATUS", "EQUIPMENT", "INVENTORY" };
     // stats labels
-    private Label hp;
-    private Label damage;
-    private Label accuracy;
-    private Label exp;
-    private Label gold;
+    // 0 - hp, 1 - dmg, 2 - acc, 3 - exp, 4 - gold
+    private Label[] stats;
     // health bar (no need for dynamic one)
     private int maxBarWidth = 62;
     private int hpBarWidth = 0;
@@ -85,14 +84,94 @@ public class InventoryUI extends UI {
     private boolean itemSelected = false;
     private Item currentItem;
 
-    public InventoryUI(GameScreen gameScreen, Player player, ResourceManager rm) {
-        this(gameScreen, null, player, rm);
-        inBattle = false;
+    public InventoryUI(Stage stage, final Unlucky game, Player player, ResourceManager rm) {
+        super(game.gameScreen, null, player, rm);
+        inMenu = true;
+
+        this.stage = stage;
+
+        ui = new MovingImageUI(rm.inventoryui372x212);
+        ui.setPosition(7, 7);
+        ui.setTouchable(Touchable.enabled);
+        stage.addActor(ui);
+
+        // create exit button
+        ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
+        exitStyle.imageUp = new TextureRegionDrawable(rm.exitbutton18x18[0][0]);
+        exitStyle.imageDown = new TextureRegionDrawable(rm.exitbutton18x18[1][0]);
+        exitButton = new ImageButton(exitStyle);
+        exitButton.setSize(9, 9);
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.menuScreen.transitionIn = 1;
+                renderHealthBars = false;
+                game.inventoryScreen.setSlideScreen(game.menuScreen, true);
+            }
+        });
+        stage.addActor(exitButton);
+
+        // Fonts and Colors
+        Label.LabelStyle[] labelColors = new Label.LabelStyle[] {
+            new Label.LabelStyle(rm.pixel10, new Color(1, 1, 1, 1)), // white
+            new Label.LabelStyle(rm.pixel10, new Color(0, 190 / 255.f, 1, 1)), // blue
+            new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)), // yellow
+            new Label.LabelStyle(rm.pixel10, new Color(0, 1, 60 / 255.f, 1)), // green
+            new Label.LabelStyle(rm.pixel10, new Color(220 / 255.f, 0, 0, 1)) // red
+        };
+
+        // create headers
+        headers = new Label[3];
+        for (int i = 0; i < headers.length; i++) {
+            headers[i] = new Label(headerStrs[i], labelColors[0]);
+            headers[i].setSize(62, 4);
+            headers[i].setFontScale(0.5f);
+            headers[i].setTouchable(Touchable.disabled);
+            headers[i].setAlignment(Align.left);
+            stage.addActor(headers[i]);
+        }
+
+        // create stats
+        stats = new Label[5];
+        for (int i = 0; i < stats.length; i++) {
+            stats[i] = new Label("", labelColors[0]);
+            stats[i].setSize(62, 4);
+            stats[i].setFontScale(0.5f);
+            stats[i].setTouchable(Touchable.disabled);
+            stats[i].setAlignment(Align.left);
+            stage.addActor(stats[i]);
+        }
+        stats[0].setStyle(labelColors[3]);
+        stats[1].setStyle(labelColors[4]);
+        stats[2].setStyle(labelColors[1]);
+        stats[3].setStyle(labelColors[2]);
+        stats[4].setStyle(labelColors[2]);
+
+        addInventory();
+        addEquips();
+
+        selectedSlot = new Image(rm.selectedslot28x28);
+        selectedSlot.setVisible(false);
+        stage.addActor(selectedSlot);
+
+        tooltip = new ItemTooltip(rm.skin);
+        tooltip.setPosition(90, 15);
+        stage.addActor(tooltip);
+
+        enabled = new ImageButton.ImageButtonStyle();
+        enabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[0][0]);
+        enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
+        disabled = new ImageButton.ImageButtonStyle();
+        disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
+        createInventoryButtons(labelColors[0]);
+
+        handleStageEvents();
+        handleInvButtonEvents();
     }
 
     public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
-        inBattle = true;
+        inMenu = false;
 
         ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
         ui.setTouchable(Touchable.enabled);
@@ -113,17 +192,18 @@ public class InventoryUI extends UI {
         stage.addActor(exitButton);
 
         // Fonts and Colors
-        BitmapFont font = rm.pixel10;
-        Label.LabelStyle stdWhite = new Label.LabelStyle(font, new Color(1, 1, 1, 1));
-        Label.LabelStyle blue = new Label.LabelStyle(font, new Color(0, 190 / 255.f, 1, 1));
-        Label.LabelStyle yellow = new Label.LabelStyle(font, new Color(1, 212 / 255.f, 0, 1));
-        Label.LabelStyle green = new Label.LabelStyle(font, new Color(0, 1, 60 / 255.f, 1));
-        Label.LabelStyle red = new Label.LabelStyle(font, new Color(220 / 255.f, 0, 0, 1));
+        Label.LabelStyle[] labelColors = new Label.LabelStyle[] {
+            new Label.LabelStyle(rm.pixel10, new Color(1, 1, 1, 1)), // white
+            new Label.LabelStyle(rm.pixel10, new Color(0, 190 / 255.f, 1, 1)), // blue
+            new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)), // yellow
+            new Label.LabelStyle(rm.pixel10, new Color(0, 1, 60 / 255.f, 1)), // green
+            new Label.LabelStyle(rm.pixel10, new Color(220 / 255.f, 0, 0, 1)) // red
+        };
 
         // create headers
         headers = new Label[3];
         for (int i = 0; i < headers.length; i++) {
-            headers[i] = new Label(headerStrs[i], stdWhite);
+            headers[i] = new Label(headerStrs[i], labelColors[0]);
             headers[i].setSize(62, 4);
             headers[i].setFontScale(0.5f);
             headers[i].setTouchable(Touchable.disabled);
@@ -132,40 +212,20 @@ public class InventoryUI extends UI {
         }
 
         // create stats
-        hp = new Label("", green);
-        hp.setSize(62, 4);
-        hp.setFontScale(0.5f);
-        hp.setTouchable(Touchable.disabled);
-        hp.setAlignment(Align.left);
-        stage.addActor(hp);
-
-        damage = new Label("", red);
-        damage.setSize(62, 4);
-        damage.setFontScale(0.5f);
-        damage.setTouchable(Touchable.disabled);
-        damage.setAlignment(Align.left);
-        stage.addActor(damage);
-
-        accuracy = new Label("", blue);
-        accuracy.setSize(62, 4);
-        accuracy.setFontScale(0.5f);
-        accuracy.setTouchable(Touchable.disabled);
-        accuracy.setAlignment(Align.left);
-        stage.addActor(accuracy);
-
-        exp = new Label("", yellow);
-        exp.setSize(62, 4);
-        exp.setFontScale(0.5f);
-        exp.setTouchable(Touchable.disabled);
-        exp.setAlignment(Align.left);
-        stage.addActor(exp);
-
-        gold = new Label("", yellow);
-        gold.setSize(62, 4);
-        gold.setFontScale(0.5f);
-        gold.setTouchable(Touchable.disabled);
-        gold.setAlignment(Align.left);
-        stage.addActor(gold);
+        stats = new Label[5];
+        for (int i = 0; i < stats.length; i++) {
+            stats[i] = new Label("", labelColors[0]);
+            stats[i].setSize(62, 4);
+            stats[i].setFontScale(0.5f);
+            stats[i].setTouchable(Touchable.disabled);
+            stats[i].setAlignment(Align.left);
+            stage.addActor(stats[i]);
+        }
+        stats[0].setStyle(labelColors[3]);
+        stats[1].setStyle(labelColors[4]);
+        stats[2].setStyle(labelColors[1]);
+        stats[3].setStyle(labelColors[2]);
+        stats[4].setStyle(labelColors[2]);
 
         addInventory();
         addEquips();
@@ -183,9 +243,8 @@ public class InventoryUI extends UI {
         enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
         disabled = new ImageButton.ImageButtonStyle();
         disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
-        createInventoryButtons(stdWhite);
+        createInventoryButtons(labelColors[0]);
 
-        //handleInventoryEvents();
         handleStageEvents();
         handleInvButtonEvents();
     }
@@ -298,7 +357,7 @@ public class InventoryUI extends UI {
                         int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                         int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                        if (item.equipped && inBattle) {
+                        if (item.equipped && inMenu) {
                             if (INVENTORY_AREA.contains(ax, ay)) {
                                 int hi = getHoveredIndex(ax, ay);
                                 if (hi == -1)
@@ -322,7 +381,7 @@ public class InventoryUI extends UI {
                         else {
                             // dropping into equips slots
                             if (EQUIPS_AREA.contains(ax, ay)) {
-                                if (item.type > 1 && inBattle) {
+                                if (item.type > 1 && inMenu) {
                                     item.equipped = true;
                                     player.equip(item);
                                     updateText();
@@ -385,7 +444,7 @@ public class InventoryUI extends UI {
                                 itemSelected = true;
                                 currentItem = item;
                                 showSelectedSlot(item);
-                                if (inBattle) toggleInventoryButtons(true);
+                                if (inMenu) toggleInventoryButtons(true);
                                 tooltip.toFront();
                                 Vector2 tpos = getTooltipCoords(item);
                                 // make sure items at the bottom don't get covered by the tooltip
@@ -413,7 +472,7 @@ public class InventoryUI extends UI {
                                 consume();
                             }
                             // equip items with double click
-                            else if (item.type > 1 && inBattle) {
+                            else if (item.type > 1 && inMenu) {
                                 unselectItem();
                                 selectedSlot.setVisible(false);
                                 if (!item.equipped) {
@@ -433,7 +492,7 @@ public class InventoryUI extends UI {
                                 }
                                 // double clicking an equipped item unequips it and places it
                                 // in the first open slot if it exists
-                                else {
+                                else if (item.equipped) {
                                     player.equips.removeEquip(item.type - 2);
                                     if (!player.inventory.addItem(item)) {
                                         player.equips.addEquip(item);
@@ -716,19 +775,20 @@ public class InventoryUI extends UI {
      * Initializes the inventoryUI screen
      */
     public void start() {
-        gameScreen.getGame().fps.setPosition(2, 2);
-        stage.addActor(gameScreen.getGame().fps);
+        if (!inMenu) {
+            gameScreen.getGame().fps.setPosition(2, 2);
+            stage.addActor(gameScreen.getGame().fps);
 
-        if (inBattle) {
             // ui slides left to right
             ui.moving.origin.set(200, 7);
             ui.moving.target.set(7, 7);
             ui.start();
+
+            exitButton.setDisabled(false);
+            exitButton.setTouchable(Touchable.enabled);
         }
 
-        exitButton.setDisabled(false);
-        exitButton.setTouchable(Touchable.enabled);
-
+        renderHealthBars = true;
         updateText();
         addInventory();
         addEquips();
@@ -745,10 +805,11 @@ public class InventoryUI extends UI {
         currentItem = null;
         selectedSlot.setVisible(false);
         tooltip.setVisible(false);
-        exitButton.setDisabled(true);
-        exitButton.setTouchable(Touchable.disabled);
 
-        if (inBattle) {
+        if (!inMenu) {
+            exitButton.setDisabled(true);
+            exitButton.setTouchable(Touchable.disabled);
+
             // ui slides off screen right to left
             ui.moving.target.set(200, 7);
             ui.moving.origin.set(7, 7);
@@ -775,11 +836,11 @@ public class InventoryUI extends UI {
     private void updateText() {
         // update all text
         headers[0].setText("LV. " + player.getLevel() + " PLAYER");
-        hp.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
-        damage.setText("DAMAGE: " + player.getMinDamage() + "-" + player.getMaxDamage());
-        accuracy.setText("ACCURACY: " + player.getAccuracy() + "%");
-        exp.setText("EXP: " + player.getExp() + "/" + player.getMaxExp());
-        gold.setText("GOLD: " + player.getGold());
+        stats[0].setText("HP: " + player.getHp() + "/" + player.getMaxHp());
+        stats[1].setText("DAMAGE: " + player.getMinDamage() + "-" + player.getMaxDamage());
+        stats[2].setText("ACCURACY: " + player.getAccuracy() + "%");
+        stats[3].setText("EXP: " + player.getExp() + "/" + player.getMaxExp());
+        stats[4].setText("GOLD: " + player.getGold());
     }
 
     /**
@@ -807,7 +868,7 @@ public class InventoryUI extends UI {
     }
 
     public void update(float dt) {
-        ui.update(dt);
+        if (!inMenu) ui.update(dt);
         if (ended && ui.getX() == 200) {
             next();
         }
@@ -817,11 +878,11 @@ public class InventoryUI extends UI {
             headers[0].setPosition(ui.getX() + 8, ui.getY() + 96);
             headers[1].setPosition(ui.getX() + 8, ui.getY() + 55);
             headers[2].setPosition(ui.getX() + 84, ui.getY() + 96);
-            hp.setPosition(ui.getX() + 8, ui.getY() + 91);
-            damage.setPosition(ui.getX() + 8, ui.getY() + 74);
-            accuracy.setPosition(ui.getX() + 8, ui.getY() + 68);
-            exp.setPosition(ui.getX() + 8, ui.getY() + 83);
-            gold.setPosition(ui.getX() + 140, ui.getY() + 96);
+            stats[0].setPosition(ui.getX() + 8, ui.getY() + 91);
+            stats[1].setPosition(ui.getX() + 8, ui.getY() + 74);
+            stats[2].setPosition(ui.getX() + 8, ui.getY() + 68);
+            stats[3].setPosition(ui.getX() + 8, ui.getY() + 83);
+            stats[4].setPosition(ui.getX() + 140, ui.getY() + 96);
 
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setPosition(ui.getX() + 84 + (i * 48), ui.getY() + 74);
@@ -855,27 +916,31 @@ public class InventoryUI extends UI {
     }
 
     public void render(float dt) {
-        stage.act(dt);
-        stage.draw();
+        if (!inMenu) {
+            stage.act(dt);
+            stage.draw();
+        }
 
-        // draw bars
-        shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        // health bar
-        shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, maxBarWidth, 2);
-        shapeRenderer.setColor(0, 225 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 89, hpBarWidth, 1);
-        shapeRenderer.setColor(0, 175 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, hpBarWidth, 1);
-        // exp bar
-        shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, maxBarWidth, 2);
-        shapeRenderer.setColor(1, 212 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 81, expBarWidth, 1);
-        shapeRenderer.setColor(200 / 255.f, 170 / 255.f, 0, 1);
-        shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, expBarWidth, 1);
-        shapeRenderer.end();
+        if (renderHealthBars) {
+            // draw bars
+            shapeRenderer.setProjectionMatrix(stage.getCamera().combined);
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            // health bar
+            shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, maxBarWidth, 2);
+            shapeRenderer.setColor(0, 225 / 255.f, 0, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 89, hpBarWidth, 1);
+            shapeRenderer.setColor(0, 175 / 255.f, 0, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 88, hpBarWidth, 1);
+            // exp bar
+            shapeRenderer.setColor(60 / 255.f, 60 / 255.f, 60 / 255.f, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, maxBarWidth, 2);
+            shapeRenderer.setColor(1, 212 / 255.f, 0, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 81, expBarWidth, 1);
+            shapeRenderer.setColor(200 / 255.f, 170 / 255.f, 0, 1);
+            shapeRenderer.rect(ui.getX() + 8, ui.getY() + 80, expBarWidth, 1);
+            shapeRenderer.end();
+        }
     }
 
 }
