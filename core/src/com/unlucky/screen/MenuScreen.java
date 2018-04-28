@@ -194,7 +194,7 @@ public class MenuScreen extends MenuExtensionScreen {
             }
         });
 
-        copyright = new Label("Unlucky " + Unlucky.VERSION + "\nCopyright (c) 2018 Ming Li",
+        copyright = new Label("Unlucky V" + Unlucky.VERSION + "\nCopyright (c) 2018 Ming Li",
             new Label.LabelStyle(rm.pixel10, Color.WHITE));
         copyright.setFontScale(0.75f);
         copyright.setPosition(53, 70);
@@ -244,30 +244,7 @@ public class MenuScreen extends MenuExtensionScreen {
             titleMoves[i].update(dt);
             letters[i].setPosition(titleMoves[i].position.x, titleMoves[i].position.y);
         }
-        super.update(dt);
     }
-
-    public void render(float dt) {
-        update(dt);
-
-        // clear screen
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if (renderBatch) {
-            stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
-            stage.getBatch().begin();
-            // fix fading
-            if (batchFade) stage.getBatch().setColor(Color.WHITE);
-            super.render(dt);
-            stage.getBatch().end();
-        }
-
-        stage.act(dt);
-        stage.draw();
-
-        //game.profile("MenuScreen");
-    }
-
     /**
      * Resets and starts the title animation on every transition to this screen
      */

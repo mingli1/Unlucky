@@ -140,27 +140,4 @@ public class StatisticsScreen extends MenuExtensionScreen {
         scrollTable.setPosition(-30, -8);
     }
 
-    public void update(float dt) {
-        super.update(dt);
-    }
-
-    public void render(float dt) {
-        update(dt);
-
-        // clear screen
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-
-        if (renderBatch) {
-            stage.getBatch().setProjectionMatrix(stage.getCamera().combined);
-            stage.getBatch().begin();
-            // fix fading
-            if (batchFade) stage.getBatch().setColor(Color.WHITE);
-            super.render(dt);
-            stage.getBatch().end();
-        }
-
-        stage.act(dt);
-        stage.draw();
-    }
-
 }
