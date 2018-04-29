@@ -44,6 +44,7 @@ public class Unlucky extends Game {
     public GameScreen gameScreen;
     public WorldSelectScreen worldSelectScreen;
     public LevelSelectScreen levelSelectScreen;
+    public InventoryScreen inventoryScreen;
     public StatisticsScreen statisticsScreen;
 
     // main bg
@@ -65,6 +66,7 @@ public class Unlucky extends Game {
         gameScreen = new GameScreen(this, rm);
         worldSelectScreen = new WorldSelectScreen(this, rm);
         levelSelectScreen = new LevelSelectScreen(this, rm);
+        inventoryScreen = new InventoryScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
 
         // create parallax background
@@ -98,6 +100,14 @@ public class Unlucky extends Game {
 	public void dispose() {
         batch.dispose();
         super.dispose();
+
+        rm.dispose();
+        menuScreen.dispose();
+        gameScreen.dispose();
+        worldSelectScreen.dispose();
+        levelSelectScreen.dispose();
+        inventoryScreen.dispose();
+        statisticsScreen.dispose();
 
         GLProfiler.disable();
 	}
