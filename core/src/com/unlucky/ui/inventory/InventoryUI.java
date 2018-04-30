@@ -40,9 +40,11 @@ public class InventoryUI extends UI {
     public boolean inMenu;
 
     private boolean ended = false;
-    private boolean renderHealthBars = true;
+    public boolean renderHealthBars = false;
 
     // UI
+    // dimensions to render the inventory at
+    private static final int NUM_COLS = 6;
     // main background ui
     private MovingImageUI ui;
     // exit button
@@ -200,6 +202,7 @@ public class InventoryUI extends UI {
             // reset the stage position after actions
             stage.addAction(Actions.moveTo(0, 0));
             Gdx.input.setInputProcessor(this.stage);
+            renderHealthBars = true;
         }
     }
 
@@ -680,8 +683,8 @@ public class InventoryUI extends UI {
         }
         else {
             int i = item.index;
-            int x = i % Inventory.NUM_COLS;
-            int y = i / Inventory.NUM_COLS;
+            int x = i % NUM_COLS;
+            int y = i / NUM_COLS;
             selectedSlot.setPosition(91 + (x * 16), 63 - (y * 16));
             selectedSlot.setVisible(true);
         }
@@ -698,8 +701,8 @@ public class InventoryUI extends UI {
      */
     private int getHoveredIndex(int x, int y) {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-            int xx = i % Inventory.NUM_COLS;
-            int yy = i / Inventory.NUM_COLS;
+            int xx = i % NUM_COLS;
+            int yy = i / NUM_COLS;
             if (x >= 90 + (xx * SLOT_WIDTH) && x < 90 + (xx * SLOT_WIDTH) + SLOT_WIDTH &&
                     y >= 57 - (yy * SLOT_HEIGHT) && y < 57 - (yy * SLOT_HEIGHT) + SLOT_HEIGHT)
             {
@@ -725,8 +728,8 @@ public class InventoryUI extends UI {
         }
         else {
             int i = item.index;
-            int x = i % Inventory.NUM_COLS;
-            int y = i / Inventory.NUM_COLS;
+            int x = i % NUM_COLS;
+            int y = i / NUM_COLS;
             ret.set(91 + (x * 16), 63 - (y * 16));
         }
         return ret;
@@ -750,7 +753,6 @@ public class InventoryUI extends UI {
             ui.setPosition(7, 7);
         }
 
-        renderHealthBars = true;
         updateText();
         addInventory();
         addEquips();
@@ -783,6 +785,7 @@ public class InventoryUI extends UI {
      */
     public void next() {
         removeInventoryActors();
+        renderHealthBars = false;
 
         gameScreen.setCurrentEvent(EventState.MOVING);
         gameScreen.hud.toggle(true);
@@ -857,8 +860,8 @@ public class InventoryUI extends UI {
                 // update inventory positions
                 for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
                     Item item = player.inventory.getItem(i);
-                    int x = i % Inventory.NUM_COLS;
-                    int y = i / Inventory.NUM_COLS;
+                    int x = i % NUM_COLS;
+                    int y = i / NUM_COLS;
                     if (item != null) {
                         item.actor.setPosition(ui.getX() + 86 + (x * 16), ui.getY() + (58 - (y * 16)));
                     }
