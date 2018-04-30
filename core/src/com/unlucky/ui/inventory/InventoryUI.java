@@ -156,6 +156,7 @@ public class InventoryUI extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 end();
                 if (inMenu) {
+                    removeInventoryActors();
                     game.menuScreen.transitionIn = 1;
                     renderHealthBars = false;
                     game.inventoryScreen.setSlideScreen(game.menuScreen, true);
@@ -222,6 +223,24 @@ public class InventoryUI extends UI {
             Item item = player.equips.getEquipAt(i);
             if (item != null) {
                 stage.addActor(item.actor);
+            }
+        }
+    }
+
+    /**
+     * Resets the item actors
+     */
+    private void removeInventoryActors() {
+        for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+            Item item = player.inventory.getItem(i);
+            if (item != null) {
+                item.actor.remove();
+            }
+        }
+        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+            Item item = player.equips.getEquipAt(i);
+            if (item != null) {
+                item.actor.remove();
             }
         }
     }
@@ -737,7 +756,7 @@ public class InventoryUI extends UI {
      * Switches back to the next state
      */
     public void next() {
-        //removeInventoryActors();
+        removeInventoryActors();
 
         gameScreen.setCurrentEvent(EventState.MOVING);
         gameScreen.hud.toggle(true);
