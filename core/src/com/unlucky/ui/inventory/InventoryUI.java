@@ -475,7 +475,7 @@ public class InventoryUI extends UI {
                 if (currentItem != null && currentItem.type > 1) {
                     new Dialog("Enchant", rm.dialogSkin) {
                         {
-                            Label l = new Label("Are you sure you want\nto enchant " + currentItem.labelName + "?", rm.dialogSkin);
+                            Label l = new Label("Enchant " + currentItem.labelName + "\nfor " + currentItem.enchantCost + " g?", rm.dialogSkin);
                             l.setFontScale(0.5f);
                             l.setAlignment(Align.center);
                             text(l);
@@ -535,6 +535,30 @@ public class InventoryUI extends UI {
      * Handles enchanting events
      */
     private void enchant() {
+        if (player.getGold() < currentItem.enchantCost) {
+            new Dialog("Cannot enchant", rm.dialogSkin) {
+                {
+                    Label l = new Label("You do not have enough\ngold to enchant this item.", rm.dialogSkin);
+                    l.setFontScale(0.5f);
+                    l.setAlignment(Align.center);
+                    text(l);
+                    getButtonTable().defaults().width(40);
+                    getButtonTable().defaults().height(15);
+                    button("OK", "next");
+                }
+
+                @Override
+                protected void result(Object object) {
+                    tooltip.setVisible(false);
+                }
+
+            }.show(stage).getTitleLabel().setAlignment(Align.center);
+            return;
+        }
+        // transaction
+        player.addGold(-currentItem.enchantCost);
+        updateText();
+
         // 50% success
         if (Util.isSuccess(Util.ENCHANT)) {
             currentItem.enchant();
@@ -553,7 +577,9 @@ public class InventoryUI extends UI {
 
                 @Override
                 protected void result(Object object) {
-                    if (object.equals("next")) tooltip.setVisible(true);
+                    tooltip.setVisible(true);
+                    invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
+                    invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
                 }
 
             }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -595,7 +621,7 @@ public class InventoryUI extends UI {
 
                     @Override
                     protected void result(Object object) {
-                        if (object.equals("next")) tooltip.setVisible(true);
+                        tooltip.setVisible(true);
                     }
 
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
@@ -789,6 +815,8 @@ public class InventoryUI extends UI {
                         invButtons[0].setStyle(disabled);
                     }
                     invButtons[i].setStyle(enabled);
+                    // add enchant cost of item to button
+                    invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
                     // add sell value of item to button
                     invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
                 }
@@ -797,6 +825,7 @@ public class InventoryUI extends UI {
             for (int i = 0; i < 2; i++) {
                 invButtons[i].setTouchable(Touchable.disabled);
                 invButtons[i].setStyle(disabled);
+                invButtonLabels[0].setText("ENCHANT");
                 invButtonLabels[1].setText("SELL");
             }
         }

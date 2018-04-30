@@ -59,6 +59,7 @@ public class Item {
     public boolean equipped = false;
     // the number of successful enchants on the item
     public int enchants = 0;
+    public int enchantCost;
 
     // rendering
     public Image actor;
@@ -137,7 +138,7 @@ public class Item {
     }
 
     /**
-     * Adjusts the stats/attributes of an Item based on enemy level
+     * Adjusts the stats/attributes of an Item based on a given level
      * Only called once per item's existence
      *
      * @param level
@@ -147,10 +148,16 @@ public class Item {
         // dmg is scaled 4-6 parts of original per level
         int mhpSeed = mhp / MathUtils.random(5, 7);
         int dmgSeed = dmg / MathUtils.random(4, 6);
+        // set initial enchant cost
+        int enchantSeed = MathUtils.random(50, 100);
         for (int i = 0; i < level - 1; i++) {
             mhp += mhpSeed;
             dmg += dmgSeed;
         }
+        for (int i = 0; i < level; i++) {
+            enchantCost += enchantSeed;
+        }
+
         // @TODO scale sell value
     }
 
@@ -213,6 +220,7 @@ public class Item {
         mhp = (int) (mhp * multiplier);
         dmg = (int) (dmg * multiplier);
         sell = (int) (sell * multiplier);
+        enchantCost = (int) (enchantCost * multiplier);
 
         enchants++;
         // every 5 enchants an item goes up 1 rarity
