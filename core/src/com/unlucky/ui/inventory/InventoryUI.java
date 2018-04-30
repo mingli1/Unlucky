@@ -242,18 +242,21 @@ public class InventoryUI extends UI {
 
                     @Override
                     public void dragStart(InputEvent event, float x, float y, int pointer) {
-                        dragging = true;
-                        tooltip.hide();
-                        unselectItem();
+                        // can't allow dragging equips off while in game
+                        if (inMenu || !item.equipped) {
+                            dragging = true;
+                            tooltip.hide();
+                            unselectItem();
 
-                        // original positions
-                        prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                        prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                            // original positions
+                            prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                            prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                        item.actor.toFront();
-                        selectedSlot.setVisible(false);
-                        if (!item.equipped) player.inventory.removeItem(item.index);
-                        else player.equips.removeEquip(item.type - 2);
+                            item.actor.toFront();
+                            selectedSlot.setVisible(false);
+                            if (!item.equipped) player.inventory.removeItem(item.index);
+                            else player.equips.removeEquip(item.type - 2);
+                        }
                     }
 
                     @Override
@@ -354,7 +357,6 @@ public class InventoryUI extends UI {
                                 unselectItem();
                             }
                             else {
-                                System.out.println("selected: " + item.name + " inMenu: " + inMenu);
                                 itemSelected = true;
                                 currentItem = item;
                                 showSelectedSlot(item);
@@ -387,7 +389,6 @@ public class InventoryUI extends UI {
                             }
                             // equip items with double click
                             else if (item.type > 1 && inMenu) {
-                                System.out.println("item.type: " + item.type + " inMenu: " + inMenu);
                                 unselectItem();
                                 selectedSlot.setVisible(false);
                                 if (!item.equipped) {
