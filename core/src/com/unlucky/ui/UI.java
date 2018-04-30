@@ -27,9 +27,21 @@ public abstract class UI implements Disposable {
     protected TileMap tileMap;
     protected Player player;
     protected GameScreen gameScreen;
+    protected Unlucky game;
 
     // graphics
     protected ShapeRenderer shapeRenderer;
+
+    public UI(final Unlucky game, Player player, ResourceManager rm) {
+        this.game = game;
+        this.player = player;
+        this.rm = rm;
+
+        viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
+        stage = new Stage(viewport, game.batch);
+
+        shapeRenderer = new ShapeRenderer();
+    }
 
     public UI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         this.gameScreen = gameScreen;
