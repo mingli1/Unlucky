@@ -12,6 +12,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.screen.*;
+import com.unlucky.ui.inventory.InventoryUI;
 
 /**
  * "Unlucky" is a RPG/Dungeon Crawler based on RNG
@@ -46,6 +47,7 @@ public class Unlucky extends Game {
     public LevelSelectScreen levelSelectScreen;
     public InventoryScreen inventoryScreen;
     public StatisticsScreen statisticsScreen;
+    public InventoryUI inventoryUI;
 
     // main bg
     public Background[] menuBackground;
@@ -62,6 +64,7 @@ public class Unlucky extends Game {
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
         fps.setFontScale(0.5f);
 
+        inventoryUI = new InventoryUI(this, player, rm);
         menuScreen = new MenuScreen(this, rm);
         gameScreen = new GameScreen(this, rm);
         worldSelectScreen = new WorldSelectScreen(this, rm);
@@ -108,6 +111,7 @@ public class Unlucky extends Game {
         levelSelectScreen.dispose();
         inventoryScreen.dispose();
         statisticsScreen.dispose();
+        inventoryUI.dispose();
 
         GLProfiler.disable();
 	}
