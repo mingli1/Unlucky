@@ -1,13 +1,12 @@
 package com.unlucky.ui.inventory;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.*;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -22,10 +21,8 @@ import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
-import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
-import com.unlucky.screen.GameScreen;
 import com.unlucky.ui.MovingImageUI;
 import com.unlucky.ui.UI;
 
@@ -40,7 +37,7 @@ public class InventoryUI extends UI {
     // whether or not the player is in battle or in the menu screen
     // if in battle, the player cannot enchant, sell, or equip items and can only use potions
     // if in menu, the player can fully access the inventory
-    public boolean inMenu = true;
+    public boolean inMenu;
 
     private boolean ended = false;
     private boolean renderHealthBars = true;
@@ -84,16 +81,11 @@ public class InventoryUI extends UI {
     private boolean itemSelected = false;
     private Item currentItem;
 
-    public InventoryUI(Stage stage, final Unlucky game, Player player, ResourceManager rm) {
-        super(game.gameScreen, null, player, rm);
-        inMenu = true;
+    public InventoryUI(final Unlucky game, Player player, ResourceManager rm) {
+        super(game, player, rm);
 
-        this.stage = stage;
-
-        ui = new MovingImageUI(rm.inventoryui372x212);
-        ui.setPosition(7, 7);
+        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
         ui.setTouchable(Touchable.enabled);
-        stage.addActor(ui);
 
         // create exit button
         ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
@@ -101,15 +93,6 @@ public class InventoryUI extends UI {
         exitStyle.imageDown = new TextureRegionDrawable(rm.exitbutton18x18[1][0]);
         exitButton = new ImageButton(exitStyle);
         exitButton.setSize(9, 9);
-        exitButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                game.menuScreen.transitionIn = 1;
-                renderHealthBars = false;
-                game.inventoryScreen.setSlideScreen(game.menuScreen, true);
-            }
-        });
-        stage.addActor(exitButton);
 
         // Fonts and Colors
         Label.LabelStyle[] labelColors = new Label.LabelStyle[] {
@@ -128,7 +111,6 @@ public class InventoryUI extends UI {
             headers[i].setFontScale(0.5f);
             headers[i].setTouchable(Touchable.disabled);
             headers[i].setAlignment(Align.left);
-            stage.addActor(headers[i]);
         }
 
         // create stats
@@ -139,7 +121,6 @@ public class InventoryUI extends UI {
             stats[i].setFontScale(0.5f);
             stats[i].setTouchable(Touchable.disabled);
             stats[i].setAlignment(Align.left);
-            stage.addActor(stats[i]);
         }
         stats[0].setStyle(labelColors[3]);
         stats[1].setStyle(labelColors[4]);
@@ -147,106 +128,78 @@ public class InventoryUI extends UI {
         stats[3].setStyle(labelColors[2]);
         stats[4].setStyle(labelColors[2]);
 
-        addInventory();
-        addEquips();
-
         selectedSlot = new Image(rm.selectedslot28x28);
         selectedSlot.setVisible(false);
-        stage.addActor(selectedSlot);
-
         tooltip = new ItemTooltip(rm.skin);
         tooltip.setPosition(90, 15);
-        stage.addActor(tooltip);
 
         enabled = new ImageButton.ImageButtonStyle();
         enabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[0][0]);
         enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
         disabled = new ImageButton.ImageButtonStyle();
         disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
-        createInventoryButtons(labelColors[0]);
+        invButtons = new ImageButton[2];
+        invButtonLabels = new Label[2];
+        String[] texts = { "ENCHANT", "SELL" };
+        for (int i = 0; i < 2; i++) {
+            invButtons[i] = new ImageButton(disabled);
+            invButtons[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i] = new Label(texts[i], labelColors[0]);
+            invButtonLabels[i].setFontScale(0.5f);
+            invButtonLabels[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i].setSize(46, 14);
+            invButtonLabels[i].setAlignment(Align.center);
+        }
+
+        exitButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                end();
+                if (inMenu) {
+                    game.menuScreen.transitionIn = 1;
+                    renderHealthBars = false;
+                    game.inventoryScreen.setSlideScreen(game.menuScreen, true);
+                }
+                else {
+                    Gdx.input.setInputProcessor(gameScreen.multiplexer);
+                }
+            }
+        });
 
         handleStageEvents();
         handleInvButtonEvents();
     }
 
-    public InventoryUI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
-        super(gameScreen, tileMap, player, rm);
-        inMenu = false;
+    /**
+     * Initializes the type of inventory (menu or in game) and the stage
+     * Adds everything to the stage
+     *
+     * @param inMenu
+     * @param s
+     */
+    public void init(boolean inMenu, Stage s) {
+        this.inMenu = inMenu;
+        this.gameScreen = game.gameScreen;
+        if (inMenu) this.stage = s;
 
-        ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
-        ui.setTouchable(Touchable.enabled);
         stage.addActor(ui);
-
-        // create exit button
-        ImageButton.ImageButtonStyle exitStyle = new ImageButton.ImageButtonStyle();
-        exitStyle.imageUp = new TextureRegionDrawable(rm.exitbutton18x18[0][0]);
-        exitStyle.imageDown = new TextureRegionDrawable(rm.exitbutton18x18[1][0]);
-        exitButton = new ImageButton(exitStyle);
-        exitButton.setSize(9, 9);
-        exitButton.addListener(new ClickListener() {
-           @Override
-           public void clicked(InputEvent event, float x, float y) {
-               end();
-           }
-        });
         stage.addActor(exitButton);
-
-        // Fonts and Colors
-        Label.LabelStyle[] labelColors = new Label.LabelStyle[] {
-            new Label.LabelStyle(rm.pixel10, new Color(1, 1, 1, 1)), // white
-            new Label.LabelStyle(rm.pixel10, new Color(0, 190 / 255.f, 1, 1)), // blue
-            new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)), // yellow
-            new Label.LabelStyle(rm.pixel10, new Color(0, 1, 60 / 255.f, 1)), // green
-            new Label.LabelStyle(rm.pixel10, new Color(220 / 255.f, 0, 0, 1)) // red
-        };
-
-        // create headers
-        headers = new Label[3];
-        for (int i = 0; i < headers.length; i++) {
-            headers[i] = new Label(headerStrs[i], labelColors[0]);
-            headers[i].setSize(62, 4);
-            headers[i].setFontScale(0.5f);
-            headers[i].setTouchable(Touchable.disabled);
-            headers[i].setAlignment(Align.left);
-            stage.addActor(headers[i]);
-        }
-
-        // create stats
-        stats = new Label[5];
-        for (int i = 0; i < stats.length; i++) {
-            stats[i] = new Label("", labelColors[0]);
-            stats[i].setSize(62, 4);
-            stats[i].setFontScale(0.5f);
-            stats[i].setTouchable(Touchable.disabled);
-            stats[i].setAlignment(Align.left);
-            stage.addActor(stats[i]);
-        }
-        stats[0].setStyle(labelColors[3]);
-        stats[1].setStyle(labelColors[4]);
-        stats[2].setStyle(labelColors[1]);
-        stats[3].setStyle(labelColors[2]);
-        stats[4].setStyle(labelColors[2]);
-
+        for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
+        for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
         addInventory();
         addEquips();
-
-        selectedSlot = new Image(rm.selectedslot28x28);
-        selectedSlot.setVisible(false);
         stage.addActor(selectedSlot);
-
-        tooltip = new ItemTooltip(rm.skin);
-        tooltip.setPosition(90, 15);
         stage.addActor(tooltip);
+        for (int i = 0; i < 2; i++) {
+            stage.addActor(invButtons[i]);
+            stage.addActor(invButtonLabels[i]);
+        }
 
-        enabled = new ImageButton.ImageButtonStyle();
-        enabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[0][0]);
-        enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
-        disabled = new ImageButton.ImageButtonStyle();
-        disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
-        createInventoryButtons(labelColors[0]);
-
-        handleStageEvents();
-        handleInvButtonEvents();
+        if (!inMenu) {
+            // reset the stage position after actions
+            stage.addAction(Actions.moveTo(0, 0));
+            Gdx.input.setInputProcessor(this.stage);
+        }
     }
 
     /**
@@ -270,46 +223,6 @@ public class InventoryUI extends UI {
             if (item != null) {
                 stage.addActor(item.actor);
             }
-        }
-    }
-
-    /**
-     * Resets the item actors
-     */
-    private void removeInventoryActors() {
-        for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-            Item item = player.inventory.getItem(i);
-            if (item != null) {
-                item.actor.remove();
-            }
-        }
-        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
-            Item item = player.equips.getEquipAt(i);
-            if (item != null) {
-                item.actor.remove();
-            }
-        }
-    }
-
-    /**
-     * Creates the enchant and sell buttons
-     * Originally disabled and grayed out until an item is selected
-     */
-    private void createInventoryButtons(Label.LabelStyle textStyle) {
-        invButtons = new ImageButton[2];
-        invButtonLabels = new Label[2];
-
-        String[] texts = { "ENCHANT", "SELL" };
-        for (int i = 0; i < 2; i++) {
-            invButtons[i] = new ImageButton(disabled);
-            invButtons[i].setTouchable(Touchable.disabled);
-            invButtonLabels[i] = new Label(texts[i], textStyle);
-            invButtonLabels[i].setFontScale(0.5f);
-            invButtonLabels[i].setTouchable(Touchable.disabled);
-            invButtonLabels[i].setSize(46, 14);
-            invButtonLabels[i].setAlignment(Align.center);
-            stage.addActor(invButtons[i]);
-            stage.addActor(invButtonLabels[i]);
         }
     }
 
@@ -441,6 +354,7 @@ public class InventoryUI extends UI {
                                 unselectItem();
                             }
                             else {
+                                System.out.println("selected: " + item.name + " inMenu: " + inMenu);
                                 itemSelected = true;
                                 currentItem = item;
                                 showSelectedSlot(item);
@@ -473,6 +387,7 @@ public class InventoryUI extends UI {
                             }
                             // equip items with double click
                             else if (item.type > 1 && inMenu) {
+                                System.out.println("item.type: " + item.type + " inMenu: " + inMenu);
                                 unselectItem();
                                 selectedSlot.setVisible(false);
                                 if (!item.equipped) {
@@ -492,7 +407,7 @@ public class InventoryUI extends UI {
                                 }
                                 // double clicking an equipped item unequips it and places it
                                 // in the first open slot if it exists
-                                else if (item.equipped) {
+                                else {
                                     player.equips.removeEquip(item.type - 2);
                                     if (!player.inventory.addItem(item)) {
                                         player.equips.addEquip(item);
@@ -776,16 +691,17 @@ public class InventoryUI extends UI {
      */
     public void start() {
         if (!inMenu) {
-            gameScreen.getGame().fps.setPosition(2, 2);
-            stage.addActor(gameScreen.getGame().fps);
+            game.fps.setPosition(2, 2);
+            stage.addActor(game.fps);
 
             // ui slides left to right
+            ui.setPosition(200, 7);
             ui.moving.origin.set(200, 7);
             ui.moving.target.set(7, 7);
             ui.start();
-
-            exitButton.setDisabled(false);
-            exitButton.setTouchable(Touchable.enabled);
+        }
+        else {
+            ui.setPosition(7, 7);
         }
 
         renderHealthBars = true;
@@ -807,9 +723,6 @@ public class InventoryUI extends UI {
         tooltip.setVisible(false);
 
         if (!inMenu) {
-            exitButton.setDisabled(true);
-            exitButton.setTouchable(Touchable.disabled);
-
             // ui slides off screen right to left
             ui.moving.target.set(200, 7);
             ui.moving.origin.set(7, 7);
@@ -823,7 +736,7 @@ public class InventoryUI extends UI {
      * Switches back to the next state
      */
     public void next() {
-        removeInventoryActors();
+        //removeInventoryActors();
 
         gameScreen.setCurrentEvent(EventState.MOVING);
         gameScreen.hud.toggle(true);
@@ -848,15 +761,17 @@ public class InventoryUI extends UI {
      */
     private void toggleInventoryButtons(boolean toggle) {
         if (toggle) {
-            for (int i = 0; i < 2; i++) {
-                invButtons[i].setTouchable(Touchable.enabled);
-                if (currentItem.type < 2) {
-                    invButtons[0].setTouchable(Touchable.disabled);
-                    invButtons[0].setStyle(disabled);
+            if (!currentItem.equipped) {
+                for (int i = 0; i < 2; i++) {
+                    invButtons[i].setTouchable(Touchable.enabled);
+                    if (currentItem.type < 2) {
+                        invButtons[0].setTouchable(Touchable.disabled);
+                        invButtons[0].setStyle(disabled);
+                    }
+                    invButtons[i].setStyle(enabled);
+                    // add sell value of item to button
+                    invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
                 }
-                invButtons[i].setStyle(enabled);
-                // add sell value of item to button
-                invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
             }
         } else {
             for (int i = 0; i < 2; i++) {
