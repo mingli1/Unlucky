@@ -150,15 +150,16 @@ public class Item {
         int dmgSeed = dmg / MathUtils.random(4, 6);
         // set initial enchant cost
         int enchantSeed = MathUtils.random(50, 100);
+        int sellSeed = sell / MathUtils.random(7, 9);
+
         for (int i = 0; i < level - 1; i++) {
             mhp += mhpSeed;
             dmg += dmgSeed;
+            sell += sellSeed;
         }
         for (int i = 0; i < level; i++) {
             enchantCost += enchantSeed;
         }
-
-        // @TODO scale sell value
     }
 
     /**
