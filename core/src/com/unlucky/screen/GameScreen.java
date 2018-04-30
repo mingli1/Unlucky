@@ -1,9 +1,7 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -15,9 +13,11 @@ import com.unlucky.main.Unlucky;
 import com.unlucky.map.GameMap;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.screen.game.DialogScreen;
+import com.unlucky.screen.game.LevelUpScreen;
+import com.unlucky.screen.game.TransitionScreen;
 import com.unlucky.ui.battleui.BattleUIHandler;
 import com.unlucky.ui.Hud;
-import com.unlucky.ui.inventory.InventoryUI;
 
 /**
  * Handles all gameplay.
@@ -32,13 +32,12 @@ public class GameScreen extends AbstractScreen {
     public Hud hud;
     public BattleUIHandler battleUIHandler;
     public Battle battle;
-    public com.unlucky.screen.game.TransitionScreen transition;
-    public com.unlucky.screen.game.LevelUpScreen levelUp;
-    public com.unlucky.screen.game.DialogScreen dialog;
-    public InventoryUI inventoryUI;
+    public TransitionScreen transition;
+    public LevelUpScreen levelUp;
+    public DialogScreen dialog;
 
     // input
-    private InputMultiplexer multiplexer;
+    public InputMultiplexer multiplexer;
 
     // battle background
     private Background[] bg;
@@ -52,10 +51,9 @@ public class GameScreen extends AbstractScreen {
         battle = new Battle(this, gameMap.tileMap, gameMap.player);
         hud = new Hud(this, gameMap.tileMap, gameMap.player, rm);
         battleUIHandler = new BattleUIHandler(this, gameMap.tileMap, gameMap.player, battle, rm);
-        transition = new com.unlucky.screen.game.TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
-        levelUp = new com.unlucky.screen.game.LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
-        dialog = new com.unlucky.screen.game.DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
-        inventoryUI = new InventoryUI(this, gameMap.tileMap, gameMap.player, rm);
+        transition = new TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
+        levelUp = new LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
+        dialog = new DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
 
         // create bg
         createBackground(0);
@@ -65,7 +63,6 @@ public class GameScreen extends AbstractScreen {
         multiplexer.addProcessor(hud.getStage());
         multiplexer.addProcessor(battleUIHandler.getStage());
         multiplexer.addProcessor(levelUp.getStage());
-        multiplexer.addProcessor(inventoryUI.getStage());
         multiplexer.addProcessor(dialog.getStage());
     }
 
@@ -116,14 +113,7 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.TRANSITION) transition.update(dt);
         if (currentEvent == EventState.LEVEL_UP) levelUp.update(dt);
         if (currentEvent == EventState.TILE_EVENT) dialog.update(dt);
-        if (currentEvent == EventState.INVENTORY) inventoryUI.update(dt);
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.E)) {
-            game.setScreen(game.menuScreen);
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            System.out.println(gameMap.player.stats.toString());
-        }
+        if (currentEvent == EventState.INVENTORY) game.inventoryUI.update(dt);
     }
 
     public void render(float dt) {
@@ -160,10 +150,8 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) battleUIHandler.render(dt);
         if (currentEvent == EventState.LEVEL_UP || transition.shouldRenderLevelUp()) levelUp.render(dt);
         if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
-        if (currentEvent == EventState.INVENTORY) inventoryUI.render(dt);
+        if (currentEvent == EventState.INVENTORY) game.inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
-
-        //game.profile("GameScreen");
     }
 
     public void dispose() {
@@ -172,7 +160,6 @@ public class GameScreen extends AbstractScreen {
         battleUIHandler.dispose();
         dialog.dispose();
         levelUp.dispose();
-        inventoryUI.dispose();
     }
 
     /**
