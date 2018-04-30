@@ -1,5 +1,7 @@
 package com.unlucky.screen;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 
@@ -20,7 +22,18 @@ public class InventoryScreen extends MenuExtensionScreen {
         game.fps.setPosition(2, 2);
         stage.addActor(game.fps);
 
-        super.showSlide(false);
+        Gdx.input.setInputProcessor(stage);
+        renderBatch = true;
+        batchFade = true;
+
+        stage.addAction(Actions.sequence(Actions.moveTo(-Unlucky.V_WIDTH, 0),
+            Actions.moveTo(0, 0, 0.3f),
+            Actions.run(new Runnable() {
+                @Override
+                public void run() {
+                    game.inventoryUI.renderHealthBars = true;
+                }
+            })));
         game.inventoryUI.init(true, this.stage);
         game.inventoryUI.start();
     }
