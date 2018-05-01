@@ -384,7 +384,7 @@ public class InventoryUI extends UI {
                                 showSelectedSlot(item);
                                 if (inMenu) toggleInventoryButtons(true);
                                 tooltip.toFront();
-                                Vector2 tpos = getTooltipCoords(item);
+                                Vector2 tpos = getCoords(item);
                                 // make sure items at the bottom don't get covered by the tooltip
                                 if (tpos.y <= 15)
                                     tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
@@ -676,18 +676,31 @@ public class InventoryUI extends UI {
      * @param item
      */
     private void showSelectedSlot(Item item) {
+        Vector2 pos = getCoords(item);
+        selectedSlot.setPosition(pos.x, pos.y);
+        selectedSlot.setVisible(true);
+    }
+
+    /**
+     * Returns a Vector2 containing the x y coordinates of the slot at a
+     * given index of an item in the inventory or equips.
+     *
+     * @param item
+     * @return
+     */
+    private Vector2 getCoords(Item item) {
+        Vector2 ret = new Vector2();
         if (item.equipped) {
-            selectedSlot.setPosition(7 + (player.equips.positions[item.type - 2].x - 2),
-                    7 + (player.equips.positions[item.type - 2].y - 2));
-            selectedSlot.setVisible(true);
+            ret.set(7 + (player.equips.positions[item.type - 2].x - 2),
+                7 + (player.equips.positions[item.type - 2].y - 2));
         }
         else {
             int i = item.index;
             int x = i % NUM_COLS;
             int y = i / NUM_COLS;
-            selectedSlot.setPosition(91 + (x * 16), 63 - (y * 16));
-            selectedSlot.setVisible(true);
+            ret.set(91 + (x * 16), 63 - (y * 16));
         }
+        return ret;
     }
 
     /**
@@ -711,28 +724,6 @@ public class InventoryUI extends UI {
         }
         // outside of inventory range
         return -1;
-    }
-
-    /**
-     * Returns a Vector2 containing the x y coordinates of the slot at a
-     * given index of an item in the inventory or equips.
-     *
-     * @param item
-     * @return
-     */
-    private Vector2 getTooltipCoords(Item item) {
-        Vector2 ret = new Vector2();
-        if (item.equipped) {
-            ret.set(7 + (player.equips.positions[item.type - 2].x - 2),
-                    7 + (player.equips.positions[item.type - 2].y - 2));
-        }
-        else {
-            int i = item.index;
-            int x = i % NUM_COLS;
-            int y = i / NUM_COLS;
-            ret.set(91 + (x * 16), 63 - (y * 16));
-        }
-        return ret;
     }
 
     /**
