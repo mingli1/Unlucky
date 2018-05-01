@@ -189,8 +189,6 @@ public class InventoryUI extends UI {
         stage.addActor(exitButton);
         for (int i = 0; i < headers.length; i++) stage.addActor(headers[i]);
         for (int i = 0; i < stats.length; i++) stage.addActor(stats[i]);
-        addInventory();
-        addEquips();
         stage.addActor(selectedSlot);
         stage.addActor(tooltip);
         for (int i = 0; i < 2; i++) {
@@ -756,10 +754,7 @@ public class InventoryUI extends UI {
      * Activated by the exit button
      */
     public void end() {
-        itemSelected = false;
-        currentItem = null;
-        selectedSlot.setVisible(false);
-        tooltip.setVisible(false);
+        unselectItem();
 
         if (!inMenu) {
             // ui slides off screen right to left
