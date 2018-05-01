@@ -1,8 +1,6 @@
 package com.unlucky.screen;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -39,15 +37,15 @@ public class StatisticsScreen extends MenuExtensionScreen {
 
         // create title label
         banner = new Image(rm.skin, "default-slider");
-        banner.setPosition(7, 102);
-        banner.setSize(165, 12);
+        banner.setPosition(8, 102);
+        banner.setSize(164, 12);
         stage.addActor(banner);
 
         bannerLabel = new Label("STATISTICS", rm.skin);
         bannerLabel.setStyle(new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)));
         bannerLabel.setSize(50, 12);
         bannerLabel.setTouchable(Touchable.disabled);
-        bannerLabel.setPosition(18, 102);
+        bannerLabel.setPosition(14, 102);
         bannerLabel.setAlignment(Align.left);
         stage.addActor(bannerLabel);
 
@@ -136,8 +134,8 @@ public class StatisticsScreen extends MenuExtensionScreen {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
         scrollPane.layout();
-        scrollTable.add(scrollPane).size(250, 80).fill();
-        scrollTable.setPosition(-30, -8);
+        scrollTable.add(scrollPane).size(254, 80).fill();
+        scrollTable.setPosition(-34, -8);
     }
 
 }
