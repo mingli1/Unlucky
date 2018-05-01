@@ -384,7 +384,7 @@ public class InventoryUI extends UI {
                                 tooltip.toFront();
                                 Vector2 tpos = getCoords(item);
                                 // make sure items at the bottom don't get covered by the tooltip
-                                if (tpos.y <= 15)
+                                if (tpos.y <= 31)
                                     tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
                                 else
                                     tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
@@ -805,7 +805,7 @@ public class InventoryUI extends UI {
                     }
                     invButtons[i].setStyle(enabled);
                     // add enchant cost of item to button
-                    invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
+                    if (currentItem.type >= 2) invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
                     // add sell value of item to button
                     invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
                 }
