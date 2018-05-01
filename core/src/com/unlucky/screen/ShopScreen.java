@@ -3,12 +3,14 @@ package com.unlucky.screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.unlucky.entity.Player;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
@@ -39,9 +41,17 @@ public class ShopScreen extends MenuExtensionScreen {
     private String[] headerStrs = new String[] { "SHOP", "INVENTORY" };
     private Label gold;
 
+    // 0 - buy, 1 - sell
+    private ImageButton[] invButtons;
+    private ImageButton.ImageButtonStyle enabled;
+    private ImageButton.ImageButtonStyle disabled;
+    private Label[] invButtonLabels;
+
     // inventory ui
     private Image selectedSlot;
     private ItemTooltip tooltip;
+    private Item currentItem = null;
+    private boolean itemSelected = false;
 
     public ShopScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -62,6 +72,7 @@ public class ShopScreen extends MenuExtensionScreen {
         exitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 removeInventoryActors();
+                unselectItem();
                 game.menuScreen.transitionIn = 1;
                 setSlideScreen(game.menuScreen, true);
             }
@@ -89,6 +100,29 @@ public class ShopScreen extends MenuExtensionScreen {
         tooltip = new ItemTooltip(rm.skin);
         tooltip.hide();
         stage.addActor(tooltip);
+
+        enabled = new ImageButton.ImageButtonStyle();
+        enabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[0][0]);
+        enabled.imageDown = new TextureRegionDrawable(rm.invbuttons92x28[1][0]);
+        disabled = new ImageButton.ImageButtonStyle();
+        disabled.imageUp = new TextureRegionDrawable(rm.invbuttons92x28[2][0]);
+        invButtons = new ImageButton[2];
+        invButtonLabels = new Label[2];
+        for (int i = 0; i < 2; i++) {
+            invButtons[i] = new ImageButton(disabled);
+            invButtons[i].setTouchable(Touchable.disabled);
+            invButtons[i].setPosition(13 + (i * 48), 12);
+            invButtonLabels[i] = new Label("", headerStyle);
+            invButtonLabels[i].setFontScale(0.5f);
+            invButtonLabels[i].setTouchable(Touchable.disabled);
+            invButtonLabels[i].setSize(46, 14);
+            invButtonLabels[i].setAlignment(Align.center);
+            invButtonLabels[i].setPosition(13 + (i * 48), 12);
+            stage.addActor(invButtons[i]);
+            stage.addActor(invButtonLabels[i]);
+        }
+
+        handleStageEvents();
     }
 
     public void show() {
@@ -108,8 +142,41 @@ public class ShopScreen extends MenuExtensionScreen {
             final Item item = player.inventory.getItem(i);
             if (item != null) {
                 item.actor.clearListeners();
+                item.actor.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        // select item
+                        if (selectedSlot.isVisible()) {
+                            unselectItem();
+                        }
+                        else {
+                            itemSelected = true;
+                            currentItem = item;
+                            showSelectedSlot(item);
+                            tooltip.toFront();
+                            Vector2 tpos = getCoords(item);
+                            // make sure items at the bottom don't get covered by the tooltip
+                            if (tpos.y <= 42)
+                                tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
+                            else
+                                tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
+                        }
+                    }
+                });
             }
         }
+    }
+
+    private void handleStageEvents() {
+        ui.addListener(new InputListener() {
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                if (itemSelected) {
+                    unselectItem();
+                }
+                return true;
+            }
+        });
     }
 
     private void addInventoryActors() {
@@ -128,6 +195,19 @@ public class ShopScreen extends MenuExtensionScreen {
                 item.actor.remove();
             }
         }
+    }
+
+    private void unselectItem() {
+        itemSelected = false;
+        currentItem = null;
+        selectedSlot.setVisible(false);
+        tooltip.hide();
+    }
+
+    private void showSelectedSlot(Item item) {
+        Vector2 pos = getCoords(item);
+        selectedSlot.setPosition(pos.x, pos.y);
+        selectedSlot.setVisible(true);
     }
 
     /**
