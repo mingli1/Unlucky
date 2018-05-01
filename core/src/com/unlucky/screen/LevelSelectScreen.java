@@ -4,12 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.Level;
@@ -88,12 +86,42 @@ public class LevelSelectScreen extends SelectScreen {
         enterButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // FOR TESTING RIGHT NOW
-                if (worldIndex == 0 && currentLevelIndex == 0) {
-                    setFadeScreen(game.gameScreen);
+                // if the player's inventory is full give a warning
+                if (game.player.inventory.isFull()) {
+                    new Dialog("Warning", rm.dialogSkin) {
+                        {
+                            Label l = new Label("Your inventory is full.\nAre you sure you want to proceed?", rm.dialogSkin);
+                            l.setFontScale(0.5f);
+                            l.setAlignment(Align.center);
+                            text(l);
+                            getButtonTable().defaults().width(40);
+                            getButtonTable().defaults().height(15);
+                            button("Yes", "yes");
+                            button("No", "no");
+                        }
+
+                        @Override
+                        protected void result(Object object) {
+                            if (object.equals("yes")) enterGame();
+                        }
+
+                    }.show(stage).getTitleLabel().setAlignment(Align.center);
+                }
+                else {
+                    enterGame();
                 }
             }
         });
+    }
+
+    /**
+     * Enters the map with the corresponding world, level key
+     */
+    private void enterGame() {
+        // FOR TESTING RIGHT NOW
+        if (worldIndex == 0 && currentLevelIndex == 0) {
+            setFadeScreen(game.gameScreen);
+        }
     }
 
     protected void createScrollPane() {
