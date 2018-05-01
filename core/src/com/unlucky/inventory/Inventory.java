@@ -10,8 +10,6 @@ public class Inventory {
 
     // inventory dimensions
     public static final int NUM_SLOTS = 24;
-    public static final int NUM_COLS = 6;
-    public static final int NUM_ROWS = 4;
 
     public Item[] items;
 

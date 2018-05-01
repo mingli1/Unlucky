@@ -49,6 +49,7 @@ public class ResourceManager {
     public TextureRegion bigsnow;
     public TextureRegion bigrain;
     public TextureRegion lightning;
+    public TextureRegion shade;
 
     // Menu
     public TextureRegion[] title;
@@ -77,6 +78,8 @@ public class ResourceManager {
     public TextureRegion levelupscreen400x240;
     public TextureRegion inventoryui372x212;
     public TextureRegion selectedslot28x28;
+    public TextureRegion[] creditsicons;
+    public TextureRegion shopui;
 
     // Skin
     public Skin skin;
@@ -143,6 +146,7 @@ public class ResourceManager {
         raindropAnim16x16 = atlas.findRegion("raindrop_anim").split(16, 16);
         snowflake = atlas.findRegion("snowflake");
         lightning = atlas.findRegion("lightning");
+        shade = atlas.findRegion("shade");
         bigrain = atlas.findRegion("big_rain");
         bigsnow = atlas.findRegion("big_snow");
 
@@ -172,6 +176,8 @@ public class ResourceManager {
         selectedslot28x28 = atlas.findRegion("selected_slot");
         invbuttons92x28 = atlas.findRegion("inv_buttons").split(46, 14);
         statuseffects20x20 = atlas.findRegion("20x20status_effects").split(10, 10)[0];
+        creditsicons = atlas.findRegion("creditsicons").split(17, 17)[0];
+        shopui = atlas.findRegion("shop_ui");
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);

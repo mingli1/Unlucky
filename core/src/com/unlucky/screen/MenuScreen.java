@@ -2,7 +2,6 @@ package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -150,6 +149,19 @@ public class MenuScreen extends MenuExtensionScreen {
         // credits button
         optionButtons[5].setPosition(170, 15);
 
+        // inventory screen
+        optionButtons[0].addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                setSlideScreen(game.inventoryScreen, false);
+            }
+        });
+        // shop screen
+        optionButtons[2].addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                setSlideScreen(game.shopScreen, false);
+            }
+        });
         // statistics screen
         optionButtons[4].addListener(new ClickListener() {
             @Override

@@ -46,6 +46,7 @@ public class Unlucky extends Game {
     public WorldSelectScreen worldSelectScreen;
     public LevelSelectScreen levelSelectScreen;
     public InventoryScreen inventoryScreen;
+    public ShopScreen shopScreen;
     public StatisticsScreen statisticsScreen;
     public InventoryUI inventoryUI;
 
@@ -70,6 +71,7 @@ public class Unlucky extends Game {
         worldSelectScreen = new WorldSelectScreen(this, rm);
         levelSelectScreen = new LevelSelectScreen(this, rm);
         inventoryScreen = new InventoryScreen(this, rm);
+        shopScreen = new ShopScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
 
         // create parallax background
@@ -110,6 +112,7 @@ public class Unlucky extends Game {
         worldSelectScreen.dispose();
         levelSelectScreen.dispose();
         inventoryScreen.dispose();
+        shopScreen.dispose();
         statisticsScreen.dispose();
         inventoryUI.dispose();
 

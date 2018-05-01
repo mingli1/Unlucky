@@ -66,7 +66,8 @@ public class Hud extends UI {
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             toggle(false);
             gameScreen.setCurrentEvent(EventState.INVENTORY);
-            gameScreen.inventoryUI.start();
+            gameScreen.getGame().inventoryUI.init(false, null);
+            gameScreen.getGame().inventoryUI.start();
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
             Gdx.input.getTextInput(new Input.TextInputListener() {
@@ -184,7 +185,8 @@ public class Hud extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 toggle(false);
                 gameScreen.setCurrentEvent(EventState.INVENTORY);
-                gameScreen.inventoryUI.start();
+                gameScreen.getGame().inventoryUI.init(false, null);
+                gameScreen.getGame().inventoryUI.start();
             }
         });
 
