@@ -3,7 +3,6 @@ package com.unlucky.resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.NinePatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -182,9 +181,6 @@ public class ResourceManager {
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
 
-        NinePatch window = skin.getPatch("default-window");
-        //window.scale(2.0f, 2.0f);
-
         loadWorlds();
         loadMoves();
         loadItems();
@@ -293,7 +289,7 @@ public class ResourceManager {
             switch (i.getInt("type")) {
                 case 0:
                     rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                            rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("sell")));
+                            rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell")));
                     break;
                 case 1:
                     rare.add(new Item(this, i.getString("name"), i.getString("desc"),
@@ -319,7 +315,7 @@ public class ResourceManager {
     public Item getItem(int rarity) {
         Item item = items.get(rarity).get(MathUtils.random(items.get(rarity).size - 1));
         if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
         else if (item.type == 1)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
         else
@@ -336,7 +332,7 @@ public class ResourceManager {
     public Item getItem(int rarity, int index) {
         Item item = items.get(rarity).get(index);
         if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
         else if (item.type == 1)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
         else

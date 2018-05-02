@@ -54,6 +54,8 @@ public class Item {
     public int dmg = 0;
     public int acc = 0;
     public int sell = 0;
+    // potions can give exp (percentage)
+    public int exp = 0;
 
     // an item's index in the inventory
     public int index;
@@ -78,12 +80,13 @@ public class Item {
      * @param hp
      * @param sell
      */
-    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int hp, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int hp, int exp, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
         this.imgIndex = imgIndex;
         this.hp = hp;
+        this.exp = exp;
         this.sell = sell;
         type = 0;
         actor = new Image(rm.items20x20[0][imgIndex]);
@@ -175,6 +178,8 @@ public class Item {
         if (type == 0) {
             // percentage hp potions
             if (hp < 0) ret = desc + "\nRECOVER " + -hp + "% OF HP";
+            // exp potions
+            else if (exp > 0) ret = desc + "\nGIVES " + exp + "% EXP";
             else ret = desc + "\nHEALS FOR " + hp + " HP";
         } else if (type == 1) {
             ret = desc;

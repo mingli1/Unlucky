@@ -2,7 +2,6 @@ package com.unlucky.entity;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.animation.AnimationManager;
 import com.unlucky.battle.Moveset;
@@ -13,7 +12,6 @@ import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.map.Tile;
-import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Statistics;
 import com.unlucky.resource.Util;
@@ -108,38 +106,14 @@ public class Player extends Entity {
 
         statusEffects = new StatusSet(true, rm);
         smoveset = new SpecialMoveset();
-    }
 
-    public Player(String id, Vector2 position, TileMap tileMap, ResourceManager rm) {
-        super(id, position, tileMap, rm);
-
-        inventory = new Inventory();
-        equips = new Equipment();
-
-        // attributes
-        hp = maxHp = previousHp = Util.PLAYER_INIT_MAX_HP;
-        accuracy = Util.PLAYER_ACCURACY;
-        minDamage = Util.PLAYER_INIT_MIN_DMG;
-        maxDamage = Util.PLAYER_INIT_MAX_DMG;
-
-        level = 1;
-        speed = 50.f;
-
-        exp = 0;
-        // offset between 3 and 5
-        maxExp = Util.calculateMaxExp(1, MathUtils.random(3, 5));
-
-        // create tilemap animation
-        am = new AnimationManager(rm.sprites16x16, Util.PLAYER_WALKING, Util.PLAYER_WALKING_DELAY);
-        // create battle scene animation
-        bam = new AnimationManager(rm.battleSprites96x96, 2, Util.PLAYER_WALKING, 2 / 5f);
-
-        moveset = new Moveset(rm);
-        // damage seed is a random number between the damage range
-        moveset.reset(minDamage, maxDamage, maxHp);
-
-        statusEffects = new StatusSet(true, rm);
-        smoveset = new SpecialMoveset();
+        // FOR TESTING
+        inventory.clear();
+        for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+            Item item = rm.getRandomItem();
+            item.adjust(getLevel());
+            inventory.addItem(item);
+        }
     }
 
     public void update(float dt) {
@@ -513,6 +487,15 @@ public class Player extends Entity {
     }
 
     /**
+     * Applies a percentage health potion
+     * @param php
+     */
+    public void percentagePotion(int php) {
+        hp += (int) ((php / 100f) * maxHp);
+        if (hp > maxHp) hp = maxHp;
+    }
+
+    /**
      * Green question mark tiles can drop 70% of the time
      * if does drop:
      * - gold (50% of the time) (based on map level)
@@ -647,9 +630,24 @@ public class Player extends Entity {
         position.set(tileMap.toMapCoords(choose.tilePosition));
     }
 
-    public void setBattling(com.unlucky.entity.enemy.Enemy opponent) {
+    public void setBattling(Enemy opponent) {
         this.opponent = opponent;
         battling = true;
+    }
+
+    /**
+     * Adds a given amount of exp to the player's current exp and checks for level up
+     */
+    public void addExp(int exp) {
+        // level up with no screen
+        if (this.exp + exp >= maxExp) {
+            int remainder = (this.exp + exp) - maxExp;
+            levelUp(remainder);
+            applyLevelUp();
+        }
+        else {
+            this.exp += exp;
+        }
     }
 
     public boolean isBattling() {
@@ -658,10 +656,6 @@ public class Player extends Entity {
 
     public void setExp(int exp) {
         this.exp = exp;
-    }
-
-    public void addExp(int exp) {
-        this.exp += exp;
     }
 
     public void setMaxExp(int maxExp) {

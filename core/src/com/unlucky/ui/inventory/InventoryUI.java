@@ -639,6 +639,9 @@ public class InventoryUI extends UI {
                 Label l = new Label("Heal for " +
                     (currentItem.hp < 0 ? (int) ((-currentItem.hp / 100f) * player.getMaxHp()) : currentItem.hp)
                     + " HP\nusing this potion?", rm.dialogSkin);
+                if (currentItem.exp > 0) {
+                    l.setText("Gain " + (int) ((currentItem.exp / 100f) * player.getMaxExp()) + " EXP\nfrom this potion?");
+                }
                 l.setFontScale(0.5f);
                 l.setAlignment(Align.center);
                 text(l);
@@ -652,6 +655,7 @@ public class InventoryUI extends UI {
             protected void result(Object object) {
                 if (object.equals("yes")) {
                     if (currentItem.hp < 0) player.percentagePotion(-currentItem.hp);
+                    else if (currentItem.exp > 0) player.addExp((int) ((currentItem.exp / 100f) * player.getMaxExp()));
                     else player.potion(currentItem.hp);
                     player.inventory.items[currentItem.index].actor.remove();
                     player.inventory.removeItem(currentItem.index);
