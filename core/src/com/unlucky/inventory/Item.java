@@ -47,6 +47,8 @@ public class Item {
     public int rarity;
 
     // item stats
+    // if hp is negative then its absolute value is the percentage hp that the item gives
+    // used to separate percentage hp from regular hp potions
     public int hp = 0;
     public int mhp = 0;
     public int dmg = 0;
@@ -171,7 +173,9 @@ public class Item {
     public String getFullDesc() {
         String ret = "";
         if (type == 0) {
-            ret = desc + "\nHEALS FOR " + hp + " HP";
+            // percentage hp potions
+            if (hp < 0) ret = desc + "\nRECOVER " + -hp + "% OF HP";
+            else ret = desc + "\nHEALS FOR " + hp + " HP";
         } else if (type == 1) {
             ret = desc;
         } else {

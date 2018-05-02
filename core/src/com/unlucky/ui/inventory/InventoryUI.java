@@ -636,7 +636,9 @@ public class InventoryUI extends UI {
     private void consume() {
         new Dialog("Consume", rm.dialogSkin) {
             {
-                Label l = new Label("Heal for " + currentItem.hp + " HP\nusing this potion?", rm.dialogSkin);
+                Label l = new Label("Heal for " +
+                    (currentItem.hp < 0 ? (int) ((-currentItem.hp / 100f) * player.getMaxHp()) : currentItem.hp)
+                    + " HP\nusing this potion?", rm.dialogSkin);
                 l.setFontScale(0.5f);
                 l.setAlignment(Align.center);
                 text(l);
@@ -649,7 +651,8 @@ public class InventoryUI extends UI {
             @Override
             protected void result(Object object) {
                 if (object.equals("yes")) {
-                    player.potion(currentItem.hp);
+                    if (currentItem.hp < 0) player.percentagePotion(-currentItem.hp);
+                    else player.potion(currentItem.hp);
                     player.inventory.items[currentItem.index].actor.remove();
                     player.inventory.removeItem(currentItem.index);
                     unselectItem();
