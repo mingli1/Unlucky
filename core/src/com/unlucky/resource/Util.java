@@ -1,7 +1,9 @@
 package com.unlucky.resource;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.battle.SpecialMove;
 import com.unlucky.entity.enemy.Boss;
 import com.unlucky.entity.Entity;
@@ -188,6 +190,16 @@ public class Util {
         int n0 = mu - sigma;
         int n1 = mu + sigma;
         return MathUtils.random(n0, n1);
+    }
+
+    public static Label.LabelStyle getItemColor(int rarity, ResourceManager rm) {
+        switch (rarity) {
+            case 0: return new Label.LabelStyle(rm.skin.getFont("default-font"), new Color(1, 1, 1, 1));
+            case 1: return new Label.LabelStyle(rm.skin.getFont("default-font"), new Color(0, 200 / 255.f, 0, 1));
+            case 2: return new Label.LabelStyle(rm.skin.getFont("default-font"), new Color(0, 180 / 255.f, 1, 1));
+            case 3: return new Label.LabelStyle(rm.skin.getFont("default-font"), new Color(164 / 255.f, 80 / 255.f, 1, 1));
+        }
+        return null;
     }
 
     // Map

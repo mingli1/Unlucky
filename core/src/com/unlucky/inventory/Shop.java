@@ -28,20 +28,20 @@ public class Shop {
                 // potion
                 if (item.type == 0) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.rarity,
-                        item.imgIndex, item.hp, item.exp, item.sell, MathUtils.random(10, 1000));
+                        item.imgIndex, item.hp, item.exp, item.sell, item.sell * MathUtils.random(2, 4));
                     items.get(0).add(shopItem);
                 }
                 // equip
                 else if (item.type >= 2 && item.type <= 6) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, MathUtils.random(30, 5000));
+                        item.mhp, item.dmg, item.acc, item.sell, item.sell * MathUtils.random(2, 4));
                     items.get(1).add(shopItem);
                 }
                 // accs
                 else if (item.type >= 7 && item.type <= 9) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, MathUtils.random(30, 5000));
-                    items.get(1).add(shopItem);
+                        item.mhp, item.dmg, item.acc, item.sell, item.sell * MathUtils.random(2, 4));
+                    items.get(2).add(shopItem);
                 }
             }
         }

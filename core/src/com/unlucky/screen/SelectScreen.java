@@ -54,6 +54,7 @@ public abstract class SelectScreen extends AbstractScreen {
         // init enter button
         enterButtonGroup = new Group();
         enterButtonGroup.setSize(79, 28);
+        enterButtonGroup.setTransform(false);
 
         ImageButton.ImageButtonStyle enterStyle = new ImageButton.ImageButtonStyle();
         enterStyle.imageUp = new TextureRegionDrawable(rm.enterButton[0][0]);

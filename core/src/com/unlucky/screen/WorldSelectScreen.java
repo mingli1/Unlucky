@@ -100,6 +100,7 @@ public class WorldSelectScreen extends SelectScreen {
             // button and label group
             Group g = new Group();
             g.setSize(90, 30);
+            g.setTransform(false);
 
             Label name = new Label(rm.worlds.get(i).name, nameStyle);
             name.setPosition(5, 20);

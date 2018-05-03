@@ -167,6 +167,7 @@ public class ShopScreen extends MenuExtensionScreen {
 
         // create tabs
         HorizontalGroup tabGroup = new HorizontalGroup();
+        tabGroup.setTransform(false);
         TextButton.TextButtonStyle tabStyle = new TextButton.TextButtonStyle();
         tabStyle.font = rm.pixel10;
         tabStyle.fontColor = Color.WHITE;
@@ -228,6 +229,7 @@ public class ShopScreen extends MenuExtensionScreen {
 
             for (int j = 0; j < shop.items.get(i).size; j++) {
                 Group itemGroup = new Group();
+                itemGroup.setTransform(false);
                 Table itemTable = new Table();
                 itemTable.setFillParent(true);
 
@@ -286,7 +288,7 @@ public class ShopScreen extends MenuExtensionScreen {
                 selectionContainer.add(itemGroup).padLeft(-1).padBottom(2).size(89, height).row();
             }
             selectionContainer.pack();
-            selectionContainer.setTransform(true);
+            selectionContainer.setTransform(false);
             selectionContainer.setOrigin(selectionContainer.getWidth() / 2,
                 selectionContainer.getHeight() / 2);
 

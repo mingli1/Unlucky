@@ -67,6 +67,8 @@ public abstract class MenuExtensionScreen extends AbstractScreen {
         }
 
         super.render(dt);
+
+        game.profile("Shop");
     }
 
 }

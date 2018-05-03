@@ -118,7 +118,7 @@ public abstract class AbstractScreen implements Screen {
     public void setSlideScreen(final Screen screen, boolean right) {
         if (clickable) {
             clickable = false;
-            batchFade = false;
+            batchFade = true;
             // slide animation
             stage.addAction(Actions.sequence(
                 Actions.moveBy(right ? -Unlucky.V_WIDTH : Unlucky.V_WIDTH, 0, 0.3f),

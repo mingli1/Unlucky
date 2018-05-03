@@ -143,6 +143,7 @@ public class LevelSelectScreen extends SelectScreen {
             // button and label group
             Group g = new Group();
             g.setSize(90, 20);
+            g.setTransform(false);
 
             Level l = rm.worlds.get(worldIndex).levels[index];
 

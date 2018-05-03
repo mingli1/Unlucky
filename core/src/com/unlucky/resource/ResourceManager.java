@@ -79,6 +79,7 @@ public class ResourceManager {
     public TextureRegion selectedslot28x28;
     public TextureRegion[] creditsicons;
     public TextureRegion shopui;
+    public TextureRegion[][] shoptab;
 
     // Skin
     public Skin skin;
@@ -177,6 +178,7 @@ public class ResourceManager {
         statuseffects20x20 = atlas.findRegion("20x20status_effects").split(10, 10)[0];
         creditsicons = atlas.findRegion("creditsicons").split(17, 17)[0];
         shopui = atlas.findRegion("shop_ui");
+        shoptab = atlas.findRegion("shop_tab").split(31, 9);
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
