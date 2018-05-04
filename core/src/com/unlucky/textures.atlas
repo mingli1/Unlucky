@@ -1,0 +1,300 @@
+
+textures.png
+size: 2048,512
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+10x9_redarrow
+  rotate: false
+  xy: 606, 289
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+11x6_shadow
+  rotate: false
+  xy: 2, 2
+  size: 11, 6
+  orig: 11, 6
+  offset: 0, 0
+  index: -1
+16x16_atiles
+  rotate: false
+  xy: 518, 42
+  size: 96, 224
+  orig: 96, 224
+  offset: 0, 0
+  index: -1
+16x16_sprites
+  rotate: false
+  xy: 260, 10
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+16x16_tiles
+  rotate: false
+  xy: 2, 10
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
+20x20_items
+  rotate: false
+  xy: 1904, 410
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+20x20status_effects
+  rotate: false
+  xy: 1904, 398
+  size: 90, 10
+  orig: 90, 10
+  offset: 0, 0
+  index: -1
+64x64_battle_attacks
+  rotate: false
+  xy: 616, 4
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+96x96_battle_heal
+  rotate: false
+  xy: 714, 138
+  size: 192, 48
+  orig: 192, 48
+  offset: 0, 0
+  index: -1
+96x96_battle_sprites
+  rotate: false
+  xy: 616, 102
+  size: 96, 192
+  orig: 96, 192
+  offset: 0, 0
+  index: -1
+96x96_level_up
+  rotate: false
+  xy: 604, 410
+  size: 194, 48
+  orig: 194, 48
+  offset: 0, 0
+  index: -1
+battle_bgs
+  rotate: false
+  xy: 2, 268
+  size: 400, 120
+  orig: 400, 120
+  offset: 0, 0
+  index: -1
+battle_darkness
+  rotate: false
+  xy: 404, 268
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+creditsicons
+  rotate: false
+  xy: 1104, 371
+  size: 34, 17
+  orig: 34, 17
+  offset: 0, 0
+  index: -1
+darkness
+  rotate: false
+  xy: 1702, 390
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+dialog_box
+  rotate: false
+  xy: 714, 96
+  size: 200, 40
+  orig: 200, 40
+  offset: 0, 0
+  index: -1
+dir_pad
+  rotate: false
+  xy: 816, 2
+  size: 80, 40
+  orig: 80, 40
+  offset: 0, 0
+  index: -1
+enemy_hp_bar
+  rotate: false
+  xy: 1030, 368
+  size: 72, 20
+  orig: 72, 20
+  offset: 0, 0
+  index: -1
+enter_button
+  rotate: false
+  xy: 800, 320
+  size: 79, 56
+  orig: 79, 56
+  offset: 0, 0
+  index: -1
+exit_button
+  rotate: false
+  xy: 882, 440
+  size: 9, 18
+  orig: 9, 18
+  offset: 0, 0
+  index: -1
+inv_buttons
+  rotate: false
+  xy: 881, 320
+  size: 46, 42
+  orig: 46, 42
+  offset: 0, 0
+  index: -1
+inv_ui
+  rotate: false
+  xy: 714, 188
+  size: 186, 106
+  orig: 186, 106
+  offset: 0, 0
+  index: -1
+level_up
+  rotate: false
+  xy: 894, 390
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+lightning
+  rotate: false
+  xy: 1500, 390
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+menu_buttons
+  rotate: false
+  xy: 518, 8
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+menu_exit_button
+  rotate: false
+  xy: 898, 14
+  size: 14, 28
+  orig: 14, 28
+  offset: 0, 0
+  index: -1
+move_buttons
+  rotate: false
+  xy: 604, 460
+  size: 288, 50
+  orig: 288, 50
+  offset: 0, 0
+  index: -1
+option_buttons
+  rotate: false
+  xy: 2006, 478
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+play_button
+  rotate: false
+  xy: 800, 378
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+player_hp_bar
+  rotate: false
+  xy: 800, 298
+  size: 72, 20
+  orig: 72, 20
+  offset: 0, 0
+  index: -1
+raindrop
+  rotate: false
+  xy: 2006, 460
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+raindrop_anim
+  rotate: false
+  xy: 874, 302
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+selected_slot
+  rotate: false
+  xy: 1140, 374
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+shade
+  rotate: false
+  xy: 1096, 390
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+shop_items
+  rotate: false
+  xy: 714, 4
+  size: 100, 90
+  orig: 100, 90
+  offset: 0, 0
+  index: -1
+shop_tab
+  rotate: false
+  xy: 929, 344
+  size: 31, 18
+  orig: 31, 18
+  offset: 0, 0
+  index: -1
+shop_ui
+  rotate: false
+  xy: 606, 296
+  size: 192, 112
+  orig: 192, 112
+  offset: 0, 0
+  index: -1
+snowflake
+  rotate: false
+  xy: 1904, 394
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+stage_select_bg
+  rotate: false
+  xy: 1298, 390
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+standard_med_button
+  rotate: false
+  xy: 816, 44
+  size: 110, 50
+  orig: 110, 50
+  offset: 0, 0
+  index: -1
+title_bg
+  rotate: false
+  xy: 2, 390
+  size: 600, 120
+  orig: 600, 120
+  offset: 0, 0
+  index: -1
+unlucky_title
+  rotate: false
+  xy: 902, 364
+  size: 126, 24
+  orig: 126, 24
+  offset: 0, 0
+  index: -1
