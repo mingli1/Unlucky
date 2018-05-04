@@ -50,4 +50,22 @@ public class ShopItem extends Item {
         this.price = price;
     }
 
+    /**
+     * For enchant scrolls
+     *
+     * @param rm
+     * @param name
+     * @param desc
+     * @param rarity
+     * @param imgIndex
+     * @param eChance
+     * @param sell
+     * @param price
+     */
+    public ShopItem(ResourceManager rm, String name, String desc, int rarity, int imgIndex,
+                    int eChance, int sell, int price) {
+        super(rm, name, desc, rarity, imgIndex, eChance, sell);
+        this.price = price;
+    }
+
 }

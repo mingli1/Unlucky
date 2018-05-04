@@ -33,6 +33,7 @@ public class Item {
      * 7 - necklace
      * 8 - shield
      * 9 - ring
+     * 10 - enchant scroll
      */
     public int type;
 
@@ -64,6 +65,8 @@ public class Item {
     // the number of successful enchants on the item
     public int enchants = 0;
     public int enchantCost;
+    // for enchant scrolls representing the bonus enchant percentage that the scroll gives
+    public int eChance;
 
     // rendering
     public Image actor;
@@ -139,6 +142,29 @@ public class Item {
         this.acc = acc;
         this.sell = sell;
         actor = new Image(rm.items20x20[type][imgIndex]);
+        labelName = name;
+    }
+
+    /**
+     * For enchant scrolls
+     *
+     * @param rm
+     * @param name
+     * @param desc
+     * @param rarity
+     * @param imgIndex
+     * @param eChance
+     * @param sell
+     */
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int eChance, int sell) {
+        this.name = name;
+        this.desc = desc;
+        this.rarity = rarity;
+        this.imgIndex = imgIndex;
+        this.eChance = eChance;
+        this.sell = sell;
+        type = 10;
+        actor = new Image(rm.items20x20[10][imgIndex]);
         labelName = name;
     }
 
