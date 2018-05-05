@@ -1,5 +1,6 @@
 package com.unlucky.inventory;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.unlucky.resource.ResourceManager;
 
 /**
@@ -28,6 +29,7 @@ public class ShopItem extends Item {
                     int imgIndex, int hp, int exp, int sell, int price) {
         super(rm, name, desc, rarity, imgIndex, hp, exp, sell);
         this.price = price;
+        actor = new Image(rm.shopitems[0][imgIndex]);
     }
 
     /**
@@ -48,6 +50,7 @@ public class ShopItem extends Item {
                     int imgIndex, int mhp, int dmg, int acc, int sell, int price) {
         super(rm, name, desc, type, rarity, imgIndex, mhp, dmg, acc, sell);
         this.price = price;
+        actor = new Image(rm.shopitems[type - 1][imgIndex]);
     }
 
     /**
@@ -66,6 +69,7 @@ public class ShopItem extends Item {
                     int eChance, int sell, int price) {
         super(rm, name, desc, rarity, imgIndex, eChance, sell);
         this.price = price;
+        actor = new Image(rm.shopitems[9][imgIndex]);
     }
 
 }

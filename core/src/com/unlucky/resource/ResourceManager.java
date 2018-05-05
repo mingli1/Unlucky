@@ -14,6 +14,7 @@ import com.badlogic.gdx.utils.JsonReader;
 import com.badlogic.gdx.utils.JsonValue;
 import com.unlucky.battle.Move;
 import com.unlucky.inventory.Item;
+import com.unlucky.inventory.ShopItem;
 import com.unlucky.map.Level;
 import com.unlucky.map.World;
 
@@ -37,6 +38,7 @@ public class ResourceManager {
     public TextureRegion[][] tiles16x16;
     public TextureRegion[][] atiles16x16;
     public TextureRegion[][] items20x20;
+    public TextureRegion[][] shopitems;
     public TextureRegion[][] battleSprites96x96;
     public TextureRegion[][] battleBackgrounds400x240;
     public TextureRegion[][] battleAttacks64x64;
@@ -104,6 +106,7 @@ public class ResourceManager {
 
     // contains all the items separated by rarity
     public final Array<Array<Item>> items = new Array<Array<Item>>();
+    public final Array<Array<ShopItem>> shopItems = new Array<Array<ShopItem>>();
 
     // Fonts
     public final BitmapFont pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"),
@@ -134,6 +137,7 @@ public class ResourceManager {
         tiles16x16 = atlas.findRegion("16x16_tiles").split(16, 16);
         atiles16x16 = atlas.findRegion("16x16_atiles").split(16, 16);
         items20x20 = atlas.findRegion("20x20_items").split(10, 10);
+        shopitems = atlas.findRegion("shop_items").split(10, 10);
         battleSprites96x96 = atlas.findRegion("96x96_battle_sprites").split(48, 48);
         battleBackgrounds400x240 = atlas.findRegion("battle_bgs").split(200, 120);
         shadow11x6 = atlas.findRegion("11x6_shadow");
@@ -278,10 +282,13 @@ public class ResourceManager {
     private void loadItems() {
         // parse items.json
         JsonValue itemPool = jsonReader.parse(Gdx.files.internal("items/items.json"));
+        // parse shopitems.json
+        JsonValue shopitemPool = jsonReader.parse(Gdx.files.internal("items/shopitems.json"));
 
         // load by rarity
         for (int i = 0; i < 4; i++) {
             loadItems(itemPool, i, "rare" + i);
+            loadShopItems(shopitemPool, i, "rare" + i);
         }
     }
 
@@ -305,6 +312,22 @@ public class ResourceManager {
             }
         }
         items.add(rare);
+    }
+
+    private void loadShopItems(JsonValue itemPool, int rarity, String r) {
+        Array<ShopItem> rare = new Array<ShopItem>();
+        for (JsonValue i : itemPool.get(r)) {
+            int type = i.getInt("type");
+            if (type == 0) {
+                rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"),
+                    rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell"), i.getInt("price")));
+            }
+            else if (type >= 2 && type <= 9) {
+                rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"), type, rarity, i.getInt("imgIndex"),
+                    i.getInt("mhp"), i.getInt("dmg"), i.getInt("acc"), i.getInt("sell"), i.getInt("price")));
+            }
+        }
+        shopItems.add(rare);
     }
 
     /**

@@ -21,26 +21,26 @@ public class Shop {
         for (int i = 0; i < 3; i++) items.add(new Array<ShopItem>());
 
         // fill shop items with items
-        for (int rarity = 0; rarity < rm.items.size; rarity++) {
-            for (int i = 0; i < rm.items.get(rarity).size; i++) {
-                Item item = rm.items.get(rarity).get(i);
+        for (int rarity = 0; rarity < rm.shopItems.size; rarity++) {
+            for (int i = 0; i < rm.shopItems.get(rarity).size; i++) {
+                ShopItem item = rm.shopItems.get(rarity).get(i);
                 ShopItem shopItem;
                 // potion
                 if (item.type == 0) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.rarity,
-                        item.imgIndex, item.hp, item.exp, item.sell, item.sell * MathUtils.random(2, 4));
+                        item.imgIndex, item.hp, item.exp, item.sell, item.price);
                     items.get(0).add(shopItem);
                 }
                 // equip
                 else if (item.type >= 2 && item.type <= 6) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, item.sell * MathUtils.random(2, 4));
+                        item.mhp, item.dmg, item.acc, item.sell, item.price);
                     items.get(1).add(shopItem);
                 }
                 // accs
                 else if (item.type >= 7 && item.type <= 9) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, item.sell * MathUtils.random(2, 4));
+                        item.mhp, item.dmg, item.acc, item.sell, item.price);
                     items.get(2).add(shopItem);
                 }
             }
