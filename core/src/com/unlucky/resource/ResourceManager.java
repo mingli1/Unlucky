@@ -295,20 +295,23 @@ public class ResourceManager {
     private void loadItems(JsonValue itemPool, int rarity, String r) {
         Array<Item> rare = new Array<Item>();
         for (JsonValue i : itemPool.get(r)) {
-            switch (i.getInt("type")) {
-                case 0:
-                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                            rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell")));
-                    break;
-                case 1:
-                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                            rarity, i.getInt("imgIndex"), i.getInt("sell")));
-                    break;
-                default:
-                    rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                            i.getInt("type"), rarity, i.getInt("imgIndex"), i.getInt("mhp"),
-                            i.getInt("dmg"), i.getInt("acc"), i.getInt("sell")));
-                    break;
+            int type = i.getInt("type");
+            if (type == 0) {
+                rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                    rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell")));
+            }
+            else if (type == 1) {
+                rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                    rarity, i.getInt("imgIndex"), i.getInt("sell")));
+            }
+            else if (type >= 2 && type <= 9) {
+                rare.add(new Item(this, i.getString("name"), i.getString("desc"),
+                    i.getInt("type"), rarity, i.getInt("imgIndex"), i.getInt("mhp"),
+                    i.getInt("dmg"), i.getInt("acc"), i.getInt("sell")));
+            }
+            else if (type == 10) {
+                rare.add(new Item(this, i.getString("name"), i.getString("desc"), rarity, i.getInt("imgIndex"),
+                    i.getInt("eChance"), i.getInt("sell")));
             }
         }
         items.add(rare);
@@ -325,6 +328,10 @@ public class ResourceManager {
             else if (type >= 2 && type <= 9) {
                 rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"), type, rarity, i.getInt("imgIndex"),
                     i.getInt("mhp"), i.getInt("dmg"), i.getInt("acc"), i.getInt("sell"), i.getInt("price")));
+            }
+            else if (type == 10) {
+                rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"), rarity, i.getInt("imgIndex"),
+                    i.getInt("eChance"), i.getInt("sell"), i.getInt("price")));
             }
         }
         shopItems.add(rare);

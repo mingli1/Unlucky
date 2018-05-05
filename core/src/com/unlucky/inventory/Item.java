@@ -65,6 +65,8 @@ public class Item {
     // the number of successful enchants on the item
     public int enchants = 0;
     public int enchantCost;
+    // percentage bonus enchant chance from scrolls
+    public int bonusEnchantChance = 0;
     // for enchant scrolls representing the bonus enchant percentage that the scroll gives
     public int eChance;
 
@@ -209,11 +211,14 @@ public class Item {
             else ret = desc + "\nHEALS FOR " + hp + " HP";
         } else if (type == 1) {
             ret = desc;
-        } else {
+        } else if (type >= 2 && type <= 9) {
             ret = desc + "\n";
             if (mhp != 0) ret += "+" + mhp + " HP\n";
             if (dmg != 0) ret += "+" + dmg + " DAMAGE\n";
             if (acc != 0) ret += "+" + acc + "% ACCURACY";
+            if (bonusEnchantChance != 0) ret += "+" + bonusEnchantChance + "% BONUS ENCHANT CHANCE";
+        } else if (type == 10) {
+            ret = desc + "\n+" + eChance + "% ENCHANT CHANCE";
         }
         // remove newline from end of string if there is one
         ret = ret.trim();
@@ -233,6 +238,7 @@ public class Item {
      */
     public void enchant() {
         float multiplier = 1.f;
+        bonusEnchantChance = 0;
 
         switch (rarity) {
             // common

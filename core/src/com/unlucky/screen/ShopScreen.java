@@ -175,7 +175,7 @@ public class ShopScreen extends MenuExtensionScreen {
         tabStyle.checked = new TextureRegionDrawable(rm.shoptab[0][0]);
 
         final TextButton[] tabButtons = new TextButton[3];
-        String[] tabStrs = new String[] { "POTIONS", "EQUIPS", "ACCS" };
+        String[] tabStrs = new String[] { "MISC", "EQUIPS", "ACCS" };
         ButtonGroup tabs = new ButtonGroup();
         tabs.setMinCheckCount(1);
         tabs.setMaxCheckCount(1);

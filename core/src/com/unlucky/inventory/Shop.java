@@ -1,6 +1,5 @@
 package com.unlucky.inventory;
 
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.resource.ResourceManager;
 
@@ -13,7 +12,7 @@ import com.unlucky.resource.ResourceManager;
 public class Shop {
 
     // items sold separated by type
-    // 0 - potions, 1 - equips, 2 - accessories (rings and necklaces)
+    // 0 - misc, 1 - equips, 2 - accessories (rings and necklaces)
     public Array<Array<ShopItem>> items;
 
     public Shop(ResourceManager rm) {
@@ -25,7 +24,7 @@ public class Shop {
             for (int i = 0; i < rm.shopItems.get(rarity).size; i++) {
                 ShopItem item = rm.shopItems.get(rarity).get(i);
                 ShopItem shopItem;
-                // potion
+                // potions
                 if (item.type == 0) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.rarity,
                         item.imgIndex, item.hp, item.exp, item.sell, item.price);
@@ -42,6 +41,11 @@ public class Shop {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
                         item.mhp, item.dmg, item.acc, item.sell, item.price);
                     items.get(2).add(shopItem);
+                }
+                // enchant scrolls
+                else if (item.type == 10) {
+                    shopItem = new ShopItem(rm, item.name, item.desc, item.rarity, item.imgIndex, item.eChance, item.sell, item.price);
+                    items.get(0).add(shopItem);
                 }
             }
         }
