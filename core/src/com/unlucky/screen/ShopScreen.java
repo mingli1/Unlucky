@@ -312,10 +312,9 @@ public class ShopScreen extends MenuExtensionScreen {
 
     /**
      * Adds the necessary events to a given item
-     * @param i
+     * @param item
      */
-    private void addInventoryEvent(Item i) {
-        final Item item = i;
+    private void addInventoryEvent(final Item item) {
         item.actor.clearListeners();
         item.actor.addListener(new ClickListener() {
             @Override
