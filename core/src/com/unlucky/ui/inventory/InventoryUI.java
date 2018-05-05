@@ -257,194 +257,209 @@ public class InventoryUI extends UI {
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             final Item item = player.inventory.getItem(i);
             if (item != null) {
-                item.actor.clearListeners();
-                item.actor.addListener(new DragListener() {
+                addInventoryEvent(item);
+            }
+        }
+    }
 
-                    @Override
-                    public void dragStart(InputEvent event, float x, float y, int pointer) {
-                        // can't allow dragging equips off while in game
-                        if (inMenu || !item.equipped) {
-                            dragging = true;
-                            tooltip.hide();
-                            unselectItem();
+    /**
+     * Adds inventory events to a given item
+     * @param item
+     */
+    private void addInventoryEvent(final Item item) {
+        item.actor.clearListeners();
+        item.actor.addListener(new DragListener() {
 
-                            // original positions
-                            prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                            prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+            @Override
+            public void dragStart(InputEvent event, float x, float y, int pointer) {
+                // can't allow dragging equips off while in game
+                if (inMenu || !item.equipped) {
+                    dragging = true;
+                    tooltip.hide();
+                    unselectItem();
 
-                            item.actor.toFront();
-                            selectedSlot.setVisible(false);
-                            if (!item.equipped) player.inventory.removeItem(item.index);
-                            else player.equips.removeEquip(item.type - 2);
-                        }
-                    }
+                    // original positions
+                    prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                    prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
 
-                    @Override
-                    public void drag(InputEvent event, float x, float y, int pointer) {
-                        item.actor.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
-                    }
+                    item.actor.toFront();
+                    selectedSlot.setVisible(false);
+                    if (!item.equipped) player.inventory.removeItem(item.index);
+                    else player.equips.removeEquip(item.type - 2);
+                }
+            }
 
-                    @Override
-                    public void dragStop(InputEvent event, float x, float y, int pointer) {
-                        dragging = false;
+            @Override
+            public void drag(InputEvent event, float x, float y, int pointer) {
+                item.actor.moveBy(x - item.actor.getWidth() / 2, y - item.actor.getHeight() / 2);
+            }
 
-                        selectedSlot.setVisible(false);
-                        // origin positions
-                        int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                        int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+            @Override
+            public void dragStop(InputEvent event, float x, float y, int pointer) {
+                dragging = false;
 
-                        if (item.equipped && inMenu) {
-                            if (INVENTORY_AREA.contains(ax, ay)) {
-                                int hi = getHoveredIndex(ax, ay);
-                                if (hi == -1)
-                                    player.equips.addEquip(item);
-                                else {
-                                    if (player.inventory.isFreeSlot(hi)) {
-                                        player.inventory.addItemAtIndex(item, hi);
-                                        item.equipped = false;
-                                        player.unequip(item);
-                                        updateText();
-                                    }
-                                    else {
-                                        player.equips.addEquip(item);
-                                    }
-                                }
+                selectedSlot.setVisible(false);
+                // origin positions
+                int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
+                if (item.equipped && inMenu) {
+                    if (INVENTORY_AREA.contains(ax, ay)) {
+                        int hi = getHoveredIndex(ax, ay);
+                        if (hi == -1)
+                            player.equips.addEquip(item);
+                        else {
+                            if (player.inventory.isFreeSlot(hi)) {
+                                player.inventory.addItemAtIndex(item, hi);
+                                item.equipped = false;
+                                player.unequip(item);
+                                updateText();
                             }
                             else {
                                 player.equips.addEquip(item);
                             }
                         }
+                    }
+                    else {
+                        player.equips.addEquip(item);
+                    }
+                }
+                else {
+                    // dropping into equips slots
+                    if (EQUIPS_AREA.contains(ax, ay)) {
+                        if (item.type >= 2 && item.type <= 9 && inMenu) {
+                            item.equipped = true;
+                            player.equip(item);
+                            updateText();
+                            if (!player.equips.addEquip(item)) {
+                                // replace the equip with the item of same type
+                                Item swap = player.equips.removeEquip(item.type - 2);
+                                swap.equipped = false;
+                                player.unequip(swap);
+                                player.equips.addEquip(item);
+                                player.inventory.addItemAtIndex(swap, item.index);
+                                updateText();
+                            }
+                        } else {
+                            player.inventory.addItemAtIndex(item, item.index);
+                        }
+                    }
+                    // dropping into inventory slots
+                    else {
+                        int hi = getHoveredIndex(ax, ay);
+
+                        if (hi == -1)
+                            player.inventory.addItemAtIndex(item, item.index);
                         else {
-                            // dropping into equips slots
-                            if (EQUIPS_AREA.contains(ax, ay)) {
-                                if (item.type > 1 && inMenu) {
-                                    item.equipped = true;
-                                    player.equip(item);
-                                    updateText();
-                                    if (!player.equips.addEquip(item)) {
-                                        // replace the equip with the item of same type
-                                        Item swap = player.equips.removeEquip(item.type - 2);
-                                        swap.equipped = false;
-                                        player.unequip(swap);
-                                        player.equips.addEquip(item);
-                                        player.inventory.addItemAtIndex(swap, item.index);
-                                        updateText();
-                                    }
-                                } else {
-                                    player.inventory.addItemAtIndex(item, item.index);
+                            // if dropped into an occupied slot, swap item positions
+                            if (!player.inventory.addItemAtIndex(item, hi)) {
+                                Item eq = player.inventory.getItem(hi);
+                                // dragging an enchant scroll onto an equip
+                                if (item.type == 10 && eq.type >= 2 && eq.type <= 9) {
+                                    applyEnchantBonus(eq, item);
                                 }
-                            }
-                            // dropping into inventory slots
-                            else {
-                                int hi = getHoveredIndex(ax, ay);
-
-                                if (hi == -1)
-                                    player.inventory.addItemAtIndex(item, item.index);
                                 else {
-                                    // if dropped into an occupied slot, swap item positions
-                                    if (!player.inventory.addItemAtIndex(item, hi)) {
-                                        Item swap = player.inventory.takeItem(hi);
-                                        player.inventory.addItemAtIndex(swap, item.index);
-                                        player.inventory.addItemAtIndex(item, hi);
-                                    }
+                                    Item swap = player.inventory.takeItem(hi);
+                                    player.inventory.addItemAtIndex(swap, item.index);
+                                    player.inventory.addItemAtIndex(item, hi);
                                 }
                             }
                         }
                     }
-
-                });
-
-                item.actor.addListener(new InputListener() {
-
-                    @Override
-                    public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                        // original positions
-                        prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                        prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-
-                        return true;
-                    }
-
-                    @Override
-                    public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                        // new positions
-                        int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
-                        int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
-                        // a true click and not a drag
-                        if (prevX == ax && prevY == ay) {
-                            // item selected
-                            if (selectedSlot.isVisible()) {
-                                unselectItem();
-                            }
-                            else {
-                                itemSelected = true;
-                                currentItem = item;
-                                showSelectedSlot(item);
-                                if (inMenu) toggleInventoryButtons(true);
-                                tooltip.toFront();
-                                Vector2 tpos = getCoords(item);
-                                // make sure items at the bottom don't get covered by the tooltip
-                                if (tpos.y <= 31)
-                                    tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
-                                else
-                                    tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
-                            }
-                        }
-                    }
-
-                });
-
-                // handle double clicks for item usage and equip
-                item.actor.addListener(new ClickListener() {
-
-                    @Override
-                    public void clicked(InputEvent event, float x, float y) {
-                        if (getTapCount() == 2) {
-                            tooltip.setVisible(false);
-                            // consuming potions
-                            if (item.type == 0) {
-                                itemSelected = true;
-                                currentItem = item;
-                                consume();
-                            }
-                            // equip items with double click
-                            else if (item.type > 1 && inMenu) {
-                                unselectItem();
-                                selectedSlot.setVisible(false);
-                                if (!item.equipped) {
-                                    item.equipped = true;
-                                    player.equip(item);
-                                    player.inventory.removeItem(item.index);
-                                    updateText();
-                                    if (!player.equips.addEquip(item)) {
-                                        // replace the equip with the item of same type
-                                        Item swap = player.equips.removeEquip(item.type - 2);
-                                        swap.equipped = false;
-                                        player.unequip(swap);
-                                        player.equips.addEquip(item);
-                                        player.inventory.addItemAtIndex(swap, item.index);
-                                        updateText();
-                                    }
-                                }
-                                // double clicking an equipped item unequips it and places it
-                                // in the first open slot if it exists
-                                else {
-                                    player.equips.removeEquip(item.type - 2);
-                                    if (!player.inventory.addItem(item)) {
-                                        player.equips.addEquip(item);
-                                    } else {
-                                        item.equipped = false;
-                                        player.unequip(item);
-                                    }
-                                    updateText();
-                                }
-                            }
-                        }
-                    }
-
-                });
+                }
             }
-        }
+
+        });
+
+        item.actor.addListener(new InputListener() {
+
+            @Override
+            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                // original positions
+                prevX = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                prevY = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
+                return true;
+            }
+
+            @Override
+            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
+                // new positions
+                int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
+                int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+                // a true click and not a drag
+                if (prevX == ax && prevY == ay) {
+                    // item selected
+                    if (selectedSlot.isVisible()) {
+                        unselectItem();
+                    }
+                    else {
+                        itemSelected = true;
+                        currentItem = item;
+                        showSelectedSlot(item);
+                        if (inMenu) toggleInventoryButtons(true);
+                        tooltip.toFront();
+                        Vector2 tpos = getCoords(item);
+                        // make sure items at the bottom don't get covered by the tooltip
+                        if (tpos.y <= 31)
+                            tooltip.show(item, tpos.x + 8, tpos.y + tooltip.getHeight() / 2);
+                        else
+                            tooltip.show(item, tpos.x + 8, tpos.y - tooltip.getHeight());
+                    }
+                }
+            }
+
+        });
+
+        // handle double clicks for item usage and equip
+        item.actor.addListener(new ClickListener() {
+
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (getTapCount() == 2) {
+                    tooltip.setVisible(false);
+                    // consuming potions
+                    if (item.type == 0) {
+                        itemSelected = true;
+                        currentItem = item;
+                        consume();
+                    }
+                    // equip items with double click
+                    else if (item.type >= 2 && item.type <= 9 && inMenu) {
+                        unselectItem();
+                        selectedSlot.setVisible(false);
+                        if (!item.equipped) {
+                            item.equipped = true;
+                            player.equip(item);
+                            player.inventory.removeItem(item.index);
+                            updateText();
+                            if (!player.equips.addEquip(item)) {
+                                // replace the equip with the item of same type
+                                Item swap = player.equips.removeEquip(item.type - 2);
+                                swap.equipped = false;
+                                player.unequip(swap);
+                                player.equips.addEquip(item);
+                                player.inventory.addItemAtIndex(swap, item.index);
+                                updateText();
+                            }
+                        }
+                        // double clicking an equipped item unequips it and places it
+                        // in the first open slot if it exists
+                        else {
+                            player.equips.removeEquip(item.type - 2);
+                            if (!player.inventory.addItem(item)) {
+                                player.equips.addEquip(item);
+                            } else {
+                                item.equipped = false;
+                                player.unequip(item);
+                            }
+                            updateText();
+                        }
+                    }
+                }
+            }
+
+        });
     }
 
     /**
@@ -473,7 +488,7 @@ public class InventoryUI extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 tooltip.setVisible(false);
                 // only equips can be enchanted
-                if (currentItem != null && currentItem.type > 1) {
+                if (currentItem != null && currentItem.type >= 2 && currentItem.type <= 9) {
                     new Dialog("Enchant", rm.dialogSkin) {
                         {
                             Label l = new Label("Enchant " + currentItem.labelName + "\nfor " + currentItem.enchantCost + " g?", rm.dialogSkin);
@@ -533,6 +548,37 @@ public class InventoryUI extends UI {
     }
 
     /**
+     * Dialog event after dragging an enchant scroll onto an equip
+     * @param item bonus to be put on item
+     * @param scroll enchant scroll
+     */
+    private void applyEnchantBonus(final Item item, final Item scroll) {
+        new Dialog("Enchant scroll", rm.dialogSkin) {
+            {
+                Label l = new Label("Use enchant scroll on\n" + item.labelName + "?", rm.dialogSkin);
+                l.setFontScale(0.5f);
+                l.setAlignment(Align.center);
+                text(l);
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
+                button("Yes", "yes");
+                button("No", "no");
+            }
+            @Override
+            protected void result(Object object) {
+                if (object.equals("yes")) {
+                    item.bonusEnchantChance = scroll.eChance;
+                    scroll.actor.remove();
+                    player.inventory.removeItem(scroll.index);
+                }
+                else {
+                    player.inventory.addItemAtIndex(scroll, scroll.index);
+                }
+            }
+        }.show(stage).getTitleLabel().setAlignment(Align.center);
+    }
+
+    /**
      * Handles enchanting events
      */
     private void enchant() {
@@ -560,8 +606,8 @@ public class InventoryUI extends UI {
         player.addGold(-currentItem.enchantCost);
         updateText();
 
-        // 50% success
-        if (Util.isSuccess(Util.ENCHANT)) {
+        // 50% success plus bonus enchant chance from scroll
+        if (Util.isSuccess(Util.ENCHANT + currentItem.bonusEnchantChance)) {
             currentItem.enchant();
             // update item tooltip
             tooltip.updateText(currentItem);
@@ -806,13 +852,14 @@ public class InventoryUI extends UI {
             if (!currentItem.equipped) {
                 for (int i = 0; i < 2; i++) {
                     invButtons[i].setTouchable(Touchable.enabled);
-                    if (currentItem.type < 2) {
+                    if (currentItem.type < 2 || currentItem.type == 10) {
                         invButtons[0].setTouchable(Touchable.disabled);
                         invButtons[0].setStyle(disabled);
                     }
                     invButtons[i].setStyle(enabled);
                     // add enchant cost of item to button
-                    if (currentItem.type >= 2) invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
+                    if (currentItem.type >= 2 && currentItem.type <= 9)
+                        invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
                     // add sell value of item to button
                     invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
                 }
