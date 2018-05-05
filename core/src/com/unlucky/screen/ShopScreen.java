@@ -426,14 +426,14 @@ public class ShopScreen extends MenuExtensionScreen {
                     if (object.equals("yes")) {
                         player.addGold(-currentShopItem.price);
                         // a copy of the shop item
-                        Item item;
+                        ShopItem item;
                         if (currentShopItem.type == 0) {
-                            item = new Item(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.rarity,
-                                currentShopItem.imgIndex, currentShopItem.hp, currentShopItem.exp, currentShopItem.sell);
+                            item = new ShopItem(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.rarity,
+                                currentShopItem.imgIndex, currentShopItem.hp, currentShopItem.exp, currentShopItem.sell, currentShopItem.price);
                         }
                         else {
-                            item = new Item(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.type, currentShopItem.rarity,
-                                currentShopItem.imgIndex, currentShopItem.mhp, currentShopItem.dmg, currentShopItem.acc, currentShopItem.sell);
+                            item = new ShopItem(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.type, currentShopItem.rarity,
+                                currentShopItem.imgIndex, currentShopItem.mhp, currentShopItem.dmg, currentShopItem.acc, currentShopItem.sell, currentShopItem.price);
                         }
                         player.inventory.addItem(item);
                         stage.addActor(item.actor);
