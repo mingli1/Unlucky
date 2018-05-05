@@ -23,7 +23,7 @@ import com.unlucky.ui.inventory.InventoryUI;
  */
 public class Unlucky extends Game {
 
-    public static final String VERSION = "0.7.5";
+    public static final String VERSION = "0.7.7";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
     // Desktop screen dimensions
