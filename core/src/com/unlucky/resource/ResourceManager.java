@@ -109,8 +109,7 @@ public class ResourceManager {
     public final Array<Array<ShopItem>> shopItems = new Array<Array<ShopItem>>();
 
     // Fonts
-    public final BitmapFont pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"),
-                                                    Gdx.files.internal("fonts/pixel.png"), false);
+    public final BitmapFont pixel10;
 
     public ResourceManager() {
         assetManager = new AssetManager();
@@ -123,6 +122,9 @@ public class ResourceManager {
         assetManager.finishLoading();
 
         atlas = assetManager.get("textures.atlas", TextureAtlas.class);
+
+        // load font
+        pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"), atlas.findRegion("pixel"), false);
 
         skin = new Skin(assetManager.get("skins/ui.atlas", TextureAtlas.class));
         skin.add("default-font", pixel10);
@@ -350,8 +352,10 @@ public class ResourceManager {
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
         else if (item.type == 1)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
-        else
+        else if (item.type >= 2 && item.type <= 9)
             return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
+        else
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.eChance, item.sell);
     }
 
     /**
@@ -367,8 +371,10 @@ public class ResourceManager {
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
         else if (item.type == 1)
             return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
-        else
+        else if (item.type >= 2 && item.type <= 9)
             return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
+        else
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.eChance, item.sell);
     }
 
     /**
