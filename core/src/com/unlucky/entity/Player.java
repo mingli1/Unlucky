@@ -74,8 +74,8 @@ public class Player extends Entity {
     public SpecialMoveset smoveset;
 
     // special move cooldown
-    // starts a 3 turns then every 10 levels it is reduced by 1 with a min of 1
-    public int smoveCd = 3;
+    // starts at 4 turns then every 10 levels it is reduced by 1 with a min of 1
+    public int smoveCd = 4;
 
     public Player(String id, ResourceManager rm) {
         super(id, rm);
@@ -406,7 +406,7 @@ public class Player extends Entity {
         // accuracy increases by 1% every 10 levels
         accuracyIncrease += level % 10 == 0 ? 1 : 0;
         // smoveCd reduces every 10 levels
-        if (smoveCd > 1) smoveCd += level % 10 == 0 ? 1 : 0;
+        if (smoveCd > 1) smoveCd -= level % 10 == 0 ? 1 : 0;
 
         int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, MathUtils.random(3, 5));
