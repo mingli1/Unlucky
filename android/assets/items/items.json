@@ -629,8 +629,8 @@
 		"type":0,
 		"imgIndex":8,
 		"hp":0,
-		"exp":5,
-		"sell":5000
+		"exp":3,
+		"sell":10000
 	},
 	{
 		"name":"Enchanted Health Potion",
@@ -677,7 +677,7 @@
 		"type":5,
 		"imgIndex":8,
 		"mhp":30,
-		"dmg":0,
+		"dmg":2,
 		"acc":0,
 		"sell":700
 	},
@@ -687,7 +687,7 @@
 		"type":6,
 		"imgIndex":7,
 		"mhp":30,
-		"dmg":0,
+		"dmg":2,
 		"acc":0,
 		"sell":710
 	},
@@ -697,7 +697,7 @@
 		"type":8,
 		"imgIndex":8,
 		"mhp":33,
-		"dmg":0,
+		"dmg":2,
 		"acc":0,
 		"sell":970
 	},
@@ -712,8 +712,8 @@
 		"sell":975
 	},
 	{
-		"name":"On The Defense!",
-		"desc":"An epic shield capable\nof defending against the\nstrongest of attacks.",
+		"name":"Shield of Reflection",
+		"desc":"Works like a mirror.",
 		"type":8,
 		"imgIndex":4,
 		"mhp":35,
@@ -722,8 +722,8 @@
 		"sell":789
 	},
 	{
-		"name":"Shield of Reflection",
-		"desc":"Works like a mirror.",
+		"name":"On the defense!",
+		"desc":"An epic shield capable\nof defending against the\nstrongest of attacks.",
 		"type":8,
 		"imgIndex":3,
 		"mhp":35,
@@ -777,8 +777,8 @@
 		"type":0,
 		"imgIndex":9,
 		"hp":0,
-		"exp":10,
-		"sell":15000
+		"exp":15,
+		"sell":30000
 	},
 	{
 		"name":"Death's Fury",
@@ -819,6 +819,38 @@
 		"dmg":8,
 		"acc":5,
 		"sell":2150
+	},
+	{
+		"name":"Enchant Scroll C",
+		"desc":"A scroll that enhances\nenchanting chance.",
+		"type":10,
+		"imgIndex":0,
+		"eChance":10,
+		"sell":1000
+	},
+	{
+		"name":"Enchant Scroll B",
+		"desc":"A scroll that enhances\nenchanting chance.",
+		"type":10,
+		"imgIndex":1,
+		"eChance":20,
+		"sell":5000
+	},
+	{
+		"name":"Enchant Scroll A",
+		"desc":"A scroll that enhances\nenchanting chance.",
+		"type":10,
+		"imgIndex":2,
+		"eChance":30,
+		"sell":10000
+	},
+	{
+		"name":"Enchant Scroll S",
+		"desc":"A scroll that enhances\nenchanting chance.",
+		"type":10,
+		"imgIndex":3,
+		"eChance":40,
+		"sell":20000
 	}
 ]
 }
