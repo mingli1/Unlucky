@@ -2,6 +2,7 @@ package com.unlucky.ui.battleui;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Array;
 import com.unlucky.battle.Move;
 import com.unlucky.battle.SpecialMove;
 import com.unlucky.battle.StatusEffect;
@@ -46,33 +48,36 @@ public class MoveUI extends BattleUI {
     private boolean[] optionButtonTouchable = new boolean[2];
 
     // Special moves
+    private Array<SpecialMove> playerSmoveset;
     private SpecialMove smove;
     private boolean onCd = false;
     private int turnCounter = 0;
+    private boolean shouldReset = false;
+    private boolean usedSmove;
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                   com.unlucky.ui.battleui.BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
+        playerSmoveset = new Array<SpecialMove>();
 
         createMoveUI();
         createOptionUI();
     }
 
-    boolean p = false;
-
     public void update(float dt) {
         // reset and generate new random special move after cooldown
-        //if (turnCounter == Util.S_MOVE_CD) {
         if (turnCounter == player.smoveCd) {
             onCd = false;
-            turnCounter = 0;
-            if(p) resetSpecialMoves();
-            p = false;
+            if (playerSmoveset.size != 0) turnCounter = 0;
+            if (shouldReset) {
+                smove = playerSmoveset.random();
+                resetSpecialMoves();
+            }
+            shouldReset = false;
         }
         else {
-            //if (onCd) optionDescLabels[0].setText(Util.S_MOVE_CD - turnCounter + " turn(s) until\n" +
             if (onCd) optionDescLabels[0].setText(player.smoveCd - turnCounter + " turn(s) until\n" +
                     "new special move");
         }
@@ -86,11 +91,16 @@ public class MoveUI extends BattleUI {
     public void init() {
         turnCounter = 0;
         onCd = false;
+        usedSmove = false;
+        shouldReset = false;
         optionDescLabels[1].setText("7% chance to run\nfrom a battle");
         for (int i = 0; i < 2; i++) {
             optionButtonTouchable[i] = true;
             optionButtons[i].setStyle(optionStyles[1 - i]);
         }
+        // copy player smoveset to temp smove array
+        playerSmoveset.addAll(player.smoveset.smoveset);
+        smove = playerSmoveset.random();
         resetSpecialMoves();
         resetMoves();
     }
@@ -130,17 +140,18 @@ public class MoveUI extends BattleUI {
      * Generates new random special move
      */
     private void resetSpecialMoves() {
-        smove = player.smoveset.smoveset.random();
-        if (smove != null) {
-            optionNameLabels[0].setText(smove.name);
-            optionDescLabels[0].setText(smove.desc);
-            optionButtons[0].setStyle(optionStyles[1]);
-            optionButtons[0].setTouchable(Touchable.enabled);
-            optionButtonTouchable[0] = true;
+        if (playerSmoveset.size != 0) {
+            if (smove != null) {
+                optionNameLabels[0].setText(smove.name);
+                optionDescLabels[0].setText(smove.desc);
+                optionButtons[0].setStyle(optionStyles[1]);
+                optionButtons[0].setTouchable(Touchable.enabled);
+                optionButtonTouchable[0] = true;
+            }
         }
         else {
             optionNameLabels[0].setText("NONE");
-            optionDescLabels[0].setText("No special\nmoves equipped");
+            optionDescLabels[0].setText("No special\nmoves left");
             optionButtons[0].setStyle(disabled[0]);
             optionButtons[0].setTouchable(Touchable.disabled);
             optionButtonTouchable[0] = false;
@@ -284,7 +295,10 @@ public class MoveUI extends BattleUI {
                     // the move the player clicked
                     if (onCd) turnCounter++;
                     // when not on cooldown reset special moves every turn
-                    else resetSpecialMoves();
+                    else {
+                        smove = playerSmoveset.random();
+                        resetSpecialMoves();
+                    }
 
                     Move move = player.getMoveset().moveset[index];
                     uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
@@ -309,6 +323,13 @@ public class MoveUI extends BattleUI {
             public void clicked(InputEvent event, float x, float y) {
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                // remove current smove from pool
+                playerSmoveset.removeValue(smove, false);
+                if (playerSmoveset.size == 0) {
+                    onCd = false;
+                    turnCounter = player.smoveCd;
+                    resetSpecialMoves();
+                }
                 battle.buffs[smove.id] = true;
 
                 uiHandler.battleEventHandler.startDialog(battle.getSpecialMoveDialog(smove.id),
@@ -330,7 +351,7 @@ public class MoveUI extends BattleUI {
                 optionNameLabels[0].setText("ON COOLDOWN");
                 optionButtonTouchable[0] = false;
 
-                p = true;
+                shouldReset = true;
             }
         });
 
@@ -341,7 +362,10 @@ public class MoveUI extends BattleUI {
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 if (onCd) turnCounter++;
-                else resetSpecialMoves();
+                else {
+                    smove = playerSmoveset.random();
+                    resetSpecialMoves();
+                }
                 // 7% chance to run from the battle
                 if (Util.isSuccess(Util.RUN_FROM_BATTLE)) {
                     uiHandler.battleEventHandler.startDialog(new String[]{

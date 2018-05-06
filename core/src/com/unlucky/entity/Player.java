@@ -73,7 +73,8 @@ public class Player extends Entity {
     // special moveset
     public SpecialMoveset smoveset;
 
-    // FOR TESTING ONLY
+    // special move cooldown
+    // starts a 3 turns then every 10 levels it is reduced by 1 with a min of 1
     public int smoveCd = 3;
 
     public Player(String id, ResourceManager rm) {
@@ -109,11 +110,12 @@ public class Player extends Entity {
 
         // FOR TESTING
         inventory.clear();
-        for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-            Item item = rm.getRandomItem();
+        for (int i = 0; i < Inventory.NUM_SLOTS / 2; i++) {
+            Item item = rm.getItem(3);
             item.adjust(getLevel());
             inventory.addItem(item);
         }
+        this.gold = 1000000;
     }
 
     public void update(float dt) {
@@ -403,6 +405,8 @@ public class Player extends Entity {
         maxDmgIncrease += (dmgMean + MathUtils.random(1));
         // accuracy increases by 1% every 10 levels
         accuracyIncrease += level % 10 == 0 ? 1 : 0;
+        // smoveCd reduces every 10 levels
+        if (smoveCd > 1) smoveCd += level % 10 == 0 ? 1 : 0;
 
         int prevMaxExp = maxExp;
         maxExp = Util.calculateMaxExp(level, MathUtils.random(3, 5));
