@@ -53,7 +53,6 @@ public class MoveUI extends BattleUI {
     private boolean onCd = false;
     private int turnCounter = 0;
     private boolean shouldReset = false;
-    private boolean usedSmove;
 
     public MoveUI(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                   com.unlucky.ui.battleui.BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
@@ -91,7 +90,6 @@ public class MoveUI extends BattleUI {
     public void init() {
         turnCounter = 0;
         onCd = false;
-        usedSmove = false;
         shouldReset = false;
         optionDescLabels[1].setText("7% chance to run\nfrom a battle");
         for (int i = 0; i < 2; i++) {
