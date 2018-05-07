@@ -25,6 +25,8 @@ public class StatisticsScreen extends MenuExtensionScreen {
     private String[] statsDescs;
     private String[] statsNums;
 
+    private Label.LabelStyle[] headerStyles;
+    private Label.LabelStyle statStyle;
     private Image scrollBackground;
 
     // scroll pane
@@ -68,6 +70,13 @@ public class StatisticsScreen extends MenuExtensionScreen {
         scrollBackground.setSize(184, 88);
         stage.addActor(scrollBackground);
 
+        headerStyles = new Label.LabelStyle[] {
+            new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1)),
+            new Label.LabelStyle(rm.pixel10, new Color(0, 195 / 255.f, 0, 1)),
+            new Label.LabelStyle(rm.pixel10, new Color(230 / 255.f, 30 / 255.f, 0, 1))
+        };
+        statStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
+
         scrollTable = new Table();
     }
 
@@ -89,13 +98,6 @@ public class StatisticsScreen extends MenuExtensionScreen {
         scrollTable.setFillParent(true);
         stage.addActor(scrollTable);
         selectionContainer = new Table();
-
-        Label.LabelStyle[] headerStyles = new Label.LabelStyle[] {
-            new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1)),
-            new Label.LabelStyle(rm.pixel10, new Color(0, 195 / 255.f, 0, 1)),
-            new Label.LabelStyle(rm.pixel10, new Color(230 / 255.f, 30 / 255.f, 0, 1))
-        };
-        Label.LabelStyle statStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
 
         for (int i = 0; i < statsDescs.length; i++) {
             Label statDesc;
