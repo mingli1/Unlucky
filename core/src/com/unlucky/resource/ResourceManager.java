@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -51,6 +52,7 @@ public class ResourceManager {
     public TextureRegion bigrain;
     public TextureRegion lightning;
     public TextureRegion shade;
+    public TextureRegion[] smoveicons;
 
     // Menu
     public TextureRegion[] title;
@@ -82,6 +84,7 @@ public class ResourceManager {
     public TextureRegion[] creditsicons;
     public TextureRegion shopui;
     public TextureRegion[][] shoptab;
+    public TextureRegion[] smoveSlots;
 
     // Skin
     public Skin skin;
@@ -155,6 +158,7 @@ public class ResourceManager {
         shade = atlas.findRegion("shade");
         bigrain = atlas.findRegion("big_rain");
         bigsnow = atlas.findRegion("big_snow");
+        smoveicons = atlas.findRegion("smove_icons").split(14, 14)[0];
 
         // menu
         title = atlas.findRegion("unlucky_title").split(18, 24)[0];
@@ -185,6 +189,7 @@ public class ResourceManager {
         creditsicons = atlas.findRegion("creditsicons").split(17, 17)[0];
         shopui = atlas.findRegion("shop_ui");
         shoptab = atlas.findRegion("shop_tab").split(31, 9);
+        smoveSlots = atlas.findRegion("smove_slot").split(16, 16)[0];
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
@@ -192,6 +197,11 @@ public class ResourceManager {
         loadWorlds();
         loadMoves();
         loadItems();
+
+        // set smove icons
+        for (int i = 0; i < Util.SMOVES_ORDER_BY_ID.length; i++) {
+            Util.SMOVES_ORDER_BY_ID[i].icon = new Image(smoveicons[i]);
+        }
     }
 
     /**
@@ -407,6 +417,10 @@ public class ResourceManager {
 
     public void dispose() {
         assetManager.dispose();
+        pixel10.dispose();
+        atlas.dispose();
+        skin.dispose();
+        dialogSkin.dispose();
     }
 
 }
