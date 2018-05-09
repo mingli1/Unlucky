@@ -43,6 +43,18 @@ public class SpecialMoveset {
         smoveset.clear();
     }
 
+    public boolean isFull() {
+        return smoveset.size == MAX_MOVES;
+    }
+
+    /**
+     * Removes an smove from a given index
+     * @param index
+     */
+    public void remove(int index) {
+        smoveset.removeIndex(index);
+    }
+
     public String toString() {
         String ret = "[ ";
         for (int i = 0; i < smoveset.size; i++) {
@@ -60,7 +72,7 @@ public class SpecialMoveset {
      * @param id
      * @return
      */
-    private boolean canAdd(int id) {
+    public boolean canAdd(int id) {
         if (smoveset.size == MAX_MOVES) return false;
         int count = 0;
         for (int i = 0; i < smoveset.size; i++) {
