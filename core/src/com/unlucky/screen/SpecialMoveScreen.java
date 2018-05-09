@@ -9,6 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.battle.SpecialMove;
@@ -47,6 +48,15 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
     private Array<Image> garbage;
     private SMoveTooltip tooltip;
     private Image selectedSlot;
+    // 0 - add button, 1 - remove button
+    private ImageButton[] smoveButtons;
+    private Label[] smoveButtonLabels;
+    // 0 - enabled, 1 - disabled
+    private ImageButton.ImageButtonStyle[] addButtonStyle;
+    private ImageButton.ImageButtonStyle[] removeButtonStyle;
+    private SpecialMove smoveToAdd = null;
+    private int smoveToRemove = -1;
+    private Label smoveset;
 
     // scroll pane
     private Table scrollTable;
@@ -82,6 +92,13 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                unselectSlot();
+                smoveButtons[0].setStyle(addButtonStyle[1]);
+                smoveButtons[0].setTouchable(Touchable.disabled);
+                smoveButtons[1].setStyle(removeButtonStyle[1]);
+                smoveButtons[1].setTouchable(Touchable.disabled);
+                smoveToRemove = -1;
+                smoveToAdd = null;
                 game.menuScreen.transitionIn = 1;
                 setSlideScreen(game.menuScreen, true);
             }
@@ -119,8 +136,19 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         bg.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
                 unselectSlot();
+                smoveButtons[1].setStyle(removeButtonStyle[1]);
+                smoveButtons[1].setTouchable(Touchable.disabled);
+                smoveToRemove = -1;
             }
         });
+
+        smoveset = new Label("Special\nMoveset", headerStyle);
+        smoveset.setFontScale(0.5f);
+        smoveset.setPosition(130, 40);
+        smoveset.setAlignment(Align.center);
+        stage.addActor(smoveset);
+
+        createSmoveButtons();
     }
 
     @Override
@@ -131,9 +159,124 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         super.showSlide(false);
         scrollTable.remove();
         createScrollPane();
+        smoveButtons[0].toFront();
+        smoveButtons[1].toFront();
+        smoveButtonLabels[0].toFront();
+        smoveButtonLabels[1].toFront();
         addSmoveActors();
         // update turn cd
         turnPrompt.setText("Special moves can be used in battle every " + player.smoveCd + " turns.");
+    }
+
+    /**
+     * Creates the two add and remove smove buttons
+     */
+    private void createSmoveButtons() {
+        smoveButtons = new ImageButton[2];
+        smoveButtonLabels = new Label[2];
+        addButtonStyle = new ImageButton.ImageButtonStyle[2];
+        removeButtonStyle = new ImageButton.ImageButtonStyle[2];
+        String[] str = new String[] { "ADD", "REMOVE" };
+
+        for (int i = 0; i < 2; i++) {
+            addButtonStyle[i] = new ImageButton.ImageButtonStyle();
+            removeButtonStyle[i] = new ImageButton.ImageButtonStyle();
+            smoveButtonLabels[i] = new Label(str[i], white);
+            smoveButtonLabels[i].setFontScale(0.5f);
+            smoveButtonLabels[i].setSize(38, 18);
+            smoveButtonLabels[i].setAlignment(Align.center);
+            smoveButtonLabels[i].setTouchable(Touchable.disabled);
+        }
+        // enabled add
+        addButtonStyle[0].imageUp = new TextureRegionDrawable(rm.smoveButtons[0][0]);
+        addButtonStyle[0].imageDown = new TextureRegionDrawable(rm.smoveButtons[1][0]);
+        // disabled add
+        addButtonStyle[1].imageUp = new TextureRegionDrawable(rm.smoveButtons[2][0]);
+        // enabled remove
+        removeButtonStyle[0].imageUp = new TextureRegionDrawable(rm.smoveButtons[0][1]);
+        removeButtonStyle[0].imageDown = new TextureRegionDrawable(rm.smoveButtons[1][1]);
+        // disabled remove
+        removeButtonStyle[1].imageUp = new TextureRegionDrawable(rm.smoveButtons[2][1]);
+
+        smoveButtons[0] = new ImageButton(addButtonStyle[1]);
+        smoveButtons[1] = new ImageButton(removeButtonStyle[1]);
+
+        smoveButtons[0].setPosition(96, 64);
+        smoveButtons[1].setPosition(96, 14);
+        smoveButtons[0].setTouchable(Touchable.disabled);
+        smoveButtons[1].setTouchable(Touchable.disabled);
+        smoveButtonLabels[0].setPosition(94, 64);
+        smoveButtonLabels[1].setPosition(98, 14);
+        stage.addActor(smoveButtons[0]);
+        stage.addActor(smoveButtons[1]);
+        stage.addActor(smoveButtonLabels[0]);
+        stage.addActor(smoveButtonLabels[1]);
+
+        // add button
+        smoveButtons[0].addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                add();
+            }
+        });
+
+        // remove button
+        smoveButtons[1].addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                if (smoveToRemove != -1) {
+                    unselectSlot();
+                    smoveButtons[1].setStyle(removeButtonStyle[1]);
+                    smoveButtons[1].setTouchable(Touchable.disabled);
+                    player.smoveset.remove(smoveToRemove);
+                    addSmoveActors();
+                }
+            }
+        });
+    }
+
+    /**
+     * Adds an smove from the selection to the player's smoveset
+     */
+    private void add() {
+        if (player.smoveset.isFull()) {
+            new Dialog("Warning", rm.dialogSkin) {
+                {
+                    Label l = new Label("Your special moveset is full.", rm.dialogSkin);
+                    l.setFontScale(0.5f);
+                    l.setAlignment(Align.center);
+                    text(l);
+                    getButtonTable().defaults().width(40);
+                    getButtonTable().defaults().height(15);
+                    button("OK", "ok");
+                }
+
+                @Override
+                protected void result(Object object) {}
+            }.show(stage).getTitleLabel().setAlignment(Align.center);
+            return;
+        }
+        if (smoveToAdd != null) {
+            // already two of a kind in the set
+            if (!player.smoveset.canAdd(smoveToAdd.id)) {
+                new Dialog("Warning", rm.dialogSkin) {
+                    {
+                        Label l = new Label("Cannot have more than\n2 of " + smoveToAdd.name + ".", rm.dialogSkin);
+                        l.setFontScale(0.5f);
+                        l.setAlignment(Align.center);
+                        text(l);
+                        getButtonTable().defaults().width(40);
+                        getButtonTable().defaults().height(15);
+                        button("OK", "ok");
+                    }
+
+                    @Override
+                    protected void result(Object object) {}
+                }.show(stage).getTitleLabel().setAlignment(Align.center);
+                return;
+            }
+            // add smove
+            player.smoveset.addSMove(smoveToAdd.id);
+            addSmoveActors();
+        }
     }
 
     /**
@@ -186,6 +329,9 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                 if (selectedSlot.isVisible()) {
                     selectedSlot.setVisible(false);
                     tooltip.setVisible(false);
+                    smoveButtons[1].setStyle(removeButtonStyle[1]);
+                    smoveButtons[1].setTouchable(Touchable.disabled);
+                    smoveToRemove = -1;
                 }
                 else {
                     // show selected slot
@@ -195,6 +341,11 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                     Vector2 t = getTooltipCoords(pos, index);
                     tooltip.show(smove, t.x, t.y);
                     tooltip.toFront();
+
+                    // enable remove button
+                    smoveButtons[1].setStyle(removeButtonStyle[0]);
+                    smoveButtons[1].setTouchable(Touchable.enabled);
+                    smoveToRemove = index;
                 }
             }
         });
@@ -204,7 +355,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         Vector2 ret = new Vector2();
         if (index == 0) ret.set(pos.x + 16, pos.y - tooltip.getHeight() / 4);
         if (index == 1 || index == 2) ret.set(pos.x + 10, pos.y - tooltip.getHeight());
-        if (index == 3 || index == 4) ret.set(pos.x - 8, pos.y + tooltip.getHeight() / 2 + 1);
+        if (index == 3 || index == 4) ret.set(pos.x - 4, pos.y + tooltip.getHeight() / 2 + 2);
         return ret;
     }
 
@@ -295,6 +446,18 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 unselectSlot();
+                smoveButtons[1].setStyle(removeButtonStyle[1]);
+                smoveButtons[1].setTouchable(Touchable.disabled);
+                if (button.isChecked()) {
+                    smoveToAdd = smove;
+                    smoveButtons[0].setStyle(addButtonStyle[0]);
+                    smoveButtons[0].setTouchable(Touchable.enabled);
+                }
+                else {
+                    smoveToAdd = null;
+                    smoveButtons[0].setStyle(addButtonStyle[1]);
+                    smoveButtons[0].setTouchable(Touchable.disabled);
+                }
             }
         });
     }
