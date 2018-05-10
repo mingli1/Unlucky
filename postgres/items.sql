@@ -10,7 +10,7 @@ CREATE TABLE Items(
   ,mhp      INTEGER 
   ,dmg      INTEGER 
   ,acc      INTEGER 
-  ,PRIMARY KEY(,type,imgIndex)
+  ,PRIMARY KEY(type,imgIndex)
 );
 INSERT INTO Items(name,description,type,imgIndex,hp,exp,sell,mhp,dmg,acc) VALUES ('Small Health Potion','Restores a small amount of HP.',0,0,30,0,50,NULL,NULL,NULL);
 INSERT INTO Items(name,description,type,imgIndex,hp,exp,sell,mhp,dmg,acc) VALUES ('Medium Health Potion','Restores a decent amount of HP.',0,1,100,0,75,NULL,NULL,NULL);
