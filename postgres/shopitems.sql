@@ -13,7 +13,7 @@ CREATE TABLE ShopItems(
   ,dmg      INTEGER 
   ,acc      INTEGER 
   ,eChance  INTEGER 
-  ,PRIMARY KEY(,type,imgIndex)
+  ,PRIMARY KEY(type,imgIndex)
 );
 INSERT INTO ShopItems(rarity,name,description,type,imgIndex,hp,exp,sell,price,mhp,dmg,acc,eChance) VALUES (0,'Small Health Potion','Restores a small amount of HP.',0,0,30,0,50,155,NULL,NULL,NULL,NULL);
 INSERT INTO ShopItems(rarity,name,description,type,imgIndex,hp,exp,sell,price,mhp,dmg,acc,eChance) VALUES (0,'Medium Health Potion','Restores a decent amount of HP.',0,1,100,0,75,270,NULL,NULL,NULL,NULL);
