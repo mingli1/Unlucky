@@ -386,6 +386,9 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             smoveGroup.setSize(80, 30);
             smoveGroup.setTransform(false);
 
+            Image frame = new Image(rm.smoveFrame);
+            frame.setPosition(3, 7);
+            frame.setTouchable(Touchable.disabled);
             Image icon = new Image(smove.icon.getDrawable());
             icon.setPosition(4, 8);
             icon.setTouchable(Touchable.disabled);
@@ -414,6 +417,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             addScrollPaneEvents(button, smove);
 
             smoveGroup.addActor(button);
+            smoveGroup.addActor(frame);
             smoveGroup.addActor(icon);
             smoveGroup.addActor(name);
             smoveGroup.addActor(desc);
