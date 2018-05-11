@@ -2,8 +2,7 @@ package com.unlucky.save;
 
 import com.unlucky.battle.SpecialMoveset;
 import com.unlucky.entity.Player;
-import com.unlucky.inventory.Equipment;
-import com.unlucky.inventory.Inventory;
+import com.unlucky.inventory.*;
 import com.unlucky.resource.Statistics;
 
 import java.util.Arrays;
@@ -66,9 +65,17 @@ public class PlayerAccessor  {
         // load inventory and equips
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
             if (!player.inventory.isFreeSlot(i)) {
-                ItemAccessor item = new ItemAccessor();
-                item.load(player.inventory.getItem(i));
-                inventory[i] = item;
+                Item item = player.inventory.getItem(i);
+                if (item instanceof ShopItem) {
+                    ShopItemAccessor sia = new ShopItemAccessor();
+                    sia.load((ShopItem) item);
+                    inventory[i] = sia;
+                }
+                else {
+                    ItemAccessor ia = new ItemAccessor();
+                    ia.load(item);
+                    inventory[i] = ia;
+                }
             }
             else {
                 inventory[i] = null;
@@ -76,9 +83,17 @@ public class PlayerAccessor  {
         }
         for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
             if (player.equips.getEquipAt(i) != null) {
-                ItemAccessor equip = new ItemAccessor();
-                equip.load(player.equips.getEquipAt(i));
-                equips[i] = equip;
+                Item equip = player.equips.getEquipAt(i);
+                if (equip instanceof ShopItem) {
+                    ShopItemAccessor sia = new ShopItemAccessor();
+                    sia.load((ShopItem) equip);
+                    equips[i] = sia;
+                }
+                else {
+                    ItemAccessor ia = new ItemAccessor();
+                    ia.load(equip);
+                    equips[i] = ia;
+                }
             }
             else {
                 equips[i] = null;
