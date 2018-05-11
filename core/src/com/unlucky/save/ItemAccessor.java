@@ -1,5 +1,7 @@
 package com.unlucky.save;
 
+import com.unlucky.inventory.Item;
+
 /**
  * Provides a serializable object that represents the data of items
  * that are considered important for save files.
@@ -29,5 +31,30 @@ public class ItemAccessor {
     public int enchantCost;
     public int bonusEnchantChance;
     public int eChance;
+
+    /**
+     * Updates the fields of this accessor with data from the item
+     * @param item
+     */
+    public void load(Item item) {
+        this.name = item.name;
+        this.desc = item.desc;
+        this.labelName = item.labelName;
+
+        this.type = item.type;
+        this.imgIndex = item.imgIndex;
+
+        this.rarity = item.rarity;
+        this.hp = item.hp;
+        this.mhp = item.mhp;
+        this.dmg = item.dmg;
+        this.acc = item.acc;
+        this.sell = item.sell;
+        this.exp = item.exp;
+        this.enchants = item.enchants;
+        this.enchantCost = item.enchantCost;
+        this.bonusEnchantChance = item.bonusEnchantChance;
+        this.eChance = item.eChance;
+    }
 
 }
