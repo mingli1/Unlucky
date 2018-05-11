@@ -86,7 +86,7 @@ public class PlayerAccessor  {
         }
 
         // load smoveset
-        for (int i = 0; i < SpecialMoveset.MAX_MOVES; i++) {
+        for (int i = 0; i < player.smoveset.smoveset.size; i++) {
             smoveset[i] = player.smoveset.getMoveAt(i).id;
         }
 
