@@ -260,6 +260,12 @@ public class InventoryUI extends UI {
                 addInventoryEvent(item);
             }
         }
+        for (int i = 0; i < Equipment.NUM_SLOTS; i++) {
+            final Item equip = player.equips.getEquipAt(i);
+            if (equip != null) {
+                addInventoryEvent(equip);
+            }
+        }
     }
 
     /**
