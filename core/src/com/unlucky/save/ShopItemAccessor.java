@@ -17,6 +17,8 @@ public class ShopItemAccessor extends ItemAccessor {
         this.desc = item.desc;
         this.labelName = item.labelName;
 
+        this.index = item.index;
+
         this.type = item.type;
         this.imgIndex = item.imgIndex;
 
