@@ -2,6 +2,7 @@ package com.unlucky.save;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.utils.Base64Coder;
 import com.badlogic.gdx.utils.Json;
 import com.badlogic.gdx.utils.JsonWriter;
 import com.unlucky.battle.SpecialMoveset;
@@ -42,7 +43,7 @@ public class Save {
         // load player data
         psave.load(player);
         // write data to save json
-        file.writeString(json.prettyPrint(psave), false);
+        file.writeString(Base64Coder.encodeString(json.prettyPrint(psave)), false);
     }
 
     /**
@@ -51,7 +52,7 @@ public class Save {
      */
     public void load(ResourceManager rm) {
         if (!file.exists()) save();
-        psave = json.fromJson(PlayerAccessor.class, file);
+        psave = json.fromJson(PlayerAccessor.class, Base64Coder.decodeString(file.readString()));
 
         // load atomic fields
         player.setHp(psave.hp);
