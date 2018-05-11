@@ -2,6 +2,7 @@ package com.unlucky.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.entity.Player;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.save.Save;
 import com.unlucky.screen.*;
 import com.unlucky.ui.inventory.InventoryUI;
 
@@ -23,7 +25,7 @@ import com.unlucky.ui.inventory.InventoryUI;
  */
 public class Unlucky extends Game {
 
-    public static final String VERSION = "0.7.7";
+    public static final String VERSION = "0.7.8";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
     // Desktop screen dimensions
@@ -37,8 +39,11 @@ public class Unlucky extends Game {
     // Resources
     public ResourceManager rm;
 
-    // universal player
+    // Universal player
     public Player player;
+
+    // Game save
+    public Save save;
 
     // Screens
     public MenuScreen menuScreen;
@@ -47,6 +52,7 @@ public class Unlucky extends Game {
     public LevelSelectScreen levelSelectScreen;
     public InventoryScreen inventoryScreen;
     public ShopScreen shopScreen;
+    public SpecialMoveScreen smoveScreen;
     public StatisticsScreen statisticsScreen;
     public InventoryUI inventoryUI;
 
@@ -61,9 +67,12 @@ public class Unlucky extends Game {
         rm = new ResourceManager();
         player = new Player("player", rm);
 
+        save = new Save(player, "save.json");
+
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
         fps.setFontScale(0.5f);
+        //fps.setVisible(false);
 
         inventoryUI = new InventoryUI(this, player, rm);
         menuScreen = new MenuScreen(this, rm);
@@ -72,6 +81,7 @@ public class Unlucky extends Game {
         levelSelectScreen = new LevelSelectScreen(this, rm);
         inventoryScreen = new InventoryScreen(this, rm);
         shopScreen = new ShopScreen(this, rm);
+        smoveScreen = new SpecialMoveScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
 
         // create parallax background
