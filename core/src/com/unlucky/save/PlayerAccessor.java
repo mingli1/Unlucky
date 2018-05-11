@@ -100,6 +100,7 @@ public class PlayerAccessor  {
             }
         }
 
+        Arrays.fill(smoveset, -1);
         // load smoveset
         for (int i = 0; i < player.smoveset.smoveset.size; i++) {
             smoveset[i] = player.smoveset.getMoveAt(i).id;
