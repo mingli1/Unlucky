@@ -15,6 +15,9 @@ public class ItemAccessor {
     public String labelName;
     public String desc;
 
+    // position of the item in the inventory
+    public int index;
+
     // the composite key for the image actor
     public int type;
     public int imgIndex;
@@ -40,6 +43,8 @@ public class ItemAccessor {
         this.name = item.name;
         this.desc = item.desc;
         this.labelName = item.labelName;
+
+        this.index = item.index;
 
         this.type = item.type;
         this.imgIndex = item.imgIndex;
