@@ -3,7 +3,7 @@ LibGDX Android RPG game based on RNG
 
 See videos of the game here: [YouTube](https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0)
 
-Screenshots from the game as of May 5, 2018: 
+Screenshots from the game as of May 12, 2018: 
 
 Main menu screen:
 ![mainmenu](https://user-images.githubusercontent.com/29984767/38692381-85698bfc-3e51-11e8-9d91-3ad42d0fc11e.PNG)
@@ -16,6 +16,9 @@ Shop:
 
 Inventory:
 ![inv2](https://user-images.githubusercontent.com/29984767/39668556-a775592e-509e-11e8-8aab-cb2d4fce72f1.PNG)
+
+Special move screen:
+![smove](https://user-images.githubusercontent.com/29984767/39962113-902c14d6-5613-11e8-80d2-fd90cd8e2f64.PNG)
 
 Level select screen:
 ![levelselect](https://user-images.githubusercontent.com/29984767/38692422-b27c81c6-3e51-11e8-97b8-a784539e4848.PNG)
