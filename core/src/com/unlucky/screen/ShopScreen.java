@@ -359,6 +359,7 @@ public class ShopScreen extends MenuExtensionScreen {
         // buy
         invButtons[0].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                unselectItem();
                 buy();
             }
         });
@@ -436,6 +437,7 @@ public class ShopScreen extends MenuExtensionScreen {
                         }
                         player.inventory.addItem(item);
                         stage.addActor(item.actor);
+                        item.actor.setZIndex(item.index);
                         addInventoryEvent(item);
                         gold.setText("GOLD: " + player.getGold());
                         new Dialog("Success", rm.dialogSkin) {
