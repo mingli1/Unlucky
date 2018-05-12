@@ -146,6 +146,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         smoveset.setFontScale(0.5f);
         smoveset.setPosition(130, 40);
         smoveset.setAlignment(Align.center);
+        smoveset.setTouchable(Touchable.disabled);
         stage.addActor(smoveset);
 
         createSmoveButtons();
@@ -215,6 +216,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         // add button
         smoveButtons[0].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                unselectSlot();
                 add();
             }
         });
