@@ -2,12 +2,17 @@ package com.unlucky.ui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.unlucky.effects.Moving;
 import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
@@ -39,17 +44,45 @@ public class Hud extends UI {
     // option buttons: inventoryUI and settings
     private ImageButton[] optionButtons;
 
+    // window that slides on the screen to show the world and level
+    private Window levelDescriptor;
+    private Label levelDesc;
+    private Moving levelMoving;
+    private boolean ld = false;
+    private float showTime = 0;
+
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
         createOptionButtons();
+        createLevelDescriptor();
     }
 
     public void update(float dt) {
         // handle movement based on button press
         if ((touchDown || kTouchDown) && !player.isOnSpecialTile()) movePlayer(dirIndex);
         else player.getAm().stopAnimation();
+
+        if (ld) {
+            levelMoving.update(dt);
+            levelDescriptor.setPosition(levelMoving.position.x, levelMoving.position.y);
+            if (!levelMoving.shouldStart) showTime += dt;
+            // after 3 seconds of showing moves back to the starting position
+            if (showTime >= 3) {
+                showTime = 0;
+                float y = 116 - levelDescriptor.getPrefHeight();
+                levelMoving.origin.set(4, y);
+                levelMoving.target.set(-levelDescriptor.getPrefWidth(), y);
+                levelMoving.start();
+            }
+            if (levelMoving.target.x == -levelDescriptor.getPrefWidth() &&
+                levelMoving.position.x == levelMoving.target.x) {
+                ld = false;
+                showTime = 0;
+                levelDescriptor.setVisible(false);
+            }
+        }
 
         kTouchDown = Gdx.input.isKeyPressed(Input.Keys.S) ||
                 Gdx.input.isKeyPressed(Input.Keys.W) ||
@@ -87,7 +120,29 @@ public class Hud extends UI {
     public void render(float dt) {
         stage.act(dt);
         stage.draw();
+    }
 
+    /**
+     * Starts the slide in animation of the level descriptor when
+     * the player first enters the level.
+     */
+    public void startLevelDescriptor() {
+        int worldIndex = gameScreen.gameMap.worldIndex;
+        int levelIndex = gameScreen.gameMap.levelIndex;
+        String worldName = rm.worlds.get(worldIndex).name;
+        String levelName = rm.worlds.get(worldIndex).levels[levelIndex].name;
+
+        levelDescriptor.getTitleLabel().setText("WORLD " + (worldIndex + 1) + " : " + "LEVEL " + (levelIndex + 1));
+        levelDesc.setText(worldName + "\n" + levelName);
+        levelDescriptor.setVisible(true);
+        levelDescriptor.pack();
+
+        float y = 116 - levelDescriptor.getPrefHeight();
+        levelMoving.origin.set(-levelDescriptor.getPrefWidth(), y);
+        levelMoving.target.set(4, y);
+
+        ld = true;
+        levelMoving.start();
     }
 
     /**
@@ -153,6 +208,29 @@ public class Hud extends UI {
             stage.addActor(optionButtons[i]);
         }
         handleOptionEvents();
+    }
+
+    /**
+     * Creates the level descriptor window
+     */
+    private void createLevelDescriptor() {
+        levelDescriptor = new Window("", rm.skin);
+        levelDescriptor.getTitleLabel().setFontScale(0.5f);
+        levelDescriptor.getTitleLabel().setAlignment(Align.center);
+        levelDescriptor.setMovable(false);
+        levelDescriptor.setTouchable(Touchable.disabled);
+        levelDescriptor.setKeepWithinStage(false);
+        levelDescriptor.setVisible(false);
+        levelDesc = new Label("", new Label.LabelStyle(rm.pixel10, Color.WHITE));
+        levelDesc.setFontScale(0.5f);
+        levelDesc.setAlignment(Align.center);
+        levelDescriptor.left();
+        levelDescriptor.padTop(12);
+        levelDescriptor.padLeft(2);
+        levelDescriptor.padBottom(4);
+        levelDescriptor.add(levelDesc).width(70);
+        stage.addActor(levelDescriptor);
+        levelMoving = new Moving(new Vector2(), new Vector2(), 150.f);
     }
 
     /**
