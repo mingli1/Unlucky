@@ -32,7 +32,6 @@ public class Player extends Entity {
      */
     private int moving = -1;
     // entity is in a continuous movement
-    private boolean continueMoving;
     private float speed;
     // the Entity's current tile coordinates
     private int currentTileX;
@@ -107,15 +106,6 @@ public class Player extends Entity {
 
         statusEffects = new StatusSet(true, rm);
         smoveset = new SpecialMoveset();
-
-        // FOR TESTING
-        inventory.clear();
-        for (int i = 0; i < Inventory.NUM_SLOTS / 2; i++) {
-            Item item = rm.getItem(3);
-            item.adjust(getLevel());
-            inventory.addItem(item);
-        }
-        this.gold = 1000000;
     }
 
     public void update(float dt) {
@@ -153,11 +143,6 @@ public class Player extends Entity {
         stats.numSteps++;
     }
 
-    /**
-     * Checks if movement boolean array is all false
-     *
-     * @return
-     */
     public boolean canMove() {
         return moving == -1;
     }
@@ -326,7 +311,6 @@ public class Player extends Entity {
 
     /**
      * Updates every tick and moves an Entity if not on the tile map grid
-     * @TODO: FIX MOVEMENT
      */
     public void handleMovement(float dt) {
         // down
@@ -336,8 +320,7 @@ public class Player extends Entity {
                 moving = -1;
             } else {
                 position.y -= speed * dt;
-                if (position.y <= targetY * tileMap.tileSize &&
-                    position.y - speed * dt <= targetY * tileMap.tileSize) {
+                if (Math.abs(position.y - targetY * tileMap.tileSize) <= speed * dt) {
                     position.y = targetY * tileMap.tileSize;
                     moving = -1;
                 }
@@ -350,8 +333,7 @@ public class Player extends Entity {
                 moving = -1;
             } else {
                 position.y += speed * dt;
-                if (position.y >= targetY * tileMap.tileSize &&
-                    position.y + speed * dt >= targetY * tileMap.tileSize) {
+                if (Math.abs(position.y - targetY * tileMap.tileSize) <= speed * dt) {
                     position.y = targetY * tileMap.tileSize;
                     moving = -1;
                 }
@@ -364,8 +346,7 @@ public class Player extends Entity {
                 moving = -1;
             } else {
                 position.x += speed * dt;
-                if (position.x >= targetX * tileMap.tileSize &&
-                    position.x + speed * dt >= targetX * tileMap.tileSize) {
+                if (Math.abs(position.x - targetX * tileMap.tileSize) <= speed * dt) {
                     position.x = targetX * tileMap.tileSize;
                     moving = -1;
                 }
@@ -378,8 +359,7 @@ public class Player extends Entity {
                 moving = -1;
             } else {
                 position.x -= speed * dt;
-                if (position.x <= targetX * tileMap.tileSize &&
-                    position.x - speed * dt <= targetX * tileMap.tileSize) {
+                if (Math.abs(position.x - targetX * tileMap.tileSize) <= speed * dt) {
                     position.x = targetX * tileMap.tileSize;
                     moving = -1;
                 }
@@ -710,6 +690,10 @@ public class Player extends Entity {
 
     public void addGold(int g) { this.gold += g; }
 
+    public void setGold(int gold) {
+        this.gold = gold;
+    }
+
     public int getGold() { return gold; }
 
     public int getCurrentTileX() {
@@ -718,10 +702,6 @@ public class Player extends Entity {
 
     public int getCurrentTileY() {
         return currentTileY;
-    }
-
-    public void setContinueMoving(boolean p) {
-        continueMoving = p;
     }
 
     public boolean isMoving() {
