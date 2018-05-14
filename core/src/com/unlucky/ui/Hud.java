@@ -61,7 +61,7 @@ public class Hud extends UI {
 
     public void update(float dt) {
         // handle movement based on button press
-        if ((touchDown || kTouchDown) && !player.isOnSpecialTile()) movePlayer(dirIndex);
+        if (touchDown || kTouchDown) movePlayer(dirIndex);
         else player.getAm().stopAnimation();
 
         if (ld) {
@@ -88,8 +88,6 @@ public class Hud extends UI {
                 Gdx.input.isKeyPressed(Input.Keys.W) ||
                 Gdx.input.isKeyPressed(Input.Keys.D) ||
                 Gdx.input.isKeyPressed(Input.Keys.A);
-
-        player.setContinueMoving(touchDown || kTouchDown);
 
         // keyboard input
         if (Gdx.input.isKeyPressed(Input.Keys.S)) dirIndex = 0;
@@ -152,7 +150,7 @@ public class Hud extends UI {
      */
     public void toggle(boolean toggle) {
         if (toggle) {
-            gameScreen.getGame().fps.setPosition(5, 115);
+            gameScreen.getGame().fps.setPosition(5, 5);
             stage.addActor(gameScreen.getGame().fps);
         }
         for (int i = 0; i < 4; i++) {

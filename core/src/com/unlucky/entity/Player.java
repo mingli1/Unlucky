@@ -37,7 +37,6 @@ public class Player extends Entity {
     private int currentTileX;
     private int currentTileY;
     private int prevDir = -1;
-    private boolean onSpecialTile = false;
     // tile causing a dialog event
     private boolean tileInteraction = false;
     // teleportation tiles
@@ -214,9 +213,6 @@ public class Player extends Entity {
         int cx = (int) (position.x / tileMap.tileSize);
         int cy = (int) (position.y / tileMap.tileSize);
         Tile currentTile = tileMap.getTile(cx, cy);
-
-        if (currentTile.isSpecial()) onSpecialTile = true;
-        else onSpecialTile = false;
 
         if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
@@ -707,8 +703,6 @@ public class Player extends Entity {
     public boolean isMoving() {
         return moving != -1;
     }
-
-    public boolean isOnSpecialTile() { return onSpecialTile; }
 
     public boolean isTileInteraction() { return tileInteraction; }
 
