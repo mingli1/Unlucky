@@ -144,7 +144,7 @@ public class TileMap {
                 trimmed[j] = row[j].replaceAll(" ", "");
             }
             for (int j = 0; j < mapWidth; j++) {
-                String temp = trimmed[row.length - 1 - j];
+                String temp = getAnimatedTileConversion(trimmed[row.length - 1 - j]);
 
                 int k = (mapWidth * mapHeight - 1) - ((i - mapHeight - 4) * mapWidth + j);
                 int l = rm.tiles16x16[0].length;
@@ -295,6 +295,32 @@ public class TileMap {
                     batch.draw(topLayer[i], origin.x + c * tileSize, origin.y + r * tileSize);
             }
         }
+    }
+
+    /**
+     * Converts a tile id corresponding to an animated tile to its animated tile format
+     *
+     * @param id
+     * @return a String with the animated tile id in the correct format
+     */
+    private String getAnimatedTileConversion(String id) {
+        if (id.startsWith("e")) return id;
+        int ret = Integer.parseInt(id);
+        if (ret == 64) return "a3|2|2";
+        if (ret == 80) return "a4|4|3";
+        if (ret == 96) return "a5|2|2";
+        if (ret == 112) return "a6|3|3";
+        if (ret == 128) return "a7|3|3";
+        if (ret == 144) return "a8|3|3";
+        if (ret == 160) return "a9|3|3";
+        if (ret == 176) return "a10|2|2";
+        if (ret == 192) return "a0|2|2";
+        if (ret == 208) return "a1|2|2";
+        if (ret == 224) return "a2|4|3";
+        if (ret == 240) return "a11|3|3";
+        if (ret == 63) return "a12|2|2";
+        if (ret == 79) return "a13|6|4";
+        return id;
     }
 
     /**
