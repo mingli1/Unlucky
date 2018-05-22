@@ -70,6 +70,7 @@ public class GameScreen extends AbstractScreen {
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
         hud.toggle(true);
+        hud.startLevelDescriptor();
     }
 
     /**
@@ -94,9 +95,18 @@ public class GameScreen extends AbstractScreen {
     public void update(float dt) {
         if (currentEvent == EventState.MOVING) {
             // camera directs on the player
-            cam.position.x = gameMap.player.getPosition().x + 8;
-            cam.position.y = gameMap.player.getPosition().y + 4;
+            if (gameMap.player.getPosition().x <= gameMap.tileMap.mapWidth * 16 - 7 * 16 &&
+                gameMap.player.getPosition().x >= 6 * 16)
+                cam.position.x = gameMap.player.getPosition().x + 8;
+            if (gameMap.player.getPosition().y <= gameMap.tileMap.mapHeight * 16 - 4 * 16 &&
+                gameMap.player.getPosition().y >= 4 * 16 - 8)
+                cam.position.y = gameMap.player.getPosition().y + 4;
             cam.update();
+
+            if (gameMap.player.getPosition().x < 6 * 16) cam.position.x = 104;
+            if (gameMap.player.getPosition().y < 4 * 16 - 8) cam.position.y = 60.5f;
+            if (gameMap.player.getPosition().x > gameMap.tileMap.mapWidth * 16 - 7 * 16) cam.position.x = 280;
+            if (gameMap.player.getPosition().y > gameMap.tileMap.mapHeight * 16 - 4 * 16) cam.position.y = 324;
 
             gameMap.update(dt);
             hud.update(dt);
@@ -152,6 +162,8 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
         if (currentEvent == EventState.INVENTORY) game.inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
+
+        //game.profile("GameScreen");
     }
 
     public void dispose() {

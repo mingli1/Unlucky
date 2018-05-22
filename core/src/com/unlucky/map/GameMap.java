@@ -21,7 +21,7 @@ import com.unlucky.screen.GameScreen;
  * Tile maps will be separated by worlds and map levels
  * All maps in a world have similar themes
  * File names for maps are in the format:
- * "w[world index]_m[map index]"
+ * "w[world index]_l[level index]"
  *
  * @author Ming Li
  */
@@ -29,7 +29,7 @@ public class GameMap {
 
     // composite id
     public int worldIndex;
-    public int mapIndex;
+    public int levelIndex;
 
     // weather of map
     public WeatherType weather;
@@ -47,14 +47,14 @@ public class GameMap {
     private float lightningTime = 0;
     private float durationTime = 0;
 
-    public GameMap(int worldIndex, int mapIndex, GameScreen gameScreen, Player player, ResourceManager rm) {
+    public GameMap(int worldIndex, int levelIndex, GameScreen gameScreen, Player player, ResourceManager rm) {
         this.worldIndex = worldIndex;
-        this.mapIndex = mapIndex;
+        this.levelIndex = levelIndex;
         this.gameScreen = gameScreen;
         this.player = player;
         this.rm = rm;
 
-        //tileMap = new TileMap(16, "maps/w" + worldIndex + "_m" + mapIndex + ".txt", new Vector2(0, 0), rm);
+        //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
 
         tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
         player.setMap(tileMap);
@@ -162,7 +162,7 @@ public class GameMap {
         if (renderLight) {
             if (lightmap != null) {
                 batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-                batch.draw(lightmap, cam.position.x - Unlucky.V_WIDTH / 2, cam.position.y - Unlucky.V_HEIGHT / 2);
+                batch.draw(lightmap, player.getPosition().x - 182, player.getPosition().y - 102);
                 batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
             }
         }
