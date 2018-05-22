@@ -214,6 +214,8 @@ public class Player extends Entity {
         int cy = (int) (position.y / tileMap.tileSize);
         Tile currentTile = tileMap.getTile(cx, cy);
 
+        if (currentTile.isSpecial()) am.currentAnimation.stop();
+
         if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
             if (currentTile.isChange()) {
@@ -264,26 +266,14 @@ public class Player extends Entity {
                         break;
                 }
             }
-            else if (currentTile.isDown()) {
-                changeDirection(0);
-            }
-            else if (currentTile.isUp()) {
-                changeDirection(1);
-            }
-            else if (currentTile.isRight()) {
-                changeDirection(2);
-            }
-            else if (currentTile.isLeft()) {
-                changeDirection(3);
-            }
+            else if (currentTile.isDown()) changeDirection(0);
+            else if (currentTile.isUp()) changeDirection(1);
+            else if (currentTile.isRight()) changeDirection(2);
+            else if (currentTile.isLeft()) changeDirection(3);
             // trigger dialog event
-            else if (currentTile.isQuestionMark() || currentTile.isExclamationMark()) {
-                tileInteraction = true;
-            }
+            else if (currentTile.isQuestionMark() || currentTile.isExclamationMark()) tileInteraction = true;
             // trigger teleport event
-            else if (currentTile.isTeleport()) {
-                teleporting = true;
-            }
+            else if (currentTile.isTeleport()) teleporting = true;
             // ice sliding
             else if (currentTile.isIce()) {
                 if (!nextTileBlocked(prevDir)) {
@@ -293,9 +283,7 @@ public class Player extends Entity {
                     pauseAnim = true;
                 }
             }
-            else {
-                pauseAnim = false;
-            }
+            else pauseAnim = false;
         }
     }
 
@@ -451,6 +439,7 @@ public class Player extends Entity {
 
     public void finishTileInteraction() {
         tileInteraction = false;
+        moving = -1;
     }
 
     /**
@@ -498,8 +487,8 @@ public class Player extends Entity {
                 }
                 this.gold += gold;
                 ret = new String[] {
-                        "The random tile gave something!",
-                        "You obtained " + gold + " gold!"
+                    "The random tile gave something!",
+                    "You obtained " + gold + " gold!"
                 };
             }
             // heal
@@ -511,8 +500,8 @@ public class Player extends Entity {
                 this.hp += heal;
                 if (hp > maxHp) hp = maxHp;
                 ret = new String[] {
-                        "The random tile gave something!",
-                        "It healed you for " + heal + " hp!"
+                    "The random tile gave something!",
+                    "It healed you for " + heal + " hp!"
                 };
             }
             // item
@@ -520,16 +509,16 @@ public class Player extends Entity {
                 Item item = rm.getRandomItem();
                 if (inventory.isFull()) {
                     ret = new String[] {
-                            "The random tile gave something!",
-                            "It dropped a " + item.getDialogName() + "!",
-                            "Oh no, too bad your inventory was full."
+                        "The random tile gave something!",
+                        "It dropped a " + item.getDialogName() + "!",
+                        "Oh no, too bad your inventory was full."
                     };
                 }
                 else {
                     ret = new String[]{
-                            "The random tile gave something!",
-                            "It dropped a " + item.getDialogName() + "!",
-                            "The item was added to your inventory."
+                        "The random tile gave something!",
+                        "It dropped a " + item.getDialogName() + "!",
+                        "The item was added to your inventory."
                     };
                     item.adjust(mapLevel);
                     inventory.addItem(item);
@@ -538,7 +527,7 @@ public class Player extends Entity {
         }
         else {
             ret = new String[] {
-                    "The random tile did not give anything."
+                "The random tile did not give anything."
             };
         }
 
@@ -565,16 +554,16 @@ public class Player extends Entity {
                 hp -= dmg;
                 if (hp <= 0) {
                     ret = new String[]{"" +
-                            "The random tile cursed you!",
-                            "It damaged you for " + dmg + " damage!",
-                            "Shit you actually died omegalul."
+                        "The random tile cursed you!",
+                        "It damaged you for " + dmg + " damage!",
+                        "Shit you actually died omegalul."
                     };
                     hp = maxHp;
                 }
                 else {
                     ret = new String[] {
-                            "The random tile cursed you!",
-                            "It damaged you for " + dmg + " damage!"
+                        "The random tile cursed you!",
+                        "It damaged you for " + dmg + " damage!"
                     };
                 }
             }
@@ -586,8 +575,8 @@ public class Player extends Entity {
                 gold -= steal;
                 if (gold < 0) gold = 0;
                 ret = new String[] {
-                        "The random tile cursed you!",
-                        "It caused you to lose " + steal + " gold!"
+                    "The random tile cursed you!",
+                    "It caused you to lose " + steal + " gold!"
                 };
             }
         }
