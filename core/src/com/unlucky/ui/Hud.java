@@ -31,15 +31,13 @@ import com.unlucky.screen.GameScreen;
  */
 public class Hud extends UI {
 
-    // Buttons
-    // --------------------------------------------------------------------
     // directional pad: index i 0 - down, 1 - up, 2 - right, 3 - left
     private ImageButton[] dirPad;
     // if dir pad is held down
     private boolean touchDown = false;
-    // for keyboard
-    private boolean kTouchDown = false;
     private int dirIndex = -1;
+    // for changing the player's facing direction with a short tap like in pokemon
+    private float dirTime = 0;
 
     // option buttons: inventoryUI and settings
     private ImageButton[] optionButtons;
@@ -60,9 +58,16 @@ public class Hud extends UI {
     }
 
     public void update(float dt) {
-        // handle movement based on button press
-        if (touchDown || kTouchDown) movePlayer(dirIndex);
-        else player.getAm().stopAnimation();
+        if (touchDown) {
+            dirTime += dt;
+            // quick tap to change direction
+            if (dirTime > 0 && dirTime <= 0.15f) player.getAm().setAnimation(dirIndex);
+            // move the player
+            else movePlayer(dirIndex);
+        }
+        else {
+            player.getAm().stopAnimation();
+        }
 
         if (ld) {
             levelMoving.update(dt);
@@ -84,16 +89,6 @@ public class Hud extends UI {
             }
         }
 
-        kTouchDown = Gdx.input.isKeyPressed(Input.Keys.S) ||
-                Gdx.input.isKeyPressed(Input.Keys.W) ||
-                Gdx.input.isKeyPressed(Input.Keys.D) ||
-                Gdx.input.isKeyPressed(Input.Keys.A);
-
-        // keyboard input
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) dirIndex = 0;
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) dirIndex = 1;
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) dirIndex = 2;
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) dirIndex = 3;
         if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
             toggle(false);
             gameScreen.setCurrentEvent(EventState.INVENTORY);
@@ -240,6 +235,7 @@ public class Hud extends UI {
             dirPad[i].addListener(new InputListener() {
                 @Override
                 public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
+                    dirTime = 0;
                     touchDown = true;
                     dirIndex = index;
                     return true;
@@ -248,6 +244,13 @@ public class Hud extends UI {
                     touchDown = false;
                 }
             });
+        }
+    }
+
+    private void movePlayer(int dir) {
+        if (player.canMove()) player.getAm().setAnimation(dir);
+        if (player.canMove() && !player.nextTileBlocked(dir)) {
+            player.move(dir);
         }
     }
 
@@ -481,13 +484,6 @@ public class Hud extends UI {
 
     private boolean eq(String s1, String s2) {
         return s1.equalsIgnoreCase(s2);
-    }
-
-    private void movePlayer(int dir) {
-        if (player.canMove()) player.getAm().setAnimation(dir);
-        if (player.canMove() && !player.nextTileBlocked(dir)) {
-            player.move(dir);
-        }
     }
 
 }
