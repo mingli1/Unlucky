@@ -11,12 +11,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
  */
 public class AnimationManager {
 
-    // animation index constants
-    public static final int DOWN = 0;
-    public static final int UP = 1;
-    public static final int RIGHT = 2;
-    public static final int LEFT = 3;
-
     public float width;
     public float height;
 
@@ -49,32 +43,26 @@ public class AnimationManager {
     }
 
     /**
-     * Sets up the animation array for multi-directional animations
+     * Sets up for animations based on world index
+     * Used for storing multiple animations on a single row sorted by worlds
      *
-     * @param sprites 2d array of sprites so that different sized animations can be used
-     * @param numAnimations the number of animations in a row, not the number of frames
-     * @param index a sprite's animation index/row on the spritesheet
-     * @param numFrames the number of frames in one animation
+     * @param sprites
+     * @param worldIndex
+     * @param startIndex
+     * @param numFrames
      * @param delay
      */
-    public AnimationManager(TextureRegion[][] sprites, int numAnimations, int index, int numFrames, float delay) {
-        animations = new CustomAnimation[numAnimations];
-        animationFrames = new TextureRegion[numAnimations][numFrames];
+    public AnimationManager(TextureRegion[][] sprites, int worldIndex, int startIndex, int numFrames, float delay) {
+        TextureRegion[] frames = new TextureRegion[numFrames];
 
-        width = sprites[index][0].getRegionWidth();
-        height = sprites[index][0].getRegionHeight();
+        width = sprites[worldIndex][startIndex].getRegionWidth();
+        height = sprites[worldIndex][startIndex].getRegionHeight();
 
-        // converting the animations frames row in the sprite texture to a 2d array to match the animation array
-        for (int i = 0; i < sprites[index].length / numAnimations; i++) {
-            for (int j = 0; j < animationFrames[0].length; j++) {
-                animationFrames[i][j] = sprites[index][(j % numAnimations) + (i * numAnimations)];
-            }
-        }
-        for (int i = 0; i < animations.length; i++) {
-            animations[i] = new CustomAnimation(delay, animationFrames[i]);
+        for (int i = startIndex; i < startIndex + numFrames; i++) {
+            frames[i] = sprites[worldIndex][i];
         }
 
-        currentAnimation = animations[0]; // initially set frame to idle down facing frame
+        currentAnimation = new CustomAnimation(delay, frames);
     }
 
     /**
