@@ -20,6 +20,7 @@ import com.unlucky.resource.Util;
  * mapHeight
  * playerSpawn.x
  * playerSpawn.y
+ * bottomLayer
  * s, s, s, s, ... -> mapWidth length
  * s, ...
  * s, ...
@@ -41,7 +42,7 @@ import com.unlucky.resource.Util;
  * t can be one of the following:
  * - 0 for no tile
  * - tileID
- * - e[entityID]|[tileID] (means an Entity is placed on top of a tile)
+ * - e[entityID] (means an Entity is placed on top of a tile)
  * - a[animIndex]|[numFrames]|[framesPerSecond] (an animated tile)
  *
  * s is the tileID of a NON-BLOCKED tile

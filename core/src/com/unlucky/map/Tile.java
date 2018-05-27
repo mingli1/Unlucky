@@ -99,7 +99,7 @@ public class Tile {
 
         animated = true;
 
-        if (Util.isBlockedTile(id)) type = BLOCKED;
+        if (Util.isBlockedAnimatedTile(id)) type = BLOCKED;
         else if (id == 99) type = CHANGE;
         else if (id == 100) type = IN_AND_OUT;
         else if (id == 101) type = STOP;
