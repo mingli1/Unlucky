@@ -85,6 +85,8 @@ public class ResourceManager {
     public TextureRegion shopui;
     public TextureRegion[][] shoptab;
     public TextureRegion[] smoveSlots;
+    public TextureRegion[][] smoveButtons;
+    public TextureRegion smoveFrame;
 
     // Skin
     public Skin skin;
@@ -109,6 +111,7 @@ public class ResourceManager {
 
     // contains all the items separated by rarity
     public final Array<Array<Item>> items = new Array<Array<Item>>();
+    // contains all the shop items separated by rarity
     public final Array<Array<ShopItem>> shopItems = new Array<Array<ShopItem>>();
 
     // Fonts
@@ -190,6 +193,8 @@ public class ResourceManager {
         shopui = atlas.findRegion("shop_ui");
         shoptab = atlas.findRegion("shop_tab").split(31, 9);
         smoveSlots = atlas.findRegion("smove_slot").split(16, 16)[0];
+        smoveButtons = atlas.findRegion("smove_buttons").split(38, 18);
+        smoveFrame = atlas.findRegion("smove_frame");
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);

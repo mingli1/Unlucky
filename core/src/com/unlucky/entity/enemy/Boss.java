@@ -22,14 +22,14 @@ public class Boss extends Enemy {
     }
 
     public Boss(String id, int bossId, Vector2 position, TileMap tileMap, ResourceManager rm,
-                int numFrames, int animIndex, float delay) {
+                int worldIndex, int startIndex, int numFrames, float delay) {
         this(id, position, tileMap, rm);
         this.bossId = bossId;
 
         // create tilemap animation
-        am = new AnimationManager(rm.sprites16x16, numFrames, animIndex, delay);
+        am = new AnimationManager(rm.sprites16x16, worldIndex, startIndex, numFrames, delay);
         // create battle scene animation
-        bam = new AnimationManager(rm.battleSprites96x96, 2, animIndex, delay);
+        bam = new AnimationManager(rm.battleSprites96x96, worldIndex, startIndex, 2, delay);
     }
 
     @Override

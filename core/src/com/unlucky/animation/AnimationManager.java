@@ -59,7 +59,7 @@ public class AnimationManager {
         height = sprites[worldIndex][startIndex].getRegionHeight();
 
         for (int i = startIndex; i < startIndex + numFrames; i++) {
-            frames[i] = sprites[worldIndex][i];
+            frames[i - startIndex] = sprites[worldIndex][i];
         }
 
         currentAnimation = new CustomAnimation(delay, frames);

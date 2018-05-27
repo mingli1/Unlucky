@@ -43,7 +43,6 @@ public class Util {
     public static final int DIR_PAD_OFFSET = 5;
 
     // Special move indexes
-    public static final int S_MOVE_CD = 3; // num of turns cooldown for special moves
     public static final int NUM_SPECIAL_MOVES = 8;
     public static final int DISTRACT = 0;
     public static final int FOCUS = 1;
@@ -55,21 +54,28 @@ public class Util {
     public static final int SHIELD = 7;
 
     public static final SpecialMove S_DISTRACT = new SpecialMove(DISTRACT,
-            "Distract", "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC");
+            "Distract", "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC", 1, null);
     public static final SpecialMove S_FOCUS = new SpecialMove(FOCUS,
-            "Focus", "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance");
+            "Focus", "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance", 5, null);
     public static final SpecialMove S_INTIMIDATE = new SpecialMove(INTIMIDATE,
-            "Intimidate", "Next attack is\namplified by " + Util.P_INTIMIDATE + "%");
+            "Intimidate", "Next attack is\namplified by " + Util.P_INTIMIDATE + "%", 1, null);
     public static final SpecialMove S_REFLECT = new SpecialMove(REFLECT,
-            "Reflect", "Next enemy attack\nis reflected back");
+            "Reflect", "Next enemy attack\nis reflected back", 18, null);
     public static final SpecialMove S_STUN = new SpecialMove(STUN,
-            "Stun", Util.P_STUN + "% chance to\nstun enemy");
+            "Stun", Util.P_STUN + "% chance to\nstun enemy", 3, null);
     public static final SpecialMove S_INVERT = new SpecialMove(INVERT,
-            "Invert", "Heal moves damage\nDamage moves heal");
+            "Invert", "Heal moves damage\nDamage moves heal", 10, null);
     public static final SpecialMove S_SACRIFICE = new SpecialMove(SACRIFICE,
-            "Sacrifice", "Sacrifice all but 1 hp\nfor increased dmg");
+            "Sacrifice", "Sacrifice all but 1 hp\nfor increased dmg", 7, null);
     public static final SpecialMove S_SHIELD = new SpecialMove(SHIELD,
-            "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% of max hp");
+            "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% max hp", 14, null);
+
+    public static final SpecialMove[] SMOVES_ORDER_BY_LVL = {
+        S_DISTRACT, S_INTIMIDATE, S_STUN, S_FOCUS, S_SACRIFICE, S_INVERT, S_SHIELD, S_REFLECT
+    };
+    public static final SpecialMove[] SMOVES_ORDER_BY_ID = {
+        S_DISTRACT, S_FOCUS, S_INTIMIDATE, S_REFLECT, S_STUN, S_INVERT, S_SACRIFICE, S_SHIELD
+    };
 
     // Button dimensions
     public static final int MOVE_WIDTH = 72;
@@ -228,9 +234,9 @@ public class Util {
      */
     public static Entity getEntity(int id, Vector2 position, TileMap map, ResourceManager rm) {
         switch (id) {
-            case 2: return new Normal("slime", position, map, rm, 2, 1, 1 / 3f);
-            case 3: return new Normal("blue slime", position, map, rm, 2, 2, 1 / 3f);
-            case 4: return new Boss("king slime", 0, position, map, rm, 2, 3, 1 / 3f);
+            case 2: return new Normal("slime", position, map, rm, 1, 0, 2, 1 / 3f);
+            case 3: return new Normal("blue slime", position, map, rm, 1, 2, 2, 1 / 3f);
+            case 5: return new Boss("king slime", 0, position, map, rm, 1, 6, 2, 1 / 3f);
         }
         return null;
     }
