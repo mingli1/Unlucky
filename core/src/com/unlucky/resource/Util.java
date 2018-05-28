@@ -248,7 +248,8 @@ public class Util {
         switch (id) {
             case 2: return new Normal("slime", position, map, rm, 1, 0, 2, 1 / 3f);
             case 3: return new Normal("blue slime", position, map, rm, 1, 2, 2, 1 / 3f);
-            case 5: return new Boss("king slime", 0, position, map, rm, 1, 6, 2, 1 / 3f);
+            case 4: return new Normal("blast slime", position, map, rm, 1, 4, 2, 1 / 3f);
+            case 5: return new Boss("slime king", 0, position, map, rm, 1, 6, 2, 1 / 3f);
         }
         return null;
     }
