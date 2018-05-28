@@ -2,7 +2,7 @@ package com.unlucky.main;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -19,13 +19,13 @@ import com.unlucky.ui.inventory.InventoryUI;
 /**
  * "Unlucky" is a RPG/Dungeon Crawler based on RNG
  * The player will go through various levels with numerous enemies
- * and attempt to complete each level by collecting a certain item (TBD)
+ * and attempt to complete each level by reaching the end tile.
  *
  * @author Ming Li
  */
 public class Unlucky extends Game {
 
-    public static final String VERSION = "0.7.8";
+    public static final String VERSION = "0.8.4";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
     // Desktop screen dimensions
@@ -68,11 +68,12 @@ public class Unlucky extends Game {
         player = new Player("player", rm);
 
         save = new Save(player, "save.json");
+        save.load(rm);
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
         fps.setFontScale(0.5f);
-        //fps.setVisible(false);
+        fps.setVisible(true);
 
         inventoryUI = new InventoryUI(this, player, rm);
         menuScreen = new MenuScreen(this, rm);
@@ -110,6 +111,11 @@ public class Unlucky extends Game {
 	public void render() {
         fps.setText(Gdx.graphics.getFramesPerSecond() + " fps");
         super.render();
+
+        // temp save key
+        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
+            save.save();
+        }
 	}
 
 	public void dispose() {
