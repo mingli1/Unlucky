@@ -92,21 +92,25 @@ public class GameScreen extends AbstractScreen {
         bg[1].setVector(0, 0);
     }
 
+    public void updateCamera() {
+        // camera directs on the player
+        if (gameMap.player.getPosition().x <= gameMap.tileMap.mapWidth * 16 - 7 * 16 &&
+            gameMap.player.getPosition().x >= 6 * 16)
+            cam.position.x = gameMap.player.getPosition().x + 8;
+        if (gameMap.player.getPosition().y <= gameMap.tileMap.mapHeight * 16 - 4 * 16 &&
+            gameMap.player.getPosition().y >= 4 * 16 - 8)
+            cam.position.y = gameMap.player.getPosition().y + 4;
+        cam.update();
+
+        if (gameMap.player.getPosition().x < 6 * 16) cam.position.x = 104;
+        if (gameMap.player.getPosition().y < 4 * 16 - 8) cam.position.y = 60.5f;
+        if (gameMap.player.getPosition().x > gameMap.tileMap.mapWidth * 16 - 7 * 16) cam.position.x = 280;
+        if (gameMap.player.getPosition().y > gameMap.tileMap.mapHeight * 16 - 4 * 16) cam.position.y = 324;
+    }
+
     public void update(float dt) {
         if (currentEvent == EventState.MOVING) {
-            // camera directs on the player
-            if (gameMap.player.getPosition().x <= gameMap.tileMap.mapWidth * 16 - 7 * 16 &&
-                gameMap.player.getPosition().x >= 6 * 16)
-                cam.position.x = gameMap.player.getPosition().x + 8;
-            if (gameMap.player.getPosition().y <= gameMap.tileMap.mapHeight * 16 - 4 * 16 &&
-                gameMap.player.getPosition().y >= 4 * 16 - 8)
-                cam.position.y = gameMap.player.getPosition().y + 4;
-            cam.update();
-
-            if (gameMap.player.getPosition().x < 6 * 16) cam.position.x = 104;
-            if (gameMap.player.getPosition().y < 4 * 16 - 8) cam.position.y = 60.5f;
-            if (gameMap.player.getPosition().x > gameMap.tileMap.mapWidth * 16 - 7 * 16) cam.position.x = 280;
-            if (gameMap.player.getPosition().y > gameMap.tileMap.mapHeight * 16 - 4 * 16) cam.position.y = 324;
+            updateCamera();
 
             gameMap.update(dt);
             hud.update(dt);

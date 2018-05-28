@@ -115,9 +115,10 @@ public class TransitionScreen {
             gameScreen.setCurrentEvent(EventState.BATTLING);
         }
         else if (prev == EventState.MOVING && next == EventState.MOVING) {
+            player.teleport();
+            gameScreen.updateCamera();
             gameScreen.setCurrentEvent(EventState.MOVING);
             hud.toggle(true);
-            player.teleport();
             player.finishTeleporting();
         }
         // transition out of battle
