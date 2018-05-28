@@ -162,6 +162,12 @@ public class MenuScreen extends MenuExtensionScreen {
                 setSlideScreen(game.shopScreen, false);
             }
         });
+        // smove screen
+        optionButtons[3].addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                setSlideScreen(game.smoveScreen, false);
+            }
+        });
         // statistics screen
         optionButtons[4].addListener(new ClickListener() {
             @Override
@@ -180,6 +186,7 @@ public class MenuScreen extends MenuExtensionScreen {
 
     private void createCreditsScreen() {
         credits = new Group();
+        credits.setTransform(false);
         credits.setVisible(false);
         credits.setSize(Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
 
@@ -219,7 +226,7 @@ public class MenuScreen extends MenuExtensionScreen {
         github.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.net.openURI("https://github.com/mingli1/Unlucky");
+                Gdx.net.openURI(Unlucky.GITHUB);
             }
         });
 
@@ -229,7 +236,7 @@ public class MenuScreen extends MenuExtensionScreen {
         youtube.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.net.openURI("https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0");
+                Gdx.net.openURI(Unlucky.YOUTUBE);
             }
         });
 
@@ -241,8 +248,8 @@ public class MenuScreen extends MenuExtensionScreen {
             creditsIcons[i].addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    if (index == 1) Gdx.net.openURI("https://github.com/mingli1/Unlucky");
-                    else Gdx.net.openURI("https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0");
+                    if (index == 1) Gdx.net.openURI(Unlucky.GITHUB);
+                    else Gdx.net.openURI(Unlucky.YOUTUBE);
                 }
             });
             credits.addActor(creditsIcons[i]);

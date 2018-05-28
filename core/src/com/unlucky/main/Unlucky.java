@@ -28,6 +28,10 @@ public class Unlucky extends Game {
     public static final String VERSION = "0.8.4";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
+    // Links
+    public static final String GITHUB = "https://github.com/mingli1/Unlucky";
+    public static final String YOUTUBE = "https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0";
+
     // Desktop screen dimensions
     public static final int V_WIDTH = 200;
     public static final int V_HEIGHT = 120;
