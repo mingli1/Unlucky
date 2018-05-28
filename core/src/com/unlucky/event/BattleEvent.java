@@ -16,6 +16,8 @@ public enum BattleEvent {
     // the enemy's turn
     ENEMY_TURN,
     // player levels up
-    LEVEL_UP
+    LEVEL_UP,
+    // player dies and leaves the map
+    PLAYER_DEAD
 
 }

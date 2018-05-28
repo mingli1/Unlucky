@@ -12,5 +12,6 @@ public enum EventState {
     TRANSITION,
     LEVEL_UP,
     INVENTORY,
-    TILE_EVENT
+    TILE_EVENT,
+    DEATH
 }
