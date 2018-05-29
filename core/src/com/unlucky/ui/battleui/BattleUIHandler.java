@@ -65,7 +65,7 @@ public class BattleUIHandler extends UI {
         moveUI.init();
         battleScene.resetPositions();
         battleScene.toggle(true);
-        currentState = com.unlucky.event.BattleState.DIALOG;
+        currentState = BattleState.DIALOG;
 
         String[] intro;
         boolean saved = Util.isSuccess(Util.SAVED_FROM_BATTLE);

@@ -227,6 +227,7 @@ public class BattleEventHandler extends BattleUI {
                     battle.psacrifice = ((player.getHp() - 1) / (float) player.getMaxHp()) + 1;
                     player.hit(player.getHp() - 1);
                     player.applyDamage();
+                    gameScreen.battleUIHandler.battleScene.playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
                 }
 
                 if (prevEvent == BattleEvent.ENEMY_TURN) {
@@ -273,6 +274,17 @@ public class BattleEventHandler extends BattleUI {
                 gameScreen.setCurrentEvent(EventState.LEVEL_UP);
                 gameScreen.levelUp.start();
                 break;
+            case PLAYER_DEAD:
+                // update battle stats
+                player.stats.updateMax(player.stats.maxDamageSingleBattle, battle.cumulativeDamage);
+                player.stats.updateMax(player.stats.maxHealSingleBattle, battle.cumulativeHealing);
+                battle.cumulativeDamage = battle.cumulativeHealing = 0;
+
+                player.resetShield();
+                player.statusEffects.clear();
+                gameScreen.setCurrentEvent(EventState.TRANSITION);
+                gameScreen.transition.start(EventState.BATTLING, EventState.DEATH);
+                break;
         }
     }
 
@@ -303,13 +315,10 @@ public class BattleEventHandler extends BattleUI {
                 return true;
             }
             else {
-                startDialog(new String[]{
-                        "Oh no, you took too much damage and died!",
-                        "Luckily, this game is still in development," +
-                                " so you can't really die yet."
-                }, BattleEvent.PLAYER_TURN, BattleEvent.END_BATTLE);
-                player.setHp(player.getMaxHp());
-
+                startDialog(new String[] {
+                        "Oh no, you took fatal damage and died!",
+                        "You will lose 1% of your experience and all the items obtained in this level as a penalty."
+                }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_DEAD);
                 player.stats.numDeaths++;
                 return true;
             }

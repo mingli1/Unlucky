@@ -4,9 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
@@ -18,6 +20,7 @@ import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
+import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
@@ -49,12 +52,20 @@ public class Hud extends UI {
     private boolean ld = false;
     private float showTime = 0;
 
+    // death screen that is a prompt with the map background dimmed out
+    public Group deathGroup;
+    private Image dark;
+    private Image frame;
+    private Label youDied;
+    private Label loss;
+
     public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
         createOptionButtons();
         createLevelDescriptor();
+        createDeathPrompt();
     }
 
     public void update(float dt) {
@@ -148,14 +159,9 @@ public class Hud extends UI {
             gameScreen.getGame().fps.setPosition(5, 5);
             stage.addActor(gameScreen.getGame().fps);
         }
-        for (int i = 0; i < 4; i++) {
-            dirPad[i].setDisabled(!toggle);
-            dirPad[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
-        }
-        for (int i = 0; i < 2; i++) {
-            optionButtons[i].setDisabled(!toggle);
-            optionButtons[i].setTouchable(toggle ? Touchable.enabled : Touchable.disabled);
-        }
+        for (int i = 0; i < 4; i++) dirPad[i].setVisible(toggle);
+        for (int i = 0; i < 2; i++) optionButtons[i].setVisible(toggle);
+        levelDescriptor.setVisible(toggle);
     }
 
     /**
@@ -224,6 +230,50 @@ public class Hud extends UI {
         levelDescriptor.add(levelDesc).width(70);
         stage.addActor(levelDescriptor);
         levelMoving = new Moving(new Vector2(), new Vector2(), 150.f);
+    }
+
+    /**
+     * Creates the death screen message
+     */
+    private void createDeathPrompt() {
+        deathGroup = new Group();
+        deathGroup.setTransform(false);
+        deathGroup.setVisible(false);
+        deathGroup.setSize(Unlucky.V_WIDTH, Unlucky.V_HEIGHT);
+        deathGroup.setTouchable(Touchable.enabled);
+
+        dark = new Image(rm.shade);
+        deathGroup.addActor(dark);
+
+        frame = new Image(rm.skin, "textfield");
+        frame.setSize(100, 60);
+        frame.setPosition(Unlucky.V_WIDTH / 2 - 50, Unlucky.V_HEIGHT / 2 - 30);
+        deathGroup.addActor(frame);
+
+        youDied = new Label("YOU DIED!", new Label.LabelStyle(rm.pixel10, Color.RED));
+        youDied.setSize(100, 10);
+        youDied.setPosition(0, 50);
+        youDied.setAlignment(Align.center);
+        youDied.setTouchable(Touchable.disabled);
+        deathGroup.addActor(youDied);
+
+        loss = new Label("", new Label.LabelStyle(rm.pixel10, Color.WHITE));
+        loss.setSize(100, 50);
+        loss.setPosition(0, 0);
+        loss.setTouchable(Touchable.disabled);
+        deathGroup.addActor(youDied);
+
+        // click to continue
+        deathGroup.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.menuScreen.transitionIn = 0;
+                gameScreen.setFadeScreen(game.menuScreen);
+                deathGroup.setVisible(false);
+            }
+        });
+
+        stage.addActor(deathGroup);
     }
 
     /**
