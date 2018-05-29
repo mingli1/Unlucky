@@ -25,9 +25,9 @@ public class TransitionScreen {
     private Player player;
 
     // determine which one to render when entering and exiting battle
-    private boolean renderMap = false;
-    private boolean renderBattle = false;
-    private boolean renderLevelUp = false;
+    public boolean renderMap = false;
+    public boolean renderBattle = false;
+    public boolean renderLevelUp = false;
 
     // render black rectangles
     private ShapeRenderer shapeRenderer;
@@ -82,7 +82,7 @@ public class TransitionScreen {
         // set rendering
         if (prev == EventState.MOVING && next == EventState.BATTLING) renderMap = true;
         else if (prev == EventState.MOVING && next == EventState.MOVING) renderMap = true;
-        else if (prev == EventState.BATTLING && next == EventState.MOVING) renderBattle = true;
+        else if (prev == EventState.BATTLING) renderBattle = true;
         else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) renderLevelUp = true;
 
         if (prev == EventState.MOVING && next == EventState.MOVING)
@@ -128,6 +128,10 @@ public class TransitionScreen {
         // transition out of level up screen
         else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) {
             battle.end();
+        }
+        // transition into death screen
+        else if (prev == EventState.BATTLING && next == EventState.DEATH) {
+            gameScreen.die();
         }
     }
 
@@ -217,11 +221,5 @@ public class TransitionScreen {
 
         shapeRenderer.end();
     }
-
-    public boolean shouldRenderMap() { return renderMap; }
-
-    public boolean shouldRenderBattle() { return renderBattle; }
-
-    public boolean shouldRenderLevelUp() { return renderLevelUp; }
 
 }

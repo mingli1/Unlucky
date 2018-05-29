@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
@@ -92,6 +93,20 @@ public class GameScreen extends AbstractScreen {
         bg[1].setVector(0, 0);
     }
 
+    /**
+     * When the player dies it shows a "click to continue" message along with what they lost
+     */
+    public void die() {
+        // reset player's hp after dying
+        gameMap.player.setHp(gameMap.player.getMaxHp());
+        setCurrentEvent(EventState.DEATH);
+        hud.toggle(false);
+        hud.deathGroup.setVisible(true);
+    }
+
+    /**
+     * Updates the camera position to follow the player unless he's on the edges of the map
+     */
     public void updateCamera() {
         // camera directs on the player
         if (gameMap.player.getPosition().x <= gameMap.tileMap.mapWidth * 16 - 7 * 16 &&
@@ -141,7 +156,7 @@ public class GameScreen extends AbstractScreen {
         // fix fading
         game.batch.setColor(Color.WHITE);
 
-        if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) {
+        if (currentEvent == EventState.BATTLING || transition.renderBattle) {
             // bg camera
             game.batch.setProjectionMatrix(battleUIHandler.getStage().getCamera().combined);
             for (int i = 0; i < bg.length; i++) {
@@ -150,8 +165,7 @@ public class GameScreen extends AbstractScreen {
         }
 
         if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
-                transition.shouldRenderMap() || currentEvent == EventState.TILE_EVENT)
-        {
+            transition.renderMap || currentEvent == EventState.TILE_EVENT || currentEvent == EventState.DEATH) {
             // map camera
             game.batch.setProjectionMatrix(cam.combined);
             // render map and player
@@ -160,14 +174,15 @@ public class GameScreen extends AbstractScreen {
 
         game.batch.end();
 
-        if (currentEvent == EventState.MOVING) hud.render(dt);
-        if (currentEvent == EventState.BATTLING || transition.shouldRenderBattle()) battleUIHandler.render(dt);
-        if (currentEvent == EventState.LEVEL_UP || transition.shouldRenderLevelUp()) levelUp.render(dt);
+        if (currentEvent == EventState.MOVING || currentEvent == EventState.DEATH)
+            hud.render(dt);
+        if (currentEvent == EventState.BATTLING || transition.renderBattle)
+            battleUIHandler.render(dt);
+        if (currentEvent == EventState.LEVEL_UP || transition.renderLevelUp)
+            levelUp.render(dt);
         if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
         if (currentEvent == EventState.INVENTORY) game.inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
-
-        //game.profile("GameScreen");
     }
 
     public void dispose() {
