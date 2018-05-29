@@ -1,6 +1,7 @@
 package com.unlucky.screen;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -48,7 +49,7 @@ public class GameScreen extends AbstractScreen {
 
         currentEvent = EventState.MOVING;
 
-        gameMap = new GameMap(0, 0, this, game.player, rm);
+        gameMap = new GameMap(this, game.player, rm);
         battle = new Battle(this, gameMap.tileMap, gameMap.player);
         hud = new Hud(this, gameMap.tileMap, gameMap.player, rm);
         battleUIHandler = new BattleUIHandler(this, gameMap.tileMap, gameMap.player, battle, rm);
@@ -70,6 +71,16 @@ public class GameScreen extends AbstractScreen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
+        batchFade = renderBatch = true;
+
+        // init tile map
+        gameMap.init(0, 0);
+        battle.tileMap = gameMap.tileMap;
+        hud.setTileMap(gameMap.tileMap);
+        battleUIHandler.setTileMap(gameMap.tileMap);
+        levelUp.setTileMap(gameMap.tileMap);
+        dialog.setTileMap(gameMap.tileMap);
+
         hud.toggle(true);
         hud.startLevelDescriptor();
     }
@@ -151,28 +162,30 @@ public class GameScreen extends AbstractScreen {
         // clear screen
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        game.batch.begin();
+        if (renderBatch) {
+            game.batch.begin();
 
-        // fix fading
-        game.batch.setColor(Color.WHITE);
+            // fix fading
+            if (batchFade) game.batch.setColor(Color.WHITE);
 
-        if (currentEvent == EventState.BATTLING || transition.renderBattle) {
-            // bg camera
-            game.batch.setProjectionMatrix(battleUIHandler.getStage().getCamera().combined);
-            for (int i = 0; i < bg.length; i++) {
-                bg[i].render(game.batch);
+            if (currentEvent == EventState.BATTLING || transition.renderBattle) {
+                // bg camera
+                game.batch.setProjectionMatrix(battleUIHandler.getStage().getCamera().combined);
+                for (int i = 0; i < bg.length; i++) {
+                    bg[i].render(game.batch);
+                }
             }
-        }
 
-        if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
-            transition.renderMap || currentEvent == EventState.TILE_EVENT || currentEvent == EventState.DEATH) {
-            // map camera
-            game.batch.setProjectionMatrix(cam.combined);
-            // render map and player
-            gameMap.render(dt, game.batch, cam);
-        }
+            if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
+                transition.renderMap || currentEvent == EventState.TILE_EVENT || currentEvent == EventState.DEATH) {
+                // map camera
+                game.batch.setProjectionMatrix(cam.combined);
+                // render map and player
+                gameMap.render(dt, game.batch, cam);
+            }
 
-        game.batch.end();
+            game.batch.end();
+        }
 
         if (currentEvent == EventState.MOVING || currentEvent == EventState.DEATH)
             hud.render(dt);

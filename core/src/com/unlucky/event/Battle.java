@@ -23,7 +23,7 @@ public class Battle {
     public Enemy opponent;
 
     private GameScreen gameScreen;
-    private TileMap tileMap;
+    public TileMap tileMap;
     private Player player;
 
     // dmg reduction from heals, -1 if no reduction

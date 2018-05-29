@@ -131,6 +131,7 @@ public class TransitionScreen {
         }
         // transition into death screen
         else if (prev == EventState.BATTLING && next == EventState.DEATH) {
+            battle.end();
             gameScreen.die();
         }
     }
