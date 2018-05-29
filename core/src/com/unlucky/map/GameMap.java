@@ -9,7 +9,6 @@ import com.unlucky.effects.Particle;
 import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
-import com.unlucky.main.Unlucky;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -33,8 +32,6 @@ public class GameMap {
 
     // weather of map
     public WeatherType weather;
-    // lightmap of map
-    public TextureRegion lightmap;
     public boolean isDark;
 
     public TileMap tileMap;
@@ -47,27 +44,30 @@ public class GameMap {
     private float lightningTime = 0;
     private float durationTime = 0;
 
-    public GameMap(int worldIndex, int levelIndex, GameScreen gameScreen, Player player, ResourceManager rm) {
-        this.worldIndex = worldIndex;
-        this.levelIndex = levelIndex;
+    public GameMap(GameScreen gameScreen, Player player, ResourceManager rm) {
         this.gameScreen = gameScreen;
         this.player = player;
         this.rm = rm;
 
-        //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
-
-        tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
-        player.setMap(tileMap);
-
-        lightmap = rm.darkness;
-        setDarkness(true);
-
-        // @TODO set weather and lightmap based on map composite id
-        // set lightmapIndex from tilemap file
-
         particleFactory = new ParticleFactory(gameScreen.getCamera(), rm);
+    }
 
-        setWeather(WeatherType.RAIN);
+    /**
+     * Loads a tile map from file based on world and level key
+     * @param worldIndex
+     * @param levelIndex
+     */
+    public void init(int worldIndex, int levelIndex) {
+        this.worldIndex = worldIndex;
+        this.levelIndex = levelIndex;
+
+        //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
+        tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
+        // set lighting
+        setDarkness(tileMap.dark);
+        // set weather
+        setWeather(tileMap.weather);
+        player.setMap(tileMap);
     }
 
     /**
@@ -75,18 +75,26 @@ public class GameMap {
      *
      * @param weather
      */
-    public void setWeather(WeatherType weather) {
-        this.weather = weather;
-        if (weather == WeatherType.RAIN) {
+    public void setWeather(int weather) {
+        if (weather == 0) this.weather = WeatherType.NORMAL;
+        else if (weather == 1) {
+            this.weather = WeatherType.RAIN;
             particleFactory.set(Particle.RAINDROP, 40, Util.RAIN_VELOCITY);
         }
-        else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
+        else if (weather == 2) {
+            this.weather = WeatherType.HEAVY_RAIN;
             particleFactory.set(Particle.RAINDROP, 75, Util.HEAVY_RAIN_VELOCITY);
         }
-        else if (weather == WeatherType.SNOW) {
+        else if (weather == 3) {
+            this.weather = WeatherType.THUNDERSTORM;
+            particleFactory.set(Particle.RAINDROP, 75, Util.HEAVY_RAIN_VELOCITY);
+        }
+        else if (weather == 4) {
+            this.weather = WeatherType.SNOW;
             particleFactory.set(Particle.SNOWFLAKE, 100, Util.SNOW_VELOCITY);
         }
-        else if (weather == WeatherType.BLIZZARD) {
+        else if (weather == 5) {
+            this.weather = WeatherType.BLIZZARD;
             particleFactory.set(Particle.SNOWFLAKE, 300, Util.BLIZZARD_VELOCITY);
         }
     }
@@ -125,6 +133,10 @@ public class GameMap {
             gameScreen.setCurrentEvent(EventState.TRANSITION);
             gameScreen.transition.start(EventState.MOVING, EventState.MOVING);
         }
+        // player won the map and switch to victory screen
+        if (player.completedMap) {
+
+        }
 
         // update particles
         if (weather != WeatherType.NORMAL) particleFactory.update(dt);
@@ -149,7 +161,7 @@ public class GameMap {
                 durationTime += dt;
                 if (durationTime < 0.2f) {
                     if (isDark) renderLight = false;
-                    batch.draw(rm.lightning, cam.position.x - cam.viewportWidth / 2, cam.position.y - cam.viewportHeight / 2);
+                    batch.draw(rm.lightning, player.getPosition().x - 182, player.getPosition().y - 102);
                 }
                 if (durationTime > 0.2f) {
                     lightningTime = 0;
@@ -160,11 +172,9 @@ public class GameMap {
         }
 
         if (renderLight) {
-            if (lightmap != null) {
-                batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
-                batch.draw(lightmap, player.getPosition().x - 182, player.getPosition().y - 102);
-                batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-            }
+            batch.setBlendFunction(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            batch.draw(rm.darkness, player.getPosition().x - 182, player.getPosition().y - 102);
+            batch.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
 
