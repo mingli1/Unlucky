@@ -1,13 +1,12 @@
 package com.unlucky.ui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -15,14 +14,10 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.effects.Moving;
-import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
-import com.unlucky.inventory.Inventory;
-import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
-import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -98,26 +93,6 @@ public class Hud extends UI {
                 showTime = 0;
                 levelDescriptor.setVisible(false);
             }
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.I)) {
-            toggle(false);
-            gameScreen.setCurrentEvent(EventState.INVENTORY);
-            gameScreen.getGame().inventoryUI.init(false, null);
-            gameScreen.getGame().inventoryUI.start();
-        }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            Gdx.input.getTextInput(new Input.TextInputListener() {
-                @Override
-                public void input(String text) {
-                    handleCommands(text);
-                }
-
-                @Override
-                public void canceled() {
-
-                }
-            }, "Debug Command Prompt", "", "");
         }
     }
 
@@ -268,8 +243,19 @@ public class Hud extends UI {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.menuScreen.transitionIn = 0;
-                gameScreen.setFadeScreen(game.menuScreen);
-                deathGroup.setVisible(false);
+                if (gameScreen.isClickable()) {
+                    gameScreen.setClickable(false);
+                    gameScreen.setBatchFade(false);
+                    // fade out animation
+                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                        Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                gameScreen.setClickable(true);
+                                game.setScreen(game.menuScreen);
+                            }
+                        })));
+                }
             }
         });
 
@@ -319,221 +305,12 @@ public class Hud extends UI {
             }
         });
 
-        // @TODO CHANGE
-        // command prompt for now
         optionButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                Gdx.input.getTextInput(new Input.TextInputListener() {
-                    @Override
-                    public void input(String text) {
-                        handleCommands(text);
-                    }
 
-                    @Override
-                    public void canceled() {
-
-                    }
-                }, "Debug Command Prompt", "", "");
             }
         });
-    }
-
-    /**
-     * Simple commands:
-     * /heal
-     * /tp [tileX] [tileY] (teleports the player to a tile coordinate)
-     * /sethp [hp] (sets hp of player)
-     * /setmaxhp [maxHp] (sets max hp of player)
-     * /randitem (adds a random item from the item pool weighted by rarity)
-     * /item [rarity] (adds a random item of a given rarity 0-3)
-     * /setweather [weatherId] (0 - none, 1 - rain, 2 - heavy rain, 3 - thunderstorm, 4 - snow, 5 - blizzard)
-     * /addentity [entityID] [tileX] [tileY] (adds an entity to a a tile position)
-     * /removeentity [tileX] [tileY] (removes the entity at a tile position)
-     * /togglenight [boolean] (toggles night time on or off with true or false)
-     * /fillinv (fills the inventory with random items)
-     * /clearinv (clear the inventory)
-     * /fillrarity [rarity] (fills the inventory with items of a given rarity)
-     * /levelup [exp] (levels up the player based on a given amount of exp)
-     * /battle [entityId] (automatically starts a battle with the given entity id)
-     * /setacc [acc] (sets the accuracy of the player)
-     * /setsmovecd [cd] (sets the cooldown of special moves based on num of turns; 0 for no cd to test the icons)
-     * (0 - distract, 1 - focus, 2 - intimidate, 3 - reflect, 4 - stun, 5 - invert, 6 - sacrifice, 7 - shield)
-     * /addsmove [smoveId] (adds a smove to the player's current smoveset)
-     * /setsmoveset [smoveId0] [smoveId1] ... [smoveId4] (clears and sets the player's smoveset and adds up to 5 smoves)
-     * /clearsmoveset (clears the player's smoveset)
-     *
-     * @param command
-     */
-    private void handleCommands(String command) {
-        String cmd = command.trim();
-        if (eq(cmd, "/heal")) player.setHp(player.getMaxHp());
-        if (cmd.startsWith("/tp")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 3) {
-                int x = Integer.parseInt(input[1]);
-                int y = Integer.parseInt(input[2]);
-                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
-                    player.setPosition(tileMap.toMapCoords(new Vector2(x, y)));
-                }
-            }
-        }
-        if (cmd.startsWith("/sethp")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                player.setHp(Integer.parseInt(input[1]));
-            }
-        }
-        if (cmd.startsWith("/setmaxhp")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                player.setMaxHp(Integer.parseInt(input[1]));
-            }
-        }
-        if (eq(cmd, "/randitem")) {
-            Item i = rm.getRandomItem();
-            i.adjust(player.getLevel());
-            player.inventory.addItem(i);
-        }
-        if (cmd.startsWith("/item")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int rarity = Integer.parseInt(input[1]);
-                if (rarity >= 0 && rarity < 4) {
-                    Item i = rm.getItem(rarity);
-                    i.adjust(player.getLevel());
-                    player.inventory.addItem(i);
-                }
-            }
-        }
-        if (cmd.startsWith("/setweather")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int wid = Integer.parseInt(input[1]);
-                if (wid >= 0 && wid < 6) {
-                    if (wid == 0) gameScreen.gameMap.setWeather(WeatherType.NORMAL);
-                    if (wid == 1) gameScreen.gameMap.setWeather(WeatherType.RAIN);
-                    if (wid == 2) gameScreen.gameMap.setWeather(WeatherType.HEAVY_RAIN);
-                    if (wid == 3) gameScreen.gameMap.setWeather(WeatherType.THUNDERSTORM);
-                    if (wid == 4) gameScreen.gameMap.setWeather(WeatherType.SNOW);
-                    if (wid == 5) gameScreen.gameMap.setWeather(WeatherType.BLIZZARD);
-                }
-            }
-        }
-        if (cmd.startsWith("/addentity")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 4) {
-                int entityId = Integer.parseInt(input[1]);
-                int x = Integer.parseInt(input[2]);
-                int y = Integer.parseInt(input[3]);
-                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
-                    tileMap.addEntity(Util.getEntity(entityId, tileMap.toMapCoords(x, y), tileMap, rm), x, y);
-                }
-            }
-        }
-        if (cmd.startsWith("/removeentity")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 3) {
-                int x = Integer.parseInt(input[1]);
-                int y = Integer.parseInt(input[2]);
-                if (x >= 0 && x < tileMap.mapWidth && y >= 0 && y < tileMap.mapHeight) {
-                    tileMap.removeEntity(x, y);
-                }
-            }
-        }
-        if (cmd.startsWith("/togglenight")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                boolean toggle = Boolean.parseBoolean(input[1]);
-                gameScreen.gameMap.setDarkness(toggle);
-            }
-        }
-        if (eq(cmd, "/fillinv")) {
-            player.inventory.clear();
-            for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-                Item item = rm.getRandomItem();
-                item.adjust(player.getLevel());
-                player.inventory.addItem(item);
-            }
-        }
-        if (eq(cmd, "/clearinv")) {
-            player.inventory.clear();
-        }
-        if (cmd.startsWith("/fillrarity")) {
-            player.inventory.clear();
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int rarity = Integer.parseInt(input[1]);
-                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
-                    Item item = rm.getItem(rarity);
-                    item.adjust(player.getLevel());
-                    player.inventory.addItem(item);
-                }
-            }
-        }
-        if (cmd.startsWith("/levelup")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int exp = Integer.parseInt(input[1]);
-                player.levelUp(exp);
-                player.applyLevelUp();
-            }
-        }
-        if (cmd.startsWith("/battle")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int entityId = Integer.parseInt(input[1]);
-                if (entityId >= 2 && entityId <= 4) {
-                    player.setBattling((Enemy) Util.getEntity(entityId, new Vector2(), tileMap, rm));
-                }
-            }
-        }
-        if (cmd.startsWith("/setacc")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int acc = Integer.parseInt(input[1]);
-                if (acc >= 0) player.setAccuracy(acc);
-            }
-        }
-        if (cmd.startsWith("/setsmovecd")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int cd = Integer.parseInt(input[1]);
-                if (cd >= 0) player.smoveCd = cd;
-            }
-        }
-        if (cmd.startsWith("/addsmove")) {
-            String[] input = cmd.split(" ");
-            if (input.length == 2) {
-                int smoveId = Integer.parseInt(input[1]);
-                if (smoveId >= 0 && smoveId < Util.NUM_SPECIAL_MOVES) {
-                    player.smoveset.addSMove(smoveId);
-                }
-            }
-        }
-        if (cmd.startsWith("/setsmoveset")) {
-            String[] input = cmd.split(" ");
-            if (input.length > 1 && input.length <= 6) {
-                player.smoveset.clear();
-                for (int i = 1; i < input.length; i++) {
-                    int smoveId = Integer.parseInt(input[i]);
-                    if (smoveId >= 0 && smoveId < Util.NUM_SPECIAL_MOVES) {
-                        player.smoveset.addSMove(smoveId);
-                    }
-                }
-            }
-        }
-        if (eq(cmd, "/clearsmoveset")) {
-            player.smoveset.clear();
-        }
-        if (eq(cmd, "/exit")) {
-            gameScreen.getGame().menuScreen.transitionIn = 0;
-            gameScreen.getGame().setScreen(gameScreen.getGame().menuScreen);
-        }
-    }
-
-    private boolean eq(String s1, String s2) {
-        return s1.equalsIgnoreCase(s2);
     }
 
 }
