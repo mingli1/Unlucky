@@ -44,6 +44,7 @@ public abstract class UI implements Disposable {
     }
 
     public UI(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
+        this.game = gameScreen.getGame();
         this.gameScreen = gameScreen;
         this.tileMap = tileMap;
         this.player = player;
