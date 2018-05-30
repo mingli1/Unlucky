@@ -227,16 +227,19 @@ public class Hud extends UI {
 
         youDied = new Label("YOU DIED!", new Label.LabelStyle(rm.pixel10, Color.RED));
         youDied.setSize(100, 10);
-        youDied.setPosition(0, 50);
+        youDied.setPosition(50, 75);
         youDied.setAlignment(Align.center);
         youDied.setTouchable(Touchable.disabled);
         deathGroup.addActor(youDied);
 
         loss = new Label("", new Label.LabelStyle(rm.pixel10, Color.WHITE));
-        loss.setSize(100, 50);
-        loss.setPosition(0, 0);
+        loss.setFontScale(0.5f);
+        loss.setWrap(true);
+        loss.setSize(95, 40);
+        loss.setAlignment(Align.topLeft);
+        loss.setPosition(Unlucky.V_WIDTH / 2 - 50 + 5, Unlucky.V_HEIGHT / 2 - 30);
         loss.setTouchable(Touchable.disabled);
-        deathGroup.addActor(youDied);
+        deathGroup.addActor(loss);
 
         // click to continue
         deathGroup.addListener(new ClickListener() {
@@ -260,6 +263,14 @@ public class Hud extends UI {
         });
 
         stage.addActor(deathGroup);
+    }
+
+    /**
+     * Death text displays the items the player would've got, the gold and exp lost
+     * @param text
+     */
+    public void setDeathText(String text) {
+        loss.setText(text);
     }
 
     /**
