@@ -618,6 +618,9 @@ public class Player extends Entity {
             levelUp(remainder);
             applyLevelUp();
         }
+        else if (this.exp + exp < 0) {
+            this.exp = 0;
+        }
         else {
             this.exp += exp;
         }
@@ -677,7 +680,10 @@ public class Player extends Entity {
 
     public int getMaxExpIncrease() { return maxExpIncrease; }
 
-    public void addGold(int g) { this.gold += g; }
+    public void addGold(int g) {
+        if (this.gold + g < 0) this.gold = 0;
+        else this.gold += g;
+    }
 
     public void setGold(int gold) {
         this.gold = gold;
