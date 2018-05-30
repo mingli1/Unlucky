@@ -7,10 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.effects.Moving;
@@ -54,13 +51,30 @@ public class Hud extends UI {
     private Label youDied;
     private Label loss;
 
-    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
+    private Dialog settingsDialog;
+
+    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
         createOptionButtons();
         createLevelDescriptor();
         createDeathPrompt();
+
+        settingsDialog = new Dialog("Paused", rm.skin) {
+            {
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
+                TextButton s = new TextButton("Settings", rm.skin);
+                s.getLabel().setFontScale(0.75f);
+                button(s, "settings");
+                getButtonTable().row();
+                TextButton e = new TextButton("Exit", rm.skin);
+                e.getLabel().setFontScale(0.75f);
+                button(e, "exit");
+            }
+        };
+        settingsDialog.getTitleLabel().setAlignment(Align.center);
     }
 
     public void update(float dt) {
@@ -316,10 +330,11 @@ public class Hud extends UI {
             }
         });
 
+        // settings
         optionButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-
+                settingsDialog.show(stage);
             }
         });
     }
