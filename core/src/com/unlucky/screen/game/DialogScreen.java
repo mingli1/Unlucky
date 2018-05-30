@@ -197,6 +197,12 @@ public class DialogScreen extends UI {
                 TextureRegion none = null;
                 gameScreen.gameMap.tileMap.setTile(gameScreen.gameMap.tileMap.toTileCoords(player.getPosition()),
                         new Tile(-1, none, gameScreen.gameMap.tileMap.toTileCoords(player.getPosition())));
+                // player died from tile
+                if (player.getHp() <= 0) {
+                    gameScreen.gameMap.setDeath();
+                    gameScreen.die();
+                    return;
+                }
                 gameScreen.setCurrentEvent(EventState.MOVING);
                 gameScreen.hud.toggle(true);
                 break;

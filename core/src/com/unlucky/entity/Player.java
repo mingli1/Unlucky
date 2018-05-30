@@ -11,6 +11,7 @@ import com.unlucky.entity.enemy.Enemy;
 import com.unlucky.inventory.Equipment;
 import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
+import com.unlucky.map.GameMap;
 import com.unlucky.map.Tile;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Statistics;
@@ -41,6 +42,8 @@ public class Player extends Entity {
     private boolean tileInteraction = false;
     // teleportation tiles
     private boolean teleporting = false;
+    // end tiles
+    public boolean completedMap = false;
 
     // Statistics
     public Statistics stats = new Statistics();
@@ -283,6 +286,8 @@ public class Player extends Entity {
                     pauseAnim = true;
                 }
             }
+            // map completed
+            else if (currentTile.isEnd()) completedMap = true;
             else pauseAnim = false;
         }
     }
@@ -542,23 +547,26 @@ public class Player extends Entity {
      * @param mapLevel
      * @return
      */
-    public String[] getExclamDialog(int mapLevel) {
+    public String[] getExclamDialog(int mapLevel, GameMap gameMap) {
         String[] ret = null;
 
         if (Util.isSuccess(Util.TILE_INTERATION)) {
             if (Util.isSuccess(60)) {
                 int dmg = 0;
                 for (int i = 0; i < mapLevel; i++) {
-                    dmg += MathUtils.random(1, 4);
+                    //dmg += MathUtils.random(1, 4);
+                    dmg += MathUtils.random(111, 444);
                 }
                 hp -= dmg;
+                // player dies from tile
                 if (hp <= 0) {
-                    ret = new String[]{"" +
+                    ret = new String[] { "" +
                         "The random tile cursed you!",
                         "It damaged you for " + dmg + " damage!",
-                        "Shit you actually died omegalul."
+                        "Oh no, you took fatal damage and died!",
+                        "You will lose " + Util.DEATH_PENALTY +
+                            "% of your exp and gold and all the items obtained in this level as a penalty."
                     };
-                    hp = maxHp;
                 }
                 else {
                     ret = new String[] {
@@ -597,11 +605,6 @@ public class Player extends Entity {
         Array<Tile> candidates = tileMap.getTeleportationTiles(currentTile);
         Tile choose = candidates.get(MathUtils.random(candidates.size - 1));
         position.set(tileMap.toMapCoords(choose.tilePosition));
-    }
-
-    public void setBattling(Enemy opponent) {
-        this.opponent = opponent;
-        battling = true;
     }
 
     /**
