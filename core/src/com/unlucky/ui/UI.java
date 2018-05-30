@@ -70,4 +70,6 @@ public abstract class UI implements Disposable {
         shapeRenderer.dispose();
     }
 
+    public void setTileMap(TileMap tileMap) { this.tileMap = tileMap; }
+
 }

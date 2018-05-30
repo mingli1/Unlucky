@@ -317,27 +317,10 @@ public class BattleEventHandler extends BattleUI {
             else {
                 startDialog(new String[] {
                         "Oh no, you took fatal damage and died!",
-                        "You will lose 1% of your exp and gold and all the items obtained in this level as a penalty."
+                        "You will lose " + Util.DEATH_PENALTY +
+                            "% of your exp and gold and all the items obtained in this level as a penalty."
                 }, BattleEvent.PLAYER_TURN, BattleEvent.PLAYER_DEAD);
-
-                // gold and exp lost
-                int goldLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getGold());
-                int expLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getExp());
-                String itemText = "";
-                if (gameScreen.gameMap.itemsObtained.size != 0) {
-                    for (int i = 0; i < gameScreen.gameMap.itemsObtained.size; i++) {
-                        Item item = gameScreen.gameMap.itemsObtained.get(i);
-                        if (i == gameScreen.gameMap.itemsObtained.size - 1) {
-                            itemText += item.name + ".\n\nClick to continue...";
-                            break;
-                        }
-                        itemText += item.name + ", ";
-                    }
-                }
-                String deathText = "You lost " + goldLost + " G and " + expLost + " EXP.\n" +
-                    (gameScreen.gameMap.itemsObtained.size == 0 ?
-                        "\nClick to continue..." : "You also lost the following items: " + itemText);
-                gameScreen.hud.setDeathText(deathText);
+                gameScreen.gameMap.setDeath();
 
                 player.stats.numDeaths++;
                 return true;
@@ -384,7 +367,6 @@ public class BattleEventHandler extends BattleUI {
                 // add things obtained to map record
                 gameScreen.gameMap.expObtained += expGained;
                 gameScreen.gameMap.goldObtained += goldGained;
-                if (itemGained != null) gameScreen.gameMap.itemsObtained.add(itemGained);
 
                 player.addGold(goldGained);
                 player.stats.cumulativeGold += goldGained;

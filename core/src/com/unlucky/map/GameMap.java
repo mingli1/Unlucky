@@ -3,12 +3,14 @@ package com.unlucky.map;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.unlucky.effects.Particle;
 import com.unlucky.effects.ParticleFactory;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Inventory;
+import com.unlucky.inventory.Item;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -37,18 +39,23 @@ public class GameMap {
     public TileMap tileMap;
     public Player player;
     private ParticleFactory particleFactory;
-    private GameScreen gameScreen;
+    public GameScreen gameScreen;
     private ResourceManager rm;
 
     public boolean renderLight;
     private float lightningTime = 0;
     private float durationTime = 0;
 
+    // what the player obtained during the map
+    public Array<Item> itemsObtained;
+    public int expObtained;
+    public int goldObtained;
+
     public GameMap(GameScreen gameScreen, Player player, ResourceManager rm) {
         this.gameScreen = gameScreen;
         this.player = player;
         this.rm = rm;
-
+        itemsObtained = new Array<Item>();
         particleFactory = new ParticleFactory(gameScreen.getCamera(), rm);
     }
 
@@ -60,6 +67,11 @@ public class GameMap {
     public void init(int worldIndex, int levelIndex) {
         this.worldIndex = worldIndex;
         this.levelIndex = levelIndex;
+
+        // reset
+        itemsObtained.clear();
+        expObtained = 0;
+        goldObtained = 0;
 
         //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
         tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
@@ -107,6 +119,42 @@ public class GameMap {
         renderLight = isDark;
     }
 
+    /**
+     * Calculates death penalties and sets the death message corresponding to the losses
+     * Applies the penalties to the player
+     */
+    public void setDeath() {
+        // gold and exp lost
+        int goldLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getGold());
+        int expLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getExp());
+        String itemText = "";
+        if (itemsObtained.size != 0) {
+            for (int i = 0; i < itemsObtained.size; i++) {
+                Item item = itemsObtained.get(i);
+                if (i == itemsObtained.size - 1) {
+                    itemText += item.name + ".\n\nClick to continue...";
+                    break;
+                }
+                itemText += item.name + ", ";
+            }
+        }
+        String deathText = "You lost " + goldLost + " G and " + expLost + " EXP.\n" +
+            (itemsObtained.size == 0 ? "\nClick to continue..." : "You also lost the following items: " + itemText);
+        gameScreen.hud.setDeathText(deathText);
+
+        // apply death penalties
+        player.addGold(-goldLost);
+        player.addExp(-expLost);
+        if (itemsObtained.size != 0) {
+            for (Item item : itemsObtained) {
+                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                    if (player.inventory.getItem(i) == item)
+                        player.inventory.removeItem(i);
+                }
+            }
+        }
+    }
+
     public void update(float dt) {
         player.update(dt);
         tileMap.update(dt);
@@ -125,7 +173,7 @@ public class GameMap {
             if (player.getCurrentTile().isQuestionMark())
                 gameScreen.dialog.startDialog(player.getQuestionMarkDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
             else if (player.getCurrentTile().isExclamationMark())
-                gameScreen.dialog.startDialog(player.getExclamDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
+                gameScreen.dialog.startDialog(player.getExclamDialog(player.getLevel(), this), EventState.MOVING, EventState.MOVING);
         }
         // player stepped on teleport tile
         if (player.isTeleporting()) {
