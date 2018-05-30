@@ -479,7 +479,7 @@ public class Player extends Entity {
      *
      * @return
      */
-    public String[] getQuestionMarkDialog(int mapLevel) {
+    public String[] getQuestionMarkDialog(int mapLevel, GameMap gameMap) {
         String[] ret = null;
 
         if (Util.isSuccess(Util.TILE_INTERATION)) {
@@ -492,6 +492,7 @@ public class Player extends Entity {
                     gold += MathUtils.random(7, 13);
                 }
                 this.gold += gold;
+                gameMap.goldObtained += gold;
                 ret = new String[] {
                     "The random tile gave something!",
                     "You obtained " + gold + " gold!"
@@ -528,6 +529,7 @@ public class Player extends Entity {
                     };
                     item.adjust(mapLevel);
                     inventory.addItem(item);
+                    gameMap.itemsObtained.add(item);
                 }
             }
         }
