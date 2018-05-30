@@ -440,6 +440,7 @@ public class Player extends Entity {
     public void finishBattling() {
         battling = false;
         opponent = null;
+        moving = -1;
     }
 
     public void finishTileInteraction() {
@@ -555,7 +556,7 @@ public class Player extends Entity {
                 int dmg = 0;
                 for (int i = 0; i < mapLevel; i++) {
                     //dmg += MathUtils.random(1, 4);
-                    dmg += MathUtils.random(111, 444);
+                    dmg += 1235;
                 }
                 hp -= dmg;
                 // player dies from tile
