@@ -13,6 +13,8 @@ import com.badlogic.gdx.utils.Align;
 import com.unlucky.effects.Moving;
 import com.unlucky.entity.Player;
 import com.unlucky.event.EventState;
+import com.unlucky.inventory.Inventory;
+import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
 import com.unlucky.resource.ResourceManager;
@@ -51,9 +53,10 @@ public class Hud extends UI {
     private Label youDied;
     private Label loss;
 
+    public Image shade;
     private Dialog settingsDialog;
 
-    public Hud(GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
+    public Hud(final GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
@@ -61,20 +64,44 @@ public class Hud extends UI {
         createLevelDescriptor();
         createDeathPrompt();
 
-        settingsDialog = new Dialog("Paused", rm.skin) {
+        shade = new Image(rm.shade);
+        shade.setVisible(false);
+        shade.setTouchable(Touchable.disabled);
+        stage.addActor(shade);
+
+        settingsDialog = new Dialog("Paused", rm.dialogSkin) {
             {
-                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().width(50);
                 getButtonTable().defaults().height(15);
-                TextButton s = new TextButton("Settings", rm.skin);
+                TextButton b = new TextButton("Back", rm.dialogSkin);
+                b.getLabel().setFontScale(0.75f);
+                button(b, "back");
+                getButtonTable().padTop(-7).row();
+                TextButton s = new TextButton("Settings", rm.dialogSkin);
                 s.getLabel().setFontScale(0.75f);
                 button(s, "settings");
                 getButtonTable().row();
-                TextButton e = new TextButton("Exit", rm.skin);
-                e.getLabel().setFontScale(0.75f);
-                button(e, "exit");
+                TextButton q = new TextButton("Quit", rm.dialogSkin);
+                q.getLabel().setFontScale(0.75f);
+                button(q, "quit");
+            }
+            @Override
+            protected void result(Object object) {
+                if (object.equals("back")) {
+                    shade.setVisible(false);
+                    toggle(true);
+                    gameScreen.setCurrentEvent(EventState.MOVING);
+                }
+                else if (object.equals("settings")) {
+                    // TODO: link to settings screen
+                }
+                else if (object.equals("quit")) {
+                    quit();
+                }
             }
         };
         settingsDialog.getTitleLabel().setAlignment(Align.center);
+        settingsDialog.getBackground().setMinWidth(70);
     }
 
     public void update(float dt) {
@@ -259,20 +286,7 @@ public class Hud extends UI {
         deathGroup.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.menuScreen.transitionIn = 0;
-                if (gameScreen.isClickable()) {
-                    gameScreen.setClickable(false);
-                    gameScreen.setBatchFade(false);
-                    // fade out animation
-                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                        Actions.run(new Runnable() {
-                            @Override
-                            public void run() {
-                                gameScreen.setClickable(true);
-                                game.setScreen(game.menuScreen);
-                            }
-                        })));
-                }
+                backToMenu();
             }
         });
 
@@ -285,6 +299,65 @@ public class Hud extends UI {
      */
     public void setDeathText(String text) {
         loss.setText(text);
+    }
+
+    private void backToMenu() {
+        game.menuScreen.transitionIn = 0;
+        if (gameScreen.isClickable()) {
+            gameScreen.setClickable(false);
+            gameScreen.setBatchFade(false);
+            // fade out animation
+            stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                Actions.run(new Runnable() {
+                    @Override
+                    public void run() {
+                        gameScreen.setClickable(true);
+                        game.setScreen(game.menuScreen);
+                    }
+                })));
+        }
+    }
+
+    private void loseObtained() {
+        player.addGold(-gameScreen.gameMap.goldObtained);
+        player.addExp(-gameScreen.gameMap.expObtained);
+        if (gameScreen.gameMap.itemsObtained.size != 0) {
+            for (Item item : gameScreen.gameMap.itemsObtained) {
+                for (int i = 0; i < Inventory.NUM_SLOTS; i++) {
+                    if (player.inventory.getItem(i) == item)
+                        player.inventory.removeItem(i);
+                }
+            }
+        }
+    }
+
+    /**
+     * Player quits the level and returns to the main menu screen
+     * The player will lose all gold, exp, and items obtained during the level
+     */
+    private void quit() {
+        final String text = "If you quit, you will lose all \ngold, exp, and items obtained in this level.\n" +
+            "Are you sure you want to quit?";
+        new Dialog("Warning", rm.dialogSkin) {
+            {
+                Label l = new Label(text, rm.dialogSkin);
+                l.setFontScale(0.5f);
+                l.setAlignment(Align.center);
+                text(l);
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
+                button("Yes", "yes");
+                button("No", "no");
+            }
+            @Override
+            protected void result(Object object) {
+                if (object.equals("yes")) {
+                    loseObtained();
+                    backToMenu();
+                }
+                else settingsDialog.show(stage);
+            }
+        }.show(stage).getTitleLabel().setAlignment(Align.center);
     }
 
     /**
@@ -334,6 +407,9 @@ public class Hud extends UI {
         optionButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                shade.setVisible(true);
+                toggle(false);
+                gameScreen.setCurrentEvent(EventState.PAUSE);
                 settingsDialog.show(stage);
             }
         });
