@@ -209,6 +209,7 @@ public class Item {
             // exp potions
             else if (exp > 0) ret = desc + "\nGIVES " + exp + "% EXP";
             else ret = desc + "\nHEALS FOR " + hp + " HP";
+            ret += "\n\ndouble tap to consume";
         } else if (type == 1) {
             ret = desc;
         } else if (type >= 2 && type <= 9) {
@@ -219,6 +220,7 @@ public class Item {
             if (bonusEnchantChance != 0) ret += "\n+" + bonusEnchantChance + "% BONUS ENCHANT CHANCE";
         } else if (type == 10) {
             ret = desc + "\n+" + eChance + "% ENCHANT CHANCE";
+            ret += "\n\ndrag onto an equip to use";
         }
         // remove newline from end of string if there is one
         ret = ret.trim();
