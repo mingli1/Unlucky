@@ -118,10 +118,8 @@ public class LevelSelectScreen extends SelectScreen {
      * Enters the map with the corresponding world, level key
      */
     private void enterGame() {
-        // FOR TESTING RIGHT NOW
-        if (worldIndex == 0 && currentLevelIndex == 0) {
-            setFadeScreen(game.gameScreen);
-        }
+        game.gameScreen.init(worldIndex, currentLevelIndex);
+        setFadeScreen(game.gameScreen);
     }
 
     protected void createScrollPane() {
@@ -200,7 +198,7 @@ public class LevelSelectScreen extends SelectScreen {
             selectionContainer.add(g).padBottom(4).size(90, 20).row();
         }
         selectionContainer.pack();
-        selectionContainer.setTransform(true);
+        selectionContainer.setTransform(false);
         selectionContainer.setOrigin(selectionContainer.getWidth() / 2,
             selectionContainer.getHeight() / 2);
 
