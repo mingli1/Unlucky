@@ -3,7 +3,9 @@ package com.unlucky.map;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.utils.Array;
 import com.unlucky.effects.Particle;
 import com.unlucky.effects.ParticleFactory;
@@ -51,6 +53,12 @@ public class GameMap {
     public int expObtained;
     public int goldObtained;
 
+    // time
+    public float time = 0;
+
+    // to fix screen switching bug
+    private boolean switchable = true;
+
     public GameMap(GameScreen gameScreen, Player player, ResourceManager rm) {
         this.gameScreen = gameScreen;
         this.player = player;
@@ -72,6 +80,9 @@ public class GameMap {
         itemsObtained.clear();
         expObtained = 0;
         goldObtained = 0;
+        time = 0;
+        player.completedMap = false;
+        player.getAm().setAnimation(0);
 
         //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
         tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
@@ -171,7 +182,7 @@ public class GameMap {
             gameScreen.setCurrentEvent(EventState.TILE_EVENT);
             // @TODO: change level scaling to map level
             if (player.getCurrentTile().isQuestionMark())
-                gameScreen.dialog.startDialog(player.getQuestionMarkDialog(player.getLevel()), EventState.MOVING, EventState.MOVING);
+                gameScreen.dialog.startDialog(player.getQuestionMarkDialog(player.getLevel(), this), EventState.MOVING, EventState.MOVING);
             else if (player.getCurrentTile().isExclamationMark())
                 gameScreen.dialog.startDialog(player.getExclamDialog(player.getLevel(), this), EventState.MOVING, EventState.MOVING);
         }
@@ -183,12 +194,26 @@ public class GameMap {
         }
         // player won the map and switch to victory screen
         if (player.completedMap) {
-
+            player.getAm().stopAnimation();
+            gameScreen.setCurrentEvent(EventState.PAUSE);
+            player.moving = -1;
+            gameScreen.getGame().victoryScreen.init(this);
+            if (switchable) {
+                switchable = false;
+                gameScreen.hud.getStage().addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                    Actions.run(new Runnable() {
+                        @Override
+                        public void run() {
+                            switchable = true;
+                            gameScreen.setClickable(true);
+                            gameScreen.getGame().setScreen(gameScreen.getGame().victoryScreen);
+                        }
+                    })));
+            }
         }
 
         // update particles
         if (weather != WeatherType.NORMAL) particleFactory.update(dt);
-
         if (weather == WeatherType.THUNDERSTORM) lightningTime += dt;
     }
 

@@ -138,11 +138,8 @@ public abstract class SelectScreen extends AbstractScreen {
             if (batchFade) stage.getBatch().setColor(Color.WHITE);
 
             // render world background corresponding to the selected world
-            // possibly expensive scaling call?
             // @TODO: change 0 to index
             stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0);
-
-            //game.profile("WorldSelectScreen");
 
             stage.getBatch().end();
         }

@@ -31,7 +31,7 @@ public class Player extends Entity {
      * 2 - right
      * 3 - left
      */
-    private int moving = -1;
+    public int moving = -1;
     // entity is in a continuous movement
     private float speed;
     // the Entity's current tile coordinates

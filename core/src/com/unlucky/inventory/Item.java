@@ -68,7 +68,7 @@ public class Item {
     // percentage bonus enchant chance from scrolls
     public int bonusEnchantChance = 0;
     // for enchant scrolls representing the bonus enchant percentage that the scroll gives
-    public int eChance;
+    public int eChance = 0;
 
     // rendering
     public Image actor;
@@ -216,7 +216,7 @@ public class Item {
             if (mhp != 0) ret += "+" + mhp + " HP\n";
             if (dmg != 0) ret += "+" + dmg + " DAMAGE\n";
             if (acc != 0) ret += "+" + acc + "% ACCURACY";
-            if (bonusEnchantChance != 0) ret += "+" + bonusEnchantChance + "% BONUS ENCHANT CHANCE";
+            if (bonusEnchantChance != 0) ret += "\n+" + bonusEnchantChance + "% BONUS ENCHANT CHANCE";
         } else if (type == 10) {
             ret = desc + "\n+" + eChance + "% ENCHANT CHANCE";
         }

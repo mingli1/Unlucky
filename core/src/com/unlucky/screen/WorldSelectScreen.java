@@ -148,7 +148,7 @@ public class WorldSelectScreen extends SelectScreen {
             selectionContainer.add(g).padBottom(4).size(90, 30).row();
         }
         selectionContainer.pack();
-        selectionContainer.setTransform(true);
+        selectionContainer.setTransform(false);
         selectionContainer.setOrigin(selectionContainer.getWidth() / 2,
             selectionContainer.getHeight() / 2);
 

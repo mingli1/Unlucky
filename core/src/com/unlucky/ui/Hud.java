@@ -31,8 +31,8 @@ public class Hud extends UI {
     // directional pad: index i 0 - down, 1 - up, 2 - right, 3 - left
     private ImageButton[] dirPad;
     // if dir pad is held down
-    private boolean touchDown = false;
-    private int dirIndex = -1;
+    public boolean touchDown = false;
+    public int dirIndex = -1;
     // for changing the player's facing direction with a short tap like in pokemon
     private float dirTime = 0;
 

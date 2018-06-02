@@ -525,7 +525,6 @@ public class Battle {
                 return rm.getRandomItem();
             }
         }
-        //return rm.getRandomItemFromPool(opponent.getRandom());
         return null;
     }
 
@@ -547,6 +546,7 @@ public class Battle {
                 // scale item stats to match enemy level
                 item.adjust(opponent.getLevel());
                 player.inventory.addItem(item);
+                gameScreen.gameMap.itemsObtained.add(item);
             }
         }
 

@@ -13,5 +13,6 @@ public enum EventState {
     LEVEL_UP,
     INVENTORY,
     TILE_EVENT,
-    DEATH
+    DEATH,
+    PAUSE
 }

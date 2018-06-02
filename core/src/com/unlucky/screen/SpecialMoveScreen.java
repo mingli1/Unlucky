@@ -63,6 +63,9 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
     private Table selectionContainer;
     private ScrollPane scrollPane;
 
+    // dialogs
+    private Dialog warningFullDialog;
+
     public SpecialMoveScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
         this.player = game.player;
@@ -150,6 +153,22 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         stage.addActor(smoveset);
 
         createSmoveButtons();
+
+        warningFullDialog = new Dialog("Warning", rm.dialogSkin) {
+            {
+                Label l = new Label("Your special moveset is full.", rm.dialogSkin);
+                l.setFontScale(0.5f);
+                l.setAlignment(Align.center);
+                text(l);
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
+                button("OK", "ok");
+            }
+
+            @Override
+            protected void result(Object object) {}
+        };
+        warningFullDialog.getTitleLabel().setAlignment(Align.center);
     }
 
     @Override
@@ -240,20 +259,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
      */
     private void add() {
         if (player.smoveset.isFull()) {
-            new Dialog("Warning", rm.dialogSkin) {
-                {
-                    Label l = new Label("Your special moveset is full.", rm.dialogSkin);
-                    l.setFontScale(0.5f);
-                    l.setAlignment(Align.center);
-                    text(l);
-                    getButtonTable().defaults().width(40);
-                    getButtonTable().defaults().height(15);
-                    button("OK", "ok");
-                }
-
-                @Override
-                protected void result(Object object) {}
-            }.show(stage).getTitleLabel().setAlignment(Align.center);
+            warningFullDialog.show(stage);
             return;
         }
         if (smoveToAdd != null) {

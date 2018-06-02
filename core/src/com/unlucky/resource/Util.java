@@ -92,6 +92,7 @@ public class Util {
     public static final int ENCHANT = 50;
     public static final int DESTROY_ITEM_IF_FAIL = 50;
     public static final int TILE_INTERATION = 70;
+    public static final int DEATH_PENALTY = 1;
 
     // Battle special moves percentages
     public static final int P_DISTRACT = 50;

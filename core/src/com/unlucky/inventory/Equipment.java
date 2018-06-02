@@ -50,6 +50,7 @@ public class Equipment {
     public boolean addEquip(Item equip) {
         if (equips[equip.type - 2] == null) {
             equips[equip.type - 2] = equip;
+            equip.equipped = true;
             return true;
         }
         return false;

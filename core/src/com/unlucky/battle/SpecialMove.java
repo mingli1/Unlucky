@@ -1,5 +1,7 @@
 package com.unlucky.battle;
 
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+
 /**
  * A special move enhances the player, empowers regular moves, or debuffs the enemy
  *
@@ -14,11 +16,15 @@ public class SpecialMove {
     // level that the player has to be to unlock this smove
     public int levelUnlocked;
 
-    public SpecialMove(int id, String name, String desc, int levelUnlocked) {
+    // the icon of this smove
+    public Image icon;
+
+    public SpecialMove(int id, String name, String desc, int levelUnlocked, Image icon) {
         this.id = id;
         this.name = name;
         this.desc = desc;
         this.levelUnlocked = levelUnlocked;
+        this.icon = icon;
     }
 
 }

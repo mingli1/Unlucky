@@ -14,6 +14,7 @@ import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.save.Save;
 import com.unlucky.screen.*;
+import com.unlucky.screen.game.VictoryScreen;
 import com.unlucky.ui.inventory.InventoryUI;
 
 /**
@@ -25,7 +26,7 @@ import com.unlucky.ui.inventory.InventoryUI;
  */
 public class Unlucky extends Game {
 
-    public static final String VERSION = "0.8.4";
+    public static final String VERSION = "0.8.6";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
     // Links
@@ -59,6 +60,7 @@ public class Unlucky extends Game {
     public SpecialMoveScreen smoveScreen;
     public StatisticsScreen statisticsScreen;
     public InventoryUI inventoryUI;
+    public VictoryScreen victoryScreen;
 
     // main bg
     public Background[] menuBackground;
@@ -88,6 +90,7 @@ public class Unlucky extends Game {
         shopScreen = new ShopScreen(this, rm);
         smoveScreen = new SpecialMoveScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
+        victoryScreen = new VictoryScreen(this, rm);
 
         // create parallax background
         menuBackground = new Background[3];
@@ -135,6 +138,7 @@ public class Unlucky extends Game {
         shopScreen.dispose();
         statisticsScreen.dispose();
         inventoryUI.dispose();
+        victoryScreen.dispose();
 
         GLProfiler.disable();
 	}

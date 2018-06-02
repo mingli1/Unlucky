@@ -61,6 +61,9 @@ public class ShopScreen extends MenuExtensionScreen {
     private Table[] tabContents;
     private ShopItem currentShopItem = null;
 
+    // dialogs
+    private Dialog warningFullDialog;
+
     public ShopScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
         this.player = game.player;
@@ -72,6 +75,22 @@ public class ShopScreen extends MenuExtensionScreen {
 
         handleStageEvents();
         handleInvButtonEvents();
+
+        warningFullDialog = new Dialog("Warning", rm.dialogSkin) {
+            {
+                Label l = new Label("Your inventory is full.", rm.dialogSkin);
+                l.setFontScale(0.5f);
+                l.setAlignment(Align.center);
+                text(l);
+                getButtonTable().defaults().width(40);
+                getButtonTable().defaults().height(15);
+                button("OK", "ok");
+            }
+
+            @Override
+            protected void result(Object object) {}
+        };
+        warningFullDialog.getTitleLabel().setAlignment(Align.center);
     }
 
     public void show() {
@@ -374,20 +393,7 @@ public class ShopScreen extends MenuExtensionScreen {
 
     private void buy() {
         if (player.inventory.isFull()) {
-            new Dialog("Warning", rm.dialogSkin) {
-                {
-                    Label l = new Label("Your inventory is full.", rm.dialogSkin);
-                    l.setFontScale(0.5f);
-                    l.setAlignment(Align.center);
-                    text(l);
-                    getButtonTable().defaults().width(40);
-                    getButtonTable().defaults().height(15);
-                    button("OK", "ok");
-                }
-
-                @Override
-                protected void result(Object object) {}
-            }.show(stage).getTitleLabel().setAlignment(Align.center);
+            warningFullDialog.show(stage);
             return;
         }
         if (currentShopItem != null) {

@@ -44,6 +44,10 @@ public class GameScreen extends AbstractScreen {
     // battle background
     private Background[] bg;
 
+    // key
+    private int worldIndex;
+    private int levelIndex;
+
     public GameScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
@@ -68,13 +72,24 @@ public class GameScreen extends AbstractScreen {
         multiplexer.addProcessor(dialog.getStage());
     }
 
+    public void init(int worldIndex, int levelIndex) {
+        this.worldIndex = worldIndex;
+        this.levelIndex = levelIndex;
+    }
+
     @Override
     public void show() {
         Gdx.input.setInputProcessor(multiplexer);
         batchFade = renderBatch = true;
 
+        // fade in animation
+        hud.getStage().addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
+
         // init tile map
-        gameMap.init(0, 0);
+        setCurrentEvent(EventState.MOVING);
+        hud.deathGroup.setVisible(false);
+        gameMap.init(worldIndex, levelIndex);
+        gameMap.player.moving = -1;
         battle.tileMap = gameMap.tileMap;
         hud.setTileMap(gameMap.tileMap);
         battleUIHandler.setTileMap(gameMap.tileMap);
@@ -82,6 +97,8 @@ public class GameScreen extends AbstractScreen {
         dialog.setTileMap(gameMap.tileMap);
 
         hud.toggle(true);
+        hud.touchDown = false;
+        hud.shade.setVisible(false);
         hud.startLevelDescriptor();
     }
 
@@ -135,6 +152,9 @@ public class GameScreen extends AbstractScreen {
     }
 
     public void update(float dt) {
+        // update game time
+        gameMap.time += dt;
+
         if (currentEvent == EventState.MOVING) {
             updateCamera();
 
@@ -177,7 +197,8 @@ public class GameScreen extends AbstractScreen {
             }
 
             if (currentEvent == EventState.MOVING || currentEvent == EventState.INVENTORY ||
-                transition.renderMap || currentEvent == EventState.TILE_EVENT || currentEvent == EventState.DEATH) {
+                transition.renderMap || currentEvent == EventState.TILE_EVENT ||
+                currentEvent == EventState.DEATH || currentEvent == EventState.PAUSE) {
                 // map camera
                 game.batch.setProjectionMatrix(cam.combined);
                 // render map and player
@@ -187,7 +208,7 @@ public class GameScreen extends AbstractScreen {
             game.batch.end();
         }
 
-        if (currentEvent == EventState.MOVING || currentEvent == EventState.DEATH)
+        if (currentEvent == EventState.MOVING || currentEvent == EventState.DEATH || currentEvent == EventState.PAUSE)
             hud.render(dt);
         if (currentEvent == EventState.BATTLING || transition.renderBattle)
             battleUIHandler.render(dt);
@@ -196,6 +217,8 @@ public class GameScreen extends AbstractScreen {
         if (currentEvent == EventState.TILE_EVENT) dialog.render(dt);
         if (currentEvent == EventState.INVENTORY) game.inventoryUI.render(dt);
         if (currentEvent == EventState.TRANSITION) transition.render(dt);
+
+        //game.profile("GameScreen");
     }
 
     public void dispose() {

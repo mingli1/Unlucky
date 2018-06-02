@@ -132,4 +132,28 @@ public abstract class AbstractScreen implements Screen {
         }
     }
 
+    public boolean isRenderBatch() {
+        return renderBatch;
+    }
+
+    public void setRenderBatch(boolean renderBatch) {
+        this.renderBatch = renderBatch;
+    }
+
+    public boolean isBatchFade() {
+        return batchFade;
+    }
+
+    public void setBatchFade(boolean batchFade) {
+        this.batchFade = batchFade;
+    }
+
+    public boolean isClickable() {
+        return clickable;
+    }
+
+    public void setClickable(boolean clickable) {
+        this.clickable = clickable;
+    }
+
 }
