@@ -147,8 +147,10 @@ public class GameScreen extends AbstractScreen {
 
         if (gameMap.player.getPosition().x < 6 * 16) cam.position.x = 104;
         if (gameMap.player.getPosition().y < 4 * 16 - 8) cam.position.y = 60.5f;
-        if (gameMap.player.getPosition().x > gameMap.tileMap.mapWidth * 16 - 7 * 16) cam.position.x = 280;
-        if (gameMap.player.getPosition().y > gameMap.tileMap.mapHeight * 16 - 4 * 16) cam.position.y = 324;
+        if (gameMap.player.getPosition().x > gameMap.tileMap.mapWidth * 16 - 7 * 16)
+            cam.position.x = (gameMap.tileMap.mapWidth * 16 - 7 * 16) + 8;
+        if (gameMap.player.getPosition().y > gameMap.tileMap.mapHeight * 16 - 4 * 16)
+            cam.position.y = (gameMap.tileMap.mapHeight * 16 - 4 * 16) + 4;
     }
 
     public void update(float dt) {
