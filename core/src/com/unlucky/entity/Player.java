@@ -183,7 +183,7 @@ public class Player extends Entity {
         switch (dir) {
             case 0: // down
                 Tile d = tileMap.getTile(currentTileX, currentTileY - 1);
-                if (d.isBlocked() || currentTileY - 1 <= 0) {
+                if (d.isBlocked() || currentTileY - 1 < 0) {
                     return currentTileY;
                 }
                 return currentTileY - 1;
@@ -195,13 +195,13 @@ public class Player extends Entity {
                 return currentTileY + 1;
             case 2: // right
                 Tile r = tileMap.getTile(currentTileX + 1, currentTileY);
-                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth - 1) {
+                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth) {
                     return currentTileX;
                 }
                 return currentTileX + 1;
             case 3: // left
                 Tile l = tileMap.getTile(currentTileX - 1, currentTileY);
-                if (l.isBlocked() || currentTileX - 1 <= 0) {
+                if (l.isBlocked() || currentTileX - 1 < 0) {
                     return currentTileX;
                 }
                 return currentTileX - 1;
