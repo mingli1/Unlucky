@@ -84,8 +84,7 @@ public class GameMap {
         player.completedMap = false;
         player.getAm().setAnimation(0);
 
-        //tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
-        tileMap = new TileMap(16, "maps/test_map.txt", new Vector2(0, 0), rm);
+        tileMap = new TileMap(16, "maps/w" + worldIndex + "_l" + levelIndex + ".txt", new Vector2(0, 0), rm);
         // set lighting
         setDarkness(tileMap.dark);
         // set weather
