@@ -315,20 +315,21 @@ public class ResourceManager {
             int type = i.getInt("type");
             if (type == 0) {
                 rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                    rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell")));
+                    rarity, i.getInt("imgIndex"), i.getInt("minLevel"), i.getInt("maxLevel"),
+                    i.getInt("hp"), i.getInt("exp"), i.getInt("sell")));
             }
             else if (type == 1) {
                 rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                    rarity, i.getInt("imgIndex"), i.getInt("sell")));
+                    rarity, i.getInt("imgIndex"), i.getInt("minLevel"), i.getInt("maxLevel"), i.getInt("sell")));
             }
             else if (type >= 2 && type <= 9) {
                 rare.add(new Item(this, i.getString("name"), i.getString("desc"),
-                    i.getInt("type"), rarity, i.getInt("imgIndex"), i.getInt("mhp"),
-                    i.getInt("dmg"), i.getInt("acc"), i.getInt("sell")));
+                    i.getInt("type"), rarity, i.getInt("imgIndex"), i.getInt("minLevel"), i.getInt("maxLevel"),
+                    i.getInt("mhp"), i.getInt("dmg"), i.getInt("acc"), i.getInt("sell")));
             }
             else if (type == 10) {
                 rare.add(new Item(this, i.getString("name"), i.getString("desc"), rarity, i.getInt("imgIndex"),
-                    i.getInt("eChance"), i.getInt("sell")));
+                    i.getInt("minLevel"), i.getInt("maxLevel"), i.getInt("eChance"), i.getInt("sell")));
             }
         }
         items.add(rare);
@@ -364,13 +365,14 @@ public class ResourceManager {
     public Item getItem(int rarity) {
         Item item = items.get(rarity).get(MathUtils.random(items.get(rarity).size - 1));
         if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.hp, item.exp, item.sell);
         else if (item.type == 1)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.sell);
         else if (item.type >= 2 && item.type <= 9)
-            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
+            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.minLevel, item.maxLevel,
+                item.mhp, item.dmg, item.acc, item.sell);
         else
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.eChance, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.eChance, item.sell);
     }
 
     /**
@@ -383,13 +385,14 @@ public class ResourceManager {
     public Item getItem(int rarity, int index) {
         Item item = items.get(rarity).get(index);
         if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.hp, item.exp, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.hp, item.exp, item.sell);
         else if (item.type == 1)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.sell);
         else if (item.type >= 2 && item.type <= 9)
-            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.mhp, item.dmg, item.acc, item.sell);
+            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.minLevel, item.maxLevel,
+                item.mhp, item.dmg, item.acc, item.sell);
         else
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.eChance, item.sell);
+            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.eChance, item.sell);
     }
 
     /**

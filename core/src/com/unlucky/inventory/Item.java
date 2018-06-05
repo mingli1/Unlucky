@@ -47,6 +47,10 @@ public class Item {
      */
     public int rarity;
 
+    // the range of enemy levels that can drop this item
+    public int minLevel;
+    public int maxLevel;
+
     // item stats
     // if hp is negative then its absolute value is the percentage hp that the item gives
     // used to separate percentage hp from regular hp potions
@@ -85,11 +89,13 @@ public class Item {
      * @param hp
      * @param sell
      */
-    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int hp, int exp, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int minLevel, int maxLevel, int hp, int exp, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
         this.imgIndex = imgIndex;
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
         this.hp = hp;
         this.exp = exp;
         this.sell = sell;
@@ -108,11 +114,13 @@ public class Item {
      * @param imgIndex
      * @param sell
      */
-    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int minLevel, int maxLevel, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
         this.imgIndex = imgIndex;
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
         this.sell = sell;
         type = 1;
         actor = new Image(rm.items20x20[1][imgIndex]);
@@ -133,12 +141,15 @@ public class Item {
      * @param acc
      * @param sell
      */
-    public Item(ResourceManager rm, String name, String desc, int type, int rarity, int imgIndex, int mhp, int dmg, int acc, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int type, int rarity, int imgIndex, int minLevel, int maxLevel,
+                int mhp, int dmg, int acc, int sell) {
         this.name = name;
         this.desc = desc;
         this.type = type;
         this.rarity = rarity;
         this.imgIndex = imgIndex;
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
         this.mhp = mhp;
         this.dmg = dmg;
         this.acc = acc;
@@ -158,11 +169,13 @@ public class Item {
      * @param eChance
      * @param sell
      */
-    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int eChance, int sell) {
+    public Item(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int minLevel, int maxLevel, int eChance, int sell) {
         this.name = name;
         this.desc = desc;
         this.rarity = rarity;
         this.imgIndex = imgIndex;
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
         this.eChance = eChance;
         this.sell = sell;
         type = 10;
