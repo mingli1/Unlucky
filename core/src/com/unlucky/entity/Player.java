@@ -418,10 +418,10 @@ public class Player extends Entity {
      */
     public void equip(Item item) {
         maxHp += item.mhp;
+        hp = maxHp;
         minDamage += item.dmg;
         maxDamage += item.dmg;
         accuracy += item.acc;
-        if (hp > maxHp) hp = maxHp;
     }
 
     /**
@@ -431,10 +431,10 @@ public class Player extends Entity {
      */
     public void unequip(Item item) {
         maxHp -= item.mhp;
+        hp = maxHp;
         minDamage -= item.dmg;
         maxDamage -= item.dmg;
         accuracy -= item.acc;
-        if (hp > maxHp) hp = maxHp;
     }
 
     public Enemy getOpponent() {
