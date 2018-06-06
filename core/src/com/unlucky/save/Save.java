@@ -92,28 +92,28 @@ public class Save {
                 if (ia instanceof ShopItemAccessor) {
                     ShopItem sitem = null;
                     if (ia.type == 0)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.hp, ia.exp, ia.sell, ((ShopItemAccessor) ia).price);
                     else if (ia.type >= 2 && ia.type <= 9)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell, ((ShopItemAccessor) ia).price);
                     else if (ia.type == 10)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.eChance, ia.sell, ((ShopItemAccessor) ia).price);
                     player.inventory.addItemAtIndex(sitem, ia.index);
                 }
                 else {
                     Item item = null;
                     if (ia.type == 0)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0,
                             ia.hp, ia.exp, ia.sell);
                     else if (ia.type == 1)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, ia.sell);
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0, ia.sell);
                     else if (ia.type >= 2 && ia.type <= 9)
-                        item = new Item(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell);
                     else if (ia.type == 10)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0,
                             ia.eChance, ia.sell);
                     player.inventory.addItemAtIndex(item, ia.index);
                 }
@@ -132,28 +132,28 @@ public class Save {
                 if (ia instanceof ShopItemAccessor) {
                     ShopItem sitem = null;
                     if (ia.type == 0)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.hp, ia.exp, ia.sell, ((ShopItemAccessor) ia).price);
                     else if (ia.type >= 2 && ia.type <= 9)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell, ((ShopItemAccessor) ia).price);
                     else if (ia.type == 10)
-                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.eChance, ia.sell, ((ShopItemAccessor) ia).price);
                     player.equips.addEquip(sitem);
                 }
                 else {
                     Item item = null;
                     if (ia.type == 0)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0,
                             ia.hp, ia.exp, ia.sell);
                     else if (ia.type == 1)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, ia.sell);
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0, ia.sell);
                     else if (ia.type >= 2 && ia.type <= 9)
-                        item = new Item(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell);
                     else if (ia.type == 10)
-                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex,
+                        item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0,
                             ia.eChance, ia.sell);
                     player.equips.addEquip(item);
                 }

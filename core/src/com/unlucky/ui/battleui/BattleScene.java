@@ -331,9 +331,6 @@ public class BattleScene extends BattleUI {
         // render player and enemy status icons
         player.statusEffects.render(gameScreen.getBatch());
         battle.opponent.statusEffects.render(gameScreen.getBatch());
-
-        //System.out.println(battle.opponent.statusEffects.effects.size);
-
         gameScreen.getBatch().end();
 
         playerHpBar.render(dt);

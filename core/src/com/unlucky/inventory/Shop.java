@@ -27,24 +27,25 @@ public class Shop {
                 // potions
                 if (item.type == 0) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.rarity,
-                        item.imgIndex, item.hp, item.exp, item.sell, item.price);
+                        item.imgIndex, item.minLevel, item.hp, item.exp, item.sell, item.price);
                     items.get(0).add(shopItem);
                 }
                 // equip
                 else if (item.type >= 2 && item.type <= 6) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, item.price);
+                        item.minLevel, item.mhp, item.dmg, item.acc, item.sell, item.price);
                     items.get(1).add(shopItem);
                 }
                 // accs
                 else if (item.type >= 7 && item.type <= 9) {
                     shopItem = new ShopItem(rm, item.name, item.desc, item.type, item.rarity, item.imgIndex,
-                        item.mhp, item.dmg, item.acc, item.sell, item.price);
+                        item.minLevel, item.mhp, item.dmg, item.acc, item.sell, item.price);
                     items.get(2).add(shopItem);
                 }
                 // enchant scrolls
                 else if (item.type == 10) {
-                    shopItem = new ShopItem(rm, item.name, item.desc, item.rarity, item.imgIndex, item.eChance, item.sell, item.price);
+                    shopItem = new ShopItem(rm, item.name, item.desc, item.rarity, item.imgIndex, item.minLevel,
+                        item.eChance, item.sell, item.price);
                     items.get(0).add(shopItem);
                 }
             }
