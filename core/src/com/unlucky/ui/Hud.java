@@ -153,7 +153,7 @@ public class Hud extends UI {
         String levelName = rm.worlds.get(worldIndex).levels[levelIndex].name;
 
         levelDescriptor.getTitleLabel().setText("WORLD " + (worldIndex + 1) + " : " + "LEVEL " + (levelIndex + 1));
-        levelDesc.setText(worldName + "\n" + levelName);
+        levelDesc.setText(worldName + "\n" + levelName + "\n" + "AVG LVL: " + rm.worlds.get(worldIndex).levels[levelIndex].avgLevel);
         levelDescriptor.setVisible(true);
         levelDescriptor.pack();
 
