@@ -57,8 +57,6 @@ public class Battle {
      * Sets and scales the enemy's stats according to its level
      * If the enemy is an elite, then its stats are between 1.3-1.6x higher
      * If boss, then stats are 2.4-3.0x higher
-     * @TODO Scale enemies based on level of map
-     * @TODO exp and gold calculations
      *
      * @param opponent
      */
@@ -66,7 +64,7 @@ public class Battle {
         this.opponent = opponent;
 
         // set opponent's level to be -1 to 1 added to the avg map level
-        opponent.setLevel(Util.getDeviatedRandomValue(gameScreen.gameMap.avgLevel, 3));
+        opponent.setLevel(Util.getDeviatedRandomValue(gameScreen.gameMap.avgLevel, 1));
         if (opponent.getLevel() <= 0) opponent.setLevel(1);
 
         opponent.setStats();
@@ -460,7 +458,7 @@ public class Battle {
         else if (opponent.isBoss())
             return (3 * Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2) + 1));
         else
-            return Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2) + 1);
+            return Util.calculateExpEarned(opponent.getLevel(), MathUtils.random(2));
     }
 
     /**
