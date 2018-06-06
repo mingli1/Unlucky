@@ -52,7 +52,7 @@ public class ShopItem extends Item {
         super(rm, name, desc, type, rarity, imgIndex, level, level, mhp, dmg, acc, sell);
         this.price = price;
         actor = new Image(rm.shopitems[type - 1][imgIndex]);
-        int enchantSeed = MathUtils.random(50, 100);
+        int enchantSeed = MathUtils.random(75, 225);
         for (int i = 0; i < level; i++) enchantCost += enchantSeed;
     }
 
