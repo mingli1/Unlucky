@@ -194,6 +194,7 @@ public class GameMap {
         // player won the map and switch to victory screen
         if (player.completedMap) {
             player.getAm().stopAnimation();
+            player.setHp(player.getMaxHp());
             gameScreen.setCurrentEvent(EventState.PAUSE);
             player.moving = -1;
             gameScreen.getGame().victoryScreen.init(this);
