@@ -56,19 +56,19 @@ public class Util {
     public static final SpecialMove S_DISTRACT = new SpecialMove(DISTRACT,
             "Distract", "Next enemy attack\n-" + Util.P_DISTRACT + "% ACC", 1, null);
     public static final SpecialMove S_FOCUS = new SpecialMove(FOCUS,
-            "Focus", "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance", 5, null);
+            "Focus", "Next attack 100% ACC\nand +" + Util.P_FOCUS_CRIT + "% crit chance", 7, null);
     public static final SpecialMove S_INTIMIDATE = new SpecialMove(INTIMIDATE,
-            "Intimidate", "Next attack is\namplified by " + Util.P_INTIMIDATE + "%", 1, null);
+            "Intimidate", "Next attack is\namplified by " + Util.P_INTIMIDATE + "%", 3, null);
     public static final SpecialMove S_REFLECT = new SpecialMove(REFLECT,
-            "Reflect", "Next enemy attack\nis reflected back", 18, null);
+            "Reflect", "Next enemy attack\nis reflected back", 23, null);
     public static final SpecialMove S_STUN = new SpecialMove(STUN,
-            "Stun", Util.P_STUN + "% chance to\nstun enemy", 3, null);
+            "Stun", Util.P_STUN + "% chance to\nstun enemy", 5, null);
     public static final SpecialMove S_INVERT = new SpecialMove(INVERT,
-            "Invert", "Heal moves damage\nDamage moves heal", 10, null);
+            "Invert", "Heal moves damage\nDamage moves heal", 13, null);
     public static final SpecialMove S_SACRIFICE = new SpecialMove(SACRIFICE,
-            "Sacrifice", "Sacrifice all but 1 hp\nfor increased dmg", 7, null);
+            "Sacrifice", "Sacrifice all but 1 hp\nfor increased dmg", 10, null);
     public static final SpecialMove S_SHIELD = new SpecialMove(SHIELD,
-            "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% max hp", 14, null);
+            "Shield", "Summon a shield that\nabsorbs " + Util.P_SHIELD + "% max hp", 17, null);
 
     public static final SpecialMove[] SMOVES_ORDER_BY_LVL = {
         S_DISTRACT, S_INTIMIDATE, S_STUN, S_FOCUS, S_SACRIFICE, S_INVERT, S_SHIELD, S_REFLECT
@@ -106,7 +106,7 @@ public class Util {
     public static final float MIN_ELITE_MULTIPLIER = 1.3f;
     public static final float MAX_ELITE_MULTIPLIER = 1.6f;
 
-    public static final int NORMAL_ITEM_DROP = 40;
+    public static final int NORMAL_ITEM_DROP = 30;
     public static final int ELITE_ITEM_DROP = 60;
     public static final int BOSS_ITEM_DROP = 80;
     public static final int COMMON_ITEM_RNG_INDEX = 60;
@@ -124,33 +124,27 @@ public class Util {
     public static final float LEGENDARY_ENCHANT_MAX = 1.6f;
 
     // Level up scaling
-    public static final int PLAYER_INIT_MAX_HP = 65;
-    public static final int PLAYER_INIT_MIN_DMG = 12;
-    public static final int PLAYER_INIT_MAX_DMG = 18;
-    public static final int PLAYER_MIN_HP_INCREASE = 7;
-    public static final int PLAYER_MAX_HP_INCREASE = 15;
-    public static final int PLAYER_MIN_DMG_INCREASE = 3;
-    public static final int PLAYER_MAX_DMG_INCREASE = 5;
+    public static final int PLAYER_INIT_MAX_HP = 75;
+    public static final int PLAYER_INIT_MIN_DMG = 10;
+    public static final int PLAYER_INIT_MAX_DMG = 16;
+    public static final int PLAYER_MIN_HP_INCREASE = 6;
+    public static final int PLAYER_MAX_HP_INCREASE = 14;
+    public static final int PLAYER_MIN_DMG_INCREASE = 1;
+    public static final int PLAYER_MAX_DMG_INCREASE = 3;
 
-    public static final int ENEMY_INIT_MIN_MHP = 24;
-    public static final int ENEMY_INIT_MAX_MHP = 36;
-    public static final int ENEMY_INIT_MIN_MINDMG = 3;
-    public static final int ENEMY_INIT_MAX_MINDMG = 5;
-    public static final int ENEMY_INIT_MIN_MAXDMG = 6;
-    public static final int ENEMY_INIT_MAX_MAXDMG = 9;
+    public static final int ENEMY_INIT_MIN_MINDMG = 2;
+    public static final int ENEMY_INIT_MAX_MINDMG = 4;
+    public static final int ENEMY_INIT_MIN_MAXDMG = 5;
+    public static final int ENEMY_INIT_MAX_MAXDMG = 7;
 
-    //public static final int ENEMY_MIN_HP_INCREASE = 5;
-    public static final int ENEMY_MIN_HP_INCREASE = 10;
-    //public static final int ENEMY_MAX_HP_INCREASE = 13;
-    public static final int ENEMY_MAX_HP_INCREASE = 26;
-    public static final int ENEMY_MIN_DMG_INCREASE = 2;
-    public static final int ENEMY_MAX_DMG_INCREASE = 5;
+    public static final int ENEMY_MIN_DMG_INCREASE = 1;
+    public static final int ENEMY_MAX_DMG_INCREASE = 4;
 
     // Experience
 
     /**
      * Current max exp formula is:
-     * EXP = 2 * level * (1.25 ^ (level / 3)) + offset
+     * EXP = 2 * level * (1.35 ^ (level / 3)) + offset
      * Slow exponential growth
      *
      * @param level the level of the player
@@ -158,19 +152,19 @@ public class Util {
      * @return max experience at a given level
      */
     public static int calculateMaxExp(int level, int offset) {
-        return (int) (2 * level * (Math.pow(1.35, level / 3)) + offset);
+        return (int) (2 * level * (Math.pow(1.35, level / 3)) + offset) + 4;
     }
 
     /**
      * The exp given to the player after it's defeated
-     * EXP = (enemyLevel ^ 1.1) + offset
+     * EXP = (enemyLevel ^ 0.8) + offset
      *
      * @param enemyLevel
      * @param offset
      * @return
      */
     public static int calculateExpEarned(int enemyLevel, int offset) {
-        return (int) (Math.pow(enemyLevel, 1.1)) + offset;
+        return (int) (Math.pow(enemyLevel, 0.8)) + offset;
     }
 
     // Random helper functions
