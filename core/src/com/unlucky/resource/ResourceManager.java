@@ -341,18 +341,53 @@ public class ResourceManager {
             int type = i.getInt("type");
             if (type == 0) {
                 rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"),
-                    rarity, i.getInt("imgIndex"), i.getInt("hp"), i.getInt("exp"), i.getInt("sell"), i.getInt("price")));
+                    rarity, i.getInt("imgIndex"), i.getInt("level"), i.getInt("hp"),
+                    i.getInt("exp"), i.getInt("sell"), i.getInt("price")));
             }
             else if (type >= 2 && type <= 9) {
                 rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"), type, rarity, i.getInt("imgIndex"),
-                    i.getInt("mhp"), i.getInt("dmg"), i.getInt("acc"), i.getInt("sell"), i.getInt("price")));
+                    i.getInt("level"), i.getInt("mhp"), i.getInt("dmg"), i.getInt("acc"), i.getInt("sell"), i.getInt("price")));
             }
             else if (type == 10) {
                 rare.add(new ShopItem(this, i.getString("name"), i.getString("desc"), rarity, i.getInt("imgIndex"),
-                    i.getInt("eChance"), i.getInt("sell"), i.getInt("price")));
+                    i.getInt("level"), i.getInt("eChance"), i.getInt("sell"), i.getInt("price")));
             }
         }
         shopItems.add(rare);
+    }
+
+    private Item getItemCopy(Item item) {
+        if (item.type == 0)
+            return new Item(this, item.name, item.desc, item.rarity, item.imgIndex, item.minLevel, item.maxLevel, item.hp, item.exp, item.sell);
+        else if (item.type == 1)
+            return new Item(this, item.name, item.desc, item.rarity, item.imgIndex, item.minLevel, item.maxLevel, item.sell);
+        else if (item.type >= 2 && item.type <= 9)
+            return new Item(this, item.name, item.desc, item.type, item.rarity, item.imgIndex, item.minLevel, item.maxLevel,
+                item.mhp, item.dmg, item.acc, item.sell);
+        else
+            return new Item(this, item.name, item.desc, item.rarity, item.imgIndex, item.minLevel, item.maxLevel, item.eChance, item.sell);
+    }
+
+    /**
+     * Returns a copy of a random item with weighted rarity from the pool
+     * Will only return items that have ranges that contain a given level
+     * Used for monster drops based on enemy level
+     * Returns null if no item that fits the level
+     *
+     * @param rarity
+     * @param level
+     * @return
+     */
+    public Item getItem(int rarity, int level) {
+        // items sorted by level range and rarity
+        Array<Item> levelItems = new Array<Item>();
+        for (Item item : items.get(rarity)) {
+            if (level >= item.minLevel && level <= item.maxLevel) {
+                levelItems.add(item);
+            }
+        }
+        Item selected = levelItems.get(MathUtils.random(levelItems.size - 1));
+        return getItemCopy(selected);
     }
 
     /**
@@ -364,15 +399,7 @@ public class ResourceManager {
      */
     public Item getItem(int rarity) {
         Item item = items.get(rarity).get(MathUtils.random(items.get(rarity).size - 1));
-        if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.hp, item.exp, item.sell);
-        else if (item.type == 1)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.sell);
-        else if (item.type >= 2 && item.type <= 9)
-            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.minLevel, item.maxLevel,
-                item.mhp, item.dmg, item.acc, item.sell);
-        else
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.eChance, item.sell);
+        return getItemCopy(item);
     }
 
     /**
@@ -382,17 +409,28 @@ public class ResourceManager {
      * @param index
      * @return
      */
-    public Item getItem(int rarity, int index) {
+    public Item getItemFromKey(int rarity, int index) {
         Item item = items.get(rarity).get(index);
-        if (item.type == 0)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.hp, item.exp, item.sell);
-        else if (item.type == 1)
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.sell);
-        else if (item.type >= 2 && item.type <= 9)
-            return new Item(this, item.name, item.desc, item.type, rarity, item.imgIndex, item.minLevel, item.maxLevel,
-                item.mhp, item.dmg, item.acc, item.sell);
-        else
-            return new Item(this, item.name, item.desc, rarity, item.imgIndex, item.minLevel, item.maxLevel, item.eChance, item.sell);
+        return getItemCopy(item);
+    }
+
+    /**
+     * Returns a random Item from the pool with weighted rarity and in a given level range
+     * @param level
+     * @return
+     */
+    public Item getRandomItem(int level) {
+        int k = MathUtils.random(99);
+        // common
+        if (k < Util.COMMON_ITEM_RNG_INDEX) return getItem(0, level);
+            // rare
+        else if (k < Util.RARE_ITEM_RNG_INDEX) return getItem(1, level);
+            // epic
+        else if (k < Util.EPIC_ITEM_RNG_INDEX) return getItem(2, level);
+            // legendary
+        else if (k < Util.LEGENDARY_ITEM_RNG_INDEX) return getItem(3, level);
+
+        return null;
     }
 
     /**

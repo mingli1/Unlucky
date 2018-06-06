@@ -435,11 +435,11 @@ public class ShopScreen extends MenuExtensionScreen {
                         ShopItem item;
                         if (currentShopItem.type == 0) {
                             item = new ShopItem(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.rarity,
-                                currentShopItem.imgIndex, currentShopItem.hp, currentShopItem.exp, currentShopItem.sell, currentShopItem.price);
+                                currentShopItem.imgIndex, currentShopItem.minLevel, currentShopItem.hp, currentShopItem.exp, currentShopItem.sell, currentShopItem.price);
                         }
                         else {
                             item = new ShopItem(rm, currentShopItem.name, currentShopItem.desc, currentShopItem.type, currentShopItem.rarity,
-                                currentShopItem.imgIndex, currentShopItem.mhp, currentShopItem.dmg, currentShopItem.acc, currentShopItem.sell, currentShopItem.price);
+                                currentShopItem.imgIndex, currentShopItem.minLevel, currentShopItem.mhp, currentShopItem.dmg, currentShopItem.acc, currentShopItem.sell, currentShopItem.price);
                         }
                         player.inventory.addItem(item);
                         stage.addActor(item.actor);

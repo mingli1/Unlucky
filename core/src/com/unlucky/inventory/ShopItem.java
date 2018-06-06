@@ -1,5 +1,6 @@
 package com.unlucky.inventory;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.unlucky.resource.ResourceManager;
 
@@ -26,8 +27,8 @@ public class ShopItem extends Item {
      * @param sell
      */
     public ShopItem(ResourceManager rm, String name, String desc, int rarity,
-                    int imgIndex, int hp, int exp, int sell, int price) {
-        super(rm, name, desc, rarity, imgIndex, hp, exp, sell);
+                    int imgIndex, int level, int hp, int exp, int sell, int price) {
+        super(rm, name, desc, rarity, imgIndex, level, level, hp, exp, sell);
         this.price = price;
         actor = new Image(rm.shopitems[0][imgIndex]);
     }
@@ -47,10 +48,12 @@ public class ShopItem extends Item {
      * @param sell
      */
     public ShopItem(ResourceManager rm, String name, String desc, int type, int rarity,
-                    int imgIndex, int mhp, int dmg, int acc, int sell, int price) {
-        super(rm, name, desc, type, rarity, imgIndex, mhp, dmg, acc, sell);
+                    int imgIndex, int level, int mhp, int dmg, int acc, int sell, int price) {
+        super(rm, name, desc, type, rarity, imgIndex, level, level, mhp, dmg, acc, sell);
         this.price = price;
         actor = new Image(rm.shopitems[type - 1][imgIndex]);
+        int enchantSeed = MathUtils.random(50, 100);
+        for (int i = 0; i < level; i++) enchantCost += enchantSeed;
     }
 
     /**
@@ -65,9 +68,9 @@ public class ShopItem extends Item {
      * @param sell
      * @param price
      */
-    public ShopItem(ResourceManager rm, String name, String desc, int rarity, int imgIndex,
+    public ShopItem(ResourceManager rm, String name, String desc, int rarity, int imgIndex, int level,
                     int eChance, int sell, int price) {
-        super(rm, name, desc, rarity, imgIndex, eChance, sell);
+        super(rm, name, desc, rarity, imgIndex, level, level, eChance, sell);
         this.price = price;
         actor = new Image(rm.shopitems[9][imgIndex]);
     }
