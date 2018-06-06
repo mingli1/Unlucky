@@ -154,8 +154,10 @@ public class GameScreen extends AbstractScreen {
     }
 
     public void update(float dt) {
-        // update game time
-        gameMap.time += dt;
+        if (currentEvent != EventState.PAUSE) {
+            // update game time
+            gameMap.time += dt;
+        }
 
         if (currentEvent == EventState.MOVING) {
             updateCamera();
