@@ -50,13 +50,14 @@ public class Normal extends Enemy {
         // if the enemy is an elite then its stats are multiplied by an elite multiplier
         float eliteMultiplier = MathUtils.random(Util.MIN_ELITE_MULTIPLIER, Util.MAX_ELITE_MULTIPLIER);
 
-        int mhp = MathUtils.random(Util.ENEMY_INIT_MIN_MHP, Util.ENEMY_INIT_MAX_MHP);
+        // hp is scaled polynomially with curve MHP = level ^ 2.1 + 25 as a seed then a value is chosen from deviation
+        int mhpSeed = (int) (Math.pow(level, 2.1) + 35);
+        int mhp = Util.getDeviatedRandomValue(mhpSeed, 4);
+
         int minDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MINDMG, Util.ENEMY_INIT_MAX_MINDMG);
         int maxDmg = MathUtils.random(Util.ENEMY_INIT_MIN_MAXDMG, Util.ENEMY_INIT_MAX_MAXDMG);
 
         for (int i = 0; i < this.level - 1; i++) {
-            mhp += MathUtils.random(Util.ENEMY_MIN_HP_INCREASE, Util.ENEMY_MAX_HP_INCREASE);
-
             int dmgMean = MathUtils.random(Util.ENEMY_MIN_DMG_INCREASE, Util.ENEMY_MAX_DMG_INCREASE);
             int minDmgIncrease = (dmgMean - MathUtils.random(2));
             int maxDmgIncrease = (dmgMean + MathUtils.random(2));
