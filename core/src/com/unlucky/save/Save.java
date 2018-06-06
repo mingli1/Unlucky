@@ -94,9 +94,11 @@ public class Save {
                     if (ia.type == 0)
                         sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.hp, ia.exp, ia.sell, ((ShopItemAccessor) ia).price);
-                    else if (ia.type >= 2 && ia.type <= 9)
+                    else if (ia.type >= 2 && ia.type <= 9) {
                         sitem = new ShopItem(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell, ((ShopItemAccessor) ia).price);
+                        sitem.enchantCost = ia.enchantCost;
+                    }
                     else if (ia.type == 10)
                         sitem = new ShopItem(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0,
                             ia.eChance, ia.sell, ((ShopItemAccessor) ia).price);
@@ -109,9 +111,11 @@ public class Save {
                             ia.hp, ia.exp, ia.sell);
                     else if (ia.type == 1)
                         item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0, ia.sell);
-                    else if (ia.type >= 2 && ia.type <= 9)
+                    else if (ia.type >= 2 && ia.type <= 9) {
                         item = new Item(rm, ia.name, ia.desc, ia.type, ia.rarity, ia.imgIndex, 0, 0,
                             ia.mhp, ia.dmg, ia.acc, ia.sell);
+                        item.enchantCost = ia.enchantCost;
+                    }
                     else if (ia.type == 10)
                         item = new Item(rm, ia.name, ia.desc, ia.rarity, ia.imgIndex, 0, 0,
                             ia.eChance, ia.sell);
