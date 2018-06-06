@@ -24,7 +24,6 @@ import com.unlucky.resource.ResourceManager;
 public class LevelSelectScreen extends SelectScreen {
 
     // the world these levels are in
-    private int worldIndex;
     private int numLevels;
 
     // current level selection
@@ -167,8 +166,7 @@ public class LevelSelectScreen extends SelectScreen {
             if (i == rm.worlds.get(worldIndex).currentLevelIndex) b.setChecked(true);
 
             // only enable the levels the player has defeated
-            //if (index > rm.worlds.get(worldIndex).numLevelsEnabled - 1) {
-            if (false) {
+            if (index > game.player.maxLevel) {
                 b.setTouchable(Touchable.disabled);
                 name.setText("???????????????");
                 desc.setText("Average level:  ???");

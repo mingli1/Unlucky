@@ -22,16 +22,8 @@ import com.unlucky.resource.ResourceManager;
  */
 public class WorldSelectScreen extends SelectScreen {
 
-    // worlds that can be accessed
-    private static final int WORLDS_ENABLED = 3;
-
-    // current world selection index that determines bg and descriptions
-    private int currentWorldIndex = 0;
-
     public WorldSelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
-
-        fullDescLabel.setText(rm.worlds.get(currentWorldIndex).longDesc);
 
         handleExitButton();
         handleEnterButton();
@@ -45,11 +37,13 @@ public class WorldSelectScreen extends SelectScreen {
         bannerLabel.setText("SELECT A WORLD");
         bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
 
-        this.currentWorldIndex = game.player.maxWorld;
+        this.worldIndex = game.player.maxWorld;
 
         // automatically scroll to the position of the currently selected world button
-        float r = (float) currentWorldIndex / (rm.worlds.size - 1);
+        float r = (float) worldIndex / (rm.worlds.size - 1);
         scrollPane.setScrollPercentY(r);
+
+        fullDescLabel.setText(rm.worlds.get(worldIndex).longDesc);
     }
 
     protected void handleExitButton() {
@@ -65,7 +59,7 @@ public class WorldSelectScreen extends SelectScreen {
             public void clicked(InputEvent event, float x, float y) {
                 if (clickable) {
                     clickable = false;
-                    if (currentWorldIndex < WORLDS_ENABLED) {
+                    if (worldIndex <= game.player.maxWorld) {
                         batchFade = false;
                         // fade out animation
                         stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
@@ -73,7 +67,7 @@ public class WorldSelectScreen extends SelectScreen {
                                 @Override
                                 public void run() {
                                     clickable = true;
-                                    game.levelSelectScreen.setWorld(currentWorldIndex);
+                                    game.levelSelectScreen.setWorld(worldIndex);
                                     game.setScreen(game.levelSelectScreen);
                                 }
                             })));
@@ -119,7 +113,7 @@ public class WorldSelectScreen extends SelectScreen {
             if (i == 0) b.setChecked(true);
 
             // disable worlds not available
-            if (i > WORLDS_ENABLED - 1) {
+            if (i > game.player.maxWorld) {
                 b.setTouchable(Touchable.disabled);
                 name.setText("???????????????");
                 desc.setText("LV. ???-???\nBOSS: ????????");
@@ -136,9 +130,9 @@ public class WorldSelectScreen extends SelectScreen {
             b.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    currentWorldIndex = index;
-                    selectAt(currentWorldIndex);
-                    fullDescLabel.setText(rm.worlds.get(currentWorldIndex).longDesc);
+                    worldIndex = index;
+                    selectAt(worldIndex);
+                    fullDescLabel.setText(rm.worlds.get(worldIndex).longDesc);
                 }
             });
             b.setFillParent(true);
@@ -163,7 +157,7 @@ public class WorldSelectScreen extends SelectScreen {
     }
 
     public void render(float dt) {
-        super.render(dt, currentWorldIndex);
+        super.render(dt, worldIndex);
     }
 
 }
