@@ -301,6 +301,7 @@ public class BattleEventHandler extends BattleUI {
             // reset animation
             battle.opponent.setPrevMoveUsed(-1);
             battle.opponent.setMoveUsed(-1);
+            player.statusEffects.clear();
 
             uiHandler.moveUI.toggleMoveAndOptionUI(false);
             uiHandler.currentState = BattleState.DIALOG;
@@ -341,6 +342,7 @@ public class BattleEventHandler extends BattleUI {
             // reset animation
             player.setPrevMoveUsed(-1);
             player.setMoveUsed(-1);
+            player.statusEffects.clear();
 
             uiHandler.moveUI.toggleMoveAndOptionUI(false);
             uiHandler.currentState = BattleState.DIALOG;
