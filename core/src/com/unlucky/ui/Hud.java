@@ -353,6 +353,7 @@ public class Hud extends UI {
             protected void result(Object object) {
                 if (object.equals("yes")) {
                     loseObtained();
+                    player.setHp(player.getMaxHp());
                     backToMenu();
                 }
                 else settingsDialog.show(stage);
