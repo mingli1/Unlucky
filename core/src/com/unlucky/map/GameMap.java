@@ -197,12 +197,17 @@ public class GameMap {
             player.getAm().stopAnimation();
             player.setHp(player.getMaxHp());
             // if the player beat this map and there are remaining maps in this world
-            if (this.levelIndex != rm.worlds.get(worldIndex).numLevels - 1)
+            if (this.levelIndex == player.maxLevel && this.worldIndex == player.maxWorld &&
+                this.levelIndex != rm.worlds.get(worldIndex).numLevels - 1) {
                 player.maxLevel++;
+            }
             // else the player unlocks the next world
-            else {
-                player.maxWorld++;
-                player.maxLevel = 0;
+            else if (this.levelIndex == player.maxLevel && this.worldIndex == player.maxWorld &&
+                    this.levelIndex == rm.worlds.get(worldIndex).numLevels - 1) {
+                if (player.maxWorld + 1 <= rm.worlds.size - 1) {
+                    player.maxWorld++;
+                    player.maxLevel = 0;
+                }
             }
 
             gameScreen.setCurrentEvent(EventState.PAUSE);
