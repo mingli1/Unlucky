@@ -23,6 +23,8 @@ import com.unlucky.resource.ResourceManager;
  */
 public abstract class SelectScreen extends AbstractScreen {
 
+    protected int worldIndex;
+
     // exit button
     protected ImageButton exitButton;
 
@@ -138,8 +140,7 @@ public abstract class SelectScreen extends AbstractScreen {
             if (batchFade) stage.getBatch().setColor(Color.WHITE);
 
             // render world background corresponding to the selected world
-            // @TODO: change 0 to index
-            stage.getBatch().draw(rm.worldSelectBackgrounds[0], 0, 0);
+            stage.getBatch().draw(rm.worldSelectBackgrounds[worldIndex], 0, 0);
 
             stage.getBatch().end();
         }
