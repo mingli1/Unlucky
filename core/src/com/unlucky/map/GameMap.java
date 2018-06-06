@@ -33,6 +33,7 @@ public class GameMap {
     // composite id
     public int worldIndex;
     public int levelIndex;
+    public int avgLevel;
 
     // weather of map
     public WeatherType weather;
@@ -75,6 +76,7 @@ public class GameMap {
     public void init(int worldIndex, int levelIndex) {
         this.worldIndex = worldIndex;
         this.levelIndex = levelIndex;
+        this.avgLevel = rm.worlds.get(worldIndex).levels[levelIndex].avgLevel;
 
         // reset
         itemsObtained.clear();
@@ -179,11 +181,10 @@ public class GameMap {
         if (player.isTileInteraction()) {
             gameScreen.hud.toggle(false);
             gameScreen.setCurrentEvent(EventState.TILE_EVENT);
-            // @TODO: change level scaling to map level
             if (player.getCurrentTile().isQuestionMark())
-                gameScreen.dialog.startDialog(player.getQuestionMarkDialog(player.getLevel(), this), EventState.MOVING, EventState.MOVING);
+                gameScreen.dialog.startDialog(player.getQuestionMarkDialog(avgLevel, this), EventState.MOVING, EventState.MOVING);
             else if (player.getCurrentTile().isExclamationMark())
-                gameScreen.dialog.startDialog(player.getExclamDialog(player.getLevel(), this), EventState.MOVING, EventState.MOVING);
+                gameScreen.dialog.startDialog(player.getExclamDialog(avgLevel, this), EventState.MOVING, EventState.MOVING);
         }
         // player stepped on teleport tile
         if (player.isTeleporting()) {

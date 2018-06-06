@@ -65,19 +65,11 @@ public class Battle {
     public void begin(Enemy opponent) {
         this.opponent = opponent;
 
-        // TEMPORARY: set opponent level at around player's level
-
-        // set to below or above player's level by 3
-        //opponent.setLevel(Util.getRandomValue(player.getLevel(), player.getLevel() + 3, opponent.getRandom()));
-        opponent.setLevel(Util.getDeviatedRandomValue(player.getLevel(), 3));
+        // set opponent's level to be -1 to 1 added to the avg map level
+        opponent.setLevel(Util.getDeviatedRandomValue(gameScreen.gameMap.avgLevel, 3));
         if (opponent.getLevel() <= 0) opponent.setLevel(1);
 
         opponent.setStats();
-
-        //System.out.println("level: " + opponent.getLevel());
-        //System.out.println("mhp: " + opponent.getMaxHp());
-        //System.out.println("dmg: " + opponent.getMinDamage() + "-" + opponent.getMaxDamage());
-        //System.out.println("acc: " + opponent.getAccuracy());
     }
 
     /**
