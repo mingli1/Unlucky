@@ -78,6 +78,10 @@ public class Player extends Entity {
     // starts at 4 turns then every 10 levels it is reduced by 1 with a min of 1
     public int smoveCd = 4;
 
+    // player's level progress stored as a (world, level) key
+    public int maxWorld = 0;
+    public int maxLevel = 0;
+
     public Player(String id, ResourceManager rm) {
         super(id, rm);
 
@@ -183,7 +187,7 @@ public class Player extends Entity {
         switch (dir) {
             case 0: // down
                 Tile d = tileMap.getTile(currentTileX, currentTileY - 1);
-                if (d.isBlocked() || currentTileY - 1 < 0) {
+                if (d.isBlocked() || currentTileY - 1 <= 0) {
                     return currentTileY;
                 }
                 return currentTileY - 1;
@@ -195,13 +199,13 @@ public class Player extends Entity {
                 return currentTileY + 1;
             case 2: // right
                 Tile r = tileMap.getTile(currentTileX + 1, currentTileY);
-                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth) {
+                if (r.isBlocked() || currentTileX + 1 >= tileMap.mapWidth - 1) {
                     return currentTileX;
                 }
                 return currentTileX + 1;
             case 3: // left
                 Tile l = tileMap.getTile(currentTileX - 1, currentTileY);
-                if (l.isBlocked() || currentTileX - 1 < 0) {
+                if (l.isBlocked() || currentTileX - 1 <= 0) {
                     return currentTileX;
                 }
                 return currentTileX - 1;
@@ -557,8 +561,7 @@ public class Player extends Entity {
             if (Util.isSuccess(60)) {
                 int dmg = 0;
                 for (int i = 0; i < mapLevel; i++) {
-                    //dmg += MathUtils.random(1, 4);
-                    dmg += 1235;
+                    dmg += MathUtils.random(1, 4);
                 }
                 hp -= dmg;
                 // player dies from tile
