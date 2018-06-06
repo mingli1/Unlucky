@@ -27,6 +27,10 @@ public class PlayerAccessor  {
     public int accuracy;
     public int smoveCd;
 
+    // level save
+    public int maxWorld;
+    public int maxLevel;
+
     // inventory and equips consist of ItemAccessors to reduce unnecessary fields
     public ItemAccessor[] inventory;
     public ItemAccessor[] equips;
@@ -61,6 +65,8 @@ public class PlayerAccessor  {
         this.maxDamage = player.getMaxDamage();
         this.accuracy = player.getAccuracy();
         this.smoveCd = player.smoveCd;
+        this.maxWorld = player.maxWorld;
+        this.maxLevel = player.maxLevel;
 
         // load inventory and equips
         for (int i = 0; i < Inventory.NUM_SLOTS; i++) {

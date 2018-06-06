@@ -45,6 +45,8 @@ public class WorldSelectScreen extends SelectScreen {
         bannerLabel.setText("SELECT A WORLD");
         bannerLabel.getStyle().fontColor = new Color(1, 212 / 255.f, 0, 1);
 
+        this.currentWorldIndex = game.player.maxWorld;
+
         // automatically scroll to the position of the currently selected world button
         float r = (float) currentWorldIndex / (rm.worlds.size - 1);
         scrollPane.setScrollPercentY(r);

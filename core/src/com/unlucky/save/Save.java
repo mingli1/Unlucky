@@ -65,6 +65,8 @@ public class Save {
         player.setMaxDamage(psave.maxDamage);
         player.setAccuracy(psave.accuracy);
         player.smoveCd = psave.smoveCd;
+        player.maxWorld = psave.maxWorld;
+        player.maxLevel = psave.maxLevel;
 
         // load inventory and equips
         loadInventory(rm);

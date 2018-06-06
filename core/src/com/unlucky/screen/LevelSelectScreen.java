@@ -61,6 +61,8 @@ public class LevelSelectScreen extends SelectScreen {
         scrollTable.remove();
         createScrollPane();
 
+        if (this.worldIndex == game.player.maxWorld) this.currentLevelIndex = game.player.maxLevel;
+
         // automatically scroll to the position of the currently selected world button
         float r = (float) rm.worlds.get(worldIndex).currentLevelIndex / numLevels;
         scrollPane.setScrollPercentY(r);
