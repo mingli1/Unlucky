@@ -237,6 +237,8 @@ public class BattleScene extends BattleUI {
             renderPlayer = renderEnemy = true;
         }
 
+        playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
+
         // show health bar animation after an entity uses its move
         playerHpBar.update(dt);
         enemyHpBar.update(dt);
