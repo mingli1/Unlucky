@@ -3,6 +3,7 @@ package com.unlucky.screen.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -30,6 +31,10 @@ public class VictoryScreen extends AbstractScreen {
 
     // exit button
     private ImageButton exitButton;
+    private Label nextLabel;
+
+    // next button
+    private ImageButton nextButton;
 
     // information
     private Image infoBg;
@@ -82,6 +87,34 @@ public class VictoryScreen extends AbstractScreen {
         info.setSize(112, 50);
         info.setPosition(Unlucky.V_WIDTH / 2 - 60 + 4, 38);
         stage.addActor(info);
+
+        ImageButton.ImageButtonStyle nextStyle = new ImageButton.ImageButtonStyle();
+        nextStyle.imageUp = new TextureRegionDrawable(rm.smoveButtons[0][0]);
+        nextStyle.imageDown = new TextureRegionDrawable(rm.smoveButtons[1][0]);
+
+        nextButton = new ImageButton(nextStyle);
+        nextButton.setPosition(161, 8);
+        stage.addActor(nextButton);
+
+        nextLabel = new Label("NEXT", new Label.LabelStyle(rm.pixel10, Color.WHITE));
+        nextLabel.setFontScale(0.5f);
+        nextLabel.setTouchable(Touchable.disabled);
+        nextLabel.setSize(38, 18);
+        nextLabel.setAlignment(Align.center);
+        nextLabel.setPosition(158, 8);
+        stage.addActor(nextLabel);
+
+        nextButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (gameMap.levelIndex != rm.worlds.get(gameMap.worldIndex).numLevels - 1) {
+                    // switch back to level select screen
+                    for (Item item : gameMap.itemsObtained) item.actor.remove();
+                    game.levelSelectScreen.setWorld(gameMap.worldIndex);
+                    setFadeScreen(game.levelSelectScreen);
+                }
+            }
+        });
     }
 
     public void init(GameMap gameMap) {
