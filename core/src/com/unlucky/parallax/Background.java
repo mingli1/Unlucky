@@ -13,9 +13,9 @@ import com.unlucky.main.Unlucky;
  */
 public class Background {
 
-    private TextureRegion image;
+    public TextureRegion image;
     private OrthographicCamera cam;
-    private Vector2 scale;
+    public Vector2 scale;
 
     private float ax;
     private float ay;
@@ -26,6 +26,11 @@ public class Background {
     private float dx;
     private float dy;
 
+    public Background(OrthographicCamera cam, Vector2 scale) {
+        this.cam = cam;
+        this.scale = scale;
+    }
+
     public Background(TextureRegion image, OrthographicCamera cam, Vector2 scale) {
         this.image = image;
         this.cam = cam;
@@ -33,6 +38,13 @@ public class Background {
         numDrawX = (Unlucky.V_WIDTH * 2) / image.getRegionWidth() + 1;
         numDrawY = (Unlucky.V_HEIGHT * 2) / image.getRegionHeight() + 1;
 
+        fixBleeding(image);
+    }
+
+    public void setImage(TextureRegion image) {
+        this.image = image;
+        numDrawX = (Unlucky.V_WIDTH * 2) / image.getRegionWidth() + 1;
+        numDrawY = (Unlucky.V_HEIGHT * 2) / image.getRegionHeight() + 1;
         fixBleeding(image);
     }
 

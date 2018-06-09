@@ -62,7 +62,12 @@ public class GameScreen extends AbstractScreen {
         dialog = new DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
 
         // create bg
-        createBackground(0);
+        bg = new Background[2];
+        // sky
+        bg[0] = new Background((OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0.3f, 0));
+        // field
+        bg[1] = new Background((OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0, 0));
+
 
         // input multiplexer
         multiplexer = new InputMultiplexer();
@@ -96,6 +101,9 @@ public class GameScreen extends AbstractScreen {
         levelUp.setTileMap(gameMap.tileMap);
         dialog.setTileMap(gameMap.tileMap);
 
+        // update bg
+        createBackground(gameMap.worldIndex);
+
         hud.toggle(true);
         hud.touchDown = false;
         hud.shade.setVisible(false);
@@ -104,20 +112,15 @@ public class GameScreen extends AbstractScreen {
 
     /**
      * Creates the dynamic background
-     * @TODO make it work for any number of background images
-     *
      * @param bgIndex is the theme of bg
      */
     private void createBackground(int bgIndex) {
-        bg = new Background[2];
-
         // background image array is ordered by depth
         TextureRegion[] images = rm.battleBackgrounds400x240[bgIndex];
-        // sky
-        bg[0] = new Background(images[0], (OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0.3f, 0));
-        bg[0].setVector(40, 0);
-        // field
-        bg[1] = new Background(images[1], (OrthographicCamera) battleUIHandler.getStage().getCamera(), new Vector2(0, 0));
+        for (int i = 0; i < 2; i++) bg[i].setImage(images[i]);
+        // set background movement for the specific worlds
+        if (bgIndex == 0) bg[0].setVector(40, 0);
+        else if (bgIndex == 1) bg[0].setVector(0, 0);
         bg[1].setVector(0, 0);
     }
 
