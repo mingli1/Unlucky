@@ -43,6 +43,7 @@ public class WorldSelectScreen extends SelectScreen {
         float r = (float) worldIndex / (rm.worlds.size - 1);
         scrollPane.setScrollPercentY(r);
 
+        selectAt(worldIndex);
         fullDescLabel.setText(rm.worlds.get(worldIndex).longDesc);
     }
 
@@ -59,19 +60,17 @@ public class WorldSelectScreen extends SelectScreen {
             public void clicked(InputEvent event, float x, float y) {
                 if (clickable) {
                     clickable = false;
-                    if (worldIndex <= game.player.maxWorld) {
-                        batchFade = false;
-                        // fade out animation
-                        stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
-                            Actions.run(new Runnable() {
-                                @Override
-                                public void run() {
-                                    clickable = true;
-                                    game.levelSelectScreen.setWorld(worldIndex);
-                                    game.setScreen(game.levelSelectScreen);
-                                }
-                            })));
-                    }
+                    batchFade = false;
+                    // fade out animation
+                    stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                        Actions.run(new Runnable() {
+                            @Override
+                            public void run() {
+                                clickable = true;
+                                game.levelSelectScreen.setWorld(worldIndex);
+                                game.setScreen(game.levelSelectScreen);
+                            }
+                        })));
                 }
             }
         });
@@ -112,19 +111,11 @@ public class WorldSelectScreen extends SelectScreen {
             b.getStyle().over = null;
             if (i == 0) b.setChecked(true);
 
-            // disable worlds not available
-            if (i > game.player.maxWorld) {
-                b.setTouchable(Touchable.disabled);
-                name.setText("???????????????");
-                desc.setText("LV. ???-???\nBOSS: ????????");
-            }
-            else {
-                b.setTouchable(Touchable.enabled);
-                scrollButtons.add(b);
+            b.setTouchable(Touchable.enabled);
+            scrollButtons.add(b);
 
-                name.setText(rm.worlds.get(i).name);
-                desc.setText(rm.worlds.get(i).shortDesc);
-            }
+            name.setText(rm.worlds.get(i).name);
+            desc.setText(rm.worlds.get(i).shortDesc);
 
             // select world
             b.addListener(new ClickListener() {
