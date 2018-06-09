@@ -28,6 +28,7 @@ public class LevelSelectScreen extends SelectScreen {
 
     // current level selection
     private int currentLevelIndex;
+    private int numLevelsToShow;
 
     // player stats to be displayed
     private String playerStats;
@@ -53,18 +54,33 @@ public class LevelSelectScreen extends SelectScreen {
             "\nDAMAGE: " + game.player.getMinDamage() + "-" + game.player.getMaxDamage() +
             "\nSPECIAL MOVESET: \n" + game.player.smoveset.toString();
 
+        // the level the player is currently on and not completed
+        if (this.worldIndex == game.player.maxWorld) {
+            this.currentLevelIndex = game.player.maxLevel;
+            this.numLevelsToShow = game.player.maxLevel;
+        }
+        // levels the player have completed so show all the levels
+        else if (this.worldIndex < game.player.maxWorld) {
+            this.currentLevelIndex = 0;
+            this.numLevelsToShow = rm.worlds.get(worldIndex).numLevels - 1;
+        }
+        // in a world the player has not gotten to yet
+        else {
+            this.currentLevelIndex = 0;
+            this.numLevelsToShow = -1;
+        }
+
         // the side description will show player stats and level name
-        String levelName = rm.worlds.get(worldIndex).levels[rm.worlds.get(worldIndex).currentLevelIndex].name;
+        String levelName = rm.worlds.get(worldIndex).levels[currentLevelIndex].name;
         fullDescLabel.setText(levelName + "\n\n" + playerStats);
+
+        if (this.worldIndex > game.player.maxWorld) fullDescLabel.setText("???????????????" + "\n\n" + playerStats);
 
         scrollTable.remove();
         createScrollPane();
 
-        if (this.worldIndex == game.player.maxWorld) this.currentLevelIndex = game.player.maxLevel;
-        else this.currentLevelIndex = 0;
-
         // automatically scroll to the position of the currently selected world button
-        float r = (float) rm.worlds.get(worldIndex).currentLevelIndex / numLevels;
+        float r = (float) currentLevelIndex / (numLevels - 1);
         scrollPane.setScrollPercentY(r);
     }
 
@@ -88,29 +104,30 @@ public class LevelSelectScreen extends SelectScreen {
         enterButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                // if the player's inventory is full give a warning
-                if (game.player.inventory.isFull()) {
-                    new Dialog("Warning", rm.dialogSkin) {
-                        {
-                            Label l = new Label("Your inventory is full.\nAre you sure you want to proceed?", rm.dialogSkin);
-                            l.setFontScale(0.5f);
-                            l.setAlignment(Align.center);
-                            text(l);
-                            getButtonTable().defaults().width(40);
-                            getButtonTable().defaults().height(15);
-                            button("Yes", "yes");
-                            button("No", "no");
-                        }
+                if (worldIndex <= game.player.maxWorld) {
+                    // if the player's inventory is full give a warning
+                    if (game.player.inventory.isFull()) {
+                        new Dialog("Warning", rm.dialogSkin) {
+                            {
+                                Label l = new Label("Your inventory is full.\nAre you sure you want to proceed?", rm.dialogSkin);
+                                l.setFontScale(0.5f);
+                                l.setAlignment(Align.center);
+                                text(l);
+                                getButtonTable().defaults().width(40);
+                                getButtonTable().defaults().height(15);
+                                button("Yes", "yes");
+                                button("No", "no");
+                            }
 
-                        @Override
-                        protected void result(Object object) {
-                            if (object.equals("yes")) enterGame();
-                        }
+                            @Override
+                            protected void result(Object object) {
+                                if (object.equals("yes")) enterGame();
+                            }
 
-                    }.show(stage).getTitleLabel().setAlignment(Align.center);
-                }
-                else {
-                    enterGame();
+                        }.show(stage).getTitleLabel().setAlignment(Align.center);
+                    } else {
+                        enterGame();
+                    }
                 }
             }
         });
@@ -164,10 +181,10 @@ public class LevelSelectScreen extends SelectScreen {
             final TextButton b = new TextButton("", rm.skin);
             b.getStyle().checked = b.getStyle().down;
             b.getStyle().over = null;
-            if (i == rm.worlds.get(worldIndex).currentLevelIndex) b.setChecked(true);
+            if (i == currentLevelIndex) b.setChecked(true);
 
             // only enable the levels the player has defeated
-            if (index > game.player.maxLevel) {
+            if (index > numLevelsToShow) {
                 b.setTouchable(Touchable.disabled);
                 name.setText("???????????????");
                 desc.setText("Average level:  ???");
@@ -184,7 +201,6 @@ public class LevelSelectScreen extends SelectScreen {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     currentLevelIndex = index;
-                    rm.worlds.get(worldIndex).currentLevelIndex = currentLevelIndex;
                     selectAt(currentLevelIndex);
                     String levelName = rm.worlds.get(worldIndex).levels[currentLevelIndex].name;
                     fullDescLabel.setText(levelName + "\n\n" + playerStats);
