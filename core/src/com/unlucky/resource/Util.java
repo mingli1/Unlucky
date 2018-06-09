@@ -245,6 +245,11 @@ public class Util {
             case 3: return new Normal("blue slime", position, map, rm, 1, 2, 2, 1 / 3f);
             case 4: return new Normal("blast slime", position, map, rm, 1, 4, 2, 1 / 3f);
             case 5: return new Boss("slime king", 0, position, map, rm, 1, 6, 2, 1 / 3f);
+            case 6: return new Normal("ghost", position, map, rm, 2, 0, 2, 1 / 3f);
+            case 7: return new Normal("zombie", position, map, rm, 2, 2, 2, 1 / 3f);
+            case 8: return new Normal("skeleton", position, map, rm, 2, 4, 2, 1 / 3f);
+            case 9: return new Normal("witch", position, map, rm, 2, 6, 2, 1 / 3f);
+            case 10: return new Boss("red reaper", 1, position, map, rm, 2, 8, 2, 1 / 3f);
         }
         return null;
     }
