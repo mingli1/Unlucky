@@ -294,6 +294,18 @@ public class ResourceManager {
                         move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
         }
         bossMoves.add(slimeMoves);
+
+        Array<Move> rrMoves = new Array<Move>();
+        // load boss moves
+        for (JsonValue move : boss.get("redreaper")) {
+            if (move.getInt("type") == 2)
+                rrMoves.add(new Move(move.getString("name"),
+                    move.getFloat("damage"), move.getInt("crit")));
+            else
+                rrMoves.add(new Move(move.getString("name"),
+                    move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
+        }
+        bossMoves.add(rrMoves);
     }
 
     private void loadItems() {
@@ -386,6 +398,7 @@ public class ResourceManager {
                 levelItems.add(item);
             }
         }
+        if (levelItems.size == 0) return null;
         Item selected = levelItems.get(MathUtils.random(levelItems.size - 1));
         return getItemCopy(selected);
     }

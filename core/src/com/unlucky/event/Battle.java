@@ -86,8 +86,12 @@ public class Battle {
         }
         else opponent.setAccuracy(MathUtils.random(Util.ENEMY_MIN_ACCURACY, Util.ENEMY_MAX_ACCURACY));
 
+        // for red reaper boss's 30% acc debuff passive
+        boolean redReaperDebuff = false;
+        if (opponent.isBoss()) redReaperDebuff = ((Boss) opponent).bossId == 1;
+
         // accounting for player accuracy or accuracy buff
-        if (Util.isSuccess(player.getAccuracy()) || buffs[Util.FOCUS]) {
+        if (Util.isSuccess(player.getAccuracy() - (redReaperDebuff ? 30 : 0)) || buffs[Util.FOCUS]) {
             // accurate or wide
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));

@@ -54,13 +54,23 @@ public class Boss extends Enemy {
         switch (bossId) {
             case 0: // king slime
                 // has lower hp because its passive compensates for it
-                mhp = MathUtils.random(30, 38);
-                minDmg = MathUtils.random(6, 11);
-                maxDmg = MathUtils.random(12, 15);
+                int mhpSeed0 = (int) (Math.pow(level, 2.05) + 10);
+                mhp = Util.getDeviatedRandomValue(mhpSeed0, 1);
+                minDmg = MathUtils.random(4, 8);
+                maxDmg = MathUtils.random(9, 13);
                 for (int i = 0; i < level - 1; i++) {
-                    mhp += MathUtils.random(2, 5);
-                    minDmg += MathUtils.random(1, 4) - MathUtils.random(2);
-                    maxDmg += MathUtils.random(1, 4) + MathUtils.random(2);
+                    minDmg += MathUtils.random(1, 3) - MathUtils.random(1);
+                    maxDmg += MathUtils.random(1, 3) + MathUtils.random(1);
+                }
+                break;
+            case 1: // red reaper
+                int mhpSeed1 = (int) (Math.pow(level, 2) + 14);
+                mhp = Util.getDeviatedRandomValue(mhpSeed1, 3);
+                minDmg = MathUtils.random(3, 8);
+                maxDmg = MathUtils.random(9, 15);
+                for (int i = 0; i < level - 1; i++) {
+                    minDmg += MathUtils.random(1, 2) - MathUtils.random(2);
+                    maxDmg += MathUtils.random(1, 2) + MathUtils.random(2);
                 }
                 break;
         }
@@ -79,7 +89,9 @@ public class Boss extends Enemy {
     public String getPassiveDescription() {
         switch (bossId) {
             // king slime
-            case 0: return "Respawns after death with half health points up to 4 times.";
+            case 0: return "Slime Revival (Respawns after death with half health points up to 4 times).";
+            // red reaper
+            case 1: return "Phantom Presence (Causes the player's accuracy to be decreased by 30% for all attacks).";
         }
         return "";
     }
