@@ -443,7 +443,7 @@ public class ShopScreen extends MenuExtensionScreen {
                         }
                         player.inventory.addItem(item);
                         stage.addActor(item.actor);
-                        item.actor.setZIndex(item.index);
+                        item.actor.setZIndex(item.index + 1);
                         addInventoryEvent(item);
                         gold.setText("GOLD: " + player.getGold());
                         new Dialog("Success", rm.dialogSkin) {
