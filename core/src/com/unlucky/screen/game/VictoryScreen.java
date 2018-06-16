@@ -48,13 +48,13 @@ public class VictoryScreen extends AbstractScreen {
 
         bannerBg = new Image(rm.skin, "default-slider");
         bannerBg.setSize(120, 18);
-        bannerBg.setPosition(Unlucky.V_WIDTH / 2 - 60, 96);
+        bannerBg.setPosition(Unlucky.V_WIDTH / 2 - 70, 96);
         stage.addActor(bannerBg);
 
         bannerText = new Label("VICTORY", new Label.LabelStyle(rm.pixel10, new Color(0, 215 / 255.f, 0, 1)));
         bannerText.setFontScale(1.5f);
         bannerText.setSize(120, 18);
-        bannerText.setPosition(Unlucky.V_WIDTH / 2 - 60, 96);
+        bannerText.setPosition(Unlucky.V_WIDTH / 2 - 70, 96);
         bannerText.setAlignment(Align.center);
         stage.addActor(bannerText);
 
@@ -77,7 +77,7 @@ public class VictoryScreen extends AbstractScreen {
 
         infoBg = new Image(rm.skin, "default-slider");
         infoBg.setSize(120, 88);
-        infoBg.setPosition(Unlucky.V_WIDTH / 2 - 60, 4);
+        infoBg.setPosition(Unlucky.V_WIDTH / 2 - 70, 4);
         stage.addActor(infoBg);
 
         info = new Label("", new Label.LabelStyle(rm.pixel10, Color.WHITE));
@@ -85,7 +85,7 @@ public class VictoryScreen extends AbstractScreen {
         info.setWrap(true);
         info.setAlignment(Align.topLeft);
         info.setSize(112, 50);
-        info.setPosition(Unlucky.V_WIDTH / 2 - 60 + 4, 38);
+        info.setPosition(Unlucky.V_WIDTH / 2 - 70 + 4, 38);
         stage.addActor(info);
 
         ImageButton.ImageButtonStyle nextStyle = new ImageButton.ImageButtonStyle();
@@ -93,7 +93,7 @@ public class VictoryScreen extends AbstractScreen {
         nextStyle.imageDown = new TextureRegionDrawable(rm.smoveButtons[1][0]);
 
         nextButton = new ImageButton(nextStyle);
-        nextButton.setPosition(161, 8);
+        nextButton.setPosition(157, 8);
         stage.addActor(nextButton);
 
         nextLabel = new Label("NEXT", new Label.LabelStyle(rm.pixel10, Color.WHITE));
@@ -101,7 +101,7 @@ public class VictoryScreen extends AbstractScreen {
         nextLabel.setTouchable(Touchable.disabled);
         nextLabel.setSize(38, 18);
         nextLabel.setAlignment(Align.center);
-        nextLabel.setPosition(158, 8);
+        nextLabel.setPosition(154, 8);
         stage.addActor(nextLabel);
 
         nextButton.addListener(new ClickListener() {
@@ -151,7 +151,7 @@ public class VictoryScreen extends AbstractScreen {
             int y = i / NUM_COLS;
             Item item = gameMap.itemsObtained.get(i);
             item.actor.remove();
-            item.actor.setPosition(Unlucky.V_WIDTH / 2 - 60 + 8 + (x * 24), 34 - (y * 16));
+            item.actor.setPosition(Unlucky.V_WIDTH / 2 - 70 + 8 + (x * 24), 34 - (y * 16));
             stage.addActor(item.actor);
         }
     }
