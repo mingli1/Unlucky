@@ -127,8 +127,8 @@ public class Util {
     public static final int PLAYER_INIT_MAX_HP = 75;
     public static final int PLAYER_INIT_MIN_DMG = 10;
     public static final int PLAYER_INIT_MAX_DMG = 16;
-    public static final int PLAYER_MIN_HP_INCREASE = 6;
-    public static final int PLAYER_MAX_HP_INCREASE = 14;
+    public static final int PLAYER_MIN_HP_INCREASE = 13;
+    public static final int PLAYER_MAX_HP_INCREASE = 21;
     public static final int PLAYER_MIN_DMG_INCREASE = 1;
     public static final int PLAYER_MAX_DMG_INCREASE = 3;
 
@@ -211,7 +211,7 @@ public class Util {
         38, 41, 42, 48, 49, 50, 51, 54, 55, 56, 57, 64, 65, 66, 67, 70, 84, 85, 86,
         87, 88, 91, 92, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 112,
         113, 114, 115, 116, 117, 118, 120, 121, 123, 128, 129, 130, 130, 131, 132,
-        133, 134, 135, 136, 137, 138, 139, 156, 157
+        133, 134, 135, 136, 137, 138, 139, 144, 145, 146, 147, 156, 157
     };
 
     public static final int[] BLOCKED_ANIMATED_TILE_IDS = { 96, 109 };
