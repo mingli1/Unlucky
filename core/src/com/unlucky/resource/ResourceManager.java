@@ -2,6 +2,7 @@ package com.unlucky.resource;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -96,6 +97,10 @@ public class ResourceManager {
     public TextureRegion shadow11x6;
     public TextureRegion redarrow10x9;
 
+    // Music
+    public Music slimeForestTheme;
+    public Music spookyGraveyardTheme;
+
     // Worlds
     public Array<World> worlds = new Array<World>();
 
@@ -124,6 +129,9 @@ public class ResourceManager {
         assetManager.load("textures.atlas", TextureAtlas.class);
         assetManager.load("skins/ui.atlas", TextureAtlas.class);
         assetManager.load("skins/dialog.atlas", TextureAtlas.class);
+
+        assetManager.load("music/slime_forest_theme.ogg", Music.class);
+        assetManager.load("music/spooky_graveyard_theme.ogg", Music.class);
 
         assetManager.finishLoading();
 
@@ -198,6 +206,10 @@ public class ResourceManager {
 
         // fix font spacing
         pixel10.setUseIntegerPositions(false);
+
+        // load music
+        slimeForestTheme = assetManager.get("music/slime_forest_theme.ogg", Music.class);
+        spookyGraveyardTheme = assetManager.get("music/spooky_graveyard_theme.ogg", Music.class);
 
         loadWorlds();
         loadMoves();
