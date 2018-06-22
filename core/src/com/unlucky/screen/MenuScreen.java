@@ -83,12 +83,18 @@ public class MenuScreen extends MenuExtensionScreen {
         stage.addActor(battleLabel);
 
         createCreditsScreen();
+
+        // menu music
+        rm.menuTheme.setLooping(true);
+        rm.menuTheme.play();
     }
 
     @Override
     public void show() {
         game.fps.setPosition(5, 115);
         stage.addActor(game.fps);
+
+        if (!rm.menuTheme.isPlaying()) rm.menuTheme.play();
 
         Gdx.input.setInputProcessor(stage);
         renderBatch = false;
@@ -154,6 +160,13 @@ public class MenuScreen extends MenuExtensionScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 setSlideScreen(game.inventoryScreen, false);
+            }
+        });
+        // settings screen
+        optionButtons[1].addListener(new ClickListener() {
+            public void clicked(InputEvent event, float x, float y) {
+                game.settingsScreen.inGame = false;
+                setSlideScreen(game.settingsScreen, true);
             }
         });
         // shop screen

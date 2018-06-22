@@ -48,6 +48,10 @@ public class GameScreen extends AbstractScreen {
     private int worldIndex;
     private int levelIndex;
 
+    // whether or not to reset the game map on show
+    // used for transitioning between screen during a pause
+    public boolean resetGame = true;
+
     public GameScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
 
@@ -90,24 +94,26 @@ public class GameScreen extends AbstractScreen {
         // fade in animation
         hud.getStage().addAction(Actions.sequence(Actions.alpha(0), Actions.fadeIn(0.5f)));
 
-        // init tile map
-        setCurrentEvent(EventState.MOVING);
-        hud.deathGroup.setVisible(false);
-        gameMap.init(worldIndex, levelIndex);
-        gameMap.player.moving = -1;
-        battle.tileMap = gameMap.tileMap;
-        hud.setTileMap(gameMap.tileMap);
-        battleUIHandler.setTileMap(gameMap.tileMap);
-        levelUp.setTileMap(gameMap.tileMap);
-        dialog.setTileMap(gameMap.tileMap);
+        if (resetGame) {
+            // init tile map
+            setCurrentEvent(EventState.MOVING);
+            hud.deathGroup.setVisible(false);
+            gameMap.init(worldIndex, levelIndex);
+            gameMap.player.moving = -1;
+            battle.tileMap = gameMap.tileMap;
+            hud.setTileMap(gameMap.tileMap);
+            battleUIHandler.setTileMap(gameMap.tileMap);
+            levelUp.setTileMap(gameMap.tileMap);
+            dialog.setTileMap(gameMap.tileMap);
 
-        // update bg
-        createBackground(gameMap.worldIndex);
+            // update bg
+            createBackground(gameMap.worldIndex);
 
-        hud.toggle(true);
-        hud.touchDown = false;
-        hud.shade.setVisible(false);
-        hud.startLevelDescriptor();
+            hud.toggle(true);
+            hud.touchDown = false;
+            hud.shade.setVisible(false);
+            hud.startLevelDescriptor();
+        }
     }
 
     /**

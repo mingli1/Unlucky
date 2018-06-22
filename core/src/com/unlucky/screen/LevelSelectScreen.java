@@ -138,6 +138,8 @@ public class LevelSelectScreen extends SelectScreen {
      */
     private void enterGame() {
         game.gameScreen.init(worldIndex, currentLevelIndex);
+        game.gameScreen.resetGame = true;
+        rm.menuTheme.pause();
         setFadeScreen(game.gameScreen);
     }
 
@@ -223,7 +225,7 @@ public class LevelSelectScreen extends SelectScreen {
         scrollPane.setScrollingDisabled(true, false);
         scrollPane.setFadeScrollBars(false);
         scrollPane.layout();
-        scrollTable.add(scrollPane).size(112, 101).fill();
+        scrollTable.add(scrollPane).size(112, 93).fill();
         scrollTable.setPosition(-38, -10);
     }
 

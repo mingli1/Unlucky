@@ -111,6 +111,7 @@ public class VictoryScreen extends AbstractScreen {
                     // switch back to level select screen
                     for (Item item : gameMap.itemsObtained) item.actor.remove();
                     game.levelSelectScreen.setWorld(gameMap.worldIndex);
+                    rm.menuTheme.play();
                     setFadeScreen(game.levelSelectScreen);
                 }
             }
