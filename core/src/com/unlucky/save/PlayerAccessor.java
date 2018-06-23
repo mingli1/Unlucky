@@ -42,6 +42,9 @@ public class PlayerAccessor  {
     // statistics
     public Statistics stats;
 
+    // settings
+    public Settings settings;
+
     public PlayerAccessor() {
         inventory = new ItemAccessor[Inventory.NUM_SLOTS];
         equips = new ItemAccessor[Equipment.NUM_SLOTS];
@@ -114,6 +117,9 @@ public class PlayerAccessor  {
 
         // statistics
         this.stats = player.stats;
+
+        // settings
+        this.settings = player.settings;
     }
 
 }

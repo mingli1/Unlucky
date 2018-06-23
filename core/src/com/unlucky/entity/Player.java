@@ -16,6 +16,7 @@ import com.unlucky.map.Tile;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Statistics;
 import com.unlucky.resource.Util;
+import com.unlucky.save.Settings;
 
 /**
  * The protagonist of the game.
@@ -81,6 +82,9 @@ public class Player extends Entity {
     // player's level progress stored as a (world, level) key
     public int maxWorld = 0;
     public int maxLevel = 0;
+
+    // the player's custom game settings
+    public Settings settings = new Settings();
 
     public Player(String id, ResourceManager rm) {
         super(id, rm);

@@ -4,11 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.actions.Actions;
+import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Slider;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.main.Unlucky;
@@ -37,6 +41,11 @@ public class SettingsScreen extends MenuExtensionScreen {
     private Label.LabelStyle white;
     private Label description;
 
+    private Label[] settingLabels;
+    private Slider musicSlider;
+    private Slider sfxSlider;
+    private CheckBox muteMusic;
+    private CheckBox muteSfx;
 
     public SettingsScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -77,11 +86,93 @@ public class SettingsScreen extends MenuExtensionScreen {
         stage.addActor(bg);
 
         white = new Label.LabelStyle(rm.pixel10, Color.WHITE);
-        description = new Label("SOUND                                 MISC", white);
+        description = new Label("SOUND                                 MISC",
+            new Label.LabelStyle(rm.pixel10, new Color(1, 212 / 255.f, 0, 1)));
         description.setFontScale(0.75f);
         description.setTouchable(Touchable.disabled);
         description.setPosition(14, 85);
         stage.addActor(description);
+
+        // create settings labels
+        settingLabels = new Label[7];
+        String[] settingStrs = new String[] {
+            "MUSIC VOLUME", "SFX VOLUME", "MUTE MUSIC:", "MUTE SFX:",
+            "SCREEN ANIMATIONS:", "WEATHER ANIMATIONS:", "SHOW FPS:"
+        };
+        for (int i = 0; i < 7; i++) {
+            settingLabels[i] = new Label(settingStrs[i], white);
+            settingLabels[i].setTouchable(Touchable.disabled);
+            settingLabels[i].setFontScale(0.5f);
+            stage.addActor(settingLabels[i]);
+        }
+        for (int i = 0; i < 2; i++) settingLabels[i].setPosition(14, 76 - i * 24);
+        for (int i = 2; i < 4; i++) settingLabels[i].setPosition(14, 26 - (i - 2) * 14);
+
+        createSliders();
+        createCheckboxes();
+    }
+
+    /**
+     * Creates the volume sliders for the music and sound effects
+     */
+    private void createSliders() {
+        musicSlider = new Slider(0.f, 1.f, 0.02f, false, rm.skin);
+        musicSlider.setPosition(14, 64);
+        musicSlider.setSize(75, 10);
+        stage.addActor(musicSlider);
+
+        sfxSlider = new Slider(0.f, 1.f, 0.02f, false, rm.skin);
+        sfxSlider.setPosition(14, 40);
+        sfxSlider.setSize(75, 10);
+        stage.addActor(sfxSlider);
+
+        // slider events
+        musicSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                // save to player's settings
+                game.player.settings.musicVolume = musicSlider.getValue();
+                if (!game.player.settings.muteMusic) rm.setMusicVolume(musicSlider.getValue());
+            }
+        });
+        sfxSlider.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.sfxVolume = sfxSlider.getValue();
+                if (!game.player.settings.muteSfx) rm.setSfxVolume(sfxSlider.getValue());
+            }
+        });
+    }
+
+    /**
+     * Creates the checkboxes for the toggle settings
+     */
+    private void createCheckboxes() {
+        muteMusic = new CheckBox("", rm.skin);
+        muteMusic.setPosition(50, 25);
+        stage.addActor(muteMusic);
+
+        muteSfx = new CheckBox("", rm.skin);
+        muteSfx.setPosition(50, 10);
+        stage.addActor(muteSfx);
+
+        // checkbox events
+        muteMusic.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.muteMusic = muteMusic.isChecked();
+                if (muteMusic.isChecked()) rm.setMusicVolume(0f);
+                else rm.setMusicVolume(game.player.settings.musicVolume);
+            }
+        });
+        muteSfx.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.muteSfx = muteSfx.isChecked();
+                if (muteSfx.isChecked()) rm.setSfxVolume(0f);
+                else rm.setSfxVolume(game.player.settings.sfxVolume);
+            }
+        });
     }
 
     public void show() {
@@ -104,6 +195,12 @@ public class SettingsScreen extends MenuExtensionScreen {
         else {
             super.showSlide(true);
         }
+
+        // set saved settings
+        musicSlider.setValue(game.player.settings.musicVolume);
+        sfxSlider.setValue(game.player.settings.sfxVolume);
+        muteMusic.setChecked(game.player.settings.muteMusic);
+        muteSfx.setChecked(game.player.settings.muteSfx);
     }
 
     @Override
