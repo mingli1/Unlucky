@@ -34,6 +34,7 @@ public class InventoryScreen extends MenuExtensionScreen {
                     game.inventoryUI.renderHealthBars = true;
                 }
             })));
+
         game.inventoryUI.init(true, this.stage);
         game.inventoryUI.start();
     }

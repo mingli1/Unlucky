@@ -238,6 +238,12 @@ public class BattleScene extends BattleUI {
         }
 
         playerHudLabel.setText("HP: " + player.getHp() + "/" + player.getMaxHp());
+        if (player.settings.showEnemyLevels) {
+            enemyHudLabel.setText("LV." + battle.opponent.getLevel() + " " + battle.opponent.getId());
+        }
+        else {
+            enemyHudLabel.setText(battle.opponent.getId());
+        }
 
         // show health bar animation after an entity uses its move
         playerHpBar.update(dt);

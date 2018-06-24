@@ -109,8 +109,7 @@ public class MenuScreen extends MenuExtensionScreen {
                     renderBatch = true;
                 }
             }), Actions.fadeIn(0.5f)));
-        }
-        else {
+        } else {
             renderBatch = true;
             // slide in animation
             stage.addAction(Actions.sequence(Actions.moveTo(

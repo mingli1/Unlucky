@@ -214,6 +214,7 @@ public class BattleEventHandler extends BattleUI {
                 battle.cumulativeDamage = battle.cumulativeHealing = 0;
 
                 player.resetShield();
+                battle.resetBuffs();
                 player.statusEffects.clear();
                 gameScreen.setCurrentEvent(EventState.TRANSITION);
                 gameScreen.transition.start(EventState.BATTLING, EventState.MOVING);
@@ -301,6 +302,8 @@ public class BattleEventHandler extends BattleUI {
             // reset animation
             battle.opponent.setPrevMoveUsed(-1);
             battle.opponent.setMoveUsed(-1);
+            player.resetShield();
+            battle.resetBuffs();
             player.statusEffects.clear();
 
             uiHandler.moveUI.toggleMoveAndOptionUI(false);
@@ -343,6 +346,7 @@ public class BattleEventHandler extends BattleUI {
             player.setPrevMoveUsed(-1);
             player.setMoveUsed(-1);
             player.statusEffects.clear();
+            battle.resetBuffs();
 
             uiHandler.moveUI.toggleMoveAndOptionUI(false);
             uiHandler.currentState = BattleState.DIALOG;

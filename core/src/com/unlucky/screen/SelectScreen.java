@@ -110,6 +110,7 @@ public abstract class SelectScreen extends AbstractScreen {
         Gdx.input.setInputProcessor(stage);
         renderBatch = false;
         batchFade = true;
+
         // fade in animation
         stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
             @Override

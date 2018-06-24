@@ -128,8 +128,10 @@ public class VictoryScreen extends AbstractScreen {
         stage.addActor(game.fps);
 
         Gdx.input.setInputProcessor(stage);
-        renderBatch = false;
+
         batchFade = true;
+
+        renderBatch = false;
         // fade in animation
         stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
             @Override

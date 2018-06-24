@@ -46,6 +46,9 @@ public class SettingsScreen extends MenuExtensionScreen {
     private Slider sfxSlider;
     private CheckBox muteMusic;
     private CheckBox muteSfx;
+    private CheckBox showEnemyLevels;
+    private CheckBox showWeatherAnims;
+    private CheckBox showFps;
 
     public SettingsScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -97,7 +100,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         settingLabels = new Label[7];
         String[] settingStrs = new String[] {
             "MUSIC VOLUME", "SFX VOLUME", "MUTE MUSIC:", "MUTE SFX:",
-            "SCREEN ANIMATIONS:", "WEATHER ANIMATIONS:", "SHOW FPS:"
+            "SHOW ENEMY LEVELS:", "WEATHER ANIMATIONS:", "SHOW FPS:"
         };
         for (int i = 0; i < 7; i++) {
             settingLabels[i] = new Label(settingStrs[i], white);
@@ -107,6 +110,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         }
         for (int i = 0; i < 2; i++) settingLabels[i].setPosition(14, 76 - i * 24);
         for (int i = 2; i < 4; i++) settingLabels[i].setPosition(14, 26 - (i - 2) * 14);
+        for (int i = 4; i < 7; i++) settingLabels[i].setPosition(111, 72 - (i - 4) * 16);
 
         createSliders();
         createCheckboxes();
@@ -156,6 +160,16 @@ public class SettingsScreen extends MenuExtensionScreen {
         muteSfx.setPosition(50, 10);
         stage.addActor(muteSfx);
 
+        showEnemyLevels = new CheckBox("", rm.skin);
+        showEnemyLevels.setPosition(170, 71);
+        stage.addActor(showEnemyLevels);
+        showWeatherAnims = new CheckBox("", rm.skin);
+        showWeatherAnims.setPosition(170, 55);
+        stage.addActor(showWeatherAnims);
+        showFps = new CheckBox("", rm.skin);
+        showFps.setPosition(170, 39);
+        stage.addActor(showFps);
+
         // checkbox events
         muteMusic.addListener(new ChangeListener() {
             @Override
@@ -173,6 +187,29 @@ public class SettingsScreen extends MenuExtensionScreen {
                 else rm.setSfxVolume(game.player.settings.sfxVolume);
             }
         });
+        showEnemyLevels.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.showEnemyLevels = showEnemyLevels.isChecked();
+            }
+        });
+        showWeatherAnims.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.showWeatherAnimations = showWeatherAnims.isChecked();
+                if (inGame) {
+                    if (showWeatherAnims.isChecked()) game.gameScreen.gameMap.setWeather(game.gameScreen.gameMap.tileMap.weather);
+                    else game.gameScreen.gameMap.setWeather(0);
+                }
+            }
+        });
+        showFps.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                game.player.settings.showFps = showFps.isChecked();
+                game.fps.setVisible(showFps.isChecked());
+            }
+        });
     }
 
     public void show() {
@@ -184,7 +221,9 @@ public class SettingsScreen extends MenuExtensionScreen {
             Gdx.input.setInputProcessor(stage);
             renderBatch = false;
             batchFade = true;
-            stage.addAction(Actions.sequence(Actions.alpha(0), Actions.run(new Runnable() {
+
+            stage.addAction(Actions.sequence(Actions.moveTo(0, 0), Actions.alpha(0),
+                Actions.run(new Runnable() {
                 @Override
                 public void run() {
                     renderBatch = true;
@@ -194,6 +233,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         // slide in transition if in menu
         else {
             super.showSlide(true);
+            stage.addAction(Actions.alpha(1));
         }
 
         // set saved settings
@@ -201,6 +241,9 @@ public class SettingsScreen extends MenuExtensionScreen {
         sfxSlider.setValue(game.player.settings.sfxVolume);
         muteMusic.setChecked(game.player.settings.muteMusic);
         muteSfx.setChecked(game.player.settings.muteSfx);
+        showEnemyLevels.setChecked(game.player.settings.showEnemyLevels);
+        showWeatherAnims.setChecked(game.player.settings.showWeatherAnimations);
+        showFps.setChecked(game.player.settings.showFps);
     }
 
     @Override
