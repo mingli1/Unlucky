@@ -290,6 +290,7 @@ public class MoveUI extends BattleUI {
             moveButtons[i].addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (!player.settings.muteSfx) rm.moveselectclick.play(player.settings.sfxVolume);
                     // the move the player clicked
                     if (onCd) turnCounter++;
                     // when not on cooldown reset special moves every turn
@@ -319,6 +320,7 @@ public class MoveUI extends BattleUI {
         optionButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!player.settings.muteSfx) rm.moveselectclick.play(player.settings.sfxVolume);
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 // remove current smove from pool
@@ -357,6 +359,7 @@ public class MoveUI extends BattleUI {
         optionButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!player.settings.muteSfx) rm.moveselectclick.play(player.settings.sfxVolume);
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
                 if (onCd) turnCounter++;

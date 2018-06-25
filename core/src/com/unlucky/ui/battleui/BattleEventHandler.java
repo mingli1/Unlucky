@@ -61,7 +61,7 @@ public class BattleEventHandler extends BattleUI {
     private float posTime = 0;
 
     public BattleEventHandler(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
-                              BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
+                              BattleUIHandler uiHandler, Stage stage, final ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
 
         this.stage = stage;
@@ -91,16 +91,19 @@ public class BattleEventHandler extends BattleUI {
         clickLabel.setSize(200, 120);
         clickLabel.setPosition(0, 0);
 
+        final Player p = player;
         clickLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (dialogIndex + 1 == currentDialog.length && endCycle) {
+                    if (!p.settings.muteSfx) rm.textprogression.play(p.settings.sfxVolume);
                     // the text animation has run through every element of the text array
                     endDialog();
                     handleBattleEvent(nextEvent);
                 }
                 // after a cycle of text animation ends, clicking the UI goes to the next cycle
                 else if (endCycle && dialogIndex < currentDialog.length) {
+                    if (!p.settings.muteSfx) rm.textprogression.play(p.settings.sfxVolume);
                     dialogIndex++;
                     reset();
                     currentText = currentDialog[dialogIndex];
@@ -319,6 +322,7 @@ public class BattleEventHandler extends BattleUI {
                 return true;
             }
             else {
+                if (!player.settings.muteSfx) rm.death.play(player.settings.sfxVolume);
                 startDialog(new String[] {
                         "Oh no, you took fatal damage and died!",
                         "You will lose " + Util.DEATH_PENALTY +
@@ -366,6 +370,8 @@ public class BattleEventHandler extends BattleUI {
             // defeated enemy and gained experience and gold
             // maybe the player gets an item
             else {
+                if (!player.settings.muteSfx) rm.death.play(player.settings.sfxVolume);
+
                 int expGained = battle.getBattleExp();
                 int goldGained = battle.getGoldGained();
                 Item itemGained = battle.getItemObtained(rm);

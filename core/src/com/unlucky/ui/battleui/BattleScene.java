@@ -77,6 +77,8 @@ public class BattleScene extends BattleUI {
     // weather conditions
     private ParticleFactory factory;
 
+    private boolean sfxPlaying = false;
+
     public BattleScene(GameScreen gameScreen, TileMap tileMap, Player player, Battle battle,
                        BattleUIHandler uiHandler, Stage stage, ResourceManager rm) {
         super(gameScreen, tileMap, player, battle, uiHandler, rm);
@@ -274,20 +276,45 @@ public class BattleScene extends BattleUI {
             if (attackAnims[entity.getMoveUsed()].currentAnimation.isAnimationFinished()) {
                 attackAnims[entity.getMoveUsed()].currentAnimation.stop();
                 entity.setMoveUsed(-1);
+                sfxPlaying = false;
                 // start hit animation
                 showHitAnim = true;
+                if (!player.settings.muteSfx) rm.hit.play(player.settings.sfxVolume);
                 if (entity == player) lastHit = 0;
                 else lastHit = 1;
             } else {
+                if (entity.getMoveUsed() == 0) {
+                    if (!player.settings.muteSfx && !sfxPlaying) {
+                        rm.blueattack.play(player.settings.sfxVolume);
+                        sfxPlaying = true;
+                    }
+                }
+                else if (entity.getMoveUsed() == 1) {
+                    if (!player.settings.muteSfx && !sfxPlaying) {
+                        rm.redattack.play(player.settings.sfxVolume);
+                        sfxPlaying = true;
+                    }
+                }
+                else {
+                    if (!player.settings.muteSfx && !sfxPlaying) {
+                        rm.yellowattack.play(player.settings.sfxVolume);
+                        sfxPlaying = true;
+                    }
+                }
                 attackAnims[entity.getMoveUsed()].update(dt);
             }
         }
         // heal
         else if (entity.getMoveUsed() == 3 && entity.getMoveUsed() >= 0) {
             if (healAnim.currentAnimation.isAnimationFinished()) {
+                sfxPlaying = false;
                 healAnim.currentAnimation.stop();
                 entity.setMoveUsed(-1);
             } else {
+                if (!player.settings.muteSfx && !sfxPlaying) {
+                    rm.heal.play(player.settings.sfxVolume);
+                    sfxPlaying = true;
+                }
                 healAnim.update(dt);
             }
         }

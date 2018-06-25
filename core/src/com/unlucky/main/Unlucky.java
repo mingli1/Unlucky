@@ -79,6 +79,7 @@ public class Unlucky extends Game {
         player.levelUp(3000);
         player.applyLevelUp();
         player.maxLevel = 10;
+        player.maxWorld = 1;
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));

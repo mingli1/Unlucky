@@ -108,6 +108,14 @@ public class ResourceManager {
     public Sound buttonclick1;
     public Sound buttonclick2;
     public Sound invselectclick;
+    public Sound moveselectclick;
+    public Sound textprogression;
+    public Sound hit;
+    public Sound blueattack;
+    public Sound redattack;
+    public Sound yellowattack;
+    public Sound heal;
+    public Sound death;
 
     // Worlds
     public Array<World> worlds = new Array<World>();
@@ -146,6 +154,14 @@ public class ResourceManager {
         assetManager.load("sfx/button_click1.ogg", Sound.class);
         assetManager.load("sfx/button_click2.ogg", Sound.class);
         assetManager.load("sfx/inventory_select_click.ogg", Sound.class);
+        assetManager.load("sfx/move_select_click.ogg", Sound.class);
+        assetManager.load("sfx/text_progression.wav", Sound.class);
+        assetManager.load("sfx/hit.ogg", Sound.class);
+        assetManager.load("sfx/blue_attack.ogg", Sound.class);
+        assetManager.load("sfx/red_attack.ogg", Sound.class);
+        assetManager.load("sfx/yellow_attack.ogg", Sound.class);
+        assetManager.load("sfx/heal.ogg", Sound.class);
+        assetManager.load("sfx/death.ogg", Sound.class);
 
         assetManager.finishLoading();
 
@@ -231,6 +247,14 @@ public class ResourceManager {
         buttonclick1 = assetManager.get("sfx/button_click1.ogg", Sound.class);
         buttonclick2 = assetManager.get("sfx/button_click2.ogg", Sound.class);
         invselectclick = assetManager.get("sfx/inventory_select_click.ogg", Sound.class);
+        moveselectclick = assetManager.get("sfx/move_select_click.ogg", Sound.class);
+        textprogression = assetManager.get("sfx/text_progression.wav", Sound.class);
+        hit = assetManager.get("sfx/hit.ogg", Sound.class);
+        blueattack = assetManager.get("sfx/blue_attack.ogg", Sound.class);
+        redattack = assetManager.get("sfx/red_attack.ogg", Sound.class);
+        yellowattack = assetManager.get("sfx/yellow_attack.ogg", Sound.class);
+        heal = assetManager.get("sfx/heal.ogg", Sound.class);
+        death = assetManager.get("sfx/death.ogg", Sound.class);
 
         loadWorlds();
         loadMoves();
@@ -532,6 +556,14 @@ public class ResourceManager {
         buttonclick1.dispose();
         buttonclick2.dispose();
         invselectclick.dispose();
+        moveselectclick.dispose();
+        textprogression.dispose();
+        hit.dispose();
+        blueattack.dispose();
+        redattack.dispose();
+        yellowattack.dispose();
+        heal.dispose();
+        death.dispose();
     }
 
 }
