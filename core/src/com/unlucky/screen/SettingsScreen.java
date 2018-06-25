@@ -57,6 +57,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         stage.addActor(exitButton);
         exitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 if (inGame) {
                     game.gameScreen.resetGame = false;
                     setFadeScreen(game.gameScreen);
@@ -143,7 +144,6 @@ public class SettingsScreen extends MenuExtensionScreen {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.player.settings.sfxVolume = sfxSlider.getValue();
-                if (!game.player.settings.muteSfx) rm.setSfxVolume(sfxSlider.getValue());
             }
         });
     }
@@ -174,6 +174,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         muteMusic.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.muteMusic = muteMusic.isChecked();
                 if (muteMusic.isChecked()) rm.setMusicVolume(0f);
                 else rm.setMusicVolume(game.player.settings.musicVolume);
@@ -182,20 +183,21 @@ public class SettingsScreen extends MenuExtensionScreen {
         muteSfx.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.muteSfx = muteSfx.isChecked();
-                if (muteSfx.isChecked()) rm.setSfxVolume(0f);
-                else rm.setSfxVolume(game.player.settings.sfxVolume);
             }
         });
         showEnemyLevels.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.showEnemyLevels = showEnemyLevels.isChecked();
             }
         });
         showWeatherAnims.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.showWeatherAnimations = showWeatherAnims.isChecked();
                 if (inGame) {
                     if (showWeatherAnims.isChecked()) game.gameScreen.gameMap.setWeather(game.gameScreen.gameMap.tileMap.weather);
@@ -206,6 +208,7 @@ public class SettingsScreen extends MenuExtensionScreen {
         showFps.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.showFps = showFps.isChecked();
                 game.fps.setVisible(showFps.isChecked());
             }

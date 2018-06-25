@@ -61,6 +61,7 @@ public class StatisticsScreen extends MenuExtensionScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.menuScreen.transitionIn = 2;
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setSlideScreen(game.menuScreen, false);
             }
         });

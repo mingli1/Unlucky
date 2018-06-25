@@ -83,7 +83,7 @@ public class InventoryUI extends UI {
     private boolean itemSelected = false;
     private Item currentItem;
 
-    public InventoryUI(final Unlucky game, Player player, ResourceManager rm) {
+    public InventoryUI(final Unlucky game, Player player, final ResourceManager rm) {
         super(game, player, rm);
 
         ui = new MovingImageUI(rm.inventoryui372x212, new Vector2(200, 7), new Vector2(7, 7), 225.f, 186, 106);
@@ -157,6 +157,7 @@ public class InventoryUI extends UI {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 end();
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 if (inMenu) {
                     removeInventoryActors();
                     game.menuScreen.transitionIn = 1;
@@ -280,6 +281,7 @@ public class InventoryUI extends UI {
             public void dragStart(InputEvent event, float x, float y, int pointer) {
                 // can't allow dragging equips off while in game
                 if (inMenu || !item.equipped) {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     dragging = true;
                     tooltip.hide();
                     unselectItem();
@@ -308,6 +310,8 @@ public class InventoryUI extends UI {
                 // origin positions
                 int ax = (int) (item.actor.getX() + item.actor.getWidth() / 2);
                 int ay = (int) (item.actor.getY() + item.actor.getHeight() / 2);
+
+                if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
 
                 if (item.equipped && inMenu) {
                     if (INVENTORY_AREA.contains(ax, ay)) {
@@ -400,6 +404,7 @@ public class InventoryUI extends UI {
                         unselectItem();
                     }
                     else {
+                        if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                         itemSelected = true;
                         currentItem = item;
                         showSelectedSlot(item);
@@ -493,6 +498,7 @@ public class InventoryUI extends UI {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 tooltip.setVisible(false);
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 // only equips can be enchanted
                 if (currentItem != null && currentItem.type >= 2 && currentItem.type <= 9) {
                     new Dialog("Enchant", rm.dialogSkin) {
@@ -509,6 +515,7 @@ public class InventoryUI extends UI {
 
                         @Override
                         protected void result(Object object) {
+                            if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                             if (object.equals("yes")) {
                                 enchant();
                             }
@@ -523,6 +530,7 @@ public class InventoryUI extends UI {
         invButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 if (currentItem != null) {
                     new Dialog("Sell", rm.dialogSkin) {
                         {
@@ -538,6 +546,7 @@ public class InventoryUI extends UI {
 
                         @Override
                         protected void result(Object object) {
+                            if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                             if (object.equals("yes")) {
                                 player.addGold(currentItem.sell);
                                 player.inventory.items[currentItem.index].actor.remove();
@@ -572,6 +581,7 @@ public class InventoryUI extends UI {
             }
             @Override
             protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 if (object.equals("yes")) {
                     item.bonusEnchantChance = scroll.eChance;
                     scroll.actor.remove();
@@ -614,6 +624,7 @@ public class InventoryUI extends UI {
 
                 @Override
                 protected void result(Object object) {
+                    if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                     tooltip.setVisible(true);
                     invButtonLabels[0].setText("ENCHANT FOR\n" + currentItem.enchantCost + " g");
                     invButtonLabels[1].setText("SELL FOR\n" + currentItem.sell + " g");
@@ -638,6 +649,7 @@ public class InventoryUI extends UI {
 
                     @Override
                     protected void result(Object object) {
+                        if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                         player.inventory.items[currentItem.index].actor.remove();
                         player.inventory.removeItem(currentItem.index);
                         unselectItem();
@@ -658,6 +670,7 @@ public class InventoryUI extends UI {
 
                     @Override
                     protected void result(Object object) {
+                        if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                         tooltip.setVisible(true);
                     }
 
@@ -689,6 +702,7 @@ public class InventoryUI extends UI {
 
             @Override
             protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 if (object.equals("yes")) {
                     if (currentItem.hp < 0) player.percentagePotion(-currentItem.hp);
                     else if (currentItem.exp > 0) player.addExp((int) ((currentItem.exp / 100f) * player.getMaxExp()));

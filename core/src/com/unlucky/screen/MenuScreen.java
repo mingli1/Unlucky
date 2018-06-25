@@ -127,6 +127,7 @@ public class MenuScreen extends MenuExtensionScreen {
         playButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setFadeScreen(game.worldSelectScreen);
             }
         });
@@ -158,12 +159,14 @@ public class MenuScreen extends MenuExtensionScreen {
         optionButtons[0].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setSlideScreen(game.inventoryScreen, false);
             }
         });
         // settings screen
         optionButtons[1].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 game.settingsScreen.inGame = false;
                 setSlideScreen(game.settingsScreen, true);
             }
@@ -171,12 +174,14 @@ public class MenuScreen extends MenuExtensionScreen {
         // shop screen
         optionButtons[2].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setSlideScreen(game.shopScreen, false);
             }
         });
         // smove screen
         optionButtons[3].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setSlideScreen(game.smoveScreen, false);
             }
         });
@@ -184,6 +189,7 @@ public class MenuScreen extends MenuExtensionScreen {
         optionButtons[4].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 setSlideScreen(game.statisticsScreen, true);
             }
         });
@@ -191,6 +197,7 @@ public class MenuScreen extends MenuExtensionScreen {
         optionButtons[5].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 credits.setVisible(true);
             }
         });
@@ -221,6 +228,7 @@ public class MenuScreen extends MenuExtensionScreen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 credits.setVisible(false);
             }
         });

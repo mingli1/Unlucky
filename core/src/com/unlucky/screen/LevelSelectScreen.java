@@ -104,6 +104,7 @@ public class LevelSelectScreen extends SelectScreen {
         enterButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 if (worldIndex <= game.player.maxWorld) {
                     // if the player's inventory is full give a warning
                     if (game.player.inventory.isFull()) {
@@ -202,6 +203,7 @@ public class LevelSelectScreen extends SelectScreen {
             b.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     currentLevelIndex = index;
                     selectAt(currentLevelIndex);
                     String levelName = rm.worlds.get(worldIndex).levels[currentLevelIndex].name;

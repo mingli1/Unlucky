@@ -1,5 +1,6 @@
 package com.unlucky.map;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -49,6 +50,9 @@ public class GameMap {
     private float lightningTime = 0;
     private float durationTime = 0;
 
+    // music
+    public Music mapTheme;
+
     // what the player obtained during the map
     public Array<Item> itemsObtained;
     public int expObtained;
@@ -78,6 +82,9 @@ public class GameMap {
         this.levelIndex = levelIndex;
         this.avgLevel = rm.worlds.get(worldIndex).levels[levelIndex].avgLevel;
 
+        if (worldIndex == 0) mapTheme = rm.slimeForestTheme;
+        else if (worldIndex == 1) mapTheme = rm.spookyGraveyardTheme;
+
         // reset
         itemsObtained.clear();
         expObtained = 0;
@@ -90,8 +97,14 @@ public class GameMap {
         // set lighting
         setDarkness(tileMap.dark);
         // set weather
-        setWeather(tileMap.weather);
+        if (player.settings.showWeatherAnimations) setWeather(tileMap.weather);
+        else setWeather(0);
         player.setMap(tileMap);
+
+        if (mapTheme != null) {
+            mapTheme.setLooping(true);
+            mapTheme.play();
+        }
     }
 
     /**
@@ -221,6 +234,7 @@ public class GameMap {
                         public void run() {
                             switchable = true;
                             gameScreen.setClickable(true);
+                            mapTheme.stop();
                             gameScreen.getGame().setScreen(gameScreen.getGame().victoryScreen);
                         }
                     })));

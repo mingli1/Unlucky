@@ -19,8 +19,6 @@ public class World {
     public int numLevels;
     // the number of levels the player is allowed to access
     public int numLevelsEnabled;
-    // current selected level in this world
-    public int currentLevelIndex;
 
     // the levels this world contains
     public Level[] levels;
@@ -32,7 +30,6 @@ public class World {
         this.numLevels = numLevels;
         this.levels = levels;
         this.numLevelsEnabled = 3;
-        this.currentLevelIndex = 0;
     }
 
 }

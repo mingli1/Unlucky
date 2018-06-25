@@ -96,6 +96,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 unselectSlot();
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 smoveButtons[0].setStyle(addButtonStyle[1]);
                 smoveButtons[0].setTouchable(Touchable.disabled);
                 smoveButtons[1].setStyle(removeButtonStyle[1]);
@@ -166,7 +167,9 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             }
 
             @Override
-            protected void result(Object object) {}
+            protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
+            }
         };
         warningFullDialog.getTitleLabel().setAlignment(Align.center);
     }
@@ -235,6 +238,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         // add button
         smoveButtons[0].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 unselectSlot();
                 add();
             }
@@ -243,6 +247,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
         // remove button
         smoveButtons[1].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 if (smoveToRemove != -1) {
                     unselectSlot();
                     smoveButtons[1].setStyle(removeButtonStyle[1]);
@@ -277,7 +282,9 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                     }
 
                     @Override
-                    protected void result(Object object) {}
+                    protected void result(Object object) {
+                        if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
+                    }
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
                 return;
             }
@@ -342,6 +349,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                     smoveToRemove = -1;
                 }
                 else {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     // show selected slot
                     selectedSlot.setPosition(pos.x, pos.y);
                     selectedSlot.setVisible(true);
@@ -461,6 +469,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                 smoveButtons[1].setStyle(removeButtonStyle[1]);
                 smoveButtons[1].setTouchable(Touchable.disabled);
                 if (button.isChecked()) {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     smoveToAdd = smove;
                     smoveButtons[0].setStyle(addButtonStyle[0]);
                     smoveButtons[0].setTouchable(Touchable.enabled);

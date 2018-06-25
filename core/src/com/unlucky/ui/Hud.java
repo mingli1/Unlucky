@@ -54,7 +54,7 @@ public class Hud extends UI {
     private Label loss;
 
     public Image shade;
-    private Dialog settingsDialog;
+    public Dialog settingsDialog;
 
     public Hud(final GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
@@ -87,13 +87,29 @@ public class Hud extends UI {
             }
             @Override
             protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 if (object.equals("back")) {
                     shade.setVisible(false);
                     toggle(true);
+                    gameScreen.gameMap.mapTheme.play();
                     gameScreen.setCurrentEvent(EventState.MOVING);
                 }
                 else if (object.equals("settings")) {
-                    // TODO: link to settings screen
+                    game.settingsScreen.inGame = true;
+                    game.settingsScreen.worldIndex = gameScreen.gameMap.worldIndex;
+                    if (gameScreen.isClickable()) {
+                        gameScreen.setClickable(false);
+                        gameScreen.setBatchFade(false);
+                        // fade out animation
+                        stage.addAction(Actions.sequence(Actions.fadeOut(0.3f),
+                            Actions.run(new Runnable() {
+                                @Override
+                                public void run() {
+                                    gameScreen.setClickable(true);
+                                    game.setScreen(game.settingsScreen);
+                                }
+                            })));
+                    }
                 }
                 else if (object.equals("quit")) {
                     quit();
@@ -286,6 +302,7 @@ public class Hud extends UI {
         deathGroup.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 backToMenu();
             }
         });
@@ -312,6 +329,7 @@ public class Hud extends UI {
                     @Override
                     public void run() {
                         gameScreen.setClickable(true);
+                        gameScreen.gameMap.mapTheme.stop();
                         game.setScreen(game.menuScreen);
                     }
                 })));
@@ -351,6 +369,7 @@ public class Hud extends UI {
             }
             @Override
             protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 if (object.equals("yes")) {
                     loseObtained();
                     player.setHp(player.getMaxHp());
@@ -410,6 +429,7 @@ public class Hud extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 shade.setVisible(true);
                 toggle(false);
+                gameScreen.gameMap.mapTheme.pause();
                 gameScreen.setCurrentEvent(EventState.PAUSE);
                 settingsDialog.show(stage);
             }

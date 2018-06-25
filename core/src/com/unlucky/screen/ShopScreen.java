@@ -88,7 +88,9 @@ public class ShopScreen extends MenuExtensionScreen {
             }
 
             @Override
-            protected void result(Object object) {}
+            protected void result(Object object) {
+                if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
+            }
         };
         warningFullDialog.getTitleLabel().setAlignment(Align.center);
     }
@@ -120,6 +122,7 @@ public class ShopScreen extends MenuExtensionScreen {
         exitButton.setPosition(188, 108);
         exitButton.addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 removeInventoryActors();
                 unselectItem();
                 game.menuScreen.transitionIn = 1;
@@ -224,6 +227,7 @@ public class ShopScreen extends MenuExtensionScreen {
             tabButtons[i].addListener(new ChangeListener() {
                 @Override
                 public void changed(ChangeEvent event, Actor actor) {
+                    if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                     tabContents[index].setVisible(tabButtons[index].isChecked());
                 }
             });
@@ -286,6 +290,7 @@ public class ShopScreen extends MenuExtensionScreen {
                     @Override
                     public void changed(ChangeEvent event, Actor actor) {
                         if (b.isChecked()) {
+                            if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                             currentShopItem = item;
                             // enable buying
                             invButtons[0].setTouchable(Touchable.enabled);
@@ -343,6 +348,7 @@ public class ShopScreen extends MenuExtensionScreen {
                     unselectItem();
                 }
                 else {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     itemSelected = true;
                     currentItem = item;
                     showSelectedSlot(item);
@@ -378,6 +384,7 @@ public class ShopScreen extends MenuExtensionScreen {
         // buy
         invButtons[0].addListener(new ClickListener() {
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 unselectItem();
                 buy();
             }
@@ -386,6 +393,7 @@ public class ShopScreen extends MenuExtensionScreen {
         invButtons[1].addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick1.play(game.player.settings.sfxVolume);
                 sell();
             }
         });
@@ -411,7 +419,9 @@ public class ShopScreen extends MenuExtensionScreen {
                     }
 
                     @Override
-                    protected void result(Object object) {}
+                    protected void result(Object object) {
+                        if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
+                    }
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
                 return;
             }
@@ -429,6 +439,7 @@ public class ShopScreen extends MenuExtensionScreen {
 
                 @Override
                 protected void result(Object object) {
+                    if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                     if (object.equals("yes")) {
                         player.addGold(-currentShopItem.price);
                         // a copy of the shop item
@@ -483,6 +494,7 @@ public class ShopScreen extends MenuExtensionScreen {
 
                 @Override
                 protected void result(Object object) {
+                    if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                     if (object.equals("yes")) {
                         player.addGold(currentItem.sell);
                         player.inventory.items[currentItem.index].actor.remove();

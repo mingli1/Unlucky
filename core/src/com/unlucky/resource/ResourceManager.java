@@ -3,6 +3,7 @@ package com.unlucky.resource;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -98,8 +99,15 @@ public class ResourceManager {
     public TextureRegion redarrow10x9;
 
     // Music
+    public Music menuTheme;
     public Music slimeForestTheme;
     public Music spookyGraveyardTheme;
+
+    // Sound Effects
+    public Sound buttonclick0;
+    public Sound buttonclick1;
+    public Sound buttonclick2;
+    public Sound invselectclick;
 
     // Worlds
     public Array<World> worlds = new Array<World>();
@@ -130,8 +138,14 @@ public class ResourceManager {
         assetManager.load("skins/ui.atlas", TextureAtlas.class);
         assetManager.load("skins/dialog.atlas", TextureAtlas.class);
 
+        assetManager.load("music/menu_theme.ogg", Music.class);
         assetManager.load("music/slime_forest_theme.ogg", Music.class);
         assetManager.load("music/spooky_graveyard_theme.ogg", Music.class);
+
+        assetManager.load("sfx/button_click0.ogg", Sound.class);
+        assetManager.load("sfx/button_click1.ogg", Sound.class);
+        assetManager.load("sfx/button_click2.ogg", Sound.class);
+        assetManager.load("sfx/inventory_select_click.ogg", Sound.class);
 
         assetManager.finishLoading();
 
@@ -208,8 +222,15 @@ public class ResourceManager {
         pixel10.setUseIntegerPositions(false);
 
         // load music
+        menuTheme = assetManager.get("music/menu_theme.ogg", Music.class);
         slimeForestTheme = assetManager.get("music/slime_forest_theme.ogg", Music.class);
         spookyGraveyardTheme = assetManager.get("music/spooky_graveyard_theme.ogg", Music.class);
+
+        // load sfx
+        buttonclick0 = assetManager.get("sfx/button_click0.ogg", Sound.class);
+        buttonclick1 = assetManager.get("sfx/button_click1.ogg", Sound.class);
+        buttonclick2 = assetManager.get("sfx/button_click2.ogg", Sound.class);
+        invselectclick = assetManager.get("sfx/inventory_select_click.ogg", Sound.class);
 
         loadWorlds();
         loadMoves();
@@ -486,12 +507,31 @@ public class ResourceManager {
         return getItem(MathUtils.random(3));
     }
 
+    /**
+     * Sets the volume of all music in the game
+     * @param volume
+     */
+    public void setMusicVolume(float volume) {
+        menuTheme.setVolume(volume);
+        slimeForestTheme.setVolume(volume);
+        spookyGraveyardTheme.setVolume(volume);
+    }
+
     public void dispose() {
         assetManager.dispose();
         pixel10.dispose();
         atlas.dispose();
         skin.dispose();
         dialogSkin.dispose();
+
+        menuTheme.dispose();
+        slimeForestTheme.dispose();
+        spookyGraveyardTheme.dispose();
+
+        buttonclick0.dispose();
+        buttonclick1.dispose();
+        buttonclick2.dispose();
+        invselectclick.dispose();
     }
 
 }

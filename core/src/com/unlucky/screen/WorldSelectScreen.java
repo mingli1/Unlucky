@@ -58,6 +58,7 @@ public class WorldSelectScreen extends SelectScreen {
         enterButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 if (clickable) {
                     clickable = false;
                     batchFade = false;
@@ -121,6 +122,7 @@ public class WorldSelectScreen extends SelectScreen {
             b.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
+                    if (!game.player.settings.muteSfx) rm.invselectclick.play(game.player.settings.sfxVolume);
                     worldIndex = index;
                     selectAt(worldIndex);
                     fullDescLabel.setText(rm.worlds.get(worldIndex).longDesc);

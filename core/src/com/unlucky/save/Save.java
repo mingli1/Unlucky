@@ -88,8 +88,6 @@ public class Save {
         player.settings = psave.settings;
         if (player.settings.muteMusic) rm.setMusicVolume(0f);
         else rm.setMusicVolume(player.settings.musicVolume);
-        if (player.settings.muteSfx) rm.setSfxVolume(0f);
-        else rm.setSfxVolume(player.settings.sfxVolume);
     }
 
     /**

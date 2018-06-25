@@ -166,6 +166,7 @@ public abstract class SelectScreen extends AbstractScreen {
         exitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                if (!game.player.settings.muteSfx) rm.buttonclick0.play(game.player.settings.sfxVolume);
                 game.menuScreen.transitionIn = 0;
                 setFadeScreen(screen);
             }

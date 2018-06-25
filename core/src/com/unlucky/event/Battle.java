@@ -91,7 +91,7 @@ public class Battle {
         if (opponent.isBoss()) redReaperDebuff = ((Boss) opponent).bossId == 1;
 
         // accounting for player accuracy or accuracy buff
-        if (Util.isSuccess(player.getAccuracy() - (redReaperDebuff ? 30 : 0)) || buffs[Util.FOCUS]) {
+        if (Util.isSuccess(player.getAccuracy() - (redReaperDebuff ? 40 : 0)) || buffs[Util.FOCUS]) {
             // accurate or wide
             if (move.type < 2) {
                 int damage = MathUtils.random(Math.round(move.minDamage), Math.round(move.maxDamage));

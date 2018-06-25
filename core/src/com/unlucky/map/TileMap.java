@@ -329,7 +329,7 @@ public class TileMap {
         if (ret == 240) return "a11|3|3";
         if (ret == 63) return "a12|2|2";
         if (ret == 79) return "a13|6|4";
-        if (ret == 94) return "a14|2|2";
+        if (ret == 94 || ret == 95) return "a14|2|2";
         return id;
     }
 

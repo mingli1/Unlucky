@@ -61,6 +61,7 @@ public class Unlucky extends Game {
     public StatisticsScreen statisticsScreen;
     public InventoryUI inventoryUI;
     public VictoryScreen victoryScreen;
+    public SettingsScreen settingsScreen;
 
     // main bg
     public Background[] menuBackground;
@@ -75,11 +76,14 @@ public class Unlucky extends Game {
 
         save = new Save(player, "save.json");
         save.load(rm);
+        player.levelUp(3000);
+        player.applyLevelUp();
+        player.maxLevel = 10;
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
         fps.setFontScale(0.5f);
-        fps.setVisible(true);
+        fps.setVisible(player.settings.showFps);
 
         inventoryUI = new InventoryUI(this, player, rm);
         menuScreen = new MenuScreen(this, rm);
@@ -91,6 +95,7 @@ public class Unlucky extends Game {
         smoveScreen = new SpecialMoveScreen(this, rm);
         statisticsScreen = new StatisticsScreen(this, rm);
         victoryScreen = new VictoryScreen(this, rm);
+        settingsScreen = new SettingsScreen(this, rm);
 
         // create parallax background
         menuBackground = new Background[3];
@@ -123,6 +128,13 @@ public class Unlucky extends Game {
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             save.save();
         }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
+            System.out.println("\nSMOVESET: ");
+            for (int i = 0; i < player.smoveset.smoveset.size; i++) {
+                System.out.println(player.smoveset.smoveset.get(i).name);
+            }
+        }
 	}
 
 	public void dispose() {
@@ -139,6 +151,7 @@ public class Unlucky extends Game {
         statisticsScreen.dispose();
         inventoryUI.dispose();
         victoryScreen.dispose();
+        settingsScreen.dispose();
 
         GLProfiler.disable();
 	}
