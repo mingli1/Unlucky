@@ -164,6 +164,11 @@ public class GameMap {
      * Applies the penalties to the player
      */
     public void setDeath() {
+        if (weather != WeatherType.NORMAL) {
+            rm.lightrain.stop();
+            rm.heavyrain.stop();
+        }
+
         // gold and exp lost
         int goldLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getGold());
         int expLost = (int) ((Util.DEATH_PENALTY / 100f) * (float) player.getExp());
@@ -202,6 +207,12 @@ public class GameMap {
         // engage in battle if found
         if (player.isBattling()) {
             gameScreen.hud.toggle(false);
+            mapTheme.pause();
+            if (!player.settings.muteMusic) rm.battlestart.play(player.settings.musicVolume);
+            if (weather != WeatherType.NORMAL) {
+                rm.lightrain.stop(soundId);
+                rm.heavyrain.stop(soundId);
+            }
             gameScreen.setCurrentEvent(EventState.TRANSITION);
             gameScreen.transition.start(EventState.MOVING, EventState.BATTLING);
         }

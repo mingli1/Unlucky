@@ -94,7 +94,7 @@ public class Hud extends UI {
                     toggle(true);
 
                     // play music and sfx
-                    gameScreen.gameMap.mapTheme.play();
+                    if (!player.settings.muteMusic) gameScreen.gameMap.mapTheme.play();
                     if (!player.settings.muteSfx) {
                         if (gameScreen.gameMap.weather == WeatherType.RAIN) {
                             gameScreen.gameMap.soundId = rm.lightrain.play(player.settings.sfxVolume);

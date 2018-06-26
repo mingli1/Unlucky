@@ -6,6 +6,8 @@ import com.unlucky.entity.Player;
 import com.unlucky.event.Battle;
 import com.unlucky.event.EventState;
 import com.unlucky.main.Unlucky;
+import com.unlucky.map.WeatherType;
+import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
 import com.unlucky.ui.battleui.BattleUIHandler;
@@ -23,6 +25,7 @@ public class TransitionScreen {
     private BattleUIHandler uiHandler;
     private Hud hud;
     private Player player;
+    private ResourceManager rm;
 
     // determine which one to render when entering and exiting battle
     public boolean renderMap = false;
@@ -56,12 +59,13 @@ public class TransitionScreen {
     private float x0, x1;
     private float y0, y1;
 
-    public TransitionScreen(GameScreen gameScreen, Battle battle, BattleUIHandler uiHandler, Hud hud, Player player) {
+    public TransitionScreen(GameScreen gameScreen, Battle battle, BattleUIHandler uiHandler, Hud hud, Player player, ResourceManager rm) {
         this.gameScreen = gameScreen;
         this.battle = battle;
         this.uiHandler = uiHandler;
         this.hud = hud;
         this.player = player;
+        this.rm = rm;
 
         shapeRenderer = new ShapeRenderer();
 
@@ -110,6 +114,10 @@ public class TransitionScreen {
         // transition into battle
         if (prev == EventState.MOVING && next == EventState.BATTLING) {
             battle.begin(player.getOpponent());
+            if (!player.settings.muteMusic) {
+                rm.battleTheme.setLooping(true);
+                rm.battleTheme.play();
+            }
             uiHandler.engage(player.getOpponent());
             hud.toggle(false);
             gameScreen.setCurrentEvent(EventState.BATTLING);
@@ -124,10 +132,32 @@ public class TransitionScreen {
         // transition out of battle
         else if (prev == EventState.BATTLING && next == EventState.MOVING) {
             battle.end();
+            if (!player.settings.muteMusic) gameScreen.gameMap.mapTheme.play();
+            if (!player.settings.muteSfx) {
+                if (gameScreen.gameMap.weather == WeatherType.RAIN) {
+                    gameScreen.gameMap.soundId = rm.lightrain.play(player.settings.sfxVolume);
+                    rm.lightrain.setLooping(gameScreen.gameMap.soundId, true);
+                }
+                else if (gameScreen.gameMap.weather == WeatherType.HEAVY_RAIN || gameScreen.gameMap.weather == WeatherType.THUNDERSTORM) {
+                    gameScreen.gameMap.soundId = rm.heavyrain.play(player.settings.sfxVolume);
+                    rm.heavyrain.setLooping(gameScreen.gameMap.soundId, true);
+                }
+            }
         }
         // transition out of level up screen
         else if (prev == EventState.LEVEL_UP && next == EventState.MOVING) {
             battle.end();
+            if (!player.settings.muteMusic) gameScreen.gameMap.mapTheme.play();
+            if (!player.settings.muteSfx) {
+                if (gameScreen.gameMap.weather == WeatherType.RAIN) {
+                    gameScreen.gameMap.soundId = rm.lightrain.play(player.settings.sfxVolume);
+                    rm.lightrain.setLooping(gameScreen.gameMap.soundId, true);
+                }
+                else if (gameScreen.gameMap.weather == WeatherType.HEAVY_RAIN || gameScreen.gameMap.weather == WeatherType.THUNDERSTORM) {
+                    gameScreen.gameMap.soundId = rm.heavyrain.play(player.settings.sfxVolume);
+                    rm.heavyrain.setLooping(gameScreen.gameMap.soundId, true);
+                }
+            }
         }
         // transition into death screen
         else if (prev == EventState.BATTLING && next == EventState.DEATH) {
@@ -163,14 +193,14 @@ public class TransitionScreen {
                     break;
                 // horizontal split
                 case 4:
-                    x0 += Util.TRANSITION_SCREEN_SPEED * dt;
-                    x1 -= Util.TRANSITION_SCREEN_SPEED * dt;
+                    x0 += (Util.TRANSITION_SCREEN_SPEED / 2) * dt;
+                    x1 -= (Util.TRANSITION_SCREEN_SPEED / 2) * dt;
                     if (x0 >= Unlucky.V_WIDTH / 2 && x1 <= Unlucky.V_WIDTH / 2) end();
                     break;
                 // vertical split
                 case 5:
-                    y0 += Util.TRANSITION_SCREEN_SPEED * dt;
-                    y1 -= Util.TRANSITION_SCREEN_SPEED * dt;
+                    y0 += (Util.TRANSITION_SCREEN_SPEED / 2) * dt;
+                    y1 -= (Util.TRANSITION_SCREEN_SPEED / 2) * dt;
                     if (y0 >= Unlucky.V_HEIGHT / 2 && y1 <= Unlucky.V_HEIGHT / 2) end();
                     break;
             }

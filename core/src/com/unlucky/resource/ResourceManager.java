@@ -102,6 +102,7 @@ public class ResourceManager {
     public Music menuTheme;
     public Music slimeForestTheme;
     public Music spookyGraveyardTheme;
+    public Music battleTheme;
 
     // Sound Effects
     public Sound buttonclick0;
@@ -122,6 +123,7 @@ public class ResourceManager {
     public Sound teleport;
     public Sound movement;
     public Sound finish;
+    public Sound battlestart;
 
     // Worlds
     public Array<World> worlds = new Array<World>();
@@ -155,6 +157,7 @@ public class ResourceManager {
         assetManager.load("music/menu_theme.ogg", Music.class);
         assetManager.load("music/slime_forest_theme.ogg", Music.class);
         assetManager.load("music/spooky_graveyard_theme.ogg", Music.class);
+        assetManager.load("music/battle_theme.ogg", Music.class);
 
         assetManager.load("sfx/button_click0.ogg", Sound.class);
         assetManager.load("sfx/button_click1.ogg", Sound.class);
@@ -174,6 +177,7 @@ public class ResourceManager {
         assetManager.load("sfx/teleport.ogg", Sound.class);
         assetManager.load("sfx/movement.ogg", Sound.class);
         assetManager.load("sfx/finish.ogg", Sound.class);
+        assetManager.load("sfx/battle_start.ogg", Sound.class);
 
         assetManager.finishLoading();
 
@@ -253,6 +257,7 @@ public class ResourceManager {
         menuTheme = assetManager.get("music/menu_theme.ogg", Music.class);
         slimeForestTheme = assetManager.get("music/slime_forest_theme.ogg", Music.class);
         spookyGraveyardTheme = assetManager.get("music/spooky_graveyard_theme.ogg", Music.class);
+        battleTheme = assetManager.get("music/battle_theme.ogg", Music.class);
 
         // load sfx
         buttonclick0 = assetManager.get("sfx/button_click0.ogg", Sound.class);
@@ -273,6 +278,7 @@ public class ResourceManager {
         teleport = assetManager.get("sfx/teleport.ogg", Sound.class);
         movement = assetManager.get("sfx/movement.ogg", Sound.class);
         finish = assetManager.get("sfx/finish.ogg", Sound.class);
+        battlestart = assetManager.get("sfx/battle_start.ogg", Sound.class);
 
         loadWorlds();
         loadMoves();
@@ -569,6 +575,7 @@ public class ResourceManager {
         menuTheme.dispose();
         slimeForestTheme.dispose();
         spookyGraveyardTheme.dispose();
+        battleTheme.dispose();
 
         buttonclick0.dispose();
         buttonclick1.dispose();
@@ -588,6 +595,7 @@ public class ResourceManager {
         teleport.dispose();
         movement.dispose();
         finish.dispose();
+        battlestart.dispose();
     }
 
 }

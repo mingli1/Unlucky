@@ -20,7 +20,7 @@ public class Util {
     // rates
     public static final float TEXT_SPEED = 0.03f;
     public static final float HP_BAR_DECAY_RATE = 25.f;
-    public static final float TRANSITION_SCREEN_SPEED = 150;
+    public static final float TRANSITION_SCREEN_SPEED = 110;
 
     public static final int RAINDROP_X = 50;
     public static final int RAINDROP_Y_DEVIATED = 20;

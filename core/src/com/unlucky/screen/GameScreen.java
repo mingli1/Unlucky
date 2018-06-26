@@ -61,7 +61,7 @@ public class GameScreen extends AbstractScreen {
         battle = new Battle(this, gameMap.tileMap, gameMap.player);
         hud = new Hud(this, gameMap.tileMap, gameMap.player, rm);
         battleUIHandler = new BattleUIHandler(this, gameMap.tileMap, gameMap.player, battle, rm);
-        transition = new TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player);
+        transition = new TransitionScreen(this, battle, battleUIHandler, hud, gameMap.player, rm);
         levelUp = new LevelUpScreen(this, gameMap.tileMap, gameMap.player, rm);
         dialog = new DialogScreen(this, gameMap.tileMap, gameMap.player, rm);
 
