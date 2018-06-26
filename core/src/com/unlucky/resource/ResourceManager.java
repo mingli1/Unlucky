@@ -116,6 +116,12 @@ public class ResourceManager {
     public Sound yellowattack;
     public Sound heal;
     public Sound death;
+    public Sound thunder;
+    public Sound lightrain;
+    public Sound heavyrain;
+    public Sound teleport;
+    public Sound movement;
+    public Sound finish;
 
     // Worlds
     public Array<World> worlds = new Array<World>();
@@ -162,6 +168,12 @@ public class ResourceManager {
         assetManager.load("sfx/yellow_attack.ogg", Sound.class);
         assetManager.load("sfx/heal.ogg", Sound.class);
         assetManager.load("sfx/death.ogg", Sound.class);
+        assetManager.load("sfx/thunder.ogg", Sound.class);
+        assetManager.load("sfx/light_rain.ogg", Sound.class);
+        assetManager.load("sfx/heavy_rain.ogg", Sound.class);
+        assetManager.load("sfx/teleport.ogg", Sound.class);
+        assetManager.load("sfx/movement.ogg", Sound.class);
+        assetManager.load("sfx/finish.ogg", Sound.class);
 
         assetManager.finishLoading();
 
@@ -255,6 +267,12 @@ public class ResourceManager {
         yellowattack = assetManager.get("sfx/yellow_attack.ogg", Sound.class);
         heal = assetManager.get("sfx/heal.ogg", Sound.class);
         death = assetManager.get("sfx/death.ogg", Sound.class);
+        thunder = assetManager.get("sfx/thunder.ogg", Sound.class);
+        lightrain = assetManager.get("sfx/light_rain.ogg", Sound.class);
+        heavyrain = assetManager.get("sfx/heavy_rain.ogg", Sound.class);
+        teleport = assetManager.get("sfx/teleport.ogg", Sound.class);
+        movement = assetManager.get("sfx/movement.ogg", Sound.class);
+        finish = assetManager.get("sfx/finish.ogg", Sound.class);
 
         loadWorlds();
         loadMoves();
@@ -564,6 +582,12 @@ public class ResourceManager {
         yellowattack.dispose();
         heal.dispose();
         death.dispose();
+        thunder.dispose();
+        lightrain.dispose();
+        heavyrain.dispose();
+        teleport.dispose();
+        movement.dispose();
+        finish.dispose();
     }
 
 }

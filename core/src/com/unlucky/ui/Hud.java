@@ -17,6 +17,7 @@ import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.main.Unlucky;
 import com.unlucky.map.TileMap;
+import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;
@@ -56,7 +57,7 @@ public class Hud extends UI {
     public Image shade;
     public Dialog settingsDialog;
 
-    public Hud(final GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
+    public Hud(final GameScreen gameScreen, TileMap tileMap, final Player player, final ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         createDirPad();
@@ -91,7 +92,20 @@ public class Hud extends UI {
                 if (object.equals("back")) {
                     shade.setVisible(false);
                     toggle(true);
+
+                    // play music and sfx
                     gameScreen.gameMap.mapTheme.play();
+                    if (!player.settings.muteSfx) {
+                        if (gameScreen.gameMap.weather == WeatherType.RAIN) {
+                            gameScreen.gameMap.soundId = rm.lightrain.play(player.settings.sfxVolume);
+                            rm.lightrain.setLooping(gameScreen.gameMap.soundId, true);
+                        }
+                        else if (gameScreen.gameMap.weather == WeatherType.HEAVY_RAIN || gameScreen.gameMap.weather == WeatherType.THUNDERSTORM) {
+                            gameScreen.gameMap.soundId = rm.heavyrain.play(player.settings.sfxVolume);
+                            rm.heavyrain.setLooping(gameScreen.gameMap.soundId, true);
+                        }
+                    }
+
                     gameScreen.setCurrentEvent(EventState.MOVING);
                 }
                 else if (object.equals("settings")) {
@@ -429,7 +443,14 @@ public class Hud extends UI {
             public void clicked(InputEvent event, float x, float y) {
                 shade.setVisible(true);
                 toggle(false);
+
+                // pause music and sfx
                 gameScreen.gameMap.mapTheme.pause();
+                if (gameScreen.gameMap.weather != WeatherType.NORMAL) {
+                    rm.lightrain.stop(gameScreen.gameMap.soundId);
+                    rm.heavyrain.stop(gameScreen.gameMap.soundId);
+                }
+
                 gameScreen.setCurrentEvent(EventState.PAUSE);
                 settingsDialog.show(stage);
             }

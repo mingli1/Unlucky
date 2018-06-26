@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.unlucky.main.Unlucky;
+import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 
 /**

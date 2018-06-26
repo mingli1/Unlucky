@@ -52,7 +52,7 @@ public class DialogScreen extends UI {
     private boolean posSwitch = false;
     private float posTime = 0;
 
-    public DialogScreen(GameScreen gameScreen, TileMap tileMap, Player player, ResourceManager rm) {
+    public DialogScreen(GameScreen gameScreen, TileMap tileMap, Player player, final ResourceManager rm) {
         super(gameScreen, tileMap, player, rm);
 
         // create main UI
@@ -80,16 +80,19 @@ public class DialogScreen extends UI {
         clickLabel.setSize(200, 120);
         clickLabel.setPosition(0, 0);
 
+        final Player p = player;
         clickLabel.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (dialogIndex + 1 == currentDialog.length && endCycle) {
+                    if (!p.settings.muteSfx) rm.textprogression.play(p.settings.sfxVolume);
                     // the text animation has run through every element of the text array
                     endDialog();
                     handleEvent(nextEvent);
                 }
                 // after a cycle of text animation ends, clicking the UI goes to the next cycle
                 else if (endCycle && dialogIndex < currentDialog.length) {
+                    if (!p.settings.muteSfx) rm.textprogression.play(p.settings.sfxVolume);
                     dialogIndex++;
                     reset();
                     currentText = currentDialog[dialogIndex];

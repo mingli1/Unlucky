@@ -52,6 +52,8 @@ public class GameMap {
 
     // music
     public Music mapTheme;
+    // sfx
+    public long soundId;
 
     // what the player obtained during the map
     public Array<Item> itemsObtained;
@@ -99,6 +101,19 @@ public class GameMap {
         // set weather
         if (player.settings.showWeatherAnimations) setWeather(tileMap.weather);
         else setWeather(0);
+
+        // rain ambient sound
+        if (!player.settings.muteSfx) {
+            if (weather == WeatherType.RAIN) {
+                soundId = rm.lightrain.play(player.settings.sfxVolume);
+                rm.lightrain.setLooping(soundId, true);
+            }
+            else if (weather == WeatherType.HEAVY_RAIN || weather == WeatherType.THUNDERSTORM) {
+                soundId = rm.heavyrain.play(player.settings.sfxVolume);
+                rm.heavyrain.setLooping(soundId, true);
+            }
+        }
+
         player.setMap(tileMap);
 
         if (mapTheme != null) {
@@ -202,6 +217,7 @@ public class GameMap {
         // player stepped on teleport tile
         if (player.isTeleporting()) {
             gameScreen.hud.toggle(false);
+            if (!player.settings.muteSfx) rm.teleport.play(player.settings.sfxVolume);
             gameScreen.setCurrentEvent(EventState.TRANSITION);
             gameScreen.transition.start(EventState.MOVING, EventState.MOVING);
         }
@@ -209,6 +225,7 @@ public class GameMap {
         if (player.completedMap) {
             player.getAm().stopAnimation();
             player.setHp(player.getMaxHp());
+            if (!player.settings.muteSfx) rm.finish.play(player.settings.sfxVolume);
             // if the player beat this map and there are remaining maps in this world
             if (this.levelIndex == player.maxLevel && this.worldIndex == player.maxWorld &&
                 this.levelIndex != rm.worlds.get(worldIndex).numLevels - 1) {
@@ -246,6 +263,8 @@ public class GameMap {
         if (weather == WeatherType.THUNDERSTORM) lightningTime += dt;
     }
 
+    private boolean sfxPlayed = false;
+
     public void render(float dt, SpriteBatch batch, OrthographicCamera cam) {
         tileMap.renderBottomLayer(batch, cam);
 
@@ -263,11 +282,16 @@ public class GameMap {
                 durationTime += dt;
                 if (durationTime < 0.2f) {
                     if (isDark) renderLight = false;
+                    if (!player.settings.muteSfx && !sfxPlayed) {
+                        rm.thunder.play(player.settings.sfxVolume);
+                        sfxPlayed = true;
+                    }
                     batch.draw(rm.lightning, player.getPosition().x - 182, player.getPosition().y - 102);
                 }
                 if (durationTime > 0.2f) {
                     lightningTime = 0;
                     durationTime = 0;
+                    sfxPlayed = false;
                     if (isDark) renderLight = true;
                 }
             }

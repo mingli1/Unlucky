@@ -230,6 +230,7 @@ public class Player extends Entity {
         if (canMove()) {
             // Player goes forwards or backwards from the tile in the direction they entered
             if (currentTile.isChange()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
                 boolean k = MathUtils.randomBoolean();
                 switch (prevDir) {
                     case 0: // down
@@ -252,6 +253,7 @@ public class Player extends Entity {
             }
             // Player goes 1 tile in a random direction not the direction they entered the tile on
             else if (currentTile.isInAndOut()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
                 // output direction (all other directions other than input direction)
                 int odir = MathUtils.random(2);
                 switch (prevDir) {
@@ -277,10 +279,22 @@ public class Player extends Entity {
                         break;
                 }
             }
-            else if (currentTile.isDown()) changeDirection(0);
-            else if (currentTile.isUp()) changeDirection(1);
-            else if (currentTile.isRight()) changeDirection(2);
-            else if (currentTile.isLeft()) changeDirection(3);
+            else if (currentTile.isDown()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
+                changeDirection(0);
+            }
+            else if (currentTile.isUp()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
+                changeDirection(1);
+            }
+            else if (currentTile.isRight()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
+                changeDirection(2);
+            }
+            else if (currentTile.isLeft()) {
+                if (!settings.muteSfx) rm.movement.play(settings.sfxVolume);
+                changeDirection(3);
+            }
             // trigger dialog event
             else if (currentTile.isQuestionMark() || currentTile.isExclamationMark()) tileInteraction = true;
             // trigger teleport event
