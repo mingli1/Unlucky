@@ -208,7 +208,7 @@ public class Util {
     // all blocked tile ids
     public static final int[] BLOCKED_TILE_IDS = {
         5, 6, 7, 9, 10, 11, 12, 13, 14, 15, 25, 26, 27, 28, 29, 30, 31, 36,
-        38, 41, 42, 48, 49, 50, 51, 54, 55, 56, 57, 64, 65, 66, 67, 70, 84, 85, 86,
+        38, 41, 42, 48, 49, 50, 51, 54, 55, 64, 65, 66, 67, 70, 84, 85, 86,
         87, 88, 91, 92, 96, 97, 98, 99, 100, 101, 102, 103, 104, 105, 106, 107, 112,
         113, 114, 115, 116, 117, 118, 120, 121, 123, 128, 129, 130, 130, 131, 132,
         133, 134, 135, 136, 137, 138, 139, 144, 145, 146, 147, 156, 157
@@ -250,6 +250,11 @@ public class Util {
             case 8: return new Normal("skeleton", position, map, rm, 2, 4, 2, 1 / 3f);
             case 9: return new Normal("witch", position, map, rm, 2, 6, 2, 1 / 3f);
             case 10: return new Boss("red reaper", 1, position, map, rm, 2, 8, 2, 1 / 3f);
+            case 11: return new Normal("snow puff", position, map, rm, 3, 0, 2, 1 / 3f);
+            case 12: return new Normal("angry penguin", position, map, rm, 3, 2, 2, 1 / 3f);
+            case 13: return new Normal("yeti", position, map, rm, 3, 4, 2, 1 / 3f);
+            case 14: return new Normal("ice bat", position, map, rm, 3, 6, 2, 1 / 3f);
+            case 15: return new Boss("ice golem", 2, position, map, rm, 3, 8, 2, 1 / 3f);
         }
         return null;
     }

@@ -43,8 +43,7 @@ public class Save {
         // load player data
         psave.load(player);
         // write data to save json
-        //file.writeString(Base64Coder.encodeString(json.prettyPrint(psave)), false);
-        file.writeString(json.prettyPrint(psave), false);
+        file.writeString(Base64Coder.encodeString(json.prettyPrint(psave)), false);
     }
 
     /**
@@ -53,8 +52,7 @@ public class Save {
      */
     public void load(ResourceManager rm) {
         if (!file.exists()) save();
-        //psave = json.fromJson(PlayerAccessor.class, Base64Coder.decodeString(file.readString()));
-        psave = json.fromJson(PlayerAccessor.class, file.readString());
+        psave = json.fromJson(PlayerAccessor.class, Base64Coder.decodeString(file.readString()));
 
         // load atomic fields
         player.setHp(psave.hp);

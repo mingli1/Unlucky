@@ -387,6 +387,14 @@ public class ResourceManager {
                     move.getFloat("minHeal"), move.getFloat("maxHeal"), move.getInt("dmgReduction")));
         }
         bossMoves.add(rrMoves);
+
+        Array<Move> igMoves = new Array<Move>();
+        for (JsonValue move : boss.get("icegolem")) {
+            if (move.getInt("type") == 0)
+                igMoves.add(new Move(0, move.getString("name"),
+                    move.getFloat("minDamage"), move.getFloat("maxDamage")));
+        }
+        bossMoves.add(igMoves);
     }
 
     private void loadItems() {

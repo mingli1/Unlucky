@@ -330,6 +330,19 @@ public class Battle {
                             opponent.getId() + " used " + move.name + "!",
                             "It did " + damage + " damage to you."
                     };
+
+                    // ice golem passive
+                    if (opponent.isBoss()) {
+                        if (((Boss) opponent).bossId == 2 && move.type == 0) {
+                            int heal = (int) (0.2 * (float) damage);
+                            opponent.heal(heal);
+                            dialog = new String[] {
+                                opponent.getId() + " used " + move.name + "!",
+                                "It did " + damage + " damage to you.",
+                                opponent.getId() + "'s Lifesteal healed it for " + heal + " hp!"
+                            };
+                        }
+                    }
                 }
                 // crit (3x damage if success)
                 else if (move.type == 2) {

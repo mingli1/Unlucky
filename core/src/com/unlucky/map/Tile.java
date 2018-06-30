@@ -81,7 +81,7 @@ public class Tile {
         animated = false;
 
         if (Util.isBlockedTile(id)) type = BLOCKED;
-        else if (id == 52 || id == 53) type = ICE;
+        else if ((id >= 171 && id <= 173) || (id >= 187 && id <= 189) || (id >= 203 && id <= 205)) type = ICE;
         else type = NORMAL;
     }
 

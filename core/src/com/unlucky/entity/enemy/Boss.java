@@ -73,6 +73,16 @@ public class Boss extends Enemy {
                     maxDmg += MathUtils.random(1, 2) + MathUtils.random(2);
                 }
                 break;
+            case 2: // ice golem
+                int mhpSeed2 = (int) (Math.pow(level, 2.3) + 25);
+                mhp = Util.getDeviatedRandomValue(mhpSeed2, 150);
+                minDmg = MathUtils.random(1, 4);
+                maxDmg = MathUtils.random(5, 8);
+                for (int i = 0; i < level - 1; i++) {
+                    minDmg += MathUtils.random(1, 2) - 1;
+                    maxDmg += MathUtils.random(1, 2) + 1;
+                }
+                break;
         }
 
         this.setMaxHp(mhp);
@@ -92,6 +102,8 @@ public class Boss extends Enemy {
             case 0: return "Slime Revival (Respawns after death with half health points up to 4 times).";
             // red reaper
             case 1: return "Phantom Presence (Causes the player's accuracy to be decreased by 40% for all attacks).";
+            // ice golem
+            case 2: return "Lifesteal (Heals for 20% of damage from each attack).";
         }
         return "";
     }
