@@ -379,6 +379,14 @@ public class BattleEventHandler extends BattleUI {
                 int goldGained = battle.getGoldGained();
                 Item itemGained = battle.getItemObtained(rm);
 
+                if (itemGained != null) {
+                    player.stats.numItemsFromMonsters++;
+                    if (itemGained.rarity == 0) player.stats.numCommonItems++;
+                    else if (itemGained.rarity == 1) player.stats.numRareItems++;
+                    else if (itemGained.rarity == 2) player.stats.numEpicItems++;
+                    else if (itemGained.rarity == 3) player.stats.numLegendaryItems++;
+                }
+
                 // add things obtained to map record
                 gameScreen.gameMap.expObtained += expGained;
                 gameScreen.gameMap.goldObtained += goldGained;

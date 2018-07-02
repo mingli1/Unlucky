@@ -221,15 +221,20 @@ public class GameMap {
         if (player.isTileInteraction()) {
             gameScreen.hud.toggle(false);
             gameScreen.setCurrentEvent(EventState.TILE_EVENT);
-            if (player.getCurrentTile().isQuestionMark())
+            if (player.getCurrentTile().isQuestionMark()) {
+                player.stats.numQuestionTiles++;
                 gameScreen.dialog.startDialog(player.getQuestionMarkDialog(avgLevel, this), EventState.MOVING, EventState.MOVING);
-            else if (player.getCurrentTile().isExclamationMark())
+            }
+            else if (player.getCurrentTile().isExclamationMark()) {
+                player.stats.numExclamTiles++;
                 gameScreen.dialog.startDialog(player.getExclamDialog(avgLevel, this), EventState.MOVING, EventState.MOVING);
+            }
         }
         // player stepped on teleport tile
         if (player.isTeleporting()) {
             gameScreen.hud.toggle(false);
             if (!player.settings.muteSfx) rm.teleport.play(player.settings.sfxVolume);
+            player.stats.numTeleports++;
             gameScreen.setCurrentEvent(EventState.TRANSITION);
             gameScreen.transition.start(EventState.MOVING, EventState.MOVING);
         }
@@ -252,6 +257,8 @@ public class GameMap {
                     player.maxLevel = 0;
                 }
             }
+            player.stats.numDungeonsWon++;
+            player.stats.goldGainedFromMaps += goldObtained;
             gameScreen.getGame().save.save();
 
             gameScreen.setCurrentEvent(EventState.PAUSE);

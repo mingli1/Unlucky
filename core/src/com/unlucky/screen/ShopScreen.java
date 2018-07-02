@@ -457,6 +457,7 @@ public class ShopScreen extends MenuExtensionScreen {
                         item.actor.setZIndex(item.index + 1);
                         addInventoryEvent(item);
                         gold.setText("GOLD: " + player.getGold());
+                        player.stats.numShopItemsBought++;
                         game.save.save();
                         new Dialog("Success", rm.dialogSkin) {
                             {

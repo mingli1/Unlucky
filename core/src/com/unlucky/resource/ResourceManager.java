@@ -188,7 +188,7 @@ public class ResourceManager {
         // load font
         pixel10 = new BitmapFont(Gdx.files.internal("fonts/pixel.fnt"), atlas.findRegion("pixel"), false);
 
-        skin = new Skin(assetManager.get("skins/ui.atlas", TextureAtlas.class));
+        skin = new Skin(atlas);
         skin.add("default-font", pixel10);
         skin.load(Gdx.files.internal("skins/ui.json"));
 

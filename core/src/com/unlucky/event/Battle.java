@@ -512,9 +512,15 @@ public class Battle {
                 // elite will drop rare, epic, and legendary items at 60/30/10 chances
                 int k = MathUtils.random(99);
                 // rare
-                if (k < 60) return rm.getItem(1, opponent.getLevel());
-                else if (k < 90) return rm.getItem(2, opponent.getLevel());
-                else if (k < 100) return rm.getItem(3, opponent.getLevel());
+                if (k < 60) {
+                    return rm.getItem(1, opponent.getLevel());
+                }
+                else if (k < 90) {
+                    return rm.getItem(2, opponent.getLevel());
+                }
+                else if (k < 100) {
+                    return rm.getItem(3, opponent.getLevel());
+                }
             }
         }
         else if (opponent.isBoss()) {
@@ -522,9 +528,13 @@ public class Battle {
                 // boss will only drop epic and legendary items at 70/30 chances
                 int k = MathUtils.random(99);
                 // epic
-                if (k < 70) return rm.getItem(2, opponent.getLevel());
-                    // legendary
-                else return rm.getItem(3, opponent.getLevel());
+                if (k < 70) {
+                    return rm.getItem(2, opponent.getLevel());
+                }
+                // legendary
+                else {
+                    return rm.getItem(3, opponent.getLevel());
+                }
             }
         }
         else {

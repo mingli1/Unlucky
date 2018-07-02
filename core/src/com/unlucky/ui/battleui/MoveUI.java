@@ -298,7 +298,7 @@ public class MoveUI extends BattleUI {
                         smove = playerSmoveset.random();
                         resetSpecialMoves();
                     }
-
+                    player.stats.numMovesUsed++;
                     Move move = player.getMoveset().moveset[index];
                     uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                     uiHandler.moveUI.toggleMoveAndOptionUI(false);
@@ -323,6 +323,7 @@ public class MoveUI extends BattleUI {
                 if (!player.settings.muteSfx) rm.moveselectclick.play(player.settings.sfxVolume);
                 uiHandler.currentState = com.unlucky.event.BattleState.DIALOG;
                 uiHandler.moveUI.toggleMoveAndOptionUI(false);
+                player.stats.numSMovesUsed++;
                 // remove current smove from pool
                 playerSmoveset.removeValue(smove, false);
                 if (playerSmoveset.size == 0) {

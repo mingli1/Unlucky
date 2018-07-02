@@ -630,6 +630,7 @@ public class InventoryUI extends UI {
         // 50% success plus bonus enchant chance from scroll
         if (Util.isSuccess(Util.ENCHANT + currentItem.bonusEnchantChance)) {
             currentItem.enchant();
+            player.stats.numEnchants++;
             game.save.save();
             // update item tooltip
             tooltip.updateText(currentItem);

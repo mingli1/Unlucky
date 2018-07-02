@@ -24,15 +24,33 @@ public class Statistics {
     public int numEnchants;
     // number of deaths
     public int numDeaths;
+    // num of shop items bought
+    public int numShopItemsBought;
 
     // Map statistics
 
     // number of steps the player has moved in all maps
     public int numSteps;
-    // number of dungeons successfully defeated
+    // number of maps successfully defeated
     public int numDungeonsWon;
-    // max score in a single dungeon
-    public MaxStat maxDungeonScore;
+    // number of items dropped from monsters
+    public int numItemsFromMonsters;
+    // number of common items dropped
+    public int numCommonItems;
+    // number of rare items dropped
+    public int numRareItems;
+    // number of epic items dropped
+    public int numEpicItems;
+    // number of legendary items dropped
+    public int numLegendaryItems;
+    // gold obtained from maps
+    public int goldGainedFromMaps;
+    // num of ? tiles stepped on
+    public int numQuestionTiles;
+    // num of ! tiles stepped on
+    public int numExclamTiles;
+    // num times teleported
+    public int numTeleports;
 
     // Battle statistics
 
@@ -46,8 +64,12 @@ public class Statistics {
     public MaxStat maxHealSingleMove;
     // max heal healed in a single battle
     public MaxStat maxHealSingleBattle;
+    // number of moves used
+    public int numMovesUsed;
     // number of moves missed by player
     public int numMovesMissed;
+    // number of special moves used
+    public int numSMovesUsed;
 
     // number of total enemies defeated including elites and bosses
     public int enemiesDefeated;
@@ -63,7 +85,6 @@ public class Statistics {
         maxGold = new MaxStat();
         maxDamageSingleBattle = new MaxStat();
         maxDamageSingleHit = new MaxStat();
-        maxDungeonScore = new MaxStat();
         maxHealSingleMove = new MaxStat();
         maxHealSingleBattle = new MaxStat();
     }
@@ -93,15 +114,28 @@ public class Statistics {
             "HP Healed: ",
             "Number of deaths: ",
             "Number of successful enchants: ",
+            "Number of shop items bought: ",
             "map statistics",
             "Total number of steps: ",
+            "Number of maps completed: ",
+            "Number of items from monsters: ",
+            "Number of common items dropped: ",
+            "Number of rare items dropped: ",
+            "Number of epic items dropped: ",
+            "Number of legendary dropped: ",
+            "Total gold obtained from maps: ",
+            "Number of ? tiles stepped on: ",
+            "Number of ! tiles stepped on: ",
+            "Number of times teleported: ",
             "battle statistics",
             "Damage dealt: ",
             "Most damage in single hit: ",
             "Most damage in single battle: ",
             "Most healing in single move: ",
             "Most healing in single battle: ",
+            "Number of moves used: ",
             "Number of moves missed: ",
+            "Number of special moves used: ",
             "Number of enemies defeated: ",
             "Number of elites defeated: ",
             "Number of bosses defeated: ",
@@ -123,15 +157,28 @@ public class Statistics {
             "" + hpHealed,
             "" + numDeaths,
             "" + numEnchants,
+            "" + numShopItemsBought,
             "",
             "" + numSteps,
+            "" + numDungeonsWon,
+            "" + numItemsFromMonsters,
+            "" + numCommonItems,
+            "" + numRareItems,
+            "" + numEpicItems,
+            "" + numLegendaryItems,
+            "" + goldGainedFromMaps,
+            "" + numQuestionTiles,
+            "" + numExclamTiles,
+            "" + numTeleports,
             "",
             "" + damageDealt,
             "" + maxDamageSingleHit.stat,
             "" + maxDamageSingleBattle.stat,
             "" + maxHealSingleMove.stat,
             "" + maxHealSingleBattle.stat,
+            "" + numMovesUsed,
             "" + numMovesMissed,
+            "" + numSMovesUsed,
             "" + enemiesDefeated,
             "" + elitesDefeated,
             "" + bossesDefeated,
