@@ -139,14 +139,14 @@ public class SettingsScreen extends MenuExtensionScreen {
                 // save to player's settings
                 game.player.settings.musicVolume = musicSlider.getValue();
                 if (!game.player.settings.muteMusic) rm.setMusicVolume(musicSlider.getValue());
-                if (!musicSlider.isDragging()) game.save.save();
+                if (!inGame) if (!musicSlider.isDragging()) game.save.save();
             }
         });
         sfxSlider.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, Actor actor) {
                 game.player.settings.sfxVolume = sfxSlider.getValue();
-                if (!sfxSlider.isDragging()) game.save.save();
+                if (!inGame) if (!sfxSlider.isDragging()) game.save.save();
             }
         });
     }
@@ -181,7 +181,7 @@ public class SettingsScreen extends MenuExtensionScreen {
                 game.player.settings.muteMusic = muteMusic.isChecked();
                 if (muteMusic.isChecked()) rm.setMusicVolume(0f);
                 else rm.setMusicVolume(game.player.settings.musicVolume);
-                game.save.save();
+                if (!inGame) game.save.save();
             }
         });
         muteSfx.addListener(new ChangeListener() {
@@ -189,7 +189,7 @@ public class SettingsScreen extends MenuExtensionScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.muteSfx = muteSfx.isChecked();
-                game.save.save();
+                if (!inGame) game.save.save();
             }
         });
         showEnemyLevels.addListener(new ChangeListener() {
@@ -197,7 +197,7 @@ public class SettingsScreen extends MenuExtensionScreen {
             public void changed(ChangeEvent event, Actor actor) {
                 if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.showEnemyLevels = showEnemyLevels.isChecked();
-                game.save.save();
+                if (!inGame) game.save.save();
             }
         });
         showWeatherAnims.addListener(new ChangeListener() {
@@ -209,7 +209,7 @@ public class SettingsScreen extends MenuExtensionScreen {
                     if (showWeatherAnims.isChecked()) game.gameScreen.gameMap.setWeather(game.gameScreen.gameMap.tileMap.weather);
                     else game.gameScreen.gameMap.setWeather(0);
                 }
-                game.save.save();
+                if (!inGame) game.save.save();
             }
         });
         showFps.addListener(new ChangeListener() {
@@ -218,7 +218,7 @@ public class SettingsScreen extends MenuExtensionScreen {
                 if (!game.player.settings.muteSfx) rm.buttonclick2.play(game.player.settings.sfxVolume);
                 game.player.settings.showFps = showFps.isChecked();
                 game.fps.setVisible(showFps.isChecked());
-                game.save.save();
+                if (!inGame) game.save.save();
             }
         });
     }
