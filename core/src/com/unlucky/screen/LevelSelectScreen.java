@@ -47,7 +47,7 @@ public class LevelSelectScreen extends SelectScreen {
         game.player.inMap = false;
 
         bannerLabel.setText(rm.worlds.get(worldIndex).name);
-        bannerLabel.setStyle(new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1)));
+        bannerLabel.setStyle(nameStyles[worldIndex]);
 
         playerStats = "Player\n-----------------------------------\n" +
             "LEVEL: " + game.player.getLevel() +

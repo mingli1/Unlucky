@@ -80,7 +80,6 @@ public class WorldSelectScreen extends SelectScreen {
     protected void createScrollPane() {
         scrollButtons = new Array<TextButton>();
 
-        nameStyle = new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1));
         descStyle = new Label.LabelStyle(rm.pixel10, Color.WHITE);
         buttonSelected = new TextButton.TextButtonStyle();
         buttonSelected.up = new TextureRegionDrawable(rm.skin.getRegion("default-round-down"));
@@ -98,7 +97,7 @@ public class WorldSelectScreen extends SelectScreen {
             g.setSize(90, 30);
             g.setTransform(false);
 
-            Label name = new Label(rm.worlds.get(i).name, nameStyle);
+            Label name = new Label(rm.worlds.get(i).name, nameStyles[i]);
             name.setPosition(5, 20);
             name.setFontScale(1.7f / 2);
             name.setTouchable(Touchable.disabled);

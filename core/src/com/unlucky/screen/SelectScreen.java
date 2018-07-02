@@ -49,6 +49,7 @@ public abstract class SelectScreen extends AbstractScreen {
     protected Label.LabelStyle descStyle;
     protected TextButton.TextButtonStyle buttonSelected;
     protected Array<TextButton> scrollButtons;
+    protected Label.LabelStyle[] nameStyles;
 
     public SelectScreen(final Unlucky game, final ResourceManager rm) {
         super(game, rm);
@@ -57,6 +58,11 @@ public abstract class SelectScreen extends AbstractScreen {
         enterButtonGroup = new Group();
         enterButtonGroup.setSize(79, 28);
         enterButtonGroup.setTransform(false);
+
+        nameStyles = new Label.LabelStyle[3];
+        nameStyles[0] = new Label.LabelStyle(rm.pixel10, new Color(0, 225.f / 255, 0, 1));
+        nameStyles[1] = new Label.LabelStyle(rm.pixel10, new Color(200 / 225.f, 0, 0, 1));
+        nameStyles[2] = new Label.LabelStyle(rm.pixel10, new Color(150 / 255.f, 1, 1, 1));
 
         ImageButton.ImageButtonStyle enterStyle = new ImageButton.ImageButtonStyle();
         enterStyle.imageUp = new TextureRegionDrawable(rm.enterButton[0][0]);
