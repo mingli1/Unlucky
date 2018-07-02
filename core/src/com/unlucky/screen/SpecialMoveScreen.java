@@ -254,6 +254,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
                     smoveButtons[1].setTouchable(Touchable.disabled);
                     player.smoveset.remove(smoveToRemove);
                     addSmoveActors();
+                    game.save.save();
                 }
             }
         });
@@ -291,6 +292,7 @@ public class SpecialMoveScreen extends MenuExtensionScreen {
             // add smove
             player.smoveset.addSMove(smoveToAdd.id);
             addSmoveActors();
+            game.save.save();
         }
     }
 

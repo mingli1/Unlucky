@@ -237,6 +237,7 @@ public class GameMap {
         if (player.completedMap) {
             player.getAm().stopAnimation();
             player.setHp(player.getMaxHp());
+            player.inMap = false;
             if (!player.settings.muteSfx) rm.finish.play(player.settings.sfxVolume);
             // if the player beat this map and there are remaining maps in this world
             if (this.levelIndex == player.maxLevel && this.worldIndex == player.maxWorld &&
@@ -251,6 +252,7 @@ public class GameMap {
                     player.maxLevel = 0;
                 }
             }
+            gameScreen.getGame().save.save();
 
             gameScreen.setCurrentEvent(EventState.PAUSE);
             player.moving = -1;

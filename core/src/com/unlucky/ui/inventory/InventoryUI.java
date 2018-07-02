@@ -377,6 +377,7 @@ public class InventoryUI extends UI {
                         }
                     }
                 }
+                if (inMenu) game.save.save();
             }
 
         });
@@ -466,6 +467,7 @@ public class InventoryUI extends UI {
                             }
                             updateText();
                         }
+                        if (inMenu) game.save.save();
                     }
                 }
             }
@@ -553,6 +555,7 @@ public class InventoryUI extends UI {
                                 player.inventory.removeItem(currentItem.index);
                                 unselectItem();
                                 updateText();
+                                game.save.save();
                             }
                         }
 
@@ -586,6 +589,7 @@ public class InventoryUI extends UI {
                     item.bonusEnchantChance = scroll.eChance;
                     scroll.actor.remove();
                     player.inventory.removeItem(scroll.index);
+                    if (inMenu) game.save.save();
                 }
                 else {
                     player.inventory.addItemAtIndex(scroll, scroll.index);
@@ -599,9 +603,26 @@ public class InventoryUI extends UI {
      */
     private void enchant() {
         if (player.getGold() < currentItem.enchantCost) {
+            new Dialog("Cannot enchant", rm.dialogSkin) {
+                {
+                    Label l = new Label("You do not have enough\ngold to enchant this item.", rm.dialogSkin);
+                    l.setFontScale(0.5f);
+                    l.setAlignment(Align.center);
+                    text(l);
+                    getButtonTable().defaults().width(40);
+                    getButtonTable().defaults().height(15);
+                    button("OK", "next");
+                }
 
+                @Override
+                protected void result(Object object) {
+                    tooltip.setVisible(false);
+                }
+
+            }.show(stage).getTitleLabel().setAlignment(Align.center);
             return;
         }
+
         // transaction
         player.addGold(-currentItem.enchantCost);
         updateText();
@@ -609,6 +630,7 @@ public class InventoryUI extends UI {
         // 50% success plus bonus enchant chance from scroll
         if (Util.isSuccess(Util.ENCHANT + currentItem.bonusEnchantChance)) {
             currentItem.enchant();
+            game.save.save();
             // update item tooltip
             tooltip.updateText(currentItem);
             new Dialog("Success!", rm.dialogSkin) {
@@ -656,6 +678,7 @@ public class InventoryUI extends UI {
                     }
 
                 }.show(stage).getTitleLabel().setAlignment(Align.center);
+                game.save.save();
             } else {
                 new Dialog("Fail!", rm.dialogSkin) {
                     {
@@ -711,6 +734,7 @@ public class InventoryUI extends UI {
                     player.inventory.removeItem(currentItem.index);
                     unselectItem();
                     updateText();
+                    if (inMenu) game.save.save();
                 }
             }
 

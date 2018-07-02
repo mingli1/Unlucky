@@ -457,6 +457,7 @@ public class ShopScreen extends MenuExtensionScreen {
                         item.actor.setZIndex(item.index + 1);
                         addInventoryEvent(item);
                         gold.setText("GOLD: " + player.getGold());
+                        game.save.save();
                         new Dialog("Success", rm.dialogSkin) {
                             {
                                 Label l = new Label("You successfully\npurchased " + currentShopItem.labelName + ".", rm.dialogSkin);
@@ -501,6 +502,7 @@ public class ShopScreen extends MenuExtensionScreen {
                         player.inventory.removeItem(currentItem.index);
                         unselectItem();
                         gold.setText("GOLD: " + player.getGold());
+                        game.save.save();
                     }
                 }
 

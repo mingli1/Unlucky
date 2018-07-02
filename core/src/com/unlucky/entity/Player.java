@@ -79,6 +79,9 @@ public class Player extends Entity {
     // starts at 4 turns then every 10 levels it is reduced by 1 with a min of 1
     public int smoveCd = 4;
 
+    // whether or not the player is currently in a map
+    public boolean inMap = false;
+
     // player's level progress stored as a (world, level) key
     public int maxWorld = 0;
     public int maxLevel = 0;

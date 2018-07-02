@@ -11,9 +11,11 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.entity.Player;
+import com.unlucky.inventory.Inventory;
 import com.unlucky.inventory.Item;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
+import com.unlucky.resource.Util;
 import com.unlucky.save.Save;
 import com.unlucky.screen.*;
 import com.unlucky.screen.game.VictoryScreen;
@@ -28,7 +30,7 @@ import com.unlucky.ui.inventory.InventoryUI;
  */
 public class Unlucky extends Game {
 
-    public static final String VERSION = "0.8.6";
+    public static final String VERSION = "1.0";
     public static final String TITLE = "Unlucky Version " + VERSION;
 
     // Links
@@ -78,10 +80,6 @@ public class Unlucky extends Game {
 
         save = new Save(player, "save.json");
         save.load(rm);
-        player.levelUp(3000);
-        player.applyLevelUp();
-        player.maxLevel = 12;
-        player.maxWorld = 2;
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
@@ -126,24 +124,6 @@ public class Unlucky extends Game {
 	public void render() {
         fps.setText(Gdx.graphics.getFramesPerSecond() + " fps");
         super.render();
-
-        // temp save key
-        if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
-            save.save();
-        }
-	}
-
-	private String getTestItem(int minLevel, int maxLevel) {
-	    int level = MathUtils.random(minLevel, maxLevel);
-	    Item item = rm.getRandomItem(MathUtils.random(minLevel, maxLevel));
-        if (item == null) return "NULL";
-	    item.adjust(level);
-	    return "name: " + item.name + "\n" +
-            "level: " + level + "\n" +
-            "mhp: " + item.mhp + "\n" +
-            "dmg: " + item.dmg + "\n" +
-            "sell: " + item.sell + "\n" +
-            "enchantCost: " + item.enchantCost + "\n";
     }
 
 	public void dispose() {

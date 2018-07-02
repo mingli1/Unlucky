@@ -285,6 +285,7 @@ public class BattleEventHandler extends BattleUI {
                 player.stats.updateMax(player.stats.maxHealSingleBattle, battle.cumulativeHealing);
                 battle.cumulativeDamage = battle.cumulativeHealing = 0;
                 rm.battleTheme.stop();
+                player.inMap = false;
 
                 player.resetShield();
                 player.statusEffects.clear();
