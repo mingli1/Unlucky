@@ -127,6 +127,7 @@ public class GameScreen extends AbstractScreen {
         // set background movement for the specific worlds
         if (bgIndex == 0) bg[0].setVector(40, 0);
         else if (bgIndex == 1) bg[0].setVector(0, 0);
+        else if (bgIndex == 2) bg[0].setVector(40, 0);
         bg[1].setVector(0, 0);
     }
 

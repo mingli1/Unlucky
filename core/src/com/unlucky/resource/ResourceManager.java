@@ -102,6 +102,7 @@ public class ResourceManager {
     public Music menuTheme;
     public Music slimeForestTheme;
     public Music spookyGraveyardTheme;
+    public Music frostyCaveTheme;
     public Music battleTheme;
 
     // Sound Effects
@@ -157,6 +158,7 @@ public class ResourceManager {
         assetManager.load("music/menu_theme.ogg", Music.class);
         assetManager.load("music/slime_forest_theme.ogg", Music.class);
         assetManager.load("music/spooky_graveyard_theme.ogg", Music.class);
+        assetManager.load("music/frosty_cave_theme.ogg", Music.class);
         assetManager.load("music/battle_theme.ogg", Music.class);
 
         assetManager.load("sfx/button_click0.ogg", Sound.class);
@@ -257,6 +259,7 @@ public class ResourceManager {
         menuTheme = assetManager.get("music/menu_theme.ogg", Music.class);
         slimeForestTheme = assetManager.get("music/slime_forest_theme.ogg", Music.class);
         spookyGraveyardTheme = assetManager.get("music/spooky_graveyard_theme.ogg", Music.class);
+        frostyCaveTheme = assetManager.get("music/frosty_cave_theme.ogg", Music.class);
         battleTheme = assetManager.get("music/battle_theme.ogg", Music.class);
 
         // load sfx
@@ -583,6 +586,7 @@ public class ResourceManager {
         menuTheme.dispose();
         slimeForestTheme.dispose();
         spookyGraveyardTheme.dispose();
+        frostyCaveTheme.dispose();
         battleTheme.dispose();
 
         buttonclick0.dispose();

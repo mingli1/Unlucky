@@ -77,7 +77,7 @@ public class Hud extends UI {
                 TextButton b = new TextButton("Back", rm.dialogSkin);
                 b.getLabel().setFontScale(0.75f);
                 button(b, "back");
-                getButtonTable().padTop(-7).row();
+                getButtonTable().padTop(-6).row();
                 TextButton s = new TextButton("Settings", rm.dialogSkin);
                 s.getLabel().setFontScale(0.75f);
                 button(s, "settings");

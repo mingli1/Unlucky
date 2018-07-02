@@ -7,9 +7,11 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.profiling.GLProfiler;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.unlucky.entity.Player;
+import com.unlucky.inventory.Item;
 import com.unlucky.parallax.Background;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.save.Save;
@@ -78,8 +80,8 @@ public class Unlucky extends Game {
         save.load(rm);
         player.levelUp(3000);
         player.applyLevelUp();
-        player.maxLevel = 10;
-        player.maxWorld = 1;
+        player.maxLevel = 12;
+        player.maxWorld = 2;
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
@@ -129,14 +131,20 @@ public class Unlucky extends Game {
         if (Gdx.input.isKeyJustPressed(Input.Keys.K)) {
             save.save();
         }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.N)) {
-            System.out.println("\nSMOVESET: ");
-            for (int i = 0; i < player.smoveset.smoveset.size; i++) {
-                System.out.println(player.smoveset.smoveset.get(i).name);
-            }
-        }
 	}
+
+	private String getTestItem(int minLevel, int maxLevel) {
+	    int level = MathUtils.random(minLevel, maxLevel);
+	    Item item = rm.getRandomItem(MathUtils.random(minLevel, maxLevel));
+        if (item == null) return "NULL";
+	    item.adjust(level);
+	    return "name: " + item.name + "\n" +
+            "level: " + level + "\n" +
+            "mhp: " + item.mhp + "\n" +
+            "dmg: " + item.dmg + "\n" +
+            "sell: " + item.sell + "\n" +
+            "enchantCost: " + item.enchantCost + "\n";
+    }
 
 	public void dispose() {
         batch.dispose();

@@ -86,6 +86,7 @@ public class GameMap {
 
         if (worldIndex == 0) mapTheme = rm.slimeForestTheme;
         else if (worldIndex == 1) mapTheme = rm.spookyGraveyardTheme;
+        else if (worldIndex == 2) mapTheme = rm.frostyCaveTheme;
 
         // reset
         itemsObtained.clear();
