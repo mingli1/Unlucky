@@ -1,4 +1,5 @@
-# Unlucky
+
+# Unlucky 
 Unlucky is a LibGDX Android RPG game based on RNG (random number generator) with a turn-based battle system. RNG is usually frowned upon in games, but this game's entire theme is RNG. Everything from attacks in battle to item enchanting to movement is based on RNG. 
 
 The player ventures and battles monsters in maps with various themes. Currently there are three available worlds all with 10+ levels in each world. In these maps, the player will have to defeat monsters and find a star tile to complete the level. Monsters may drop items that can improve the player's strength. These items may be sold in the shop for gold or enchanted to increase their power. There are currently 100+ items dropped by monsters and sold in the shop.
@@ -17,3 +18,12 @@ Also available for free on the [Google Play Store](https://play.google.com/store
 * Artwork - done by me using [Paint.net](https://www.getpaint.net/) and textures packed using [Gdx Texture Packer GUI](https://github.com/crashinvaders/gdx-texture-packer-gui)
 * Music - done by me using [Bosca Cecilo](https://boscaceoil.net/)
 * Sound Effects - all public domain sound effects from [Freesound](https://freesound.org/)
+
+## Screenshots
+![mainmenu](https://user-images.githubusercontent.com/29984767/42197167-826dfce2-7e4f-11e8-9a33-2a14b6cfe2fd.PNG)
+![ws2](https://user-images.githubusercontent.com/29984767/42197174-8c740a06-7e4f-11e8-9280-21c1850ceb48.PNG)
+![game1](https://user-images.githubusercontent.com/29984767/42197176-912aed08-7e4f-11e8-8754-b4889dfb540f.PNG)
+![game2](https://user-images.githubusercontent.com/29984767/42197178-932f6f20-7e4f-11e8-9c49-6e4108ee0c26.PNG)
+![inv2](https://user-images.githubusercontent.com/29984767/42197185-97c8b802-7e4f-11e8-879d-605d42c9260e.PNG)
+![shop](https://user-images.githubusercontent.com/29984767/42197189-9b425a06-7e4f-11e8-8e76-d7c3de9c2a28.PNG)
+![smove](https://user-images.githubusercontent.com/29984767/42197192-9db252c8-7e4f-11e8-80c5-4812fa018eae.PNG) 
