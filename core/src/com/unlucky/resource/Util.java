@@ -127,8 +127,8 @@ public class Util {
     public static final int PLAYER_INIT_MAX_HP = 75;
     public static final int PLAYER_INIT_MIN_DMG = 10;
     public static final int PLAYER_INIT_MAX_DMG = 16;
-    public static final int PLAYER_MIN_HP_INCREASE = 13;
-    public static final int PLAYER_MAX_HP_INCREASE = 21;
+    public static final int PLAYER_MIN_HP_INCREASE = 9;
+    public static final int PLAYER_MAX_HP_INCREASE = 17;
     public static final int PLAYER_MIN_DMG_INCREASE = 1;
     public static final int PLAYER_MAX_DMG_INCREASE = 3;
 
@@ -152,7 +152,7 @@ public class Util {
      * @return max experience at a given level
      */
     public static int calculateMaxExp(int level, int offset) {
-        return (int) (2 * level * (Math.pow(1.35, level / 3)) + offset) + 4;
+        return (int) (2 * level * (Math.pow(1.3, level / 3)) + offset) + 4;
     }
 
     /**
@@ -164,7 +164,7 @@ public class Util {
      * @return
      */
     public static int calculateExpEarned(int enemyLevel, int offset) {
-        return (int) (Math.pow(enemyLevel, 0.8)) + offset;
+        return (int) (Math.pow(enemyLevel, 0.95)) + offset;
     }
 
     // Random helper functions
