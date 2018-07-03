@@ -80,6 +80,11 @@ public class MoveUI extends BattleUI {
             if (onCd) optionDescLabels[0].setText(player.smoveCd - turnCounter + " turn(s) until\n" +
                     "new special move");
         }
+
+        for (int i = 0; i < playerSmoveset.size; i++) {
+            System.out.print(playerSmoveset.get(i).name + ",");
+        }
+        System.out.println();
     }
 
     public void render(float dt) {}
@@ -97,6 +102,7 @@ public class MoveUI extends BattleUI {
             optionButtons[i].setStyle(optionStyles[1 - i]);
         }
         // copy player smoveset to temp smove array
+        playerSmoveset.clear();
         playerSmoveset.addAll(player.smoveset.smoveset);
         smove = playerSmoveset.random();
         resetSpecialMoves();
