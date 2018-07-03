@@ -80,8 +80,6 @@ public class Unlucky extends Game {
 
         save = new Save(player, "save.json");
         save.load(rm);
-        player.maxWorld = 2;
-        player.maxLevel = 12;
 
         // debugging
         fps = new Label("", new Label.LabelStyle(rm.pixel10, Color.RED));
