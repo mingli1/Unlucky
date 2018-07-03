@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Disposable;
-import com.badlogic.gdx.utils.viewport.ExtendViewport;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.unlucky.entity.Player;
 import com.unlucky.main.Unlucky;
@@ -37,7 +37,7 @@ public abstract class UI implements Disposable {
         this.player = player;
         this.rm = rm;
 
-        viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
+        viewport = new StretchViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, game.batch);
 
         shapeRenderer = new ShapeRenderer();
@@ -50,7 +50,7 @@ public abstract class UI implements Disposable {
         this.player = player;
         this.rm = rm;
 
-        viewport = new ExtendViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
+        viewport = new StretchViewport(Unlucky.V_WIDTH, Unlucky.V_HEIGHT, new OrthographicCamera());
         stage = new Stage(viewport, gameScreen.getBatch());
 
         shapeRenderer = new ShapeRenderer();
