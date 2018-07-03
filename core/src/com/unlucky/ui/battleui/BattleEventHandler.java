@@ -17,6 +17,7 @@ import com.unlucky.event.BattleEvent;
 import com.unlucky.event.EventState;
 import com.unlucky.inventory.Item;
 import com.unlucky.map.TileMap;
+import com.unlucky.map.WeatherType;
 import com.unlucky.resource.ResourceManager;
 import com.unlucky.resource.Util;
 import com.unlucky.screen.GameScreen;

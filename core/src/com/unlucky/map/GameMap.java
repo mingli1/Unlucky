@@ -257,6 +257,10 @@ public class GameMap {
                     player.maxLevel = 0;
                 }
             }
+            if (weather != WeatherType.NORMAL) {
+                rm.lightrain.stop(soundId);
+                rm.heavyrain.stop(soundId);
+            }
             player.stats.numDungeonsWon++;
             player.stats.goldGainedFromMaps += goldObtained;
             gameScreen.getGame().save.save();

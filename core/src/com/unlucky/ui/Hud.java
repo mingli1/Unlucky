@@ -334,6 +334,10 @@ public class Hud extends UI {
 
     private void backToMenu() {
         game.menuScreen.transitionIn = 0;
+        if (gameScreen.gameMap.weather != WeatherType.NORMAL) {
+            rm.lightrain.stop(gameScreen.gameMap.soundId);
+            rm.heavyrain.stop(gameScreen.gameMap.soundId);
+        }
         if (gameScreen.isClickable()) {
             gameScreen.setClickable(false);
             gameScreen.setBatchFade(false);
