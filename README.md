@@ -1,31 +1,30 @@
-# Unlucky
-LibGDX Android RPG game based on RNG
 
-See videos of the game here: [YouTube](https://www.youtube.com/channel/UC-oA-vkeYrgEy23Sq2PLC8w/videos?shelf_id=0&sort=dd&view=0)
+# Unlucky 
+Unlucky is a LibGDX Android RPG game based on RNG (random number generator) with a turn-based battle system. RNG is usually frowned upon in games, but this game's entire theme is RNG. Everything from attacks in battle to item enchanting to movement is based on RNG. 
 
-Screenshots from the game as of May 12, 2018: 
+The player ventures and battles monsters in maps with various themes. Currently there are three available worlds all with 10+ levels in each world. In these maps, the player will have to defeat monsters and find a star tile to complete the level. Monsters may drop items that can improve the player's strength. These items may be sold in the shop for gold or enchanted to increase their power. There are currently 100+ items dropped by monsters and sold in the shop.
 
-Main menu screen:
-![mainmenu](https://user-images.githubusercontent.com/29984767/38692381-85698bfc-3e51-11e8-9d91-3ad42d0fc11e.PNG)
+The battle system is based on turn-based mechanics. The player is given four randomly generated moves with each color corresponding to a different type of move. The player also has access to special moves that they can choose in the menu. Special moves give bonus effects to the player's attacks or affects the enemy. The player also has an option to run from the battle at a very low chance of success.
 
-Battle:
-![battle1](https://user-images.githubusercontent.com/29984767/38692462-d1afaaf0-3e51-11e8-8acf-5dad5852f630.PNG)
+## Downloads
+Releases for Desktop are found on the [releases page](https://github.com/mingli1/Unlucky/releases). It is in a runnable .jar format so you must have JRE installed. 
 
-Shop:
-![shop](https://user-images.githubusercontent.com/29984767/39668560-b8f5cca6-509e-11e8-8ed9-5eb6663e18ab.PNG)
+Note: running the game on desktop will create a save.json file in the same directory as the game. The game must be ran in the same directory as the save.json to work and load your progress.
 
-Inventory:
-![inv2](https://user-images.githubusercontent.com/29984767/39668556-a775592e-509e-11e8-8aab-cb2d4fce72f1.PNG)
+Also available for free on the [Google Play Store](https://play.google.com/store/apps/details?id=com.unlucky.main)
 
-Special move screen:
-![smove](https://user-images.githubusercontent.com/29984767/39962113-902c14d6-5613-11e8-80d2-fd90cd8e2f64.PNG)
+## Credits
+* Programming - done by me using Java 8 and the [LibGDX library](https://libgdx.badlogicgames.com/)
+* Artwork - done by me using [Paint.net](https://www.getpaint.net/) and textures packed using [Gdx Texture Packer GUI](https://github.com/crashinvaders/gdx-texture-packer-gui)
+* Music - done by me using [Bosca Cecilo](https://boscaceoil.net/)
+* Sound Effects - all public domain sound effects from [Freesound](https://freesound.org/)
 
-Level select screen:
-![levelselect](https://user-images.githubusercontent.com/29984767/38692422-b27c81c6-3e51-11e8-97b8-a784539e4848.PNG)
-
-Map with lighting and weather:
-![map](https://user-images.githubusercontent.com/29984767/39668549-8d7c3c90-509e-11e8-828b-98686d169df9.PNG)
-
-Level up:
-![levelup](https://user-images.githubusercontent.com/29984767/38692473-d63b2efa-3e51-11e8-85d6-a92d3b8447fe.PNG)
-
+## Screenshots
+![mainmenu](https://user-images.githubusercontent.com/29984767/42197167-826dfce2-7e4f-11e8-9a33-2a14b6cfe2fd.PNG)
+![battle3](https://user-images.githubusercontent.com/29984767/42198355-8515a9ee-7e55-11e8-9c5a-9b85f8211ac4.PNG)
+![ws2](https://user-images.githubusercontent.com/29984767/42197174-8c740a06-7e4f-11e8-9280-21c1850ceb48.PNG)
+![game1](https://user-images.githubusercontent.com/29984767/42197176-912aed08-7e4f-11e8-8754-b4889dfb540f.PNG)
+![game2](https://user-images.githubusercontent.com/29984767/42197178-932f6f20-7e4f-11e8-9c49-6e4108ee0c26.PNG)
+![inv2](https://user-images.githubusercontent.com/29984767/42197185-97c8b802-7e4f-11e8-879d-605d42c9260e.PNG)
+![shop](https://user-images.githubusercontent.com/29984767/42197189-9b425a06-7e4f-11e8-8e76-d7c3de9c2a28.PNG)
+![smove](https://user-images.githubusercontent.com/29984767/42197192-9db252c8-7e4f-11e8-80c5-4812fa018eae.PNG) 
