@@ -370,7 +370,7 @@ public class Hud extends UI {
     private void quit() {
         final String text = "If you quit, you will lose all \ngold, exp, and items obtained in this level.\n" +
             "Are you sure you want to quit?";
-        new Dialog("Warning", rm.dialogSkin) {
+            new Dialog("Warning", rm.dialogSkin) {
             {
                 Label l = new Label(text, rm.dialogSkin);
                 l.setFontScale(0.5f);
@@ -388,6 +388,10 @@ public class Hud extends UI {
                     loseObtained();
                     player.setHp(player.getMaxHp());
                     player.inMap = false;
+                    if (gameScreen.gameMap.weather != WeatherType.NORMAL) {
+                        rm.lightrain.stop(gameScreen.gameMap.soundId);
+                        rm.heavyrain.stop(gameScreen.gameMap.soundId);
+                    }
                     backToMenu();
                 }
                 else settingsDialog.show(stage);

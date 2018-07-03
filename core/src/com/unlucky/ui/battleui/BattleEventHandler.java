@@ -276,6 +276,12 @@ public class BattleEventHandler extends BattleUI {
                 startDialog(dialog, BattleEvent.ENEMY_TURN, BattleEvent.PLAYER_TURN);
                 break;
             case LEVEL_UP:
+                // update battle stats
+                player.stats.updateMax(player.stats.maxDamageSingleBattle, battle.cumulativeDamage);
+                player.stats.updateMax(player.stats.maxHealSingleBattle, battle.cumulativeHealing);
+                battle.cumulativeDamage = battle.cumulativeHealing = 0;
+                player.resetShield();
+                player.statusEffects.clear();
                 gameScreen.setCurrentEvent(EventState.LEVEL_UP);
                 gameScreen.levelUp.start();
                 rm.battleTheme.stop();
