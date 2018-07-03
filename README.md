@@ -21,6 +21,7 @@ Also available for free on the [Google Play Store](https://play.google.com/store
 
 ## Screenshots
 ![mainmenu](https://user-images.githubusercontent.com/29984767/42197167-826dfce2-7e4f-11e8-9a33-2a14b6cfe2fd.PNG)
+![battle3](https://user-images.githubusercontent.com/29984767/42198355-8515a9ee-7e55-11e8-9c5a-9b85f8211ac4.PNG)
 ![ws2](https://user-images.githubusercontent.com/29984767/42197174-8c740a06-7e4f-11e8-9280-21c1850ceb48.PNG)
 ![game1](https://user-images.githubusercontent.com/29984767/42197176-912aed08-7e4f-11e8-8754-b4889dfb540f.PNG)
 ![game2](https://user-images.githubusercontent.com/29984767/42197178-932f6f20-7e4f-11e8-9c49-6e4108ee0c26.PNG)
