@@ -278,6 +278,7 @@ public class BattleEventHandler extends BattleUI {
             case LEVEL_UP:
                 gameScreen.setCurrentEvent(EventState.LEVEL_UP);
                 gameScreen.levelUp.start();
+                rm.battleTheme.stop();
                 break;
             case PLAYER_DEAD:
                 // update battle stats
