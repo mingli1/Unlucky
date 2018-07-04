@@ -17,7 +17,10 @@ Also available for free on the [Google Play Store](https://play.google.com/store
 * Programming - done by me using Java 8 and the [LibGDX library](https://libgdx.badlogicgames.com/)
 * Artwork - done by me using [Paint.net](https://www.getpaint.net/) and textures packed using [Gdx Texture Packer GUI](https://github.com/crashinvaders/gdx-texture-packer-gui)
 * Music - done by me using [Bosca Cecilo](https://boscaceoil.net/)
-* Sound Effects - all public domain sound effects from [Freesound](https://freesound.org/)
+* Sound Effects - all sound effects are under [CC0](https://creativecommons.org/share-your-work/public-domain/cc0/) from [Freesound](https://freesound.org/) and edited by me using [Audacity](https://www.audacityteam.org/)
+
+## License
+This project is licensed under the [MIT License](https://github.com/mingli1/Unlucky/blob/master/LICENSE).
 
 ## Screenshots
 ![mainmenu](https://user-images.githubusercontent.com/29984767/42197167-826dfce2-7e4f-11e8-9a33-2a14b6cfe2fd.PNG)
