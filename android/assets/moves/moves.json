@@ -1,0 +1,547 @@
+{
+"accurate":[
+	{
+		"type":0,
+		"name":"Shock",
+		"minDamage":1,
+		"maxDamage":2
+	},
+	{
+		"type":0,
+		"name":"Poke",
+		"minDamage":1,
+		"maxDamage":2
+	},
+	{
+		"type":0,
+		"name":"Jab",
+		"minDamage":1,
+		"maxDamage":2
+	},
+	{
+		"type":0,
+		"name":"Quick Shot",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Silence",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Headbutt",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Slash Storm",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Flash Attack",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Electro Punch",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Magma Punch",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Ice Punch",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Comet Punch",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Acid Rain",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Poison Vapor",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Electrocute",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Incinerate",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Freeze",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Ignite",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Apply Poison",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Source Strike",
+		"minDamage":4,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Cyclone",
+		"minDamage":4,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Vortex Punch",
+		"minDamage":4,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Mind Control",
+		"minDamage":4,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Open the Void",
+		"minDamage":5,
+		"maxDamage":6
+	},
+	{
+		"type":0,
+		"name":"Shade Twist",
+		"minDamage":5,
+		"maxDamage":6
+	},
+	{
+		"type":0,
+		"name":"Death Seal",
+		"minDamage":6,
+		"maxDamage":7
+	},
+	{
+		"type":0,
+		"name":"End of Time",
+		"minDamage":7,
+		"maxDamage":8
+	}
+],
+"wide":[
+	{
+		"type":1,
+		"name":"Swipe",
+		"minDamage":1,
+		"maxDamage":4
+	},
+	{
+		"type":1,
+		"name":"Swindle",
+		"minDamage":1,
+		"maxDamage":4
+	},
+	{
+		"type":1,
+		"name":"Flimflam",
+		"minDamage":1,
+		"maxDamage":4
+	},
+	{
+		"type":1,
+		"name":"Boom",
+		"minDamage":1,
+		"maxDamage":4
+	},
+	{
+		"type":1,
+		"name":"Rain of Arrows",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Trick Shot",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Brandish",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Shadow Attack",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Mortal Spear",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Mirage Stab",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Spiral Strike",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Ace of Spades",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Hurricane Beam",
+		"minDamage":1,
+		"maxDamage":5
+	},
+	{
+		"type":1,
+		"name":"Charm",
+		"minDamage":1,
+		"maxDamage":6
+	},
+	{
+		"type":1,
+		"name":"Ring of Fire",
+		"minDamage":1,
+		"maxDamage":6
+	},
+	{
+		"type":1,
+		"name":"Necrotic Zap",
+		"minDamage":1,
+		"maxDamage":6
+	},
+	{
+		"type":1,
+		"name":"Chronostrike",
+		"minDamage":1,
+		"maxDamage":6
+	},
+	{
+		"type":1,
+		"name":"Aura Aurora",
+		"minDamage":1,
+		"maxDamage":6
+	},
+	{
+		"type":1,
+		"name":"Reflection Ray",
+		"minDamage":1,
+		"maxDamage":7
+	},
+	{
+		"type":1,
+		"name":"Death and Decay",
+		"minDamage":1,
+		"maxDamage":7
+	},
+	{
+		"type":1,
+		"name":"Gravity Punch",
+		"minDamage":1,
+		"maxDamage":7
+	},
+	{
+		"type":1,
+		"name":"Phantom Slice",
+		"minDamage":1,
+		"maxDamage":8
+	},
+	{
+		"type":1,
+		"name":"Quantum Strike",
+		"minDamage":1,
+		"maxDamage":9
+	},
+	{
+		"type":1,
+		"name":"Infinity Stab",
+		"minDamage":1,
+		"maxDamage":9
+	},
+	{
+		"type":1,
+		"name":"Summon Meteor",
+		"minDamage":1,
+		"maxDamage":10
+	},
+	{
+		"type":1,
+		"name":"Shake the Earth",
+		"minDamage":1,
+		"maxDamage":11
+	},
+	{
+		"type":1,
+		"name":"Press the Luck",
+		"minDamage":1,
+		"maxDamage":15
+	}
+],
+"crit":[
+	{
+		"name":"Shift Stab",
+		"damage":2,
+		"crit":60
+	},
+	{
+		"name":"Whirlpool",
+		"damage":2,
+		"crit":70
+	},
+	{
+		"name":"Lucky Strike",
+		"damage":2,
+		"crit":67
+	},
+	{
+		"name":"Conjure Wave",
+		"damage":2,
+		"crit":80
+	},
+	{
+		"name":"Execute",
+		"damage":2,
+		"crit":50
+	},
+	{
+		"name":"Bee Sting",
+		"damage":2,
+		"crit":60
+	},
+	{
+		"name":"Flip the Coin",
+		"damage":2,
+		"crit":50
+	},
+	{
+		"name":"Melting Fire",
+		"damage":2,
+		"crit":55
+	},
+	{
+		"name":"Warp Strike",
+		"damage":2,
+		"crit":40
+	},
+	{
+		"name":"Pyro Pulse",
+		"damage":2,
+		"crit":40
+	},
+	{
+		"name":"Expose Weakness",
+		"damage":3,
+		"crit":30
+	},
+	{
+		"name":"Entropy Release",
+		"damage":3,
+		"crit":40
+	},
+	{
+		"name":"Plague",
+		"damage":3,
+		"crit":50
+	},
+	{
+		"name":"Illusion",
+		"damage":3,
+		"crit":55
+	},
+	{
+		"name":"Vital Stab",
+		"damage":3,
+		"crit":25
+	},
+	{
+		"name":"Radiant Punch",
+		"damage":3,
+		"crit":33
+	},
+	{
+		"name":"Shockwave",
+		"damage":3,
+		"crit":35
+	},
+	{
+		"name":"Zeus's Lightning",
+		"damage":3,
+		"crit":45
+	},
+	{
+		"name":"Tempest Shot",
+		"damage":3,
+		"crit":30
+	},
+	{
+		"name":"Memory Mash",
+		"damage":4,
+		"crit":15
+	},
+	{
+		"name":"Headshot",
+		"damage":4,
+		"crit":10
+	},
+	{
+		"name":"Soul Stealer",
+		"damage":4,
+		"crit":20
+	},
+	{
+		"name":"Toxic Dart",
+		"damage":4,
+		"crit":25
+	},
+	{
+		"name":"Moonstrike",
+		"damage":4,
+		"crit":15
+	},
+	{
+		"name":"Earthquake",
+		"damage":5,
+		"crit":10
+	},
+	{
+		"name":"Disintegrate",
+		"damage":5,
+		"crit":15
+	},
+	{
+		"name":"Nuclear Bullet",
+		"damage":5,
+		"crit":65
+	}
+],
+"healing":[
+	{
+		"name":"Bandage",
+		"minHeal":1,
+		"maxHeal":2,
+		"dmgReduction":30
+	},
+	{
+		"name":"Undying Resolve",
+		"minHeal":1,
+		"maxHeal":2,
+		"dmgReduction":80
+	},
+	{
+		"name":"Light Heal",
+		"minHeal":1,
+		"maxHeal":3,
+		"dmgReduction":20
+	},
+	{
+		"name":"Cure",
+		"minHeal":2,
+		"maxHeal":3,
+		"dmgReduction":30
+	},
+	{
+		"name":"Strengthen",
+		"minHeal":2,
+		"maxHeal":3,
+		"dmgReduction":50
+	},
+	{
+		"name":"Regeneration",
+		"minHeal":2,
+		"maxHeal":4,
+		"dmgReduction":20
+	},
+	{
+		"name":"Repair Self",
+		"minHeal":2,
+		"maxHeal":4,
+		"dmgReduction":10
+	},
+	{
+		"name":"Recovery",
+		"minHeal":3,
+		"maxHeal":5,
+		"dmgReduction":20
+	},
+	{
+		"name":"Healing Wave",
+		"minHeal":4,
+		"maxHeal":5,
+		"dmgReduction":40
+	},
+	{
+		"name":"Heal of Life",
+		"minHeal":4,
+		"maxHeal":6,
+		"dmgReduction":50
+	},
+	{
+		"name":"Blessing of Gods",
+		"minHeal":6,
+		"maxHeal":8,
+		"dmgReduction":60
+	},
+	{
+		"name":"Genesis",
+		"minHeal":7,
+		"maxHeal":10,
+		"dmgReduction":40
+	},
+	{
+		"name":"Life or Death",
+		"minHeal":1,
+		"maxHeal":10,
+		"dmgReduction":30
+	}
+]
+}

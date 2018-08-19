@@ -1,0 +1,521 @@
+
+textures.png
+size: 1024,1024
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+10x9_redarrow
+  rotate: false
+  xy: 544, 148
+  size: 5, 5
+  orig: 5, 5
+  offset: 0, 0
+  index: -1
+11x6_shadow
+  rotate: false
+  xy: 616, 154
+  size: 11, 6
+  orig: 11, 6
+  offset: 0, 0
+  index: -1
+16x16_atiles
+  rotate: false
+  xy: 636, 352
+  size: 96, 240
+  orig: 96, 240
+  offset: 0, 0
+  index: -1
+16x16_sprites
+  rotate: false
+  xy: 288, 148
+  size: 256, 64
+  orig: 256, 64
+  offset: 0, 0
+  index: -1
+16x16_tiles
+  rotate: false
+  xy: 380, 320
+  size: 256, 272
+  orig: 256, 272
+  offset: 0, 0
+  index: -1
+20x20_items
+  rotate: false
+  xy: 880, 674
+  size: 110, 110
+  orig: 110, 110
+  offset: 0, 0
+  index: -1
+20x20status_effects
+  rotate: false
+  xy: 544, 233
+  size: 90, 10
+  orig: 90, 10
+  offset: 0, 0
+  index: -1
+64x64_battle_attacks
+  rotate: false
+  xy: 486, 4
+  size: 96, 96
+  orig: 96, 96
+  offset: 0, 0
+  index: -1
+96x96_battle_heal
+  rotate: false
+  xy: 386, 100
+  size: 192, 48
+  orig: 192, 48
+  offset: 0, 0
+  index: -1
+96x96_battle_sprites
+  rotate: false
+  xy: 400, 592
+  size: 480, 192
+  orig: 480, 192
+  offset: 0, 0
+  index: -1
+96x96_level_up
+  rotate: false
+  xy: 636, 304
+  size: 194, 48
+  orig: 194, 48
+  offset: 0, 0
+  index: -1
+battle_bgs
+  rotate: false
+  xy: 0, 664
+  size: 400, 360
+  orig: 400, 360
+  offset: 0, 0
+  index: -1
+battle_darkness
+  rotate: false
+  xy: 0, 42
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+check-off
+  rotate: false
+  xy: 624, 223
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+check-on
+  rotate: false
+  xy: 624, 213
+  size: 10, 10
+  orig: 10, 10
+  offset: 0, 0
+  index: -1
+creditsicons
+  rotate: false
+  xy: 231, 1
+  size: 34, 17
+  orig: 34, 17
+  offset: 0, 0
+  index: -1
+cursor
+  rotate: false
+  xy: 937, 299
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+darkness
+  rotate: false
+  xy: 0, 224
+  size: 380, 220
+  orig: 380, 220
+  offset: 0, 0
+  index: -1
+default
+  rotate: false
+  xy: 380, 243
+  size: 254, 77
+  orig: 254, 77
+  offset: 0, 0
+  index: -1
+default-pane
+  rotate: false
+  xy: 990, 781
+  size: 5, 3
+  split: 1, 1, 1, 1
+  orig: 5, 3
+  offset: 0, 0
+  index: -1
+default-rect
+  rotate: false
+  xy: 492, 240
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+default-rect-down
+  rotate: false
+  xy: 987, 671
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+default-round
+  rotate: false
+  xy: 960, 625
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+default-round-down
+  rotate: false
+  xy: 380, 604
+  size: 12, 20
+  split: 5, 5, 5, 4
+  pad: 4, 4, 1, 1
+  orig: 12, 20
+  offset: 0, 0
+  index: -1
+default-round-large
+  rotate: false
+  xy: 380, 624
+  size: 20, 20
+  split: 5, 5, 5, 4
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+default-scroll
+  rotate: false
+  xy: 380, 644
+  size: 20, 20
+  split: 2, 2, 2, 2
+  orig: 20, 20
+  offset: 0, 0
+  index: -1
+default-select
+  rotate: false
+  xy: 905, 250
+  size: 27, 20
+  split: 4, 14, 4, 4
+  orig: 27, 20
+  offset: 0, 0
+  index: -1
+default-select-selection
+  rotate: false
+  xy: 902, 243
+  size: 3, 3
+  split: 1, 1, 1, 1
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
+default-slider
+  rotate: false
+  xy: 1016, 1016
+  size: 8, 8
+  split: 2, 2, 2, 2
+  orig: 8, 8
+  offset: 0, 0
+  index: -1
+default-slider-knob
+  rotate: false
+  xy: 265, 0
+  size: 9, 18
+  orig: 9, 18
+  offset: 0, 0
+  index: -1
+default-splitpane
+  rotate: false
+  xy: 486, 1
+  size: 5, 3
+  split: 0, 5, 0, 0
+  orig: 5, 3
+  offset: 0, 0
+  index: -1
+default-splitpane-vertical
+  rotate: false
+  xy: 380, 224
+  size: 3, 5
+  split: 0, 0, 0, 5
+  orig: 3, 5
+  offset: 0, 0
+  index: -1
+default-window
+  rotate: false
+  xy: 960, 645
+  size: 27, 29
+  split: 4, 3, 20, 6
+  orig: 27, 29
+  offset: 0, 0
+  index: -1
+dialog_box
+  rotate: false
+  xy: 0, 2
+  size: 200, 40
+  orig: 200, 40
+  offset: 0, 0
+  index: -1
+dir_pad
+  rotate: false
+  xy: 544, 193
+  size: 80, 40
+  orig: 80, 40
+  offset: 0, 0
+  index: -1
+enemy_hp_bar
+  rotate: false
+  xy: 544, 173
+  size: 72, 20
+  orig: 72, 20
+  offset: 0, 0
+  index: -1
+enter_button
+  rotate: false
+  xy: 826, 246
+  size: 79, 56
+  orig: 79, 56
+  offset: 0, 0
+  index: -1
+exit_button
+  rotate: false
+  xy: 274, 0
+  size: 9, 18
+  orig: 9, 18
+  offset: 0, 0
+  index: -1
+inv_buttons
+  rotate: false
+  xy: 326, 0
+  size: 46, 42
+  orig: 46, 42
+  offset: 0, 0
+  index: -1
+inv_ui
+  rotate: false
+  xy: 200, 42
+  size: 186, 106
+  orig: 186, 106
+  offset: 0, 0
+  index: -1
+level_up
+  rotate: false
+  xy: 732, 352
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+lightning
+  rotate: false
+  xy: 0, 444
+  size: 380, 220
+  orig: 380, 220
+  offset: 0, 0
+  index: -1
+menu_buttons
+  rotate: false
+  xy: 616, 160
+  size: 96, 32
+  orig: 96, 32
+  offset: 0, 0
+  index: -1
+menu_exit_button
+  rotate: false
+  xy: 372, 14
+  size: 14, 28
+  orig: 14, 28
+  offset: 0, 0
+  index: -1
+move_buttons
+  rotate: false
+  xy: 0, 162
+  size: 288, 50
+  orig: 288, 50
+  offset: 0, 0
+  index: -1
+option_buttons
+  rotate: false
+  xy: 905, 270
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
+pixel
+  rotate: false
+  xy: 0, 212
+  size: 512, 12
+  orig: 512, 12
+  offset: 0, 0
+  index: -1
+play_button
+  rotate: false
+  xy: 880, 594
+  size: 80, 80
+  orig: 80, 80
+  offset: 0, 0
+  index: -1
+player_hp_bar
+  rotate: false
+  xy: 544, 153
+  size: 72, 20
+  orig: 72, 20
+  offset: 0, 0
+  index: -1
+raindrop
+  rotate: false
+  xy: 1000, 1008
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+raindrop_anim
+  rotate: false
+  xy: 712, 176
+  size: 48, 16
+  orig: 48, 16
+  offset: 0, 0
+  index: -1
+selected_slot
+  rotate: false
+  xy: 200, 148
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+selection
+  rotate: false
+  xy: 616, 192
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+default-pane-noborder
+  rotate: false
+  xy: 616, 192
+  size: 1, 1
+  split: 0, 0, 0, 0
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
+shade
+  rotate: false
+  xy: 732, 472
+  size: 200, 120
+  orig: 200, 120
+  offset: 0, 0
+  index: -1
+shop_items
+  rotate: false
+  xy: 386, 0
+  size: 100, 100
+  orig: 100, 100
+  offset: 0, 0
+  index: -1
+shop_tab
+  rotate: false
+  xy: 200, 0
+  size: 31, 18
+  orig: 31, 18
+  offset: 0, 0
+  index: -1
+shop_ui
+  rotate: false
+  xy: 634, 192
+  size: 192, 112
+  orig: 192, 112
+  offset: 0, 0
+  index: -1
+smove_buttons
+  rotate: false
+  xy: 826, 192
+  size: 76, 54
+  orig: 76, 54
+  offset: 0, 0
+  index: -1
+smove_frame
+  rotate: false
+  xy: 712, 160
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+smove_icons
+  rotate: false
+  xy: 380, 229
+  size: 112, 14
+  orig: 112, 14
+  offset: 0, 0
+  index: -1
+smove_slot
+  rotate: false
+  xy: 512, 227
+  size: 32, 16
+  orig: 32, 16
+  offset: 0, 0
+  index: -1
+snowflake
+  rotate: false
+  xy: 634, 318
+  size: 2, 2
+  orig: 2, 2
+  offset: 0, 0
+  index: -1
+stage_select_bg
+  rotate: false
+  xy: 400, 784
+  size: 600, 120
+  orig: 600, 120
+  offset: 0, 0
+  index: -1
+standard_med_button
+  rotate: false
+  xy: 830, 302
+  size: 110, 50
+  orig: 110, 50
+  offset: 0, 0
+  index: -1
+textfield
+  rotate: false
+  xy: 228, 148
+  size: 14, 14
+  split: 3, 3, 3, 3
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+title_bg
+  rotate: false
+  xy: 400, 904
+  size: 600, 120
+  orig: 600, 120
+  offset: 0, 0
+  index: -1
+tree-minus
+  rotate: false
+  xy: 372, 0
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+tree-plus
+  rotate: false
+  xy: 214, 148
+  size: 14, 14
+  orig: 14, 14
+  offset: 0, 0
+  index: -1
+unlucky_title
+  rotate: false
+  xy: 200, 18
+  size: 126, 24
+  orig: 126, 24
+  offset: 0, 0
+  index: -1
+white
+  rotate: false
+  xy: 760, 189
+  size: 3, 3
+  orig: 3, 3
+  offset: 0, 0
+  index: -1
