@@ -35,11 +35,18 @@ The assets for this game are also available for download:
 This project is licensed under the [MIT License](https://github.com/mingli1/Unlucky/blob/master/LICENSE).
 
 ## Screenshots
-![mainmenu](https://user-images.githubusercontent.com/29984767/42197167-826dfce2-7e4f-11e8-9a33-2a14b6cfe2fd.PNG)
-![battle3](https://user-images.githubusercontent.com/29984767/42198355-8515a9ee-7e55-11e8-9c5a-9b85f8211ac4.PNG)
-![ws2](https://user-images.githubusercontent.com/29984767/42197174-8c740a06-7e4f-11e8-9280-21c1850ceb48.PNG)
-![game1](https://user-images.githubusercontent.com/29984767/42197176-912aed08-7e4f-11e8-8754-b4889dfb540f.PNG)
-![game2](https://user-images.githubusercontent.com/29984767/42197178-932f6f20-7e4f-11e8-9c49-6e4108ee0c26.PNG)
-![inv2](https://user-images.githubusercontent.com/29984767/42197185-97c8b802-7e4f-11e8-879d-605d42c9260e.PNG)
-![shop](https://user-images.githubusercontent.com/29984767/42197189-9b425a06-7e4f-11e8-8e76-d7c3de9c2a28.PNG)
-![smove](https://user-images.githubusercontent.com/29984767/42197192-9db252c8-7e4f-11e8-80c5-4812fa018eae.PNG) 
+<div>
+    <img width="400px" height="240px" src="https://user-images.githubusercontent.com/29984767/42198355-8515a9ee-7e55-11e8-9c5a-9b85f8211ac4.PNG">
+    <img width="400px" height="240px" hspace="30" src="https://user-images.githubusercontent.com/29984767/42197174-8c740a06-7e4f-11e8-9280-21c1850ceb48.PNG">
+</div>
+<div>
+    <img width="400px" height="240px" hspace="15" src="https://user-images.githubusercontent.com/29984767/42197176-912aed08-7e4f-11e8-8754-b4889dfb540f.PNG">
+    <img width="400px" height="240px" hspace="15" src="https://user-images.githubusercontent.com/29984767/42197178-932f6f20-7e4f-11e8-9c49-6e4108ee0c26.PNG">
+</div>
+<div>
+    <img width="400px" height="240px" hspace="15" src="https://user-images.githubusercontent.com/29984767/42197185-97c8b802-7e4f-11e8-879d-605d42c9260e.PNG">
+    <img width="400px" height="240px" hspace="15" src="https://user-images.githubusercontent.com/29984767/42197189-9b425a06-7e4f-11e8-8e76-d7c3de9c2a28.PNG">
+</div>
+<div>
+    <img width="400px" height="240px" hspace="15" src="https://user-images.githubusercontent.com/29984767/42197192-9db252c8-7e4f-11e8-80c5-4812fa018eae.PNG">
+</div>
