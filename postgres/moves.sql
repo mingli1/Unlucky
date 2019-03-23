@@ -104,3 +104,4 @@ INSERT INTO Moves(type,name,minDamage,maxDamage,damage,crit,minHeal,maxHeal,dmgR
 INSERT INTO Moves(type,name,minDamage,maxDamage,damage,crit,minHeal,maxHeal,dmgReduction) VALUES (3,'Blessing of Gods',NULL,NULL,NULL,NULL,6,8,60);
 INSERT INTO Moves(type,name,minDamage,maxDamage,damage,crit,minHeal,maxHeal,dmgReduction) VALUES (3,'Genesis',NULL,NULL,NULL,NULL,7,10,40);
 INSERT INTO Moves(type,name,minDamage,maxDamage,damage,crit,minHeal,maxHeal,dmgReduction) VALUES (3,'Life or Death',NULL,NULL,NULL,NULL,1,10,30);
+
