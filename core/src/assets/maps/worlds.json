@@ -1,0 +1,66 @@
+{
+"worlds": [
+	{
+		"name":"SLIME FOREST",
+		"shortDesc":"LV. 1-11\nBOSS: SLIME KING",
+		"longDesc":"A long time ago, this forest was inhabited by regular animals. A mad scientist also lived here, conducting strange experiments on the creatures. One day, something went wrong and he turned the animals into hostile slimes. The slimes killed him and have ruled this forest ever since...",
+		"numLevels":14,
+		"levels": [
+			{ "name":"Forest Entrance", "avgLevel":1 },
+			{ "name":"Into The Trees", "avgLevel":1 },
+			{ "name":"A Slimy Path", "avgLevel":2 },
+			{ "name":"All Green Everywhere", "avgLevel":3 },
+			{ "name":"Rainy Grove", "avgLevel":4 },
+			{ "name":"One Two Tree", "avgLevel":4 },
+			{ "name":"A Hint of Blue", "avgLevel":5 },
+			{ "name":"The Slime Lake", "avgLevel":6 },
+			{ "name":"Beyond the Waters", "avgLevel":7 },
+			{ "name":"Trees atop a Hill", "avgLevel":8 },
+			{ "name":"Follow the Trail", "avgLevel":9 },
+			{ "name":"The Four Corners", "avgLevel":9 },
+			{ "name":"Big Red Spiral", "avgLevel":10 },
+			{ "name":"Face the King", "avgLevel":11 }
+		]
+	},
+	{
+		"name":"SPOOKY GRAVEYARD",
+		"shortDesc":"LV. 12-24\nBOSS: RED REAPER",
+		"longDesc":"The entities that haunt this graveyard were created by a powerful necromancer thousands of years ago. In the darkness, evil spirits and spooky skeletons guard the graves of the deceased. Deep in this terrority is said to reside Death himself...",
+		"numLevels":11,
+		"levels": [
+			{ "name":"Ghastly Gate", "avgLevel":12 },
+			{ "name":"Scattered Tombs", "avgLevel":13 },
+			{ "name":"Haunted Hill", "avgLevel":14 },
+			{ "name":"The Undead", "avgLevel":15 },
+			{ "name":"Rise From the Grave", "avgLevel":16 },
+			{ "name":"Spooky Skeletons", "avgLevel":18 },
+			{ "name":"Into the Night", "avgLevel":19 },
+			{ "name":"Bones and Spirits", "avgLevel":20 },
+			{ "name":"A Strange Magic", "avgLevel":21 },
+			{ "name":"Skull Sanctuary", "avgLevel":23 },
+			{ "name":"The Red Reaper", "avgLevel":24 }
+		]
+	},
+	{
+		"name":"FROSTY CAVE",
+		"shortDesc":"LV. 25-38\nBOSS: ICE GOLEM",
+		"longDesc":"Hidden deep in a snowy mountain is an icy cave that held monsters frozen in a dormant state for thousands of years. The creatures have since defrosted and have been running rampant throughout the cave. They assume the forms of deadly and durable beasts...",
+		"numLevels":13,
+		"levels": [
+			{ "name":"Tundra Trails", "avgLevel":25 },
+			{ "name":"Polar Pine Tree", "avgLevel":26 },
+			{ "name":"Frigid Forest", "avgLevel":26 },
+			{ "name":"Lake Glacier", "avgLevel":27 },
+			{ "name":"Frosted Hilltop", "avgLevel":28 },
+			{ "name":"Blizzard Mayham", "avgLevel":29 },
+			{ "name":"Cave Entrance", "avgLevel":30 },
+			{ "name":"Rocky Freezer", "avgLevel":33 },
+			{ "name":"Frozen Gems", "avgLevel":34 },
+			{ "name":"Ice-Covered Icicles", "avgLevel":35 },
+			{ "name":"Slip and Slide", "avgLevel":36 },
+			{ "name":"Coldest Cavern", "avgLevel":37 },
+			{ "name":"Ice Rocks", "avgLevel":38 }
+		]
+	}
+]
+}

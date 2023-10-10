@@ -1,0 +1,154 @@
+{
+"slime":[
+	{
+		"type":1,
+		"name":"Bounce",
+		"minDamage":1,
+		"maxDamage":8
+	},
+	{
+		"type":1,
+		"name":"Slime Ball",
+		"minDamage":1,
+		"maxDamage":11
+	},
+	{
+		"type":1,
+		"name":"Poison Slime",
+		"minDamage":1,
+		"maxDamage":10
+	},
+	{
+		"type":1,
+		"name":"Slime Snare",
+		"minDamage":1,
+		"maxDamage":9
+	},
+	{
+		"type":1,
+		"name":"Goo Gun",
+		"minDamage":1,
+		"maxDamage":14
+	},
+	{
+		"type":1,
+		"name":"Slime Fire",
+		"minDamage":1,
+		"maxDamage":12
+	},
+	{
+		"type":1,
+		"name":"Blast Slime",
+		"minDamage":1,
+		"maxDamage":15
+	},
+	{
+		"type":3,
+		"name":"Regenerate",
+		"minHeal":3,
+		"maxHeal":6,
+		"dmgReduction":40
+	}
+],
+"redreaper":[
+	{
+		"type":2,
+		"name":"Scythe Slash",
+		"damage":2,
+		"crit":60
+	},
+	{
+		"type":2,
+		"name":"Haunted Volley",
+		"damage":2,
+		"crit":30
+	},
+	{
+		"type":2,
+		"name":"Skull Shot",
+		"damage":3,
+		"crit":80
+	},
+	{
+		"type":2,
+		"name":"Deadly Plague",
+		"damage":3,
+		"crit":40
+	},
+	{
+		"type":2,
+		"name":"Exorcism",
+		"damage":4,
+		"crit":100
+	},
+	{
+		"type":2,
+		"name":"Darkness Barrage",
+		"damage":4,
+		"crit":30
+	},
+	{
+		"type":2,
+		"name":"Reaper Rampage",
+		"damage":5,
+		"crit":50
+	},
+	{
+		"type":3,
+		"name":"Death Defiance",
+		"minHeal":1,
+		"maxHeal":4,
+		"dmgReduction":20
+	}
+],
+"icegolem":[
+	{
+		"type":0,
+		"name":"Freezing Spikes",
+		"minDamage":2,
+		"maxDamage":3
+	},
+	{
+		"type":0,
+		"name":"Rollout",
+		"minDamage":3,
+		"maxDamage":4
+	},
+	{
+		"type":0,
+		"name":"Ice Tomb",
+		"minDamage":3,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Icicle Rain",
+		"minDamage":4,
+		"maxDamage":5
+	},
+	{
+		"type":0,
+		"name":"Diamond Smash",
+		"minDamage":4,
+		"maxDamage":6
+	},
+	{
+		"type":0,
+		"name":"Frost Breath",
+		"minDamage":5,
+		"maxDamage":6
+	},
+	{
+		"type":0,
+		"name":"Cavequake",
+		"minDamage":6,
+		"maxDamage":7
+	},
+	{
+		"type":0,
+		"name":"Frost Fist",
+		"minDamage":3,
+		"maxDamage":5
+	}
+]
+}

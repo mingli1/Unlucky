@@ -19,9 +19,9 @@ public class DesktopLauncher {
         config.vSyncEnabled = false;
         config.backgroundFPS = 10;
         config.foregroundFPS = 60;
-        config.addIcon("desktop_icon128.png", Files.FileType.Internal);
-        config.addIcon("desktop_icon32.png", Files.FileType.Internal);
-        config.addIcon("desktop_icon16.png", Files.FileType.Internal);
+//        config.addIcon("desktop_icon128.png", Files.FileType.Internal);
+//        config.addIcon("desktop_icon32.png", Files.FileType.Internal);
+//        config.addIcon("desktop_icon16.png", Files.FileType.Internal);
         new LwjglApplication(new Unlucky(), config);
     }
 
